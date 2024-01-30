@@ -214,6 +214,12 @@ if (!function_exists('humanizeCivility')) {
 
 if (!function_exists('sanitizeURIForPagination')) {
 
+    /**
+     * Sanitize the URI by removing any existing pagination parameter and adding the new page number.
+     *
+     * @param int $page The page number to be added to the URI.
+     * @return string The sanitized URI with the page parameter included.
+     */
     function sanitizeURIForPagination(int $page): string
     {
         $current = $_SERVER['REQUEST_URI'];

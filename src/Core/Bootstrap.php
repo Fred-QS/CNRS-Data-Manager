@@ -15,7 +15,9 @@ use CnrsDataManager\Core\Controllers\Manager;
 class Bootstrap
 {
     /**
-     * Init plugin
+     * Initialize the plugin
+     *
+     * This method initializes the plugin by setting up various actions, hooks, and constants.
      *
      * @return void
      */
@@ -36,7 +38,10 @@ class Bootstrap
     }
 
     /**
-     * Method called on wordpress hook init action
+     * Executes actions and filters when WordPress initializes.
+     *
+     * This method is called when WordPress initializes and checks if the current context is the WordPress admin area.
+     * If it is, several actions and filters are added to be executed during the admin initialization.
      *
      * @return void
      */
@@ -52,35 +57,15 @@ class Bootstrap
             /*DUP_Custom_Host_Manager::getInstance()->init();
             DUP_Settings::init();
             DUP_Log::Init();
-            DUP_Util::init();
-            DUP_DB::init();
-            MigrationMng::init();
-            Notice::init();
-            NoticeBar::init();
-            Review::init();
-            AdminNotices::init();
-            DUP_Web_Services::init();
-            WelcomeController::init();
-            DashboardWidget::init();
-            EducationElements::init();
-            Notifications::init();
-            EmailSummaryPreviewPageController::init();
-            HelpPageController::init();
-            $dashboardService = new ServicesDashboard();
-            $dashboardService->init();
-            $extraPlugin = new ServicesExtraPlugins();
-            $extraPlugin->init();
-            $educationService = new ServicesEducation();
             $educationService->init();*/
         }
     }
 
     /**
-     * Return admin body classes
+     * Add body class for DataManager pages
      *
-     * @param string $classes classes
-     *
-     * @return string
+     * @param string $classes The classes to be appended to the body class
+     * @return string The modified body class with appended class if DataManager page, otherwise unchanged body class
      */
     public static function addBodyClass($classes)
     {
@@ -92,7 +77,9 @@ class Bootstrap
     }
 
     /**
-     * Load text domain for translation
+     * Loads the textdomain for the "cnrs-data-manager" plugin.
+     *
+     * This method loads the translation files for the "cnrs-data-manager" plugin to enable localization.
      *
      * @return void
      */
@@ -102,7 +89,9 @@ class Bootstrap
     }
 
     /**
-     * Hooked into `admin_init`.  Init routines for all admin pages
+     * Initializes the admin interface for the "cnrs-data-manager" plugin.
+     *
+     * This method enqueues the necessary styles and scripts for the admin interface of the "cnrs-data-manager" plugin.
      *
      * @return void
      */
@@ -113,7 +102,10 @@ class Bootstrap
     }
 
     /**
-     * Hooked into `admin_menu`.  Loads all the wp left nav admin menus for CNRS Data Manager
+     * Initializes the menu for the "cnrs-data-manager" plugin.
+     *
+     * This method sets up the main menu and submenus for the "cnrs-data-manager" plugin.
+     * It adds the necessary actions and filters to register menu items and enqueue scripts and styles.
      *
      * @return void
      */
@@ -143,9 +135,19 @@ class Bootstrap
     }
 
     /**
-     * Submenu datas
+     * Retrieves the submenu items for the "cnrs-data-manager" plugin.
      *
-     * @return array[]
+     * This method returns an array of submenu items to be added under the parent menu item 'cnrs-data-manager'.
+     * Each submenu item is represented by an associative array containing the following keys:
+     *   - 'parent_slug'  : The slug of the parent menu item.
+     *   - 'page_title'   : The title to be displayed in the browser page title and on the submenu item.
+     *   - 'menu_title'   : The title to be displayed on the submenu item.
+     *   - 'capability'   : The capability required to access the submenu item.
+     *   - 'menu_slug'    : The slug of the submenu item.
+     *   - 'callback'     : The callback function to be executed when the submenu item is clicked.
+     *                      This function includes the corresponding view file.
+     *
+     * @return array An array of submenu items.
      */
     protected static function getSubmenuItems()
     {
