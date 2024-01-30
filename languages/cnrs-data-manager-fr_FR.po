@@ -1,0 +1,288 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CNRS Data Manager\n"
+"POT-Creation-Date: 2024-01-30 18:16+0100\n"
+"PO-Revision-Date: 2024-01-30 18:21+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: cnrs-data-manager.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: src/Core/Bootstrap.php:155 src/Core/Bootstrap.php:156
+#: src/Core/Views/Dashboard.php:38
+msgid "Dashboard"
+msgstr "Général"
+
+#: src/Core/Bootstrap.php:165 src/Core/Bootstrap.php:166
+#: src/Core/Views/Tools.php:8
+msgid "Tools"
+msgstr "Outils"
+
+#: src/Core/Bootstrap.php:175 src/Core/Bootstrap.php:176
+#: src/Core/Views/Settings.php:8
+msgid "Settings"
+msgstr "Paramètres"
+
+#: src/Core/Views/Dashboard.php:12
+msgid "Name"
+msgstr "Nom"
+
+#: src/Core/Views/Dashboard.php:12
+msgid "Description"
+msgstr "Description"
+
+#: src/Core/Views/Dashboard.php:15 src/Core/Views/Dashboard.php:128
+#: src/Core/Views/Dashboard.php:194
+msgid "Identity"
+msgstr "Identité"
+
+#: src/Core/Views/Dashboard.php:16
+msgid "Status"
+msgstr "Statut"
+
+#: src/Core/Views/Dashboard.php:17
+msgid "Guardianship"
+msgstr "Tutelle"
+
+#: src/Core/Views/Dashboard.php:18 src/Core/Views/Dashboard.php:48
+msgid "Teams"
+msgstr "Équipes"
+
+#: src/Core/Views/Dashboard.php:19 src/Core/Views/Dashboard.php:49
+msgid "Services"
+msgstr "Services"
+
+#: src/Core/Views/Dashboard.php:20 src/Core/Views/Dashboard.php:50
+msgid "Platforms"
+msgstr "Plateformes"
+
+#: src/Core/Views/Dashboard.php:24
+msgid "No result found in teams."
+msgstr "Aucun résultat n’a été trouvé dans les équipes."
+
+#: src/Core/Views/Dashboard.php:26
+msgid "No result found in services."
+msgstr "Aucun résultat n’a été trouvé dans les services."
+
+#: src/Core/Views/Dashboard.php:28
+msgid "No result found in platforms."
+msgstr "Aucun résultat n’a été trouvé dans les plateformes."
+
+#: src/Core/Views/Dashboard.php:30
+msgid "No result found in agents."
+msgstr "Aucun résultat n’a été trouvé dans les agents."
+
+#: src/Core/Views/Dashboard.php:40
+msgid ""
+"In this section, you will find an overview of the information provided by "
+"the XML file containing the data updated by the CNRS IS."
+msgstr ""
+"Dans cette rubrique, vous trouverez un aperçu des informations fournies par "
+"le fichier XML contenant les données mises à jour par le SI du CNRS."
+
+#: src/Core/Views/Dashboard.php:41
+msgid ""
+"Select a data type using the selection field below to browse results for "
+"teams, services, platforms or agents."
+msgstr ""
+"Sélectionnez un type de données à l’aide du champ de sélection ci-dessous "
+"pour parcourir les résultats des équipes, des services, des plateformes ou "
+"des agents."
+
+#: src/Core/Views/Dashboard.php:45
+msgid "Choose a data type"
+msgstr "Choisir un type de données"
+
+#: src/Core/Views/Dashboard.php:51
+msgid "Agents"
+msgstr "Agents"
+
+#: src/Core/Views/Dashboard.php:58
+msgid "Total"
+msgstr "Total"
+
+#: src/Core/Views/Dashboard.php:62 src/Core/Views/Dashboard.php:67
+msgid "Search"
+msgstr "Rechercher"
+
+#: src/Core/Views/Dashboard.php:73
+msgid ""
+"Either the data source does not contain any results or you need to modify "
+"your search."
+msgstr ""
+"Soit la source de données ne contient aucun résultat, soit vous devez "
+"modifier votre recherche."
+
+#: src/Core/Views/Dashboard.php:78 src/Core/Views/Dashboard.php:206
+msgid "Select grouped action"
+msgstr "Sélectionner une action groupée"
+
+#: src/Core/Views/Dashboard.php:80 src/Core/Views/Dashboard.php:208
+msgid "5 items per page"
+msgstr "5 éléments par page"
+
+#: src/Core/Views/Dashboard.php:81 src/Core/Views/Dashboard.php:209
+msgid "10 items per page"
+msgstr "10 éléments par page"
+
+#: src/Core/Views/Dashboard.php:82 src/Core/Views/Dashboard.php:210
+msgid "20 items per page"
+msgstr "20 éléments par page"
+
+#: src/Core/Views/Dashboard.php:83 src/Core/Views/Dashboard.php:211
+msgid "50 items per page"
+msgstr "50 articles par page"
+
+#: src/Core/Views/Dashboard.php:85 src/Core/Views/Dashboard.php:213
+msgid "Apply"
+msgstr "Appliquer"
+
+#: src/Core/Views/Dashboard.php:89 src/Core/Views/Dashboard.php:217
+msgid "elements"
+msgstr "éléments"
+
+#: src/Core/Views/Dashboard.php:93 src/Core/Views/Dashboard.php:221
+msgid "First page"
+msgstr "Première page"
+
+#: src/Core/Views/Dashboard.php:96 src/Core/Views/Dashboard.php:224
+msgid "Previous page"
+msgstr "Page précédente"
+
+#: src/Core/Views/Dashboard.php:103 src/Core/Views/Dashboard.php:230
+msgid "Current page"
+msgstr "Page actuelle"
+
+#: src/Core/Views/Dashboard.php:105 src/Core/Views/Dashboard.php:232
+msgid "of"
+msgstr "sur"
+
+#: src/Core/Views/Dashboard.php:109 src/Core/Views/Dashboard.php:236
+msgid "Next page"
+msgstr "Page suivante"
+
+#: src/Core/Views/Dashboard.php:112 src/Core/Views/Dashboard.php:239
+msgid "Last page"
+msgstr "Dernière page"
+
+#: src/Core/Views/Dashboard.php:123
+msgid "Table ordered hierarchically."
+msgstr "Tableau ordonné hiérarchiquement."
+
+#: src/Core/Views/Dashboard.php:123
+msgid "Ascending."
+msgstr "Croissant."
+
+#: src/Core/Views/Dashboard.php:150
+msgid "No authorization for the distribution of the avatar."
+msgstr "Pas d’autorisation pour la distribution de l’avatar."
+
+#: src/Core/Views/Dashboard.php:152 src/Core/Views/Dashboard.php:176
+msgid "No description"
+msgstr "Pas de description"
+
+#: src/Core/Views/Dashboard.php:179
+msgid "Show more details"
+msgstr "Afficher plus de détails"
+
+#: src/Core/Views/Settings.php:11
+msgid "Here you can update the settings of the CNRS Data Manager extension."
+msgstr ""
+"Ici, vous pouvez mettre à jour les paramètres de l’extension CNRS Data "
+"Manager."
+
+#: src/Core/Views/Settings.php:13
+msgid ""
+"In order to save your changes, please click on the <b>Update</b> button."
+msgstr ""
+"Afin d’enregistrer vos modifications, veuillez cliquer sur le bouton "
+"<b>Mettre à jour</b> ."
+
+#: src/Core/Views/Settings.php:22
+msgid "XML file name"
+msgstr "Nom du fichier XML"
+
+#: src/Core/Views/Settings.php:31
+msgid "Update"
+msgstr "Mettre à jour"
+
+#: src/Tools/helper.php:206
+msgid "Unspecified"
+msgstr "Non spécifié"
+
+#: src/Tools/helper.php:209
+msgid "Mister"
+msgstr "Monsieur"
+
+#: src/Tools/helper.php:211
+msgid "Misses"
+msgstr "Madame"
+
+#: src/Utils/CnrsDataManagerPhpVersionCheck.php:58
+#, fuzzy, php-format
+#| msgid ""
+#| "CNRS Data Manager: Your system is running a very old version of PHP (%s) "
+#| "that is no longer supported by Duplicator.  "
+msgid ""
+"CNRS Data Manager: Your system is running a very old version of PHP (%s) "
+"that is no longer supported by CNRS Data Manager.  "
+msgstr ""
+"CNRS Data Manager : Votre système exécute une très ancienne version de PHP "
+"(%s) qui n'est plus supportée par CNRS Data Manager.  "
+
+#: src/Utils/CnrsDataManagerPhpVersionCheck.php:68
+#, php-format
+msgid ""
+"Please ask your host or server administrator to update to PHP %1s or greater."
+msgstr ""
+"Veuillez demander à votre hôte ou administrateur de serveur de mettre à jour "
+"vers PHP %1s ou une version ultérieure."
+
+#: src/Utils/CnrsDataManagerPhpVersionCheck.php:77
+#, php-format
+msgid ""
+"If this is not possible, please visit the FAQ link titled \n"
+"                            %1$s\"What version of PHP Does CNRS Data Manager "
+"Support?\"%2$s\n"
+"                            for instructions on how to download a previous "
+"version of CNRS Data Manager compatible with PHP %3$s."
+msgstr ""
+"Si cela n'est pas possible, veuillez visiter le lien FAQ intitulé\n"
+"                             %1$s\"Quelle version de PHP le gestionnaire de "
+"données du CNRS prend-il en charge ?\"%2$s\n"
+"                             pour obtenir des instructions sur la façon de "
+"télécharger une version précédente de CNRS Data Manager compatible avec PHP "
+"%3$s."
+
+#. Plugin Name of the plugin/theme
+msgid "CNRS Data Manager"
+msgstr "CNRS Data Manager"
+
+#. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
+msgid "https://github.com/Fred-QS/CNRS-Data-Manager"
+msgstr "https://github.com/Fred-QS/CNRS-Data-Manager"
+
+#. Description of the plugin/theme
+msgid ""
+"Allows Wordpress to be powered by external data provided by an XML file on "
+"the agents, services, platforms and teams of the UMR EPOC."
+msgstr ""
+"Permet d'alimenter Wordpress à partir de données externes fournies par un "
+"fichier XML sur les agents, services, plateformes et équipes de l'UMR EPOC."
+
+#. Author of the plugin/theme
+msgid "QS Conseils"
+msgstr "QS Conseils"

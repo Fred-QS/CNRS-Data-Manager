@@ -1,0 +1,171 @@
+.title-and-logo {
+    display: flex !important;
+    align-items: center;
+}
+
+.title-and-logo > svg {
+    margin-right: 5px;
+}
+
+#cnrs-dm-first-text {
+    margin-bottom: 0;
+}
+
+#cnrs-dm-last-text {
+    margin-top: 0;
+    margin-bottom: 1.5em;
+}
+
+th.sortable p, th.sorted p {
+    display: block;
+    overflow: hidden;
+    padding: 8px;
+    color: #2271b1;
+    outline: 0;
+    margin: 0;
+    font-size: 14px;
+}
+
+th.sortable p span, th.sorted p span {
+    float: left;
+}
+
+.cnrs-dm-avatar {
+    border-radius: 9999px;
+    width: 40px;
+    height: 40px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cnrs-dm-row-title {
+    color: #2271b1;
+}
+
+.cnrs-dm-avatar-td {
+    width: 260px;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.cnrs-dm-autorise-pub-photo {
+    position: absolute;
+    z-index: 1;
+    width: 10px;
+    height: 10px;
+    border-radius: 100px;
+    background-color: #2271b1;
+    left: 0;
+    top: 0;
+    border: 1px solid #fff;
+    cursor: help;
+}
+
+.cnrs-dm-teams {
+    padding: 2px 4px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #2271b1;
+    width: max-content;
+    color: #2271b1;
+    line-height: 1rem;
+}
+
+.cnrs-dm-split-column {
+    display: flex;
+    position: relative;
+}
+
+.cnrs-dm-split-row {
+    display: flex;
+    flex-direction: column;
+    padding-left: 10px;
+}
+
+.cnrs-dm-email {
+    font-size: 12px;
+    font-style: italic;
+    padding-top: 5px;
+    display: flex;
+}
+
+.cnrs-dm-civility {
+    font-size: 11px;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+.cnrs-dm-emoji {
+    font-size: 16px;
+}
+
+.subsubsub p.current {
+    color: #000;
+    font-weight: 600;
+    border: none;
+}
+
+.subsubsub p {
+    line-height: 2;
+    padding: .2em;
+    text-decoration: none;
+    margin: 0;
+}
+
+.subsubsub p .count, .subsubsub p.current .count {
+    color: #50575e;
+    font-weight: 400;
+}
+
+.cnrs-dm-data-selector-th {
+    padding: 0 10px 0 0!important;
+    vertical-align: middle!important;
+}
+
+.cnrs-dm-data-selector-td {
+    padding: 0 10px!important;
+    vertical-align: middle!important;
+}
+
+#cnrs-dm-search-box-form {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media only screen and (max-width: 782px) {
+    .cnrs-dm-data-selector-td {
+        padding: 10px 0 0!important;
+    }
+
+    .cnrs-data-manager-subsubsub {
+        width: 100%;
+        margin: 0;
+        float: unset;
+    }
+
+    .cnrs-data-manager-subsubsub p {
+        font-size: 16px;
+    }
+
+    #cnrs-dm-search-box-form > .search-box {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+    }
+
+    #cnrs-data-manager-search-submit {
+        margin: 0 0 0 5px;
+        width: 100px;
+    }
+
+    #cnrs-data-manager-search {
+        width: calc(100% - 105px);
+    }
+}

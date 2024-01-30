@@ -19,3 +19,15 @@
  *
  * This program is distributed for the sole use by the CNRS IS.
  */
+
+defined('ABSPATH') || exit;
+// CHECK PHP VERSION
+define('CNRS_DATA_MANAGER_PHP_MINIMUM_VERSION', '8.1.0');
+define('CNRS_DATA_MANAGER_PHP_SUGGESTED_VERSION', '8.2');
+require_once dirname(__FILE__) . "/src/Utils/CnrsDataManagerPhpVersionCheck.php";
+if (CnrsDataManagerPhpVersionCheck::check(CNRS_DATA_MANAGER_PHP_MINIMUM_VERSION, CNRS_DATA_MANAGER_PHP_SUGGESTED_VERSION) === false) {
+    return;
+}
+$currentPluginBootFile = __FILE__;
+
+require_once dirname(__FILE__) . '/src/cnrs-main.php';
