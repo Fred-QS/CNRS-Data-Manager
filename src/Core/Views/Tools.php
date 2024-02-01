@@ -17,12 +17,12 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
         <?= svgFromBase64(CNRS_DATA_MANAGER_TOOLS_ICON, '#5d5d5d', 19) ?>
         <?= __('Tools', 'cnrs-data-manager'); ?>
     </h1>
-    <p><?= __('The <b>Tools</b> section allows you to assign entities from the XML file to those created in WordPress. The extension will then be able to find the agents belonging to each entity in order to be able to filter their affiliations in the public part of WordPress.') ?></p>
+    <p><?= __('The <b>Tools</b> section allows you to assign entities from the XML file to those created in WordPress. The extension will then be able to find the agents belonging to each entity in order to be able to filter their affiliations in the public part of WordPress.', 'cnrs-data-manager') ?></p>
 
     <hr/>
 
-    <h3 class="cnrs-dm-tools-h2"><?= __('Assign the teams') ?></h3>
-    <p class="cnrs-data-manager-tools-category"><?= __('Category') ?>: <b><?= $teamsPosts['name'] ?></b></p>
+    <h3 class="cnrs-dm-tools-h2"><?= __('Assign a category to teams', 'cnrs-data-manager') ?></h3>
+    <p class="cnrs-data-manager-tools-category"><?= __('Category', 'cnrs-data-manager') ?>: <b><?= $teamsPosts['name'] ?></b></p>
     <form method="post">
         <input type="hidden" name="cnrs-data-manager-tools-type" value="teams">
         <table class="form-table" role="presentation">
@@ -44,7 +44,7 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
                             <?php endforeach; ?>
                             </select>
                         <?php else: ?>
-                            <i class="cnrs-dm-no-article"><?= __('No article available for this category.') ?></i>
+                            <i class="cnrs-dm-no-article"><?= __('No article available for this category.', 'cnrs-data-manager') ?></i>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -59,15 +59,15 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
         </table>
         <?php if (!empty($teamsPosts['data'])): ?>
             <p class="submit">
-                <input type="submit" name="submit" class="button button-primary" value="<?= __('Update') ?>">
+                <input type="submit" name="submit" class="button button-primary" value="<?= __('Update', 'cnrs-data-manager') ?>">
             </p>
         <?php endif; ?>
     </form>
 
     <hr/>
 
-    <h3 class="cnrs-dm-tools-h2"><?= __('Assign the services') ?></h3>
-    <p class="cnrs-data-manager-tools-category"><?= __('Category') ?>: <b><?= $servicesPosts['name'] ?></b></p>
+    <h3 class="cnrs-dm-tools-h2"><?= __('Assign a category to services', 'cnrs-data-manager') ?></h3>
+    <p class="cnrs-data-manager-tools-category"><?= __('Category', 'cnrs-data-manager') ?>: <b><?= $servicesPosts['name'] ?></b></p>
     <form method="post">
         <input type="hidden" name="cnrs-data-manager-tools-type" value="services">
         <table class="form-table" role="presentation">
@@ -89,7 +89,7 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
                                 <?php endforeach; ?>
                             </select>
                         <?php else: ?>
-                            <i class="cnrs-dm-no-article"><?= __('No article available for this category.') ?></i>
+                            <i class="cnrs-dm-no-article"><?= __('No article available for this category.', 'cnrs-data-manager') ?></i>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -104,15 +104,15 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
         </table>
         <?php if (!empty($servicesPosts['data'])): ?>
             <p class="submit">
-                <input type="submit" name="submit" class="button button-primary" value="<?= __('Update') ?>">
+                <input type="submit" name="submit" class="button button-primary" value="<?= __('Update', 'cnrs-data-manager') ?>">
             </p>
         <?php endif; ?>
     </form>
 
     <hr/>
 
-    <h3 class="cnrs-dm-tools-h2"><?= __('Assign the platforms') ?></h3>
-    <p class="cnrs-data-manager-tools-category"><?= __('Category') ?>: <b><?= $platformsPosts['name'] ?></b></p>
+    <h3 class="cnrs-dm-tools-h2"><?= __('Assign a category to platforms', 'cnrs-data-manager') ?></h3>
+    <p class="cnrs-data-manager-tools-category"><?= __('Category', 'cnrs-data-manager') ?>: <b><?= $platformsPosts['name'] ?></b></p>
     <form method="post">
         <input type="hidden" name="cnrs-data-manager-tools-type" value="platforms">
         <table class="form-table" role="presentation">
@@ -134,7 +134,7 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
                                 <?php endforeach; ?>
                             </select>
                         <?php else: ?>
-                            <i class="cnrs-dm-no-article"><?= __('No article available for this category.') ?></i>
+                            <i class="cnrs-dm-no-article"><?= __('No article available for this category.', 'cnrs-data-manager') ?></i>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -149,7 +149,7 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
         </table>
         <?php if (!empty($platformsPosts['data'])): ?>
             <p class="submit">
-                <input type="submit" name="submit" class="button button-primary" value="<?= __('Update') ?>">
+                <input type="submit" name="submit" class="button button-primary" value="<?= __('Update', 'cnrs-data-manager') ?>">
             </p>
         <?php endif; ?>
     </form>

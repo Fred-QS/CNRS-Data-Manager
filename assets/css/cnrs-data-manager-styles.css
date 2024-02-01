@@ -253,6 +253,10 @@ input[name="cnrs-dm-filename"].too-large {
         margin-right: auto;
     }
 
+    .cnrs-dm-tools-h2 {
+        width: unset;
+    }
+
     .cnrs-dm-tools-h2, .cnrs-data-manager-tools-category {
         margin-left: auto;
         margin-right: auto;

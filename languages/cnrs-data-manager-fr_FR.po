@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-01-31 19:11+0100\n"
-"PO-Revision-Date: 2024-01-31 19:12+0100\n"
+"POT-Creation-Date: 2024-02-01 21:24+0100\n"
+"PO-Revision-Date: 2024-02-01 21:28+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -20,18 +20,18 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: src/Core/Bootstrap.php:157 src/Core/Bootstrap.php:158
+#: src/Core/Bootstrap.php:148 src/Core/Bootstrap.php:149
 #: src/Core/Views/Dashboard.php:38
 msgid "Dashboard"
 msgstr "Général"
 
-#: src/Core/Bootstrap.php:167 src/Core/Bootstrap.php:168
-#: src/Core/Views/Tools.php:8
+#: src/Core/Bootstrap.php:158 src/Core/Bootstrap.php:159
+#: src/Core/Views/Tools.php:18
 msgid "Tools"
 msgstr "Outils"
 
-#: src/Core/Bootstrap.php:177 src/Core/Bootstrap.php:178
-#: src/Core/Views/Settings.php:10
+#: src/Core/Bootstrap.php:168 src/Core/Bootstrap.php:169
+#: src/Core/Views/Settings.php:16
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -126,10 +126,8 @@ msgstr ""
 "modifier votre recherche."
 
 #: src/Core/Views/Dashboard.php:78 src/Core/Views/Dashboard.php:206
-#, fuzzy
-#| msgid "5 items per page"
 msgid "Select items number per page."
-msgstr "5 éléments par page"
+msgstr "Sélectionnez le nombre d’articles par page."
 
 #: src/Core/Views/Dashboard.php:80 src/Core/Views/Dashboard.php:208
 msgid "5 items per page"
@@ -193,30 +191,35 @@ msgstr "Pas d’autorisation pour la distribution de l’avatar."
 
 #: src/Core/Views/Dashboard.php:152 src/Core/Views/Dashboard.php:176
 msgid "No description"
-msgstr "Pas de description"
+msgstr "Aucune description"
 
 #: src/Core/Views/Dashboard.php:179
 msgid "Show more details"
 msgstr "Afficher plus de détails"
 
-#: src/Core/Views/Settings.php:13
+#: src/Core/Views/Settings.php:19
 msgid "Here you can update the settings of the CNRS Data Manager extension."
 msgstr ""
 "Ici, vous pouvez mettre à jour les paramètres de l’extension CNRS Data "
 "Manager."
 
-#: src/Core/Views/Settings.php:15
+#: src/Core/Views/Settings.php:21
 msgid ""
 "In order to save your changes, please click on the <b>Update</b> button."
 msgstr ""
 "Afin d’enregistrer vos modifications, veuillez cliquer sur le bouton "
 "<b>Mettre à jour</b> ."
 
-#: src/Core/Views/Settings.php:24
+#: src/Core/Views/Settings.php:31
 msgid "XML file name"
 msgstr "Nom du fichier XML"
 
-#: src/Core/Views/Settings.php:33
+#: src/Core/Views/Settings.php:35
+msgid "The field cannot be empty and has a maximum of 100 characters."
+msgstr ""
+"Le champ ne peut pas être vide et comporte un maximum de 100 caractères."
+
+#: src/Core/Views/Settings.php:43
 msgid ""
 "To allow the extension to link the data in the XML file to the corresponding "
 "categories, please select for teams, services and platforms a category for "
@@ -226,7 +229,7 @@ msgstr ""
 "catégories correspondantes, veuillez sélectionner pour les équipes, les "
 "services et les plateformes une catégorie pour chacune de ses entités."
 
-#: src/Core/Views/Settings.php:35
+#: src/Core/Views/Settings.php:45
 msgid ""
 "Once selected, you can, in the <b>Options</b> tab, assign each team, "
 "services and platforms to the corresponding categorized articles, thus "
@@ -238,45 +241,70 @@ msgstr ""
 "correspondants, vous permettant ainsi de lier les agents aux différentes "
 "entités de l’application WordPress."
 
-#: src/Core/Views/Settings.php:40
+#: src/Core/Views/Settings.php:50 src/Core/Views/Tools.php:24
 msgid "Assign a category to teams"
 msgstr "Attribuer une catégorie aux équipes"
 
-#: src/Core/Views/Settings.php:48
+#: src/Core/Views/Settings.php:58 src/Core/Views/Tools.php:69
 msgid "Assign a category to services"
 msgstr "Attribuer une catégorie aux services"
 
-#: src/Core/Views/Settings.php:56
+#: src/Core/Views/Settings.php:66 src/Core/Views/Tools.php:114
 msgid "Assign a category to platforms"
 msgstr "Attribuer une catégorie aux plateformes"
 
-#: src/Core/Views/Settings.php:65
+#: src/Core/Views/Settings.php:75 src/Core/Views/Tools.php:62
+#: src/Core/Views/Tools.php:107 src/Core/Views/Tools.php:152
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: src/Tools/helper.php:213
+#: src/Core/Views/Tools.php:20
+msgid ""
+"The <b>Tools</b> section allows you to assign entities from the XML file to "
+"those created in WordPress. The extension will then be able to find the "
+"agents belonging to each entity in order to be able to filter their "
+"affiliations in the public part of WordPress."
+msgstr ""
+"La section <b>Outils</b> vous permet d’affecter des entités du fichier XML à "
+"celles créées dans WordPress. L’extension pourra alors retrouver les agents "
+"appartenant à chaque entité afin de pouvoir filtrer leurs affiliations dans "
+"la partie publique de WordPress."
+
+#: src/Core/Views/Tools.php:25 src/Core/Views/Tools.php:70
+#: src/Core/Views/Tools.php:115
+msgid "Category"
+msgstr "Catégorie"
+
+#: src/Core/Views/Tools.php:41 src/Core/Views/Tools.php:86
+#: src/Core/Views/Tools.php:131
+msgid "Select a post"
+msgstr "Sélectionner un article"
+
+#: src/Core/Views/Tools.php:47 src/Core/Views/Tools.php:92
+#: src/Core/Views/Tools.php:137
+msgid "No article available for this category."
+msgstr "Aucun article n’est disponible pour cette catégorie."
+
+#: src/Tools/helper.php:215
 msgid "Unspecified"
 msgstr "Non spécifié"
 
-#: src/Tools/helper.php:216
+#: src/Tools/helper.php:218
 msgid "Mister"
 msgstr "Monsieur"
 
-#: src/Tools/helper.php:218
+#: src/Tools/helper.php:220
 msgid "Misses"
 msgstr "Madame"
 
 #: src/Utils/CnrsDataManagerPhpVersionCheck.php:58
-#, fuzzy, php-format
-#| msgid ""
-#| "CNRS Data Manager: Your system is running a very old version of PHP (%s) "
-#| "that is no longer supported by Duplicator.  "
+#, php-format
 msgid ""
 "CNRS Data Manager: Your system is running a very old version of PHP (%s) "
 "that is no longer supported by CNRS Data Manager.  "
 msgstr ""
-"CNRS Data Manager : Votre système exécute une très ancienne version de PHP "
-"(%s) qui n'est plus supportée par CNRS Data Manager.  "
+"CNRS Data Manager : Votre système exécute une très ancienne version de PHP "
+"(%s) qui n’est plus supportée par CNRS Data Manager.  "
 
 #: src/Utils/CnrsDataManagerPhpVersionCheck.php:68
 #, php-format
@@ -322,6 +350,3 @@ msgstr ""
 #. Author of the plugin/theme
 msgid "QS Conseils"
 msgstr "QS Conseils"
-
-#~ msgid "Select grouped action"
-#~ msgstr "Sélectionner une action groupée"
