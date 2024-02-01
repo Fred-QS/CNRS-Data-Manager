@@ -32,9 +32,7 @@ class Bootstrap
             Uninstall::registerHooks();
         }
 
-        /*CronUtils::init();
-        StatsBootstrap::init();
-        EmailSummaryBootstrap::init();*/
+        add_shortcode( 'cnrs-data-manager', 'cnrsReadShortCode' );
     }
 
     /**
@@ -52,12 +50,6 @@ class Bootstrap
             add_action('admin_init', array(__CLASS__, 'adminInit'));
             add_action('admin_menu', array(__CLASS__, 'menuInit'));
             add_filter('admin_body_class', array(__CLASS__, 'addBodyClass'));
-
-            //Init Class
-            /*DUP_Custom_Host_Manager::getInstance()->init();
-            DUP_Settings::init();
-            DUP_Log::Init();
-            $educationService->init();*/
         }
     }
 

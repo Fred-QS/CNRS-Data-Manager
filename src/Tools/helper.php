@@ -2,6 +2,8 @@
 
 defined('ABSPATH') || exit;
 
+use CnrsDataManager\Core\Models\Agents;
+
 if (!function_exists('cnrs_dm_cloned_get_home_path')) {
     /**
      * Cloned function of the get_home_path(). It is same code except two lines of code
@@ -303,5 +305,41 @@ if (!function_exists('getAllPostsFromCategoryId')) {
             }
         }
         return ['data' => $array, 'name' => $data['name']];
+    }
+}
+
+if (!function_exists('isCNRSDataManagerToolsSelected')) {
+
+    function isCNRSDataManagerToolsSelected(array $relations, int $cat_id, int $xml_id): bool
+    {
+        foreach ($relations as $array) {
+            if ((int) $array['cat'] === $cat_id && (int) $array['xml'] === $xml_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+if (!function_exists('cnrsReadShortCode')) {
+
+    function cnrsReadShortCode(array $atts = ['type' => null]): string
+    {
+        $type = $atts['type'];
+        $id = get_the_ID();
+        if (in_array($type, ['all', 'teams', 'services', 'platforms', null], true)) {
+            $agents = Agents::getAgents($id, $type);
+            if (empty($agents)) {
+                return '';
+            }
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/Agents.php');
+            return ob_get_clean();
+        } else if ($type === 'map') {
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/Map.php');
+            return ob_get_clean();
+        }
+        return '';
     }
 }

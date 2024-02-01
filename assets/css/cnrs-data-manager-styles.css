@@ -192,6 +192,13 @@ input[name="cnrs-dm-filename"].too-large {
     margin-top: 5px;
 }
 
+.cnrs-dm-no-article {
+    margin: 1em 0;
+    font-size: 13px;
+    display: inline-block;
+    color: #2271b1;
+}
+
 @media only screen and (max-width: 782px) {
     .cnrs-dm-data-selector-td {
         padding: 10px 0 0!important;
@@ -240,13 +247,19 @@ input[name="cnrs-dm-filename"].too-large {
         padding-right: 50px;
     }
 
-    .my-umr_page_tools p.submit {
+    .my-umr_page_tools p.submit, .my-umr_page_settings p.submit {
         text-align: center;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .cnrs-dm-tools-h2, .cnrs-data-manager-tools-category {
         margin-left: auto;
         margin-right: auto;
         text-align: center;
+    }
+
+    .cnrs-dm-no-article {
+        margin: 0;
     }
 }

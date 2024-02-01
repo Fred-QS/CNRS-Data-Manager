@@ -2,6 +2,11 @@
 
 namespace CnrsDataManager\Core\Models;
 
+/**
+ * Class Tools
+ *
+ * Provides various utility methods for interacting with databases and handling form inputs.
+ */
 class Tools
 {
     /**
