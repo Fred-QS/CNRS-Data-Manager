@@ -21,14 +21,14 @@ class Bootstrap
      *
      * @return void
      */
-    public static function init()
+    public static function init(): void
     {
         add_action('init', array(__CLASS__, 'hookWpInit'));
         @mkdir(ABSPATH . '/XML', 0755);
         define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
 
         if (is_admin()) {
-            add_action('plugins_loaded', array(__CLASS__, 'loadTextdomain'));
+            add_action('plugins_loaded', array(__CLASS__, 'loadTextDomain'));
             Uninstall::registerHooks();
         }
 
@@ -45,7 +45,7 @@ class Bootstrap
      *
      * @return void
      */
-    public static function hookWpInit()
+    public static function hookWpInit(): void
     {
         if (is_admin()) {
 
@@ -67,7 +67,7 @@ class Bootstrap
      * @param string $classes The classes to be appended to the body class
      * @return string The modified body class with appended class if DataManager page, otherwise unchanged body class
      */
-    public static function addBodyClass($classes)
+    public static function addBodyClass(string $classes): string
     {
         if (Manager::isDataManagerPage()) {
             $classes .= ' cnrs-data-manager-pages';
@@ -77,13 +77,13 @@ class Bootstrap
     }
 
     /**
-     * Loads the textdomain for the "cnrs-data-manager" plugin.
+     * Loads the text domain for the "cnrs-data-manager" plugin.
      *
      * This method loads the translation files for the "cnrs-data-manager" plugin to enable localization.
      *
      * @return void
      */
-    public static function loadTextdomain()
+    public static function loadTextDomain(): void
     {
         load_plugin_textdomain('cnrs-data-manager', false, 'cnrs-data-manager/languages');
     }
@@ -95,7 +95,7 @@ class Bootstrap
      *
      * @return void
      */
-    public static function adminInit()
+    public static function adminInit(): void
     {
         wp_enqueue_style('cnrs-data-manager-styles', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/css/cnrs-data-manager-styles.css', [], CNRS_DATA_MANAGER_VERSION);
         wp_enqueue_script('cnrs-data-manager-scripts', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-scripts.js', [], CNRS_DATA_MANAGER_VERSION, true);
@@ -109,14 +109,13 @@ class Bootstrap
      *
      * @return void
      */
-    public static function menuInit()
+    public static function menuInit(): void
     {
         $menuLabel = apply_filters('cnrs_data_manager_menu_label_cnrs_data_manager', 'My UMR');
         $hook_prefix = add_menu_page('CNRS Data Manager Plugin', $menuLabel, 'manage', 'cnrs-data-manager', null, CNRS_DATA_MANAGER_ICON);
         add_action('admin_print_scripts-' . $hook_prefix, array(__CLASS__, 'scripts'));
         add_action('admin_print_styles-' . $hook_prefix, array(__CLASS__, 'styles'));
 
-        //Submenus are displayed in the same order they have in the array
         $subMenuItems = self::getSubmenuItems();
         foreach ($subMenuItems as $k => $subMenuItem) {
             $pageTitle = apply_filters('cnrs_data_manager_page_title_' . $subMenuItem['menu_slug'], $subMenuItem['page_title']);
@@ -149,7 +148,7 @@ class Bootstrap
      *
      * @return array An array of submenu items.
      */
-    protected static function getSubmenuItems()
+    protected static function getSubmenuItems(): array
     {
         return [
             [

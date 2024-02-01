@@ -34,9 +34,10 @@ if (!function_exists('cnrs_dm_cloned_get_home_path')) {
 
 if (!function_exists('cnrs_dm_get_home_path')) {
     /**
-     * Get home path
+     * Retrieves the home path for the CNRS Data Manager.
      *
-     * @return string|null
+     * @return string|null Returns the home path for the CNRS Data Manager,
+     *                     or null if the home path cannot be determined.
      */
     function cnrs_dm_get_home_path(): ?string
     {
@@ -110,8 +111,12 @@ if (!function_exists('svgFromBase64')) {
 if (!function_exists('setDataFromSearch')) {
 
     /**
-     * @param array $provider
-     * @return array
+     * Sets the data from a search query.
+     *
+     * @param array $provider The array containing the data to search through.
+     *
+     * @return array Returns a new array containing the filtered data based on the search query,
+     *               or the original array if no search query is provided.
      */
     function setDataFromSearch(array $provider): array
     {
@@ -131,8 +136,10 @@ if (!function_exists('setDataFromSearch')) {
 if (!function_exists('preparePaginationAndSearch')) {
 
     /**
-     * @param array $provider
-     * @return array
+     * Prepare pagination and search.
+     *
+     * @param array $provider The array of data to be paginated and searched.
+     * @return array The paginated and searched data.
      */
     function preparePaginationAndSearch(array $provider): array
     {
@@ -231,5 +238,70 @@ if (!function_exists('sanitizeURIForPagination')) {
             }
         }
         return $current . '&' . $trigger . '=' . $page;
+    }
+}
+
+if (!function_exists('getCategoriesConfig')) {
+
+    /**
+     * Get the configuration options for categories list.
+     *
+     * @param string $name The name of the categories list.
+     * @param int $selected The selected option value.
+     * @param string $class The additional CSS class to be applied to the list. Default is an empty string.
+     *
+     * @return array The configuration options for the categories list.
+     */
+    function getCategoriesConfig(string $name, int $selected, string $class = ''): array
+    {
+        $c = 'cnrs-data-manager-categories-list';
+        if (strlen($class) > 0) {
+            $c .= ' ' . $class;
+        }
+        return [
+            'echo' => false,
+            'hide_empty' => false,
+            'class' => $c,
+            'orderby' => 'name',
+            'name' => 'cnrs-data-manager-categories-list-' . $name,
+            'required' => true,
+            'selected' => $selected
+        ];
+    }
+}
+
+if (!function_exists('getAllPostsFromCategoryId')) {
+
+    /**
+     * Get all posts from a given category ID.
+     *
+     * @param array $data An associative array containing the necessary data:
+     *                    - 'id': The category ID.
+     *                    - 'name': The name of the category.
+     * @return array An array containing the retrieved posts:
+     *               - 'data': An array of posts, each containing the post ID and title.
+     *               - 'name': The name of the category.
+     */
+    function getAllPostsFromCategoryId(array $data): array
+    {
+        $id = $data['id'];
+        $args = array(
+            'post_type'      => 'post',
+            'cat'            => $id,
+            'posts_per_page' => -1,
+            'orderby'        => 'title',
+            'order'          => 'ASC'
+        );
+
+        $the_query = new WP_Query( $args );
+        $array = [];
+
+        if ($the_query->have_posts()) {
+            while ($the_query->have_posts()) {
+                $the_query->the_post();
+                $array[] = ['id' => get_the_ID(), 'title' => get_the_title()];
+            }
+        }
+        return ['data' => $array, 'name' => $data['name']];
     }
 }

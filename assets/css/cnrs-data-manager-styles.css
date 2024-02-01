@@ -138,6 +138,60 @@ th.sortable p span, th.sorted p span {
     justify-content: flex-end;
 }
 
+#cnrs-dm-filename-error-input {
+    display: none;
+    color: firebrick;
+    font-style: italic;
+    position: absolute;
+    top: -20px;
+    left: 0;
+    z-index: 1;
+}
+
+#cnrs-dm-filename-error-input.display-error {
+    display: block;
+}
+
+input[name="cnrs-dm-filename"].too-large {
+    border-color: firebrick;
+    color: firebrick;
+    outline: 1px solid firebrick;
+}
+
+.cnrs-dm-unit {
+    margin-left: 5px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.cnrs-dm-tools-desc {
+    padding: 0 15px 10px 0!important;
+}
+
+.cnrs-dm-tools-desc * {
+    font-size: 12px;
+}
+
+.my-umr_page_tools .form-table tr > * {
+    padding-bottom: 5px!important;
+}
+
+.cnrs-dm-tools-h2 {
+    color: #2271b1;
+    padding: 6px 15px;
+    border-radius: 6px;
+    border: 2px solid #2271b1;
+    background-color: #fff;
+    width: max-content;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.cnrs-data-manager-tools-category {
+    font-style: italic;
+    margin-top: 5px;
+}
+
 @media only screen and (max-width: 782px) {
     .cnrs-dm-data-selector-td {
         padding: 10px 0 0!important;
@@ -167,5 +221,32 @@ th.sortable p span, th.sorted p span {
 
     #cnrs-data-manager-search {
         width: calc(100% - 105px);
+    }
+
+    #cnrs-dm-filename-error-input {
+        position: unset;
+        top: unset;
+    }
+
+    .cnrs-dm-unit {
+        position: absolute;
+        bottom: 8px;
+        right: 10px;
+        z-index: 1;
+        margin-left: 0;
+    }
+
+    input[name="cnrs-dm-filename"] {
+        padding-right: 50px;
+    }
+
+    .my-umr_page_tools p.submit {
+        text-align: center;
+    }
+
+    .cnrs-dm-tools-h2, .cnrs-data-manager-tools-category {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
     }
 }

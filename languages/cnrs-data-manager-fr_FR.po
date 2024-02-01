@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-01-30 18:16+0100\n"
-"PO-Revision-Date: 2024-01-30 18:21+0100\n"
+"POT-Creation-Date: 2024-01-31 19:11+0100\n"
+"PO-Revision-Date: 2024-01-31 19:12+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -20,18 +20,18 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: src/Core/Bootstrap.php:155 src/Core/Bootstrap.php:156
+#: src/Core/Bootstrap.php:157 src/Core/Bootstrap.php:158
 #: src/Core/Views/Dashboard.php:38
 msgid "Dashboard"
 msgstr "Général"
 
-#: src/Core/Bootstrap.php:165 src/Core/Bootstrap.php:166
+#: src/Core/Bootstrap.php:167 src/Core/Bootstrap.php:168
 #: src/Core/Views/Tools.php:8
 msgid "Tools"
 msgstr "Outils"
 
-#: src/Core/Bootstrap.php:175 src/Core/Bootstrap.php:176
-#: src/Core/Views/Settings.php:8
+#: src/Core/Bootstrap.php:177 src/Core/Bootstrap.php:178
+#: src/Core/Views/Settings.php:10
 msgid "Settings"
 msgstr "Paramètres"
 
@@ -126,8 +126,10 @@ msgstr ""
 "modifier votre recherche."
 
 #: src/Core/Views/Dashboard.php:78 src/Core/Views/Dashboard.php:206
-msgid "Select grouped action"
-msgstr "Sélectionner une action groupée"
+#, fuzzy
+#| msgid "5 items per page"
+msgid "Select items number per page."
+msgstr "5 éléments par page"
 
 #: src/Core/Views/Dashboard.php:80 src/Core/Views/Dashboard.php:208
 msgid "5 items per page"
@@ -197,36 +199,70 @@ msgstr "Pas de description"
 msgid "Show more details"
 msgstr "Afficher plus de détails"
 
-#: src/Core/Views/Settings.php:11
+#: src/Core/Views/Settings.php:13
 msgid "Here you can update the settings of the CNRS Data Manager extension."
 msgstr ""
 "Ici, vous pouvez mettre à jour les paramètres de l’extension CNRS Data "
 "Manager."
 
-#: src/Core/Views/Settings.php:13
+#: src/Core/Views/Settings.php:15
 msgid ""
 "In order to save your changes, please click on the <b>Update</b> button."
 msgstr ""
 "Afin d’enregistrer vos modifications, veuillez cliquer sur le bouton "
 "<b>Mettre à jour</b> ."
 
-#: src/Core/Views/Settings.php:22
+#: src/Core/Views/Settings.php:24
 msgid "XML file name"
 msgstr "Nom du fichier XML"
 
-#: src/Core/Views/Settings.php:31
+#: src/Core/Views/Settings.php:33
+msgid ""
+"To allow the extension to link the data in the XML file to the corresponding "
+"categories, please select for teams, services and platforms a category for "
+"each of its entities."
+msgstr ""
+"Pour permettre à l’extension de lier les données du fichier XML aux "
+"catégories correspondantes, veuillez sélectionner pour les équipes, les "
+"services et les plateformes une catégorie pour chacune de ses entités."
+
+#: src/Core/Views/Settings.php:35
+msgid ""
+"Once selected, you can, in the <b>Options</b> tab, assign each team, "
+"services and platforms to the corresponding categorized articles, thus "
+"allowing you to link the agents to the different entities in the WordPress "
+"application."
+msgstr ""
+"Une fois sélectionné, vous pouvez, dans l’onglet <b>Options</b> , affecter "
+"chaque équipe, service et plateforme aux articles catégorisés "
+"correspondants, vous permettant ainsi de lier les agents aux différentes "
+"entités de l’application WordPress."
+
+#: src/Core/Views/Settings.php:40
+msgid "Assign a category to teams"
+msgstr "Attribuer une catégorie aux équipes"
+
+#: src/Core/Views/Settings.php:48
+msgid "Assign a category to services"
+msgstr "Attribuer une catégorie aux services"
+
+#: src/Core/Views/Settings.php:56
+msgid "Assign a category to platforms"
+msgstr "Attribuer une catégorie aux plateformes"
+
+#: src/Core/Views/Settings.php:65
 msgid "Update"
 msgstr "Mettre à jour"
 
-#: src/Tools/helper.php:206
+#: src/Tools/helper.php:213
 msgid "Unspecified"
 msgstr "Non spécifié"
 
-#: src/Tools/helper.php:209
+#: src/Tools/helper.php:216
 msgid "Mister"
 msgstr "Monsieur"
 
-#: src/Tools/helper.php:211
+#: src/Tools/helper.php:218
 msgid "Misses"
 msgstr "Madame"
 
@@ -286,3 +322,6 @@ msgstr ""
 #. Author of the plugin/theme
 msgid "QS Conseils"
 msgstr "QS Conseils"
+
+#~ msgid "Select grouped action"
+#~ msgstr "Sélectionner une action groupée"

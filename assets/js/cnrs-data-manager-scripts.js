@@ -5,11 +5,14 @@ const generalURL = [
     '//',
     window.location.hostname,
     window.location.pathname,
-    '?page=data-manager'
+    dataManagerPageSegment
 ].join('');
 const limitSelector1 = document.querySelector('#cnrs-data-manager-limit-1');
 const limitSelector2 = document.querySelector('#cnrs-data-manager-limit-2');
 const limitInput = document.querySelector('input[name="cnrs-data-manager-limit"]');
+const filenameInput = document.querySelector('input[name="cnrs-dm-filename"]');
+const filenameError = document.querySelector('#cnrs-dm-filename-error-input');
+const filenameSubmit = document.querySelector('.my-umr_page_settings #submit');
 
 prepareListeners();
 
@@ -26,5 +29,23 @@ function prepareListeners() {
             limitSelector1.value = this.value;
             limitInput.value = this.value;
         });
+    }
+
+    if (filenameInput) {
+        filenameInput.addEventListener('input', function() {
+            checkSettingsIntegrity();
+        });
+    }
+}
+
+function checkSettingsIntegrity() {
+    if (filenameInput.value.length < 1 || filenameInput.value.length > 100) {
+        filenameInput.classList.add('too-large');
+        filenameError.classList.add('display-error');
+        filenameSubmit.disabled = true;
+    } else {
+        filenameInput.classList.remove('too-large');
+        filenameError.classList.remove('display-error');
+        filenameSubmit.disabled = false;
     }
 }
