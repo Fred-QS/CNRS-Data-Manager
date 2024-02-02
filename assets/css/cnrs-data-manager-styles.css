@@ -199,6 +199,91 @@ input[name="cnrs-dm-filename"].too-large {
     color: #2271b1;
 }
 
+.cnrs-data-manager-copy-shortcode {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+
+.cnrs-data-manager-copy-shortcode code {
+    font-size: 10px;
+    border-radius: 4px;
+    border: 1px solid #fff;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.cnrs-data-manager-copy-shortcode svg {
+    padding: 3px;
+    cursor: pointer;
+    background-color: #fff;
+    border: 2px solid #2271b1;
+    border-radius: 6px;
+    margin-left: 5px;
+    transition: all linear 0.2s;
+}
+
+.cnrs-data-manager-copy-shortcode svg:hover {
+    background-color: #2271b1;
+    border: 2px solid #fff;
+}
+
+.cnrs-data-manager-copy-shortcode svg path {
+    fill: #2271b1;
+    transition: all linear 0.2s;
+}
+
+.cnrs-data-manager-copy-shortcode svg:hover path {
+    fill: #fff;
+}
+
+.cnrs-dm-copied-to-clipboard {
+    position: absolute;
+}
+
+.cnrs-dm-copied-to-clipboard {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    font-size: 12px;
+    padding: 1px 4px;
+    background-color: darkseagreen;
+    color: #fff;
+    border-left: 5px solid #fff;
+    border-radius: 3px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    visibility: hidden;
+    opacity: 0;
+    transition: all linear 0.2s;
+}
+
+.cnrs-dm-copied-to-clipboard.display {
+    visibility: visible;
+    opacity: 1;
+}
+
+#cnrs-dm-marker-adder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    text-align: center;
+}
+
+#cnrs-dm-marker-adder svg {
+    margin-right: 5px;
+}
+
+#cnrs-dm-marker-adder svg path {
+    fill: #fff;
+}
+
+.cnrs-dm-no-marker {
+    color: #2271b1;
+    font-style: italic;
+    font-size: 13px;
+}
+
 @media only screen and (max-width: 782px) {
     .cnrs-dm-data-selector-td {
         padding: 10px 0 0!important;
@@ -247,7 +332,7 @@ input[name="cnrs-dm-filename"].too-large {
         padding-right: 50px;
     }
 
-    .my-umr_page_tools p.submit, .my-umr_page_settings p.submit {
+    .my-umr_page_tools p.submit, .my-umr_page_settings p.submit, .my-umr_page_3D-map p.submit {
         text-align: center;
         margin-left: auto;
         margin-right: auto;
@@ -265,5 +350,17 @@ input[name="cnrs-dm-filename"].too-large {
 
     .cnrs-dm-no-article {
         margin: 0;
+    }
+
+    .cnrs-dm-shortcode-p {
+        margin-bottom: 5px!important;
+    }
+
+    #cnrs-dm-marker-adder {
+        margin: 20px auto;
+    }
+
+    .cnrs-dm-no-marker {
+        text-align: center;
     }
 }

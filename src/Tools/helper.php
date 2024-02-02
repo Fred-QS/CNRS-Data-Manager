@@ -332,10 +332,42 @@ if (!function_exists('cnrsReadShortCode')) {
             if (empty($agents)) {
                 return '';
             }
+            wp_enqueue_style(
+                'cnrs-data-manager-styling',
+                get_template_directory_uri() . '/cnrs-data-manager-style.css',
+                [],
+                null
+            );
+            wp_enqueue_script(
+                'cnrs-data-manager-script',
+                get_template_directory_uri() . '/cnrs-data-manager-script.js',
+                [],
+                null
+            );
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Agents.php');
             return ob_get_clean();
         } else if ($type === 'map') {
+            wp_enqueue_script(
+                'earth-loader-script',
+                plugin_dir_url(dirname(__DIR__)) . 'assets/js/miniature.earth.loader.js',
+                array(),
+                '1.0'
+            );
+
+            wp_enqueue_script(
+                'myearth-script',
+                plugin_dir_url(dirname(__DIR__)) . 'assets/js/myearth.js',
+                array('earth-loader-script'),
+                filemtime(__DIR__ . '/assets/js/myearth.js')
+            );
+
+            wp_enqueue_style(
+                'myearth-style',
+                plugin_dir_url(dirname(__DIR__)) . 'assets/css/myearth.css',
+                array(),
+                filemtime(__DIR__ . '/assets/css/myearth.css')
+            );
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Map.php');
             return ob_get_clean();

@@ -50,6 +50,35 @@ class Bootstrap
             add_action('admin_init', array(__CLASS__, 'adminInit'));
             add_action('admin_menu', array(__CLASS__, 'menuInit'));
             add_filter('admin_body_class', array(__CLASS__, 'addBodyClass'));
+
+        } else {
+
+            $themes = scandir(get_theme_root());
+            $currentThemeFolder = get_template_directory();
+            foreach ($themes as $folder) {
+                $fullPath = get_theme_root() . '/' . $folder;
+                if (is_dir($fullPath) 
+                    && !in_array($folder, ['.', '..']) 
+                    && $fullPath !== $currentThemeFolder)
+                {
+                    if (file_exists($fullPath . '/cnrs-data-manager-style.css')) {
+                        unlink($fullPath . '/cnrs-data-manager-style.css');
+                    }
+                    if (file_exists($fullPath . '/cnrs-data-manager-script.js')) {
+                        unlink($fullPath . '/cnrs-data-manager-script.js');
+                    }
+                }
+            }
+
+            define('CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER', $currentThemeFolder);
+
+            if (!file_exists($currentThemeFolder . '/cnrs-data-manager-style.css')) {
+                copy(CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-style.css', CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER . '/cnrs-data-manager-style.css');
+            }
+
+            if (!file_exists($currentThemeFolder . '/cnrs-data-manager-script.js')) {
+                copy(CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-script.js', CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER . '/cnrs-data-manager-script.js');
+            }
         }
     }
 
@@ -161,6 +190,16 @@ class Bootstrap
                 'menu_slug'              => 'tools',
                 'callback'               => function () {
                     include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Tools.php');
+                }
+            ],
+            [
+                'parent_slug'            => 'cnrs-data-manager',
+                'page_title'             => __('3D Map', 'cnrs-data-manager'),
+                'menu_title'             => __('3D Map', 'cnrs-data-manager'),
+                'capability'             => 'manage_options',
+                'menu_slug'              => '3D-map',
+                'callback'               => function () {
+                    include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/MapSettings.php');
                 }
             ],
             [

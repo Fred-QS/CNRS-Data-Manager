@@ -20,23 +20,23 @@ class Agents
             $xml = $wpdb->get_results( "SELECT xml_entity_id as id FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE type = '{$mode}' AND term_id = {$cat_id}", ARRAY_A );
             if (!empty($xml) && isset($xml[0]['id'])) {
                 $users = [];
-                $entity_id = $xml[0]['id'];
                 $type = 'equipes';
                 if ($mode === 'services') {
                     $type = 'services';
                 } else if ($mode === 'platforms') {
                     $type = 'plateformes';
                 }
-                foreach ($provider as $agent) {
-                    $entity = $agent[$type];
-                    foreach ($entity as $row) {
-                        if ((int) $row[substr($type, 0, -1) . '_id'] ===(int)  $entity_id) {
-                            $users[] = $agent;
-                            break;
+                foreach ($xml as $item) {
+                    $entity_id = $item['id'];
+                    foreach ($provider as $agent) {
+                        $entity = $agent[$type];
+                        foreach ($entity as $row) {
+                            if ((int) $row[substr($type, 0, -1) . '_id'] === (int) $entity_id) {
+                                $users[] = $agent;
+                            }
                         }
                     }
                 }
-
                 return $users;
             }
             return [];

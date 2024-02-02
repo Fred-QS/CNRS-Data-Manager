@@ -18,6 +18,7 @@ final class Manager
     const MAIN_MENU_SLUG         = 'data-manager';
     const TOOLS_SUBMENU_SLUG     = 'tools';
     const SETTINGS_SUBMENU_SLUG  = 'settings';
+    const MAP_SUBMENU_SLUG  = '3D-map';
 
     const QUERY_STRING_MENU_KEY_L1     = 'page';
     const QUERY_STRING_MENU_KEY_L2     = 'tab';
@@ -68,7 +69,7 @@ final class Manager
         }
 
         return match (self::sanitizeStrictInput(10000, 'page', '', '-_ ')) {
-            self::MAIN_MENU_SLUG, self::TOOLS_SUBMENU_SLUG, self::SETTINGS_SUBMENU_SLUG => true,
+            self::MAIN_MENU_SLUG, self::TOOLS_SUBMENU_SLUG, self::SETTINGS_SUBMENU_SLUG => true, self::MAP_SUBMENU_SLUG => true,
             default => false,
         };
     }

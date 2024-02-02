@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-02-01 21:24+0100\n"
-"PO-Revision-Date: 2024-02-01 21:28+0100\n"
+"POT-Creation-Date: 2024-02-02 20:02+0100\n"
+"PO-Revision-Date: 2024-02-02 20:03+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -20,17 +20,22 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: src/Core/Bootstrap.php:148 src/Core/Bootstrap.php:149
+#: src/Core/Bootstrap.php:177 src/Core/Bootstrap.php:178
 #: src/Core/Views/Dashboard.php:38
 msgid "Dashboard"
 msgstr "Général"
 
-#: src/Core/Bootstrap.php:158 src/Core/Bootstrap.php:159
+#: src/Core/Bootstrap.php:187 src/Core/Bootstrap.php:188
 #: src/Core/Views/Tools.php:18
 msgid "Tools"
 msgstr "Outils"
 
-#: src/Core/Bootstrap.php:168 src/Core/Bootstrap.php:169
+#: src/Core/Bootstrap.php:197 src/Core/Bootstrap.php:198
+#: src/Core/Views/MapSettings.php:8
+msgid "3D Map"
+msgstr "Carte 3D"
+
+#: src/Core/Bootstrap.php:207 src/Core/Bootstrap.php:208
 #: src/Core/Views/Settings.php:16
 msgid "Settings"
 msgstr "Paramètres"
@@ -197,6 +202,74 @@ msgstr "Aucune description"
 msgid "Show more details"
 msgstr "Afficher plus de détails"
 
+#: src/Core/Views/MapSettings.php:11
+msgid ""
+"In this section, you will be able to configure the display of the <b>3D "
+"world map</b> to firstly specify the position coordinates of the default "
+"map, then define all the markers you need with the <b>GPS coordinates</b> "
+"and the name of each marker."
+msgstr ""
+"Dans cette section, vous pourrez configurer l’affichage de la carte <b>du "
+"monde 3D</b> pour spécifier d’abord les coordonnées de position de la carte "
+"par défaut, puis définir tous les marqueurs dont vous avez besoin avec les "
+"<b>coordonnées GPS</b> et le nom de chaque marqueur."
+
+#: src/Core/Views/MapSettings.php:13
+msgid ""
+"You will also be able to <b>configure the type of display</b> as well as all "
+"the options allowing you to define the rendering of the 3D world map."
+msgstr ""
+"Vous pourrez également <b>configurer le type d’affichage</b> ainsi que "
+"toutes les options vous permettant de définir le rendu de la carte du monde "
+"en 3D."
+
+#: src/Core/Views/MapSettings.php:15
+msgid "Map Options"
+msgstr "Options de la carte"
+
+#: src/Core/Views/MapSettings.php:23
+msgid "Default latitude"
+msgstr "Latitude par défaut"
+
+#: src/Core/Views/MapSettings.php:33
+msgid "Default longitude"
+msgstr "Longitude par défaut"
+
+#: src/Core/Views/MapSettings.php:44 src/Core/Views/Settings.php:135
+#: src/Core/Views/Tools.php:62 src/Core/Views/Tools.php:107
+#: src/Core/Views/Tools.php:152
+msgid "Update"
+msgstr "Mettre à jour"
+
+#: src/Core/Views/MapSettings.php:49
+msgid "Markers"
+msgstr "Marqueurs"
+
+#: src/Core/Views/MapSettings.php:50
+msgid "Latitude"
+msgstr "Latitude"
+
+#: src/Core/Views/MapSettings.php:50
+msgid "Longitude"
+msgstr "Longitude"
+
+#: src/Core/Views/MapSettings.php:50
+msgid "Title"
+msgstr "Titre"
+
+#: src/Core/Views/MapSettings.php:59
+msgid "Add a new marker"
+msgstr "Ajouter un nouveau marqueur"
+
+#: src/Core/Views/MapSettings.php:69
+msgid "Please add your first marker by clicking on the button above."
+msgstr ""
+"Veuillez ajouter votre premier marqueur en cliquant sur le bouton ci-dessus."
+
+#: src/Core/Views/MapSettings.php:72
+msgid "Save"
+msgstr "Enregistrer"
+
 #: src/Core/Views/Settings.php:19
 msgid "Here you can update the settings of the CNRS Data Manager extension."
 msgstr ""
@@ -219,7 +292,21 @@ msgid "The field cannot be empty and has a maximum of 100 characters."
 msgstr ""
 "Le champ ne peut pas être vide et comporte un maximum de 100 caractères."
 
-#: src/Core/Views/Settings.php:43
+#: src/Core/Views/Settings.php:42
+msgid "Agents directory"
+msgstr "Annuaire des agents"
+
+#: src/Core/Views/Settings.php:47 src/Core/Views/Settings.php:63
+#: src/Core/Views/Settings.php:89 src/Core/Views/Settings.php:106
+#: src/Core/Views/Settings.php:123
+msgid "Copied to clipboard"
+msgstr "Copié dans le presse-papier"
+
+#: src/Core/Views/Settings.php:58
+msgid "3D Map builder"
+msgstr "Constructeur de cartes 3D"
+
+#: src/Core/Views/Settings.php:75
 msgid ""
 "To allow the extension to link the data in the XML file to the corresponding "
 "categories, please select for teams, services and platforms a category for "
@@ -229,7 +316,7 @@ msgstr ""
 "catégories correspondantes, veuillez sélectionner pour les équipes, les "
 "services et les plateformes une catégorie pour chacune de ses entités."
 
-#: src/Core/Views/Settings.php:45
+#: src/Core/Views/Settings.php:77
 msgid ""
 "Once selected, you can, in the <b>Options</b> tab, assign each team, "
 "services and platforms to the corresponding categorized articles, thus "
@@ -241,22 +328,17 @@ msgstr ""
 "correspondants, vous permettant ainsi de lier les agents aux différentes "
 "entités de l’application WordPress."
 
-#: src/Core/Views/Settings.php:50 src/Core/Views/Tools.php:24
+#: src/Core/Views/Settings.php:83 src/Core/Views/Tools.php:24
 msgid "Assign a category to teams"
 msgstr "Attribuer une catégorie aux équipes"
 
-#: src/Core/Views/Settings.php:58 src/Core/Views/Tools.php:69
+#: src/Core/Views/Settings.php:100 src/Core/Views/Tools.php:69
 msgid "Assign a category to services"
 msgstr "Attribuer une catégorie aux services"
 
-#: src/Core/Views/Settings.php:66 src/Core/Views/Tools.php:114
+#: src/Core/Views/Settings.php:117 src/Core/Views/Tools.php:114
 msgid "Assign a category to platforms"
 msgstr "Attribuer une catégorie aux plateformes"
-
-#: src/Core/Views/Settings.php:75 src/Core/Views/Tools.php:62
-#: src/Core/Views/Tools.php:107 src/Core/Views/Tools.php:152
-msgid "Update"
-msgstr "Mettre à jour"
 
 #: src/Core/Views/Tools.php:20
 msgid ""

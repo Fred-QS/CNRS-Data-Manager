@@ -123,7 +123,7 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
                     <th scope="row">
                         <label for="cnrs-data-manager-tools-platforms-post-<?= $platformsCnt ?>"><?= $platform['nom'] ?></label>
                         <input type="hidden" name="cnrs-data-manager-tools-platforms-xml-<?= $platformsCnt ?>" value="<?= $platform['plateforme_id'] ?>">
-                        <input type="hidden" name="cnrs-data-manager-tools-platforms-type-<?= $platformsCnt ?>" value="services">
+                        <input type="hidden" name="cnrs-data-manager-tools-platforms-type-<?= $platformsCnt ?>" value="platforms">
                     </th>
                     <td rowspan="2" style="vertical-align: top;">
                         <?php if (!empty($platformsPosts['data'])): ?>

@@ -13,6 +13,7 @@ const limitInput = document.querySelector('input[name="cnrs-data-manager-limit"]
 const filenameInput = document.querySelector('input[name="cnrs-dm-filename"]');
 const filenameError = document.querySelector('#cnrs-dm-filename-error-input');
 const filenameSubmit = document.querySelector('.my-umr_page_settings #submit');
+const shortCodes = document.querySelectorAll('.cnrs-data-manager-copy-shortcode');
 
 prepareListeners();
 
@@ -35,6 +36,22 @@ function prepareListeners() {
         filenameInput.addEventListener('input', function() {
             checkSettingsIntegrity();
         });
+    }
+
+    for (let i = 0; i < shortCodes.length; i++) {
+        let element = shortCodes[i];
+        let code = element.dataset.code;
+        let svg = element.querySelector('svg');
+        let modal = element.querySelector('.cnrs-dm-copied-to-clipboard');
+        let timer;
+        svg.onclick = function() {
+            clearTimeout(timer);
+            navigator.clipboard.writeText(code);
+            modal.classList.add('display');
+            timer = setTimeout(function() {
+                modal.classList.remove('display');
+            }, 2000);
+        }
     }
 }
 
