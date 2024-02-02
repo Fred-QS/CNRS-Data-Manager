@@ -36,6 +36,24 @@ class Settings
                 'platforms_category' => stripslashes($_POST['cnrs-data-manager-categories-list-platforms']),
             ];
             global $wpdb;
+            $currents = $wpdb->get_results( "SELECT teams_category, services_category, platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings ", ARRAY_A );
+            $currentTeams = (int) $currents[0]['teams_category'];
+            $currentServices = (int) $currents[0]['services_category'];
+            $currentPlatforms = (int) $currents[0]['platforms_category'];
+
+            $relationTable = $wpdb->prefix . 'cnrs_data_manager_relations';
+            if ($currentTeams !== (int) $post['teams_category']) {
+                $wpdb->delete($relationTable, ['type' => 'teams']);
+            }
+
+            if ($currentServices !== (int) $post['services_category']) {
+                $wpdb->delete($relationTable, ['type' => 'services']);
+            }
+
+            if ($currentPlatforms !== (int) $post['platforms_category']) {
+                $wpdb->delete($relationTable, ['type' => 'platforms']);
+            }
+
             $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET filename=%s,teams_category=%d,services_category=%d,platforms_category=%d", $post['filename'], $post['teams_category'], $post['services_category'], $post['platforms_category']));
         }
     }
