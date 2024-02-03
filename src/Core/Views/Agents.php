@@ -1,7 +1,3 @@
-<?php
-
-?>
-
 <div>
     <ul>
         <?php foreach ($agents as $agent): ?>

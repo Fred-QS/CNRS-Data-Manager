@@ -3,6 +3,7 @@
 defined('ABSPATH') || exit;
 
 use CnrsDataManager\Core\Models\Agents;
+use CnrsDataManager\Core\Models\Map;
 
 if (!function_exists('cnrs_dm_cloned_get_home_path')) {
     /**
@@ -327,47 +328,56 @@ if (!function_exists('cnrsReadShortCode')) {
     {
         $type = $atts['type'];
         $id = get_the_ID();
+
         if (in_array($type, ['all', 'teams', 'services', 'platforms', null], true)) {
+
             $agents = Agents::getAgents($id, $type);
             if (empty($agents)) {
                 return '';
             }
+
             wp_enqueue_style(
                 'cnrs-data-manager-styling',
                 get_template_directory_uri() . '/cnrs-data-manager-style.css',
                 [],
                 null
             );
+
             wp_enqueue_script(
                 'cnrs-data-manager-script',
                 get_template_directory_uri() . '/cnrs-data-manager-script.js',
                 [],
                 null
             );
+
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Agents.php');
             return ob_get_clean();
+
         } else if ($type === 'map') {
+
             wp_enqueue_script(
-                'earth-loader-script',
-                plugin_dir_url(dirname(__DIR__)) . 'assets/js/miniature.earth.loader.js',
+                'cnrs-data-manager-map-script',
+                plugin_dir_url(dirname(__DIR__)) . 'assets/js/cnrs-data-manager-map.js',
+                array('cnrs-data-manager-map-library-script'),
+                filemtime(__DIR__ . '/assets/js/cnrs-data-manager-map.js')
+            );
+
+            wp_enqueue_script(
+                'cnrs-data-manager-map-library-script',
+                plugin_dir_url(dirname(__DIR__)) . 'assets/js/cnrs-data-manager-map-library.min.js',
                 array(),
                 '1.0'
             );
 
-            wp_enqueue_script(
-                'myearth-script',
-                plugin_dir_url(dirname(__DIR__)) . 'assets/js/myearth.js',
-                array('earth-loader-script'),
-                filemtime(__DIR__ . '/assets/js/myearth.js')
+            wp_enqueue_style(
+                'cnrs-data-manager-map-style',
+                plugin_dir_url(dirname(__DIR__)) . 'assets/css/cnrs-data-manager-map.css',
+                array(),
+                filemtime(__DIR__ . '/assets/css/cnrs-data-manager-map.css')
             );
 
-            wp_enqueue_style(
-                'myearth-style',
-                plugin_dir_url(dirname(__DIR__)) . 'assets/css/myearth.css',
-                array(),
-                filemtime(__DIR__ . '/assets/css/myearth.css')
-            );
+            $data = Map::getData();
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Map.php');
             return ob_get_clean();

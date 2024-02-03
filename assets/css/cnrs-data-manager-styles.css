@@ -152,10 +152,10 @@ th.sortable p span, th.sorted p span {
     display: block;
 }
 
-input[name="cnrs-dm-filename"].too-large {
-    border-color: firebrick;
-    color: firebrick;
-    outline: 1px solid firebrick;
+input[name="cnrs-dm-filename"].too-large, .cnrs-dm-error {
+    border-color: firebrick!important;
+    color: firebrick!important;
+    outline: 1px solid firebrick!important;
 }
 
 .cnrs-dm-unit {
@@ -278,10 +278,45 @@ input[name="cnrs-dm-filename"].too-large {
     fill: #fff;
 }
 
-.cnrs-dm-no-marker {
+#cnrs-dm-no-marker {
     color: #2271b1;
     font-style: italic;
     font-size: 13px;
+}
+
+#cnrs-dm-no-marker.hide {
+    display: none;
+}
+
+.cnrs-dm-marker-container > td {
+    padding: 0 15px;
+}
+
+.cnrs-dm-marker-container > td > table {
+    margin: 0;
+}
+
+.cnrs-dm-marker-container:nth-child(odd) {
+    background-color: #e1e1e1;
+}
+
+.cnrs-dm-td-no-padding {
+    padding-left: 0!important;
+    padding-right: 0!important;
+}
+
+.button-danger {
+    background-color: firebrick!important;
+    border: none!important;
+    color: #fff!important;
+}
+
+.button-danger:hover {
+    background-color: darkred!important;
+}
+
+.button-danger:focus {
+    box-shadow: 0 0 0 1px #fff,0 0 0 3px darkred!important;
 }
 
 @media only screen and (max-width: 782px) {
@@ -360,7 +395,11 @@ input[name="cnrs-dm-filename"].too-large {
         margin: 20px auto;
     }
 
-    .cnrs-dm-no-marker {
+    #cnrs-dm-no-marker {
+        text-align: center;
+    }
+
+    .cnrs-dm-td-no-padding {
         text-align: center;
     }
 }

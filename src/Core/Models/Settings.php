@@ -57,4 +57,31 @@ class Settings
             $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET filename=%s,teams_category=%d,services_category=%d,platforms_category=%d", $post['filename'], $post['teams_category'], $post['services_category'], $post['platforms_category']));
         }
     }
+
+    public static function getDefaultMarker(): array
+    {
+        global $wpdb;
+        $result = $wpdb->get_results( "SELECT default_latitude as lat, default_longitude as lng FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        return $result[0];
+    }
+
+    public static function updateMarkers(): void
+    {
+        if (isset($_POST['action'])) {
+            global $wpdb;
+            if ($_POST['action'] === 'update-default-marker') {
+                $wpdb->query($wpdb->prepare("UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET default_latitude=%d,default_longitude=%d", $_POST['cnrs-dm-main-lat'], $_POST['cnrs-dm-main-lng']));
+            } else if ($_POST['action'] === 'update-markers') {
+                $posts = [];
+                foreach ($_POST as $key => $value) {
+                    if (stripos($key, 'cnrs-dm-marker-title-') !== false) {
+                        $posts[] = $key;
+                    }
+                }
+                foreach ($posts as $post) {
+                    $index = (int) str_replace('cnrs-dm-marker-title-', '', $post);
+                }
+            }
+        }
+    }
 }

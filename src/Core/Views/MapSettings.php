@@ -1,4 +1,9 @@
 <?php
+
+use CnrsDataManager\Core\Models\Settings;
+
+Settings::updateMarkers();
+$defaultMarker = Settings::getDefaultMarker();
 $markers = [];
 ?>
 
@@ -14,7 +19,7 @@ $markers = [];
     </p>
     <h3 class="cnrs-dm-tools-h2"><?= __('Map Options', 'cnrs-data-manager') ?></h3>
     <form method="post">
-        <input type="hidden" name="action" value="update">
+        <input type="hidden" name="action" value="update-default-marker">
         <input type="hidden" name="_wp_http_referer" value="/wp-admin/admin.php?page=3D-map">
         <table class="form-table" role="presentation">
             <tbody>
@@ -24,7 +29,7 @@ $markers = [];
                 </th>
                 <td>
                     <p>
-                        <input name="cnrs-dm-main-lat" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-main-lat" value="" class="regular-text">
+                        <input required name="cnrs-dm-main-lat" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-main-lat" value="<?= $defaultMarker['lat'] ?>" class="regular-text">
                     </p>
                 </td>
             </tr>
@@ -34,7 +39,7 @@ $markers = [];
                 </th>
                 <td>
                     <p>
-                        <input name="cnrs-dm-main-lng" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-main-lng" value="" class="regular-text">
+                        <input required name="cnrs-dm-main-lng" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-main-lng" value="<?= $defaultMarker['lng'] ?>" class="regular-text">
                     </p>
                 </td>
             </tr>
@@ -47,9 +52,9 @@ $markers = [];
 
     <hr/>
     <h3 class="cnrs-dm-tools-h2"><?= __('Markers', 'cnrs-data-manager') ?></h3>
-    <span id="cnrs-dm-map-reference-labels" data-lat="<?= __('Latitude', 'cnrs-data-manager') ?>" data-lng="<?= __('Longitude', 'cnrs-data-manager') ?>" data-title="<?= __('Title', 'cnrs-data-manager') ?>"></span>
+    <span id="cnrs-dm-map-reference-labels" data-lat="<?= __('Latitude', 'cnrs-data-manager') ?>" data-lng="<?= __('Longitude', 'cnrs-data-manager') ?>" data-title="<?= __('Title', 'cnrs-data-manager') ?>" data-delete="<?= __('Delete', 'cnrs-data-manager') ?>"></span>
     <form method="post">
-        <input type="hidden" name="action" value="update">
+        <input type="hidden" name="action" value="update-markers">
         <input type="hidden" name="_wp_http_referer" value="/wp-admin/admin.php?page=3D-map">
         <div id="cnrs-dm-add-marker">
             <button type="button" id="cnrs-dm-marker-adder" class="button button-primary">
@@ -59,14 +64,56 @@ $markers = [];
                 <?= __('Add a new marker', 'cnrs-data-manager') ?>
             </button>
         </div>
-        <?php if (!empty($markers)): ?>
-            <table class="form-table" role="presentation">
-                <tbody id="cnrs-dm-markers-list">
-
-                </tbody>
-            </table>
-        <?php else: ?>
-            <p class="cnrs-dm-no-marker"><?= __('Please add your first marker by clicking on the button above.', 'cnrs-data-manager') ?></p>
+        <table class="form-table" role="presentation">
+            <tbody id="cnrs-dm-markers-list">
+                <?php if (!empty($markers)): ?>
+                    <?php foreach ($markers as $key => $marker): ?>
+                        <td>
+                            <table class="form-table" role="presentation">
+                                <tbody>
+                                <tr>
+                                    <th scope="row">
+                                        <label for="cnrs-dm-marker-title-<?= $key ?>"><?= __('Title', 'cnrs-data-manager') ?></label>
+                                    </th>
+                                    <td>
+                                        <p>
+                                            <input required name="cnrs-dm-marker-title-<?= $key ?>" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-title-<?= $key ?>" value="<?= $marker['title'] ?>" class="regular-text">
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        <label for="cnrs-dm-marker-lat-<?= $key ?>"><?= __('Latitude', 'cnrs-data-manager') ?></label>
+                                    </th>
+                                    <td>
+                                        <p>
+                                            <input required name="cnrs-dm-marker-lat-<?= $key ?>" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-lat-<?= $key ?>" value="<?= $marker['lat'] ?>" class="regular-text">
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        <label for="cnrs-dm-marker-lng-<?= $key ?>"><?= __('Longitude', 'cnrs-data-manager') ?></label>
+                                    </th>
+                                    <td>
+                                        <p>
+                                            <input required name="cnrs-dm-marker-lng-<?= $key ?>" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-lng-<?= $key ?>" value="<?= $marker['lng'] ?>" class="regular-text">
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="cnrs-dm-td-no-padding">
+                                        <input type="button" id="cnrs-dm-marker-delete-<?= $key ?>" class="button button-primary" value="<?= __('Delete', 'cnrs-data-manager') ?>">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    <?php endforeach; ?>
+                <?php else: ?>
+            </tbody>
+        </table>
+        <p id="cnrs-dm-no-marker"><?= __('Please add your first marker by clicking on the button above.', 'cnrs-data-manager') ?></p>
         <?php endif; ?>
         <p class="submit">
             <input disabled type="submit" name="submit" id="submit-markers" class="button button-primary" value="<?= __('Save') ?>">

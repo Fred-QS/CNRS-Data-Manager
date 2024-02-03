@@ -1,13 +1,16 @@
-
-.earth-overlay {
+.cnrs-dm-overlay {
 	background-color: white;
 	box-shadow: 0 2px 8px black;
-	border-radius: 0px 8px 8px 8px;
+	border-radius: 0 8px 8px 8px;
 	padding: 0.25em 0.5em;
 }
 
-.earth-container {
+.cnrs-dm-container {
 	width: 100%;
 	margin: 0 auto;
 	max-width: 600px;
+}
+
+.cnrs-dm-map-data {
+	display: none;
 }
