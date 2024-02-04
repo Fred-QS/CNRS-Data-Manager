@@ -9,8 +9,9 @@ class Map
         global $wpdb;
         $mainCoords = $wpdb->get_results( "SELECT default_latitude as lat, default_longitude as lng FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
         $options = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}cnrs_data_manager_map_settings", ARRAY_A );
+        $markers = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}cnrs_data_manager_map_markers", ARRAY_A );
 
-        $data = [
+        return [
             'main' => [
                 'lat' => $mainCoords[0]['lat'],
                 'lng' => $mainCoords[0]['lng']
@@ -20,12 +21,9 @@ class Map
             'stars' => (int) $options[0]['stars'] === 1,
             'black_bg' => (int) $options[0]['black_bg'] === 1,
             'atmosphere' => (int) $options[0]['atmosphere'] === 1,
-            'markers' => [
-                ['lat' => 40.7, 'lng' => -74.1, 'title' => 'New York'],
-                ['lat' => 35.6, 'lng' => 139.7, 'title' => 'Tokyo'],
-                ['lat' => 52.5, 'lng' => 13.40, 'title' => 'Berlin']
-            ]
+            'markers' => array_map(function($marker) {
+                return ['id' => $marker['id'], 'lat' => $marker['lat'], 'lng' => $marker['lng'], 'title' => $marker['title']];
+            }, $markers)
         ];
-        return $data;
     }
 }

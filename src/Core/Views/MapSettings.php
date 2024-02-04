@@ -6,6 +6,7 @@ use CnrsDataManager\Core\Models\Map;
 Settings::updateMarkers();
 $json = Map::getData();
 $mapData = json_encode($json, JSON_THROW_ON_ERROR);
+$markers = $json['markers'];
 ?>
 
 <div class="wrap">
@@ -19,7 +20,10 @@ $mapData = json_encode($json, JSON_THROW_ON_ERROR);
         <br/>
         <?= __('You will also be able to <b>configure the type of display</b> as well as all the options allowing you to define the rendering of the 3D world map.', 'cnrs-data-manager') ?>
     </p>
-    <h3 class="cnrs-dm-tools-h2"><?= __('Map Options', 'cnrs-data-manager') ?></h3>
+    <div id="cnrs-dm-title-with-button">
+        <h3 class="cnrs-dm-tools-h2"><?= __('Map Options', 'cnrs-data-manager') ?></h3>
+        <button type="button" class="button button-primary" id="cnrs-dm-open-map-preview"><?= __('Preview', 'cnrs-data-manager') ?></button>
+    </div>
     <form method="post">
         <input type="hidden" name="action" value="update-default-marker">
         <input type="hidden" name="_wp_http_referer" value="/wp-admin/admin.php?page=3D-map">
@@ -45,11 +49,112 @@ $mapData = json_encode($json, JSON_THROW_ON_ERROR);
                     </p>
                 </td>
             </tr>
+            <tr>
+                <th scope="row">
+                    <label for="cnrs-dm-map-settings-view"><?= __('Map view', 'cnrs-data-manager') ?></label>
+                </th>
+                <td>
+                    <select id="cnrs-dm-map-settings-view" required name="cnrs-dm-map-settings-view">
+                        <option <?= $json['view'] === 'space' ? 'selected' : '' ?> value="space"><?= __('Space', 'cnrs-data-manager') ?></option>
+                        <option <?= $json['view'] === 'hologram' ? 'selected' : '' ?> value="hologram"><?= __('Hologram', 'cnrs-data-manager') ?></option>
+                        <option <?= $json['view'] === 'news' ? 'selected' : '' ?> value="news"><?= __('News', 'cnrs-data-manager') ?></option>
+                        <option <?= $json['view'] === 'classic' ? 'selected' : '' ?> value="classic"><?= __('Classic', 'cnrs-data-manager') ?></option>
+                        <option <?= $json['view'] === 'cork' ? 'selected' : '' ?> value="cork"><?= __('Cork', 'cnrs-data-manager') ?></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="cnrs-dm-map-settings-sunlight"><?= __('Solar illumination effect', 'cnrs-data-manager') ?></label>
+                </th>
+                <td>
+                    <div class="cnrs-dm-radio-container">
+                        <label class="cnrs-dm-label-radio">
+                            <span><?= __('Yes', 'cnrs-data-manager') ?></span>
+                            <input <?= (int) $json['sunlight'] === 1 ? 'checked' : '' ?> name="cnrs-dm-map-settings-sunlight" type="radio" class="cnrs-dm-radio-button" value="1">
+                        </label>
+                        <label class="cnrs-dm-label-radio">
+                            <input <?= (int) $json['sunlight'] === 0 ? 'checked' : '' ?> name="cnrs-dm-map-settings-sunlight" type="radio" class="cnrs-dm-radio-button" value="0">
+                            <span><?= __('No', 'cnrs-data-manager') ?></span>
+                        </label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="cnrs-dm-map-settings-stars"><?= __('Star Generation', 'cnrs-data-manager') ?></label>
+                </th>
+                <td>
+                    <div class="cnrs-dm-radio-container">
+                        <label class="cnrs-dm-label-radio">
+                            <span><?= __('Yes', 'cnrs-data-manager') ?></span>
+                            <input <?= (int) $json['stars'] === 1 ? 'checked' : '' ?> name="cnrs-dm-map-settings-stars" type="radio" class="cnrs-dm-radio-button" value="1">
+                        </label>
+                        <label class="cnrs-dm-label-radio">
+                            <input <?= (int) $json['stars'] === 0 ? 'checked' : '' ?> name="cnrs-dm-map-settings-stars" type="radio" class="cnrs-dm-radio-button" value="0">
+                            <span><?= __('No', 'cnrs-data-manager') ?></span>
+                        </label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="cnrs-dm-map-settings-black_bg"><?= __('Black background', 'cnrs-data-manager') ?></label>
+                </th>
+                <td>
+                    <div class="cnrs-dm-radio-container">
+                        <label class="cnrs-dm-label-radio">
+                            <span><?= __('Yes', 'cnrs-data-manager') ?></span>
+                            <input <?= (int) $json['black_bg'] === 1 ? 'checked' : '' ?> name="cnrs-dm-map-settings-black_bg" type="radio" class="cnrs-dm-radio-button" value="1">
+                        </label>
+                        <label class="cnrs-dm-label-radio">
+                            <input <?= (int) $json['black_bg'] === 0 ? 'checked' : '' ?> name="cnrs-dm-map-settings-black_bg" type="radio" class="cnrs-dm-radio-button" value="0">
+                            <span><?= __('No', 'cnrs-data-manager') ?></span>
+
+                        </label>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                    <label for="cnrs-dm-map-settings-atmospĥere"><?= __('Atmosphere', 'cnrs-data-manager') ?></label>
+                </th>
+                <td>
+                    <div class="cnrs-dm-radio-container">
+                        <label class="cnrs-dm-label-radio">
+                            <span><?= __('Yes', 'cnrs-data-manager') ?></span>
+                            <input <?= (int) $json['atmosphere'] === 1 ? 'checked' : '' ?> name="cnrs-dm-map-settings-atmosphere" type="radio" class="cnrs-dm-radio-button" value="1">
+                        </label>
+                        <label class="cnrs-dm-label-radio">
+                            <input <?= (int) $json['atmosphere'] === 0 ? 'checked' : '' ?> name="cnrs-dm-map-settings-atmosphere" type="radio" class="cnrs-dm-radio-button" value="0">
+                            <span><?= __('No', 'cnrs-data-manager') ?></span>
+                        </label>
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
-
+        <h3 class="cnrs-dm-tools-h2 cnrs-dm-only-mobile cnrs-dm-tools-h2-mobile"><?= __('Map preview', 'cnrs-data-manager') ?></h3>
         <div id="cnrs-dm-map-preview">
-            <div id="cnrs-dm-map-preview-header">Click here to move</div>
+            <button type="button" class="button button-primary" id="cnrs-dm-refresh-map-preview">
+                <span class="cnrs-dm-only-desktop"><?= __('Refresh', 'cnrs-data-manager') ?></span>
+                <svg class="cnrs-dm-only-mobile" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20">
+                    <path fill="#fff" d="M105.1 202.6c7.7-21.8 20.2-42.3 37.8-59.8c62.5-62.5 163.8-62.5 226.3 0L386.3 160H352c-17.7 0-32 14.3-32 32s14.3 32 32 32H463.5c0 0 0 0 0 0h.4c17.7 0 32-14.3 32-32V80c0-17.7-14.3-32-32-32s-32 14.3-32 32v35.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0C73.2 122 55.6 150.7 44.8 181.4c-5.9 16.7 2.9 34.9 19.5 40.8s34.9-2.9 40.8-19.5zM39 289.3c-5 1.5-9.8 4.2-13.7 8.2c-4 4-6.7 8.8-8.1 14c-.3 1.2-.6 2.5-.8 3.8c-.3 1.7-.4 3.4-.4 5.1V432c0 17.7 14.3 32 32 32s32-14.3 32-32V396.9l17.6 17.5 0 0c87.5 87.4 229.3 87.4 316.7 0c24.4-24.4 42.1-53.1 52.9-83.7c5.9-16.7-2.9-34.9-19.5-40.8s-34.9 2.9-40.8 19.5c-7.7 21.8-20.2 42.3-37.8 59.8c-62.5 62.5-163.8 62.5-226.3 0l-.1-.1L125.6 352H160c17.7 0 32-14.3 32-32s-14.3-32-32-32H48.4c-1.6 0-3.2 .1-4.8 .3s-3.1 .5-4.6 1z"/>
+                </svg>
+            </button>
+            <button type="button" class="button" id="cnrs-dm-close-map-preview"><?= __('Close', 'cnrs-data-manager') ?></button>
+            <div id="cnrs-dm-map-preview-header">
+                <span class="cnrs-dm-grab-dots">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20">
+                        <path fill="#fff" d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/>
+                    </svg>
+                </span>
+                <span class="cnrs-dm-grab-dots">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20">
+                        <path fill="#fff" d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"/>
+                    </svg>
+                </span>
+            </div>
             <div class="cnrs-dm-map">
                 <pre style="display: none;" class="cnrs-dm-map-data"><?= $mapData ?></pre>
                 <?php if ($json['atmosphere'] === true): ?>
@@ -97,14 +202,20 @@ $mapData = json_encode($json, JSON_THROW_ON_ERROR);
         </div>
         <table class="form-table" role="presentation">
             <tbody id="cnrs-dm-markers-list">
-                <?php if (!empty($markers)): ?>
-                    <?php foreach ($markers as $key => $marker): ?>
+                <?php foreach ($markers as $key => $marker): ?>
+                    <tr class="cnrs-dm-marker-container" data-index="<?= $key ?>">
                         <td>
                             <table class="form-table" role="presentation">
                                 <tbody>
-                                <tr>
+                                <tr class="cnrs-dm-marker-first-row">
                                     <th scope="row">
                                         <label for="cnrs-dm-marker-title-<?= $key ?>"><?= __('Title', 'cnrs-data-manager') ?></label>
+                                        <input type="hidden" name="cnrs-dm-marker-id-<?= $key ?>" value="<?= $marker['id'] ?>">
+                                        <span class="cnrs-dm-markers-toggle">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20">
+                                                <path fill="#2271b1" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z"/>
+                                            </svg>
+                                        </span>
                                     </th>
                                     <td>
                                         <p>
@@ -112,7 +223,7 @@ $mapData = json_encode($json, JSON_THROW_ON_ERROR);
                                         </p>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class="cnrs-dm-marker-row cnrs-dm-marker-row-hide">
                                     <th scope="row">
                                         <label for="cnrs-dm-marker-lat-<?= $key ?>"><?= __('Latitude', 'cnrs-data-manager') ?></label>
                                     </th>
@@ -122,7 +233,7 @@ $mapData = json_encode($json, JSON_THROW_ON_ERROR);
                                         </p>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class="cnrs-dm-marker-row cnrs-dm-marker-row-hide">
                                     <th scope="row">
                                         <label for="cnrs-dm-marker-lng-<?= $key ?>"><?= __('Longitude', 'cnrs-data-manager') ?></label>
                                     </th>
@@ -132,21 +243,21 @@ $mapData = json_encode($json, JSON_THROW_ON_ERROR);
                                         </p>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class="cnrs-dm-marker-row cnrs-dm-marker-row-hide">
                                     <td colspan="2" class="cnrs-dm-td-no-padding">
-                                        <input type="button" id="cnrs-dm-marker-delete-<?= $key ?>" class="button button-primary" value="<?= __('Delete', 'cnrs-data-manager') ?>">
+                                        <input type="button" id="cnrs-dm-marker-delete-<?= $key ?>" class="button button-danger" value="<?= __('Delete', 'cnrs-data-manager') ?>">
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </td>
-                    <?php endforeach; ?>
-                <?php else: ?>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
-        <p id="cnrs-dm-no-marker"><?= __('Please add your first marker by clicking on the button above.', 'cnrs-data-manager') ?></p>
-        <?php endif; ?>
+        <p id="cnrs-dm-no-marker" class="<?= !empty($markers) ? 'hide' : '' ?>"><?= __('Please add your first marker by clicking on the button above.', 'cnrs-data-manager') ?></p>
         <p class="submit">
             <input disabled type="submit" name="submit" id="submit-markers" class="button button-primary" value="<?= __('Save') ?>">
         </p>
     </form>
+</div>

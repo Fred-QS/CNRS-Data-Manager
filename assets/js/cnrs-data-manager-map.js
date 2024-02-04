@@ -18,6 +18,10 @@ function prepareWorldMap() {
 		config = JSON.parse(pre.innerHTML);
 		pre.remove();
 
+		if (earth !== null && earth !== undefined) {
+			earth.redrawMap();
+		}
+
 		let options = {
 			location: {
 				lat: Number(config.main.lat) || 0,
@@ -94,6 +98,8 @@ function prepareWorldMap() {
 		earth.addEventListener('ready', function() {
 			if (config.stars === true || config.black_bg === true) {
 				container.classList.add('cnrs-dm-map-stars');
+			} else {
+				container.classList.remove('cnrs-dm-map-stars');
 			}
 			let map = this;
 			map.startAutoRotate();
@@ -221,9 +227,14 @@ function updateMapTexture() {
 	updateMapTimer = false;
 	let w = earth.mapCanvas.width, h = earth.mapCanvas.height;
 
-	// night background
-	let nightImg = document.querySelector('#cnrs-dm-map-night');
-	earth.mapContext.drawImage( nightImg, 0, 0, nightImg.width, nightImg.height, 0, 0, w, h );
+	if (config.sunlight === true) {
+		// night background
+		let nightImg = document.querySelector('#cnrs-dm-map-night');
+		earth.mapContext.drawImage(nightImg, 0, 0, nightImg.width, nightImg.height, 0, 0, w, h);
+	} else {
+		let nightImg = document.querySelector('#cnrs-dm-map-day');
+		earth.mapContext.drawImage(nightImg, 0, 0, nightImg.width, nightImg.height, 0, 0, w, h);
+	}
 
 	let offset = sunAngle / 360 * w;
 

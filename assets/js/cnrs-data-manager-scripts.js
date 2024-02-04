@@ -21,6 +21,12 @@ const markersContainer = document.querySelector('#cnrs-dm-markers-list');
 const markersReferencesLabels = document.querySelector('#cnrs-dm-map-reference-labels');
 const noMarkerResult = document.querySelector('#cnrs-dm-no-marker');
 const mapPreview = document.querySelector('#cnrs-dm-map-preview');
+const mapPreviewButton = document.querySelector('#cnrs-dm-open-map-preview');
+const mapPreviewCloseButton = document.querySelector('#cnrs-dm-close-map-preview');
+const mapPreviewRefreshButton = document.querySelector('#cnrs-dm-refresh-map-preview');
+const markersOpenButtons = document.querySelectorAll('.cnrs-dm-markers-toggle');
+const mapCanvasContainer = document.querySelector('.cnrs-dm-map');
+
 
 prepareListeners();
 
@@ -63,10 +69,38 @@ function prepareListeners() {
 
     if (mapPreview) {
         dragElement(mapPreview);
+        mapPreviewButton.addEventListener('click', function (){
+            mapPreview.classList.add('show');
+            this.disabled = true;
+        });
+        mapPreviewCloseButton.addEventListener('click', function (){
+            mapPreview.classList.remove('show');
+            mapPreviewButton.disabled = false;
+        });
+        mapPreviewRefreshButton.addEventListener('click', function (){
+            refreshMapPreview();
+        });
+        for (let i = 0; i < markersOpenButtons.length; i++) {
+            markersOpenButtons[i].addEventListener('click', function (){
+                const rows = this.closest('table').querySelectorAll('.cnrs-dm-marker-row');
+                if (this.classList.contains('show')) {
+                    this.classList.remove('show');
+                    for (let j = 0; j < rows.length; j++) {
+                        rows[j].classList.add('cnrs-dm-marker-row-hide');
+                    }
+                } else {
+                    this.classList.add('show');
+                    for (let j = 0; j < rows.length; j++) {
+                        rows[j].classList.remove('cnrs-dm-marker-row-hide');
+                    }
+                }
+            });
+        }
     }
 
     if (addMarkersButton) {
         addKeyupOnCoordsInput();
+        deleteMarker();
         checkCoordsIntegrity('main');
         checkCoordsIntegrity('markers');
         addMarkersButton.addEventListener('click', function() {
@@ -103,18 +137,18 @@ function addNewMarkerInputs() {
     newMarker.className = 'cnrs-dm-marker-container';
     newMarker.dataset.index = index;
     newMarker.innerHTML = `<td><table class="form-table" role="presentation"><tbody>
-    <tr>
-        <th scope="row"><label for="cnrs-dm-marker-title-${index}">${labels.title}</label></th>
+    <tr class="cnrs-dm-marker-first-row">
+        <th scope="row"><label for="cnrs-dm-marker-title-${index}">${labels.title}</label><span class="cnrs-dm-markers-toggle show"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20"><path fill="#2271b1" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z"/></svg></span></th>
         <td><p><input required name="cnrs-dm-marker-title-${index}" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-title-${index}" class="regular-text"></p></td>
     </tr>
-    <tr>
+    <tr class="cnrs-dm-marker-row">
         <th scope="row"><label for="cnrs-dm-marker-lat-${index}">${labels.lat}</label></th>
         <td><p><input required name="cnrs-dm-marker-lat-${index}" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-lat-${index}" class="regular-text"></p></td>
     </tr>
-    <tr>
+    <tr class="cnrs-dm-marker-row">
         <th scope="row"><label for="cnrs-dm-marker-lng-${index}">${labels.lng}</label></th><td><p><input required name="cnrs-dm-marker-lng-${index}" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-lng-${index}" class="regular-text"></p></td>
     </tr>
-    <tr>
+    <tr class="cnrs-dm-marker-row">
         <td colspan="2" class="cnrs-dm-td-no-padding"><input type="button" id="cnrs-dm-marker-delete-${index}" class="button button-danger" value="${labels.delete}"></td>
     </tr></tbody></table></td>`;
     markersContainer.appendChild(newMarker);
@@ -135,7 +169,7 @@ function deleteMarker() {
             } else {
                 refactorMarkerOrder();
             }
-            checkCoordsIntegrity();
+            checkCoordsIntegrity('markers');
         });
     }
 }
@@ -309,4 +343,30 @@ function dragElement(elmnt) {
             document.onmousemove = null;
         }
     }
+}
+
+function refreshMapPreview() {
+
+    let json = {
+        main: {
+            lat: document.querySelector('[name="cnrs-dm-main-lat"]').value,
+            lng: document.querySelector('[name="cnrs-dm-main-lng"]').value
+        },
+        sunlight: document.querySelector('[name="cnrs-dm-map-settings-sunlight"]:checked').value === '1',
+        view: document.querySelector('[name="cnrs-dm-map-settings-view"]').value,
+        stars: document.querySelector('[name="cnrs-dm-map-settings-stars"]:checked').value === '1',
+        black_bg: document.querySelector('[name="cnrs-dm-map-settings-black_bg"]:checked').value === '1',
+        atmosphere: document.querySelector('[name="cnrs-dm-map-settings-atmosphere"]:checked').value === '1',
+        markers: (function(){
+            return [];
+        })()
+    }
+
+    let html = `<pre style="display: none;" class="cnrs-dm-map-data">${JSON.stringify(json)}</pre>`;
+    html += json.atmosphere === true ? '<div id="cnrs-dm-map-atmosphere"></div>' : '';
+    html += json.sunlight === true ? '<div id="cnrs-dm-map-controls"><div id="cnrs-dm-map-sun-slider-wrap"><input type="range" min="0" max="360" value="90" id="cnrs-dm-map-sun-slider"></div></div>' : '';
+    html += json.view === 'space' ? '<div id="cnrs-dm-map-res" style="display: none;"><img alt="day-view" id="cnrs-dm-map-day" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/day-by-nasa.jpg"><img alt="night-view" id="cnrs-dm-map-night" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/night-by-nasa.jpg"></div>' : '';
+    html += json.view === 'cork' ? '<div id="cnrs-dm-map-res" style="display: none;"><img alt="cork-texture" id="cnrs-dm-map-cork" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/cork/cork.jpg"></div>' : '';
+    mapCanvasContainer.innerHTML = html;
+    prepareWorldMap();
 }

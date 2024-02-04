@@ -39,7 +39,7 @@
 	height: 5em;
 	margin-top: -5.1em;
 	position: relative;
-	z-index: 200;
+	z-index: 2000;
 }
 
 #cnrs-dm-map-atmosphere {
