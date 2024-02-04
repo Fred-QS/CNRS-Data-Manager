@@ -17,6 +17,11 @@ class Map
                 'lng' => -74.1,
                 'land' => '#EEE'
             ],
+            'sunlight' => false,
+            'view' => 'space',
+            'stars' => true,
+            'black_bg' => true,
+            'atmosphere' => true,
             'markers' => [
                 ['lat' => 40.7, 'lng' => -74.1, 'title' => 'New York', 'color' => '#0000FF'],
                 ['lat' => 35.6, 'lng' => 139.7, 'title' => 'Tokyo', 'color' => '#FF0000'],
