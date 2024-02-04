@@ -377,7 +377,7 @@ if (!function_exists('cnrsReadShortCode')) {
                 filemtime(__DIR__ . '/assets/css/cnrs-data-manager-map.css')
             );
 
-            $data = Map::getData();
+            $json = Map::getData();
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Map.php');
             return ob_get_clean();

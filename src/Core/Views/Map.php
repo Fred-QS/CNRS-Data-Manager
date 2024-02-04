@@ -1,5 +1,5 @@
 <?php
-$json = json_decode($data, true);
+$data = json_encode($json, JSON_THROW_ON_ERROR);
 ?>
 
 <div class="cnrs-dm-map">

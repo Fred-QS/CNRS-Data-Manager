@@ -1,13 +1,15 @@
 <?php
 
 use CnrsDataManager\Core\Models\Settings;
+use CnrsDataManager\Core\Models\Map;
 
 Settings::updateMarkers();
-$defaultMarker = Settings::getDefaultMarker();
-$markers = [];
+$json = Map::getData();
+$mapData = json_encode($json, JSON_THROW_ON_ERROR);
 ?>
 
 <div class="wrap">
+
     <h1 class="wp-heading-inline title-and-logo">
         <?= svgFromBase64(CNRS_DATA_MANAGER_MAP_ICON, '#5d5d5d') ?>
         <?= __('3D Map', 'cnrs-data-manager'); ?>
@@ -29,7 +31,7 @@ $markers = [];
                 </th>
                 <td>
                     <p>
-                        <input required name="cnrs-dm-main-lat" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-main-lat" value="<?= $defaultMarker['lat'] ?>" class="regular-text">
+                        <input required name="cnrs-dm-main-lat" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-main-lat" value="<?= $json['main']['lat'] ?>" class="regular-text">
                     </p>
                 </td>
             </tr>
@@ -39,12 +41,41 @@ $markers = [];
                 </th>
                 <td>
                     <p>
-                        <input required name="cnrs-dm-main-lng" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-main-lng" value="<?= $defaultMarker['lng'] ?>" class="regular-text">
+                        <input required name="cnrs-dm-main-lng" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-main-lng" value="<?= $json['main']['lng'] ?>" class="regular-text">
                     </p>
                 </td>
             </tr>
             </tbody>
         </table>
+
+        <div id="cnrs-dm-map-preview">
+            <div id="cnrs-dm-map-preview-header">Click here to move</div>
+            <div class="cnrs-dm-map">
+                <pre style="display: none;" class="cnrs-dm-map-data"><?= $mapData ?></pre>
+                <?php if ($json['atmosphere'] === true): ?>
+                    <div id="cnrs-dm-map-atmosphere"></div>
+                <?php endif; ?>
+            </div>
+            <?php if ($json['sunlight'] === true): ?>
+                <div id="cnrs-dm-map-controls">
+                    <div id="cnrs-dm-map-sun-slider-wrap">
+                        <input type="range" min="0" max="360" value="90" id="cnrs-dm-map-sun-slider">
+                    </div>
+                </div>
+            <?php endif; ?>
+            <?php if ($json['view'] === 'space'): ?>
+                <div id="cnrs-dm-map-res" style="display: none;">
+                    <img alt="day-view" id="cnrs-dm-map-day" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/day-by-nasa.jpg">
+                    <img alt="night-view" id="cnrs-dm-map-night" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/night-by-nasa.jpg">
+                </div>
+            <?php endif; ?>
+            <?php if ($json['view'] === 'cork'): ?>
+                <div id="cnrs-dm-map-res" style="display: none;">
+                    <img alt="cork-texture" id="cnrs-dm-map-cork" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/cork/cork.jpg">
+                </div>
+            <?php endif; ?>
+        </div>
+
         <p class="submit">
             <input type="submit" name="submit" id="submit-settings" class="button button-primary" value="<?= __('Update') ?>">
         </p>

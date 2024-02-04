@@ -47,9 +47,7 @@
 	top: 50%;
 	left: 50%;
 	width: 100%;
-	max-width: 100vh;
 	height: 100%;
-	max-height: 100vw;
 	transform: translate(-50%, -50%);
 	background: radial-gradient(ellipse at center, rgba(200,230,255,0) 40%,rgba(130,195,255,0.2) 49%,rgba(33,63,255,0.05) 50.5%,rgba(18,0,255,0) 64%);
 	z-index: 1200;
@@ -108,7 +106,6 @@
 	width: 24px;
 	border-radius: 12px;
 	background: #fff;
-	cursor: pointer;
 	cursor: grab;
 }
 
@@ -118,7 +115,6 @@
 	width: 24px;
 	border-radius: 12px;
 	background: #fff;
-	cursor: pointer;
 	cursor: grab;
 }
 
@@ -128,7 +124,6 @@
 	width: 24px;
 	border-radius: 12px;
 	background: #fff;
-	cursor: pointer;
 	cursor: grab;
 }
 
@@ -243,11 +238,11 @@
 [class^="cnrs-dm-map-label"] {
 	padding: 0 10px;
 	border-radius: 6px;
-	font-family: sans-serif;
+	font-family: inherit, sans-serif;
 	font-size: 15px;
 	text-align: center;
 	position: relative;
-	transform: translate(-50%, 150%);
+	transform: translate(-50%, 0);
 }
 
 [class^="cnrs-dm-map-label"] span {
@@ -284,7 +279,10 @@
 [class^="cnrs-dm-map-label"] span svg {
 	position: absolute;
 	border-radius: 600px;
-	padding: 4px;
+	outline: 4px solid #fff;
+	border: none;
 	z-index: 1;
-	top: -12px;
+	bottom: 100%;
+	width: 20px;
+	height: 20px;
 }

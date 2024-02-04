@@ -119,7 +119,29 @@ class Bootstrap
     public static function adminInit(): void
     {
         wp_enqueue_style('cnrs-data-manager-styles', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/css/cnrs-data-manager-styles.css', [], CNRS_DATA_MANAGER_VERSION);
-        wp_enqueue_script('cnrs-data-manager-scripts', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-scripts.js', [], CNRS_DATA_MANAGER_VERSION, true);
+        wp_enqueue_script(
+            'cnrs-data-manager-map-script',
+            CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-map.js',
+            array('cnrs-data-manager-map-library-script'),
+            filemtime(CNRS_DATA_MANAGER_PATH . '/assets/js/cnrs-data-manager-map.js'),
+            true
+        );
+
+        wp_enqueue_script(
+            'cnrs-data-manager-map-library-script',
+            CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-map-library.min.js',
+            [],
+            '1.0'
+        );
+
+        wp_enqueue_style(
+            'cnrs-data-manager-map-style',
+            CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/css/cnrs-data-manager-map.css',
+            [],
+            filemtime(CNRS_DATA_MANAGER_PATH . '/assets/css/cnrs-data-manager-map.css')
+        );
+
+        wp_enqueue_script('cnrs-data-manager-scripts', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-scripts.js', ['cnrs-data-manager-map-script'], CNRS_DATA_MANAGER_VERSION, true);
     }
 
     /**

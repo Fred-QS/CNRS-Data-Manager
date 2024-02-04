@@ -8,6 +8,10 @@ let updateMapTimer = false;
 let lightMask, lightMaskCtx, lightGradient;
 
 window.addEventListener('cnrsMapLoaded', function() {
+	prepareWorldMap();
+});
+
+function prepareWorldMap() {
 	document.querySelectorAll('.cnrs-dm-map').forEach(function(container) {
 
 		const pre = container.querySelector('.cnrs-dm-map-data');
@@ -56,7 +60,7 @@ window.addEventListener('cnrsMapLoaded', function() {
 			options.mapBorderWidth = 0.25;
 		} else if (config.view === 'cork') {
 			options.lightAmbience = 0.65,
-			options.light = 'sun';
+				options.light = 'sun';
 			options.sunDirection = { x: -0.2, y: 0.3 };
 			options.lightIntensity = 0.55;
 			options.shininess = 0.12;
@@ -121,7 +125,7 @@ window.addEventListener('cnrsMapLoaded', function() {
 						lng: Number(element.lng) || 0,
 					},
 					offset: 0.1,
-					content : `<span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="20" height="20"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg><strong>${element.title}</strong></span>`,
+					content : `<span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg><strong>${element.title}</strong></span>`,
 					depthScale : 0.4,
 					visible : false,
 					className : (function () {
@@ -188,7 +192,7 @@ window.addEventListener('cnrsMapLoaded', function() {
 			});
 		}
 	});
-});
+}
 
 function prepareLightMask() {
 
