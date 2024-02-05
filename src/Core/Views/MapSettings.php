@@ -82,7 +82,7 @@ $markers = $json['markers'];
             </tr>
             <tr>
                 <th scope="row">
-                    <label for="cnrs-dm-map-settings-stars"><?= __('Star Generation', 'cnrs-data-manager') ?></label>
+                    <label for="cnrs-dm-map-settings-stars"><?= __('Star Generator', 'cnrs-data-manager') ?></label>
                 </th>
                 <td>
                     <div class="cnrs-dm-radio-container">

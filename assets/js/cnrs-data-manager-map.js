@@ -139,6 +139,8 @@ function prepareWorldMap() {
 							return 'cnrs-dm-map-label-news';
 						} else if (config.view === 'classic') {
 							return 'cnrs-dm-map-label-classic';
+						}  else if (config.view === 'hologram') {
+							return 'cnrs-dm-map-label-hologram';
 						} else {
 							return 'cnrs-dm-map-label';
 						}

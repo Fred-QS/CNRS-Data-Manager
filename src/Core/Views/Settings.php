@@ -39,6 +39,19 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                 </tr>
                 <tr>
                     <th scope="row">
+                        <label for="cnrs-dm-mode"><?= __('List display mode', 'cnrs-data-manager') ?></label>
+                    </th>
+                    <td>
+                        <p>
+                            <select name="cnrs-dm-mode" id="cnrs-dm-mode">
+                                <option <?= $settings['mode'] === 'widget' ? 'selected' : '' ?> value="widget"><?= __('Widget', 'cnrs-data-manager') ?></option>
+                                <option <?= $settings['mode'] === 'page' ? 'selected' : '' ?> value="page"><?= __('Page', 'cnrs-data-manager') ?></option>
+                            </select>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
                         <label for="cnrs-dm-filename"><?= __('Agents directory', 'cnrs-data-manager') ?></label>
                     </th>
                     <td>
@@ -84,6 +97,14 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                 </th>
                 <td>
                     <?= wp_dropdown_categories($teamsConfig) ?>
+                    <div class="cnrs-dm-shortcode-filters">
+                        <span><?= __('Filter', 'cnrs-data-manager') ?></span>
+                        <ul>
+                            <li><label><input checked type="radio" name="cnrs-dm-filter-teams" value='[cnrs-data-manager type="teams"]'><?= __('None', 'cnrs-data-manager') ?></label></li>
+                            <li><label><input type="radio" name="cnrs-dm-filter-teams" value='[cnrs-data-manager type="teams" filter="services"]'><?= __('Services', 'cnrs-data-manager') ?></label></li>
+                            <li><label><input type="radio" name="cnrs-dm-filter-teams" value='[cnrs-data-manager type="teams" filter="platforms"]'><?= __('Platforms', 'cnrs-data-manager') ?></label></li>
+                        </ul>
+                    </div>
                     <p class="cnrs-dm-shortcode-p">
                         <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="teams"]'>
                             <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
@@ -101,6 +122,14 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                 </th>
                 <td>
                     <?= wp_dropdown_categories($servicesConfig) ?>
+                    <div class="cnrs-dm-shortcode-filters">
+                        <span><?= __('Filter', 'cnrs-data-manager') ?></span>
+                        <ul>
+                            <li><label><input checked type="radio" name="cnrs-dm-filter-services" value='[cnrs-data-manager type="services"]'><?= __('None', 'cnrs-data-manager') ?></label></li>
+                            <li><label><input type="radio" name="cnrs-dm-filter-services" value='[cnrs-data-manager type="services" filter="teams"]'><?= __('Teams', 'cnrs-data-manager') ?></label></li>
+                            <li><label><input type="radio" name="cnrs-dm-filter-services" value='[cnrs-data-manager type="services" filter="platforms"]'><?= __('Platforms', 'cnrs-data-manager') ?></label></li>
+                        </ul>
+                    </div>
                     <p class="cnrs-dm-shortcode-p">
                         <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="services"]'>
                             <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
@@ -118,6 +147,14 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                 </th>
                 <td>
                     <?= wp_dropdown_categories($platformsConfig) ?>
+                    <div class="cnrs-dm-shortcode-filters">
+                        <span><?= __('Filter', 'cnrs-data-manager') ?></span>
+                        <ul>
+                            <li><label><input checked type="radio" name="cnrs-dm-filter-platforms" value='[cnrs-data-manager type="platforms"]'><?= __('None', 'cnrs-data-manager') ?></label></li>
+                            <li><label><input type="radio" name="cnrs-dm-filter-platforms" value='[cnrs-data-manager type="platforms" filter="teams"]'><?= __('Teams', 'cnrs-data-manager') ?></label></li>
+                            <li><label><input type="radio" name="cnrs-dm-filter-platforms" value='[cnrs-data-manager type="platforms" filter="services"]'><?= __('Services', 'cnrs-data-manager') ?></label></li>
+                        </ul>
+                    </div>
                     <p class="cnrs-dm-shortcode-p">
                         <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="platforms"]'>
                             <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>

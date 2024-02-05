@@ -107,6 +107,8 @@
 	border-radius: 12px;
 	background: #fff;
 	cursor: grab;
+	position: relative;
+	z-index: 2;
 }
 
 /* All the same stuff for Firefox */
@@ -116,6 +118,8 @@
 	border-radius: 12px;
 	background: #fff;
 	cursor: grab;
+	position: relative;
+	z-index: 2;
 }
 
 /* All the same stuff for IE */
@@ -125,6 +129,8 @@
 	border-radius: 12px;
 	background: #fff;
 	cursor: grab;
+	position: relative;
+	z-index: 2;
 }
 
 #cnrs-dm-map-sun-slider-wrap::after {
@@ -134,6 +140,7 @@
 	border-top: 1px white solid;
 	left: 2px;
 	right: 2px;
+	z-index: 0;
 }
 
 [class^="cnrs-dm-map-hotspot"] {
@@ -157,7 +164,7 @@
 	background-repeat: no-repeat;
 	background-position: center;
 	background-image: url("/wp-content/plugins/cnrs-data-manager/assets/media/maps/hologram/hologram-shine.svg");
-	animation: pulse 2s infinite;
+	animation: pulse 1s infinite;
 }
 
 .cnrs-dm-map-hotspot::before {
@@ -235,6 +242,11 @@
 	color: #fff;
 }
 
+.cnrs-dm-map-label-hologram {
+	background-color: transparent;
+	color: yellow;
+}
+
 [class^="cnrs-dm-map-label"] {
 	padding: 0 10px;
 	border-radius: 6px;
@@ -258,6 +270,7 @@
 
 .cnrs-dm-map-label span svg {
 	background-color: #fff;
+	outline: 4px solid #fff;
 }
 
 .cnrs-dm-map-label span svg path {
@@ -266,20 +279,30 @@
 
 .cnrs-dm-map-label-news span svg {
 	background-color: red;
+	outline: 4px solid red;
+}
+
+.cnrs-dm-map-label-hologram span svg {
+	background-color: transparent;
+	outline: 4px solid transparent;
 }
 
 .cnrs-dm-map-label-classic span svg {
 	background-color: #3c3c3c;
+	outline: 4px solid #3c3c3c;
 }
 
 .cnrs-dm-map-label-news span svg path, .cnrs-dm-map-label-classic span svg path {
 	fill: #fff;
 }
 
+.cnrs-dm-map-label-hologram span svg path {
+	fill: yellow;
+}
+
 [class^="cnrs-dm-map-label"] span svg {
 	position: absolute;
 	border-radius: 600px;
-	outline: 4px solid #fff;
 	border: none;
 	z-index: 1;
 	bottom: 100%;

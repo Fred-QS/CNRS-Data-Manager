@@ -4,6 +4,32 @@ defined('ABSPATH') || exit;
 
 use CnrsDataManager\Core\Models\Agents;
 use CnrsDataManager\Core\Models\Map;
+use CnrsDataManager\Core\Models\Settings;
+
+if (!function_exists('rrmdir')) {
+    /**
+     * Recursively removes a directory and its contents.
+     *
+     * @param string $dir The path to the directory to be removed.
+     *
+     * @return void
+     */
+    function rrmdir(string $dir): void
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir."/".$object))
+                        rrmdir($dir. DIRECTORY_SEPARATOR .$object);
+                    else
+                        unlink($dir. DIRECTORY_SEPARATOR .$object);
+                }
+            }
+            rmdir($dir);
+        }
+    }
+}
 
 if (!function_exists('cnrs_dm_cloned_get_home_path')) {
     /**
@@ -324,28 +350,42 @@ if (!function_exists('isCNRSDataManagerToolsSelected')) {
 
 if (!function_exists('cnrsReadShortCode')) {
 
-    function cnrsReadShortCode(array $atts = ['type' => null]): string
+    function cnrsReadShortCode(array $atts = ['type' => null, 'filter' => null]): string
     {
         $type = $atts['type'];
+        $filter = $atts['filter'];
         $id = get_the_ID();
+        $displayMode = Settings::getDisplayMode();
+
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null], true)) {
+
+            if (isset($_GET['cnrs-dm-ref']) && is_int($_GET['cnrs-dm-ref']) !== false) {
+                $id = $_GET['cnrs-dm-ref'];
+            } else {
+                wp_enqueue_style('cnrs-data-manager-styling', get_template_directory_uri() . '/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
+                ob_start();
+                include_once(dirname(__DIR__) . '/Core/Views/NoResult.php');
+                return ob_get_clean();
+            }
+        }
 
         if (in_array($type, ['all', 'teams', 'services', 'platforms', null], true)) {
-
-            $agents = Agents::getAgents($id, $type);
+            $type = $type === null ? 'all' : $type;
+            $agents = Agents::getAgents($id, $type, $filter);
             if (empty($agents)) {
                 return '';
             }
 
             wp_enqueue_style(
                 'cnrs-data-manager-styling',
-                get_template_directory_uri() . '/cnrs-data-manager-style.css',
+                get_template_directory_uri() . '/cnrs-data-manager/cnrs-data-manager-style.css',
                 [],
                 null
             );
 
             wp_enqueue_script(
                 'cnrs-data-manager-script',
-                get_template_directory_uri() . '/cnrs-data-manager-script.js',
+                get_template_directory_uri() . '/cnrs-data-manager/cnrs-data-manager-script.js',
                 [],
                 null
             );

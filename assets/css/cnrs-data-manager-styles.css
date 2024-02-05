@@ -369,6 +369,30 @@ input[name="cnrs-dm-filename"].too-large, .cnrs-dm-error {
     transform: rotate(180deg);
 }
 
+.cnrs-dm-shortcode-filters {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.cnrs-dm-shortcode-filters > span {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.cnrs-dm-shortcode-filters ul {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0;
+}
+
+.cnrs-dm-shortcode-filters ul li {
+    margin: 5px 10px;
+    width: max-content;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;
@@ -565,5 +589,9 @@ input[name="cnrs-dm-filename"].too-large, .cnrs-dm-error {
         min-height: 30px;
         padding: 0;
         border-radius: 2000px;
+    }
+
+    .cnrs-dm-shortcode-filters {
+        margin-top: 10px
     }
 }
