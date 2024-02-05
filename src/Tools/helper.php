@@ -362,7 +362,7 @@ if (!function_exists('cnrsReadShortCode')) {
             if (isset($_GET['cnrs-dm-ref']) && is_int($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
             } else {
-                wp_enqueue_style('cnrs-data-manager-styling', get_template_directory_uri() . '/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
+                wp_enqueue_style('cnrs-data-manager-styling', get_template_directory_uri() . '/wp-includes/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
                 ob_start();
                 include_once(dirname(__DIR__) . '/Core/Views/NoResult.php');
                 return ob_get_clean();
@@ -370,25 +370,17 @@ if (!function_exists('cnrsReadShortCode')) {
         }
 
         if (in_array($type, ['all', 'teams', 'services', 'platforms', null], true)) {
+
             $type = $type === null ? 'all' : $type;
+            $renderMode = $filter !== null ? 'sorted' : 'simple';
             $agents = Agents::getAgents($id, $type, $filter);
+
             if (empty($agents)) {
                 return '';
             }
 
-            wp_enqueue_style(
-                'cnrs-data-manager-styling',
-                get_template_directory_uri() . '/cnrs-data-manager/cnrs-data-manager-style.css',
-                [],
-                null
-            );
-
-            wp_enqueue_script(
-                'cnrs-data-manager-script',
-                get_template_directory_uri() . '/cnrs-data-manager/cnrs-data-manager-script.js',
-                [],
-                null
-            );
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js', [], null);
 
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Agents.php');

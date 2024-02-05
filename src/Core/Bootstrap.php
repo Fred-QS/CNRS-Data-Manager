@@ -53,32 +53,19 @@ class Bootstrap
 
         } else {
 
-            $themes = scandir(get_theme_root());
             $currentThemeFolder = get_template_directory();
-            foreach ($themes as $folder) {
-                $fullPath = get_theme_root() . '/' . $folder;
-                if (is_dir($fullPath) 
-                    && !in_array($folder, ['.', '..']) 
-                    && $fullPath !== $currentThemeFolder)
-                {
-                    if (file_exists($fullPath . '/cnrs-data-manager')) {
-                        rrmdir($fullPath . '/cnrs-data-manager');
-                    }
-                }
-            }
-
             define('CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER', $currentThemeFolder);
 
-            if (!file_exists($currentThemeFolder . '/cnrs-data-manager')) {
-                @mkdir($currentThemeFolder . '/cnrs-data-manager', 0755);
+            if (!file_exists(ABSPATH . '/wp-includes/cnrs-data-manager')) {
+                @mkdir(ABSPATH . '/wp-includes/cnrs-data-manager', 0755);
             }
 
-            if (!file_exists($currentThemeFolder . '/cnrs-data-manager/cnrs-data-manager-style.css')) {
-                copy(CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-style.css', CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER . '/cnrs-data-manager/cnrs-data-manager-style.css');
+            if (!file_exists(ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css')) {
+                copy(CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-style.css', ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css');
             }
 
-            if (!file_exists($currentThemeFolder . '/cnrs-data-manager/cnrs-data-manager-script.js')) {
-                copy(CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-script.js', CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER . '/cnrs-data-manager/cnrs-data-manager-script.js');
+            if (!file_exists(ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js')) {
+                copy(CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-script.js', ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js');
             }
         }
     }
