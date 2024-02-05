@@ -68,13 +68,17 @@ th.sortable p span, th.sorted p span {
 }
 
 .cnrs-dm-teams {
-    padding: 2px 4px;
     background-color: #fff;
     border-radius: 4px;
     border: 1px solid #2271b1;
     width: max-content;
+    max-width: calc(100% - 10px);
     color: #2271b1;
     line-height: 1rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 2px 4px;
 }
 
 .cnrs-dm-split-column {

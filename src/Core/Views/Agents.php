@@ -1,9 +1,9 @@
 <?php if ($renderMode === 'simple'): ?>
 
-    <div>
-        <ul>
+    <div class="cnrs-dm-front-agents-container">
+        <ul class="cnrs-dm-front-agents-list">
             <?php foreach ($agents as $agent): ?>
-                <li>
+                <li class="cnrs-dm-front-agent-container">
                     <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
                     <small><?= $agent['statut'] ?> <?= $agent['tutelle'] ?></small>
                     <br/>
@@ -15,22 +15,22 @@
 
 <?php else: ?>
 
-<div>
-    <?php foreach ($agents as $agent): ?>
-    <div>
-        <h3><?= $agent['wp_name'] !== null ? $agent['wp_name'] : __('Orphans', 'cnrs-data-manager') ?><?= $agent['xml_name'] !== null ? ' <i>' . $agent['xml_name'] . '</i>' : '' ?></h3>
-    </div>
-    <ul>
-        <?php foreach ($agent['agents'] as $user): ?>
-            <li>
-                <p><?= $user['nom'] ?> <?= $user['prenom'] ?></p>
-                <small><?= $user['statut'] ?> <?= $user['tutelle'] ?></small>
-                <br/>
-                <a href="mailto:<?= $user['email_pro'] ?>"><?= $user['email_pro'] ?></a>
-            </li>
+    <div class="cnrs-dm-front-agents-container">
+        <?php foreach ($agents as $agent): ?>
+        <div>
+            <p class="cnrs-dm-front-entity-title"><?= $agent['wp_name'] !== null ? $agent['wp_name'] : __('Without belonging', 'cnrs-data-manager') ?><?= $agent['xml_name'] !== null ? ' <i>' . $agent['xml_name'] . '</i>' : '' ?></p>
+        </div>
+        <ul class="cnrs-dm-front-agents-list">
+            <?php foreach ($agent['agents'] as $user): ?>
+                <li class="cnrs-dm-front-agent-container">
+                    <p><?= $user['nom'] ?> <?= $user['prenom'] ?></p>
+                    <small><?= $user['statut'] ?> <?= $user['tutelle'] ?></small>
+                    <br/>
+                    <a href="mailto:<?= $user['email_pro'] ?>"><?= $user['email_pro'] ?></a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
         <?php endforeach; ?>
-    </ul>
-    <?php endforeach; ?>
-</div>
+    </div>
 
 <?php endif; ?>
