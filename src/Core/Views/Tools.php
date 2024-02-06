@@ -12,13 +12,36 @@ $servicesPosts = getAllPostsFromCategoryId(Tools::getServicesCategoryId());
 $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
 ?>
 
-<div class="wrap">
+<div class="wrap" style="position: relative">
     <h1 class="wp-heading-inline title-and-logo">
         <?= svgFromBase64(CNRS_DATA_MANAGER_TOOLS_ICON, '#5d5d5d', 19) ?>
         <?= __('Tools', 'cnrs-data-manager'); ?>
     </h1>
+    <?php if (isset($_POST['cnrs-dm-restore']) && $_POST['cnrs-dm-restore'] === 'restore'): ?>
+        <p id="cnrs-dm-restore-message"><?= __('The files have been restored.', 'cnrs-data-manager') ?></p>
+    <?php endif; ?>
     <p><?= __('The <b>Tools</b> section allows you to assign entities from the XML file to those created in WordPress. The extension will then be able to find the agents belonging to each entity in order to be able to filter their affiliations in the public part of WordPress.', 'cnrs-data-manager') ?></p>
-
+    <p><?= __('You can also decide to restore the initial state of the files provided by the extension listed below used for style, javascript and php template', 'cnrs-data-manager') ?>:</p>
+    <ul class="cnrs-dm-files-list">
+        <li><?= __('The <b>CSS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>JS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>PHP</b> template file for displaying agents in a list <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-inline.php</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>PHP</b> template file for the agent card display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-card.php</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>PHP</b> template file for the full agent list item <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-list-item.php</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>PHP</b> template file for the entity title if display mode is sorted <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-sorted-title.php</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>SVG</b> file for the list view button <b><i>/wp-includes/cnrs-data-manager/svg/list.svg</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>SVG</b> file for the grid view button <b><i>/wp-includes/cnrs-data-manager/svg/grid.svg</i></b>', 'cnrs-data-manager') ?></li>
+    </ul>
+    <p>
+        <?= __('These files allow you to customize the rendering of agents in the front part of <b>WordPress</b>.', 'cnrs-data-manager') ?>
+        <br/>
+        <?= __('Keep in mind that the files must keep <b>the same name and path</b>. Only the content can be modified at your convenience for personalization.', 'cnrs-data-manager') ?>
+    </p>
+    <form method="post">
+        <input type="hidden" name="cnrs-dm-restore" value="restore">
+        <input type="submit" name="submit" class="button button-primary" value="<?= __('Restore files', 'cnrs-data-manager') ?>">
+    </form>
+    <br/>
     <hr/>
 
     <h3 class="cnrs-dm-tools-h2"><?= __('Assign a category to teams', 'cnrs-data-manager') ?></h3>

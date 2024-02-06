@@ -133,7 +133,9 @@ final class Manager
             if (isset($agents['agent']['agent_id'])) {
                 $agents['agent']['agent_id'] = (int) $agents['agent']['agent_id'];
                 $agents['agent']['autorise_pub_photo'] = (int) $agents['agent']['autorise_pub_photo'] === 1;
-                $agents['agent']['photo'] = is_array($agents['agent']['photo']) && empty($agents['agent']['photo']) || $agents['agent']['autorise_pub_photo'] === false ? null : $agents['agent']['photo'];
+                $agents['agent']['photo'] = is_array($agents['agent']['photo']) && empty($agents['agent']['photo']) || $agents['agent']['autorise_pub_photo'] === false
+                    ? '/wp-content/plugins/cnrs-data-manager/assets/media/default_avatar.png'
+                    : $agents['agent']['photo'];
                 $agents['agent']['tutelle'] = is_array($agents['agent']['tutelle']) && empty($agents['agent']['tutelle']) ? null : $agents['agent']['tutelle'];
                 $agents['agent']['civilite'] = is_array($agents['agent']['civilite']) && empty($agents['agent']['civilite']) ? null : $agents['agent']['civilite'];
                 $agentTeams = [];
@@ -183,7 +185,9 @@ final class Manager
                 foreach ($agents['agent'] as $agent) {
                     $agent['agent_id'] = (int) $agent['agent_id'];
                     $agent['autorise_pub_photo'] = (int) $agent['autorise_pub_photo'] === 1;
-                    $agent['photo'] = is_array($agent['photo']) && empty($agent['photo']) || $agent['autorise_pub_photo'] === false ? null : $agent['photo'];
+                    $agent['photo'] = is_array($agent['photo']) && empty($agent['photo']) || $agent['autorise_pub_photo'] === false
+                        ? '/wp-content/plugins/cnrs-data-manager/assets/media/default_avatar.png'
+                        : $agent['photo'];
                     $agent['tutelle'] = is_array($agent['tutelle']) && empty($agent['tutelle']) ? null : $agent['tutelle'];
                     $agent['civilite'] = is_array($agent['civilite']) && empty($agent['civilite']) ? null : $agent['civilite'];
                     $agentTeams = [];

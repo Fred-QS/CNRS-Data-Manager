@@ -67,7 +67,7 @@ class Tools
         {
             global $wpdb;
             $table = $wpdb->prefix . 'cnrs_data_manager_relations';
-            $type = $_POST['cnrs-data-manager-tools-type'];
+            $type = stripslashes($_POST['cnrs-data-manager-tools-type']);
             $prefix = 'cnrs-data-manager-tools-' . $type . '-';
             $wpdb->delete($table, ['type' => $type]);
 
@@ -80,11 +80,11 @@ class Tools
 
             foreach ($posts as $post) {
                 $index = (int) str_replace('cnrs-data-manager-tools-' . $type . '-xml-', '', $post);
-                if ($_POST['cnrs-data-manager-tools-' . $type . '-post-' . $index] !== null) {
+                if (stripslashes($_POST['cnrs-data-manager-tools-' . $type . '-post-' . $index]) !== null) {
                     $insert = [
-                        'term_id' => $_POST['cnrs-data-manager-tools-' . $type . '-post-' . $index],
-                        'xml_entity_id' => $_POST[$post],
-                        'type' => $_POST['cnrs-data-manager-tools-' . $type . '-type-' . $index]
+                        'term_id' => stripslashes($_POST['cnrs-data-manager-tools-' . $type . '-post-' . $index]),
+                        'xml_entity_id' => stripslashes($_POST[$post]),
+                        'type' => stripslashes($_POST['cnrs-data-manager-tools-' . $type . '-type-' . $index])
                     ];
 
                     $wpdb->insert($table, $insert, ['%d', '%d', '%s']);

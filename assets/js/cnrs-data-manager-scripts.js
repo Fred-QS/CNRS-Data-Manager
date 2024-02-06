@@ -24,11 +24,15 @@ const mapPreview = document.querySelector('#cnrs-dm-map-preview');
 const mapPreviewButton = document.querySelector('#cnrs-dm-open-map-preview');
 const mapPreviewCloseButton = document.querySelector('#cnrs-dm-close-map-preview');
 const mapPreviewRefreshButton = document.querySelector('#cnrs-dm-refresh-map-preview');
-const markersOpenButtons = document.querySelectorAll('.cnrs-dm-markers-toggle');
 const mapCanvasContainer = document.querySelector('.cnrs-dm-map');
 const mapViewSelector = document.querySelector('#cnrs-dm-map-settings-view');
 const blackBgRadios = document.querySelectorAll('[name="cnrs-dm-map-settings-black_bg"]');
 const shortCodeFilterContainer = document.querySelectorAll('.cnrs-dm-shortcode-filters');
+const mapControls = document.querySelector('#cnrs-dm-map-controls');
+const getCoordsBtn = document.querySelector('#cnrs-dm-localize-me-container');
+const restoreFoldersMessage = document.querySelector('#cnrs-dm-restore-message');
+const modeDisplaySelector = document.querySelector('#cnrs-dm-mode');
+const modeDisplayInfo = document.querySelector('#cnrs-dm-page-option-shortcode');
 
 
 prepareListeners();
@@ -48,20 +52,42 @@ function prepareListeners() {
         });
     }
 
+    if (modeDisplaySelector) {
+        modeDisplaySelector.addEventListener('change', function (){
+            if (this.value === 'page') {
+                modeDisplayInfo.classList.remove('hide');
+            } else {
+                modeDisplayInfo.classList.add('hide');
+            }
+        });
+    }
+
     if (filenameInput) {
         filenameInput.addEventListener('input', function() {
             checkSettingsIntegrity();
         });
     }
 
+    if (restoreFoldersMessage) {
+        setTimeout(function(){
+            restoreFoldersMessage.classList.add('hide');
+        }, 3000);
+        setTimeout(function(){
+            restoreFoldersMessage.remove();
+        }, 3250);
+    }
+
+    addDisplayRowMarkerListener();
+
     for (let i = 0; i < shortCodes.length; i++) {
         let element = shortCodes[i];
         let svg = element.querySelector('svg');
         let modal = element.querySelector('.cnrs-dm-copied-to-clipboard');
+        let codeContent = element.querySelector('code');
         let timer;
         svg.onclick = function() {
             clearTimeout(timer);
-            let code = element.dataset.code;
+            let code = codeContent.innerHTML;
             navigator.clipboard.writeText(code);
             modal.classList.add('display');
             timer = setTimeout(function() {
@@ -77,6 +103,21 @@ function prepareListeners() {
     if (mapPreview) {
         dragElement(mapPreview);
         checkIntegrityFromMapView(mapViewSelector.value);
+        if (getCoordsBtn) {
+            if (navigator.geolocation) {
+                getCoordsBtn.addEventListener('click', function (){
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        document.querySelector('#cnrs-dm-main-lat').value = latitude;
+                        document.querySelector('#cnrs-dm-main-lng').value = longitude;
+                    });
+                });
+            } else {
+                getCoordsBtn.querySelector('#cnrs-dm-localize-me').add('hide');
+                getCoordsBtn.querySelector('#cnrs-dm-not-supported').remove('hide');
+            }
+        }
         mapViewSelector.addEventListener('change', function (){
             checkIntegrityFromMapView(this.value);
         });
@@ -92,22 +133,7 @@ function prepareListeners() {
         mapPreviewRefreshButton.addEventListener('click', function (){
             refreshMapPreview();
         });
-        for (let i = 0; i < markersOpenButtons.length; i++) {
-            markersOpenButtons[i].addEventListener('click', function (){
-                const rows = this.closest('table').querySelectorAll('.cnrs-dm-marker-row');
-                if (this.classList.contains('show')) {
-                    this.classList.remove('show');
-                    for (let j = 0; j < rows.length; j++) {
-                        rows[j].classList.add('cnrs-dm-marker-row-hide');
-                    }
-                } else {
-                    this.classList.add('show');
-                    for (let j = 0; j < rows.length; j++) {
-                        rows[j].classList.remove('cnrs-dm-marker-row-hide');
-                    }
-                }
-            });
-        }
+
         for (let i = 0; i < blackBgRadios.length; i++) {
             blackBgRadios[i].addEventListener('input', function (){
                 let value =  this.value;
@@ -145,6 +171,26 @@ function prepareListeners() {
             deleteMarker();
             addKeyupOnCoordsInput();
         });
+    }
+}
+
+function addDisplayRowMarkerListener() {
+    const markersOpenButtons = document.querySelectorAll('.cnrs-dm-markers-toggle');
+    for (let i = 0; i < markersOpenButtons.length; i++) {
+        markersOpenButtons[i].onclick = function (){
+            const rows = this.closest('table').querySelectorAll('.cnrs-dm-marker-row');
+            if (this.classList.contains('show')) {
+                this.classList.remove('show');
+                for (let j = 0; j < rows.length; j++) {
+                    rows[j].classList.add('cnrs-dm-marker-row-hide');
+                }
+            } else {
+                this.classList.add('show');
+                for (let j = 0; j < rows.length; j++) {
+                    rows[j].classList.remove('cnrs-dm-marker-row-hide');
+                }
+            }
+        };
     }
 }
 
@@ -207,7 +253,7 @@ function addNewMarkerInputs() {
     let newMarker = document.createElement('tr');
     newMarker.className = 'cnrs-dm-marker-container';
     newMarker.dataset.index = index;
-    newMarker.innerHTML = `<td><table class="form-table" role="presentation"><tbody>
+    newMarker.innerHTML = `<td><div class="cnrs-dm-map-marker-container"><table class="form-table" role="presentation"><tbody>
     <tr class="cnrs-dm-marker-first-row">
         <th scope="row"><label for="cnrs-dm-marker-title-${index}">${labels.title}</label><span class="cnrs-dm-markers-toggle show"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20"><path fill="#2271b1" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z"/></svg></span></th>
         <td><p><input required name="cnrs-dm-marker-title-${index}" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-title-${index}" class="regular-text"></p></td>
@@ -221,10 +267,11 @@ function addNewMarkerInputs() {
     </tr>
     <tr class="cnrs-dm-marker-row">
         <td colspan="2" class="cnrs-dm-td-no-padding"><input type="button" id="cnrs-dm-marker-delete-${index}" class="button button-danger" value="${labels.delete}"></td>
-    </tr></tbody></table></td>`;
+    </tr></tbody></table></div></td>`;
     markersContainer.appendChild(newMarker);
     deleteMarker();
     addKeyupOnCoordsInput();
+    addDisplayRowMarkerListener();
     checkCoordsIntegrity('markers');
 }
 
@@ -450,24 +497,31 @@ function refreshMapPreview() {
 
     let html = `<pre style="display: none;" class="cnrs-dm-map-data">${JSON.stringify(json)}</pre>`;
     html += json.atmosphere === true ? '<div id="cnrs-dm-map-atmosphere"></div>' : '';
-    html += json.sunlight === true ? '<div id="cnrs-dm-map-controls"><div id="cnrs-dm-map-sun-slider-wrap"><input type="range" min="0" max="360" value="90" id="cnrs-dm-map-sun-slider"></div></div>' : '';
-    html += json.view === 'space' ? '<div id="cnrs-dm-map-res" style="display: none;"><img alt="day-view" id="cnrs-dm-map-day" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/day-by-nasa.jpg"><img alt="night-view" id="cnrs-dm-map-night" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/night-by-nasa.jpg"></div>' : '';
-    html += json.view === 'cork' ? '<div id="cnrs-dm-map-res" style="display: none;"><img alt="cork-texture" id="cnrs-dm-map-cork" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/cork/cork.jpg"></div>' : '';
     mapCanvasContainer.innerHTML = html;
+    if (json.sunlight === true) {
+        mapControls.classList.remove('hide');
+    } else {
+        mapControls.classList.add('hide');
+    }
     prepareWorldMap();
 }
 
 function initSettingsShortCodeFilters() {
     for (let i = 0; i < shortCodeFilterContainer.length; i++) {
         let container = shortCodeFilterContainer[i];
-        let inputs = container.querySelectorAll('input[type="radio"]');
+        let inputs = container.querySelectorAll('input[type="radio"]:not([name^="cnrs-dm-selector"])');
         for (let j = 0; j < inputs.length; j++) {
             inputs[j].addEventListener('input', function() {
                 if (this.checked === true) {
-                    let value = this.value;
                     let parent = this.closest('td');
-                    parent.querySelector('.cnrs-data-manager-copy-shortcode').dataset.code = value;
-                    parent.querySelector('code').innerHTML = value;
+                    let ref = parent.querySelector('.cnrs-data-manager-copy-shortcode').dataset.code.slice(0, -1);
+                    let splitName = this.name.split('-');
+                    let key = splitName[splitName.length - 1];
+                    let filter = parent.querySelector('input[name="cnrs-dm-filter-' + key + '"]:checked').value;
+                    filter = filter.length > 0 ? ' ' + filter : '';
+                    let view = parent.querySelector('input[name="cnrs-dm-view-' + key + '"]:checked').value;
+                    view = view.length > 0 ? ' ' + view : '';
+                    parent.querySelector('code').innerHTML = ref + filter + view + ']';
                 }
             });
         }

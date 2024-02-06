@@ -24,6 +24,15 @@ $markers = $json['markers'];
         <h3 class="cnrs-dm-tools-h2"><?= __('Map Options', 'cnrs-data-manager') ?></h3>
         <button type="button" class="button button-primary" id="cnrs-dm-open-map-preview"><?= __('Preview', 'cnrs-data-manager') ?></button>
     </div>
+    <div id="cnrs-dm-localize-me-container">
+        <p id="cnrs-dm-localize-me">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="20" height="20">
+                <path fill="#2271b1" d="M408 120c0 54.6-73.1 151.9-105.2 192c-7.7 9.6-22 9.6-29.6 0C241.1 271.9 168 174.6 168 120C168 53.7 221.7 0 288 0s120 53.7 120 120zm8 80.4c3.5-6.9 6.7-13.8 9.6-20.6c.5-1.2 1-2.5 1.5-3.7l116-46.4C558.9 123.4 576 135 576 152V422.8c0 9.8-6 18.6-15.1 22.3L416 503V200.4zM137.6 138.3c2.4 14.1 7.2 28.3 12.8 41.5c2.9 6.8 6.1 13.7 9.6 20.6V451.8L32.9 502.7C17.1 509 0 497.4 0 480.4V209.6c0-9.8 6-18.6 15.1-22.3l122.6-49zM327.8 332c13.9-17.4 35.7-45.7 56.2-77V504.3L192 449.4V255c20.5 31.3 42.3 59.6 56.2 77c20.5 25.6 59.1 25.6 79.6 0zM288 152a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/>
+            </svg>
+            <span><?= __('Localize me', 'cnrs-data-manager') ?></span>
+        </p>
+        <i id="cnrs-dm-not-supported" class="hide"><?= __('Geolocation not supported', 'cnrs-data-manager') ?></i>
+    </div>
     <form method="post">
         <input type="hidden" name="action" value="update-default-marker">
         <input type="hidden" name="_wp_http_referer" value="/wp-admin/admin.php?page=3D-map">
@@ -63,7 +72,7 @@ $markers = $json['markers'];
                     </select>
                 </td>
             </tr>
-            <tr>
+            <tr class="cnrs-dm-map-radio-tr">
                 <th scope="row">
                     <label for="cnrs-dm-map-settings-sunlight"><?= __('Solar illumination effect', 'cnrs-data-manager') ?></label>
                 </th>
@@ -80,7 +89,7 @@ $markers = $json['markers'];
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr class="cnrs-dm-map-radio-tr">
                 <th scope="row">
                     <label for="cnrs-dm-map-settings-stars"><?= __('Star Generator', 'cnrs-data-manager') ?></label>
                 </th>
@@ -97,7 +106,7 @@ $markers = $json['markers'];
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr class="cnrs-dm-map-radio-tr">
                 <th scope="row">
                     <label for="cnrs-dm-map-settings-black_bg"><?= __('Black background', 'cnrs-data-manager') ?></label>
                 </th>
@@ -115,7 +124,7 @@ $markers = $json['markers'];
                     </div>
                 </td>
             </tr>
-            <tr>
+            <tr class="cnrs-dm-map-radio-tr">
                 <th scope="row">
                     <label for="cnrs-dm-map-settings-atmospĥere"><?= __('Atmosphere', 'cnrs-data-manager') ?></label>
                 </th>
@@ -161,24 +170,16 @@ $markers = $json['markers'];
                     <div id="cnrs-dm-map-atmosphere"></div>
                 <?php endif; ?>
             </div>
-            <?php if ($json['sunlight'] === true): ?>
-                <div id="cnrs-dm-map-controls">
-                    <div id="cnrs-dm-map-sun-slider-wrap">
-                        <input type="range" min="0" max="360" value="90" id="cnrs-dm-map-sun-slider">
-                    </div>
+            <div id="cnrs-dm-map-controls" class="hide">
+                <div id="cnrs-dm-map-sun-slider-wrap">
+                    <input type="range" min="0" max="360" value="90" id="cnrs-dm-map-sun-slider">
                 </div>
-            <?php endif; ?>
-            <?php if ($json['view'] === 'space'): ?>
-                <div id="cnrs-dm-map-res" style="display: none;">
-                    <img alt="day-view" id="cnrs-dm-map-day" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/day-by-nasa.jpg">
-                    <img alt="night-view" id="cnrs-dm-map-night" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/night-by-nasa.jpg">
-                </div>
-            <?php endif; ?>
-            <?php if ($json['view'] === 'cork'): ?>
-                <div id="cnrs-dm-map-res" style="display: none;">
-                    <img alt="cork-texture" id="cnrs-dm-map-cork" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/cork/cork.jpg">
-                </div>
-            <?php endif; ?>
+            </div>
+            <div id="cnrs-dm-map-res" style="display: none;">
+                <img alt="day-view" id="cnrs-dm-map-day" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/day-by-nasa.jpg">
+                <img alt="night-view" id="cnrs-dm-map-night" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/space-view/night-by-nasa.jpg">
+                <img alt="cork-texture" id="cnrs-dm-map-cork" src="/wp-content/plugins/cnrs-data-manager/assets/media/maps/cork/cork.jpg">
+            </div>
         </div>
 
         <p class="submit">
@@ -205,51 +206,53 @@ $markers = $json['markers'];
                 <?php foreach ($markers as $key => $marker): ?>
                     <tr class="cnrs-dm-marker-container" data-index="<?= $key ?>">
                         <td>
-                            <table class="form-table" role="presentation">
-                                <tbody>
-                                <tr class="cnrs-dm-marker-first-row">
-                                    <th scope="row">
-                                        <label for="cnrs-dm-marker-title-<?= $key ?>"><?= __('Title', 'cnrs-data-manager') ?></label>
-                                        <input type="hidden" name="cnrs-dm-marker-id-<?= $key ?>" value="<?= $marker['id'] ?>">
-                                        <span class="cnrs-dm-markers-toggle">
+                            <div class="cnrs-dm-map-marker-container">
+                                <table class="form-table" role="presentation">
+                                    <tbody>
+                                    <tr class="cnrs-dm-marker-first-row">
+                                        <th scope="row">
+                                            <label for="cnrs-dm-marker-title-<?= $key ?>"><?= __('Title', 'cnrs-data-manager') ?></label>
+                                            <input type="hidden" name="cnrs-dm-marker-id-<?= $key ?>" value="<?= $marker['id'] ?>">
+                                            <span class="cnrs-dm-markers-toggle">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20">
                                                 <path fill="#2271b1" d="M256 0a256 256 0 1 0 0 512A256 256 0 1 0 256 0zM135 241c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l87 87 87-87c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9L273 345c-9.4 9.4-24.6 9.4-33.9 0L135 241z"/>
                                             </svg>
                                         </span>
-                                    </th>
-                                    <td>
-                                        <p>
-                                            <input required name="cnrs-dm-marker-title-<?= $key ?>" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-title-<?= $key ?>" value="<?= $marker['title'] ?>" class="regular-text">
-                                        </p>
-                                    </td>
-                                </tr>
-                                <tr class="cnrs-dm-marker-row cnrs-dm-marker-row-hide">
-                                    <th scope="row">
-                                        <label for="cnrs-dm-marker-lat-<?= $key ?>"><?= __('Latitude', 'cnrs-data-manager') ?></label>
-                                    </th>
-                                    <td>
-                                        <p>
-                                            <input required name="cnrs-dm-marker-lat-<?= $key ?>" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-lat-<?= $key ?>" value="<?= $marker['lat'] ?>" class="regular-text">
-                                        </p>
-                                    </td>
-                                </tr>
-                                <tr class="cnrs-dm-marker-row cnrs-dm-marker-row-hide">
-                                    <th scope="row">
-                                        <label for="cnrs-dm-marker-lng-<?= $key ?>"><?= __('Longitude', 'cnrs-data-manager') ?></label>
-                                    </th>
-                                    <td>
-                                        <p>
-                                            <input required name="cnrs-dm-marker-lng-<?= $key ?>" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-lng-<?= $key ?>" value="<?= $marker['lng'] ?>" class="regular-text">
-                                        </p>
-                                    </td>
-                                </tr>
-                                <tr class="cnrs-dm-marker-row cnrs-dm-marker-row-hide">
-                                    <td colspan="2" class="cnrs-dm-td-no-padding">
-                                        <input type="button" id="cnrs-dm-marker-delete-<?= $key ?>" class="button button-danger" value="<?= __('Delete', 'cnrs-data-manager') ?>">
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                        </th>
+                                        <td>
+                                            <p>
+                                                <input required name="cnrs-dm-marker-title-<?= $key ?>" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-title-<?= $key ?>" value="<?= $marker['title'] ?>" class="regular-text">
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="cnrs-dm-marker-row cnrs-dm-marker-row-hide">
+                                        <th scope="row">
+                                            <label for="cnrs-dm-marker-lat-<?= $key ?>"><?= __('Latitude', 'cnrs-data-manager') ?></label>
+                                        </th>
+                                        <td>
+                                            <p>
+                                                <input required name="cnrs-dm-marker-lat-<?= $key ?>" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-lat-<?= $key ?>" value="<?= $marker['lat'] ?>" class="regular-text">
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="cnrs-dm-marker-row cnrs-dm-marker-row-hide">
+                                        <th scope="row">
+                                            <label for="cnrs-dm-marker-lng-<?= $key ?>"><?= __('Longitude', 'cnrs-data-manager') ?></label>
+                                        </th>
+                                        <td>
+                                            <p>
+                                                <input required name="cnrs-dm-marker-lng-<?= $key ?>" autocomplete="off" spellcheck="false" type="text" id="cnrs-dm-marker-lng-<?= $key ?>" value="<?= $marker['lng'] ?>" class="regular-text">
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr class="cnrs-dm-marker-row cnrs-dm-marker-row-hide">
+                                        <td colspan="2" class="cnrs-dm-td-no-padding">
+                                            <input type="button" id="cnrs-dm-marker-delete-<?= $key ?>" class="button button-danger" value="<?= __('Delete', 'cnrs-data-manager') ?>">
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>

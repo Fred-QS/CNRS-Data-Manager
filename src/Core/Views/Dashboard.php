@@ -145,7 +145,7 @@ if ($providerType === 'services') {
                             <td class="<?= $subLevel === 0 ? 'name column-name has-row-actions column-primary' : '' ?> <?= $class ?>" data-colname="<?= $head[$subLevel] ?>">
                                 <?php if ($key === 'nom' && $providerType === 'agents'): ?>
                                     <div class="cnrs-dm-split-column">
-                                        <span class="cnrs-dm-avatar" style="background-image: url(<?= $item['photo'] === null ? '/wp-content/plugins/cnrs-data-manager/assets/media/default_avatar.png' : $item['photo'] ?>)"></span>
+                                        <span class="cnrs-dm-avatar" style="background-image: url(<?= $item['photo'] ?>)"></span>
                                         <?php if ($item['autorise_pub_photo'] === false): ?>
                                             <span title="<?= __('No authorization for the distribution of the avatar.', 'cnrs-data-manager') ?>" class="cnrs-dm-autorise-pub-photo"></span>
                                         <?php endif; ?>

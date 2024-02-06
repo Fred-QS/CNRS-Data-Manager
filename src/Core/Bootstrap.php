@@ -50,24 +50,15 @@ class Bootstrap
             add_action('admin_init', array(__CLASS__, 'adminInit'));
             add_action('admin_menu', array(__CLASS__, 'menuInit'));
             add_filter('admin_body_class', array(__CLASS__, 'addBodyClass'));
+            if (isset($_POST['cnrs-dm-restore']) && stripslashes($_POST['cnrs-dm-restore']) === 'restore') {
+                cnrs_remove_folders();
+            }
 
         } else {
-
             $currentThemeFolder = get_template_directory();
             define('CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER', $currentThemeFolder);
-
-            if (!file_exists(ABSPATH . '/wp-includes/cnrs-data-manager')) {
-                @mkdir(ABSPATH . '/wp-includes/cnrs-data-manager', 0755);
-            }
-
-            if (!file_exists(ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css')) {
-                copy(CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-style.css', ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css');
-            }
-
-            if (!file_exists(ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js')) {
-                copy(CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-script.js', ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js');
-            }
         }
+        cnrs_install_folders();
     }
 
     /**
@@ -142,7 +133,7 @@ class Bootstrap
      */
     public static function menuInit(): void
     {
-        $menuLabel = apply_filters('cnrs_data_manager_menu_label_cnrs_data_manager', 'My UMR');
+        $menuLabel = apply_filters('cnrs_data_manager_menu_label_cnrs_data_manager', __('My JRU', 'cnrs-data-manager'));
         $hook_prefix = add_menu_page('CNRS Data Manager Plugin', $menuLabel, 'manage', 'cnrs-data-manager', null, CNRS_DATA_MANAGER_ICON);
         add_action('admin_print_scripts-' . $hook_prefix, array(__CLASS__, 'scripts'));
         add_action('admin_print_styles-' . $hook_prefix, array(__CLASS__, 'styles'));

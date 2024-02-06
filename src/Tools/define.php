@@ -15,6 +15,9 @@ define('CNRS_DATA_MANAGER_MAP_ICON', '<svg xmlns="http://www.w3.org/2000/svg" vi
 
 define('CNRS_DATA_MANAGER_ICON', 'data:image/svg+xml;base64,' . base64_encode(CNRS_DATA_MANAGER_MAIN_ICON));
 
+define('CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH', ABSPATH . '/wp-includes/cnrs-data-manager/templates');
+define('CNRS_DATA_MANAGER_DEPORTED_SVG_PATH', ABSPATH . '/wp-includes/cnrs-data-manager/svg');
+
 define('CNRS_DATA_MANAGER_LIMIT_OFFSET', 5);
 
 if (function_exists('plugin_dir_url')) {

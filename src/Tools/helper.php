@@ -6,6 +6,8 @@ use CnrsDataManager\Core\Models\Agents;
 use CnrsDataManager\Core\Models\Map;
 use CnrsDataManager\Core\Models\Settings;
 
+$shortCodesCounter = 0;
+
 if (!function_exists('rrmdir')) {
     /**
      * Recursively removes a directory and its contents.
@@ -16,7 +18,7 @@ if (!function_exists('rrmdir')) {
      */
     function rrmdir(string $dir): void
     {
-        if (is_dir($dir)) {
+        if (file_exists($dir) && is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
                 if ($object != "." && $object != "..") {
@@ -27,6 +29,144 @@ if (!function_exists('rrmdir')) {
                 }
             }
             rmdir($dir);
+        }
+    }
+}
+
+if (!function_exists('cnrs_install_folders')) {
+
+    /**
+     * Installs necessary folders and files for the CNRS Data Manager plugin.
+     *
+     * Creates required folders and copies necessary files for the CNRS Data Manager plugin.
+     * The folders to be created include:
+     * - /wp-includes/cnrs-data-manager
+     * - CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH
+     * - CNRS_DATA_MANAGER_DEPORTED_SVG_PATH
+     *
+     * The files to be copied include:
+     * - cnrs-data-manager-style.css
+     * - cnrs-data-manager-script.js
+     * - cnrs-data-manager-inline.php
+     * - cnrs-data-manager-card.php
+     * - cnrs-data-manager-sorted-title.php
+     * - cnrs-data-manager-list-item.php
+     * - list.svg
+     * - grid.svg
+     * - cnrs-data-manager-fr_FR.mo
+     * - cnrs-data-manager-fr_FR.po
+     *
+     * If any of the folders already exist, they will not be created.
+     * If any of the files already exist, they will not be copied.
+     *
+     * @return void
+     */
+    function cnrs_install_folders(): void
+    {
+        $folders = [
+            ABSPATH . '/wp-includes/cnrs-data-manager',
+            CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH,
+            CNRS_DATA_MANAGER_DEPORTED_SVG_PATH
+        ];
+
+        foreach ($folders as $folder) {
+            if (!file_exists($folder)) {
+                @mkdir($folder, 0755);
+            }
+        }
+
+        $files = [
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-style.css',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-script.js',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-inline.php',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-card.php',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-sorted-title.php',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-sorted-title.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-list-item.php',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-list-item.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/svg/list.svg',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_SVG_PATH . '/list.svg'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/svg/grid.svg',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_SVG_PATH . '/grid.svg'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/languages/cnrs-data-manager-fr_FR.mo',
+                'to' => ABSPATH . '/wp-content/languages/plugins/cnrs-data-manager-fr_FR.mo'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/languages/cnrs-data-manager-fr_FR.po',
+                'to' => ABSPATH . '/wp-content/languages/plugins/cnrs-data-manager-fr_FR.po'
+            ]
+        ];
+
+        foreach ($files as $file) {
+            if (!file_exists($file['to'])) {
+                copy($file['from'], $file['to']);
+            }
+        }
+    }
+}
+
+if (!function_exists('cnrs_remove_folders')) {
+
+    /**
+     * Removes the folders and translations files for the CNRS Data Manager plugin.
+     *
+     * Removes the 'cnrs-data-manager' folder located in '/wp-includes' directory
+     * and the translations files for the CNRS Data Manager plugin if they exist.
+     * The translations files are removed only if the $all parameter is set to true.
+     *
+     * @param bool $all Optional. Whether to remove translations files. Default false.
+     *
+     * @return void
+     */
+    function cnrs_remove_folders(bool $all = false): void
+    {
+        rrmdir(ABSPATH . '/wp-includes/cnrs-data-manager');
+        if ($all === true) {
+            cnrs_remove_translations();
+        }
+    }
+}
+
+if (!function_exists('cnrs_remove_translations')) {
+
+    /**
+     * Removes translations files for the CNRS Data Manager plugin.
+     *
+     * Removes the .mo and .po translation files for the CNRS Data Manager plugin if they exist.
+     * The .mo file is removed first, followed by the .po file.
+     *
+     * @return void
+     */
+    function cnrs_remove_translations(): void
+    {
+        $moFile = ABSPATH . '/wp-content/languages/plugins/cnrs-data-manager-fr_FR.mo';
+        $poFile = ABSPATH . '/wp-content/languages/plugins/cnrs-data-manager-fr_FR.po';
+        if (file_exists($moFile)) {
+            unlink($moFile);
+        }
+        if (file_exists($poFile)) {
+            unlink($poFile);
         }
     }
 }
@@ -291,7 +431,7 @@ if (!function_exists('getCategoriesConfig')) {
             'echo' => false,
             'hide_empty' => false,
             'class' => $c,
-            'orderby' => 'name',
+            'orderby' => 'id',
             'name' => 'cnrs-data-manager-categories-list-' . $name,
             'required' => true,
             'selected' => $selected
@@ -350,19 +490,31 @@ if (!function_exists('isCNRSDataManagerToolsSelected')) {
 
 if (!function_exists('cnrsReadShortCode')) {
 
-    function cnrsReadShortCode(array $atts = ['type' => null, 'filter' => null]): string
+    /**
+     * Reads the shortcode attributes and returns the corresponding output.
+     *
+     * @param array $atts The shortcode attributes.
+     * @return string The output generated by the shortcode.
+     */
+    function cnrsReadShortCode(array $atts = ['type' => null, 'filter' => null, 'default' => null, 'target' => null, 'text' => null]): string
     {
         $type = $atts['type'];
         $filter = $atts['filter'];
+        $defaultView = $atts['default'];
+        $target = $atts['target'];
+        $text = $atts['text'];
+        global $shortCodesCounter;
+
         $id = get_the_ID();
         $displayMode = Settings::getDisplayMode();
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && is_int($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
             } else {
-                wp_enqueue_style('cnrs-data-manager-styling', get_template_directory_uri() . '/wp-includes/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
+                $shortCodesCounter++;
+                wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
                 ob_start();
                 include_once(dirname(__DIR__) . '/Core/Views/NoResult.php');
                 return ob_get_clean();
@@ -371,11 +523,13 @@ if (!function_exists('cnrsReadShortCode')) {
 
         if (in_array($type, ['all', 'teams', 'services', 'platforms', null], true)) {
 
+            $shortCodesCounter++;
             $type = $type === null ? 'all' : $type;
+            $isSelectorAvailable = $type === 'all' ? false : Settings::isSelectorAvailable($type);
             $renderMode = $filter !== null ? 'sorted' : 'simple';
-            $agents = Agents::getAgents($id, $type, $filter);
+            $entities = Agents::getAgents($id, $type, $filter);
 
-            if (empty($agents)) {
+            if (empty($entities)) {
                 return '';
             }
 
@@ -409,10 +563,26 @@ if (!function_exists('cnrsReadShortCode')) {
                 filemtime(__DIR__ . '/assets/css/cnrs-data-manager-map.css')
             );
 
+            $shortCodesCounter++;
             $json = Map::getData();
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Map.php');
             return ob_get_clean();
+
+        } else if ($type === 'navigate'
+            && $target !== null
+            && $text !== null
+            && strlen($target) > 0
+            && strlen($text) > 0)
+        {
+            $shortCodesCounter++;
+
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js', [], null);
+
+            $link = stripos($target, '?') !== false ? $target . '&cnrs-dm-ref=' . $id  : $target . '?cnrs-dm-ref=' . $id;
+            $link = $link[0] === '/' || stripos($link, 'http') === 0 ? $link : '/' . $link;
+            return "<a class='cnrs-dm-front-btn cnrs-dm-front-btn-{$id}' id='cnrs-dm-front-btn-{$shortCodesCounter}' href='{$link}'>{$text}</a>";
         }
         return '';
     }

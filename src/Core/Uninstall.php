@@ -36,6 +36,6 @@ class Uninstall
     public static function deactivate()
     {
         // Remove xml folder
-        do_action('duplicator_after_deactivation');
+        do_action('cnrs_data_manager_after_deactivation');
     }
 }

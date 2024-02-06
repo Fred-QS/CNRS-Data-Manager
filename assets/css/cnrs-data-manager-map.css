@@ -36,10 +36,10 @@
 }
 
 #cnrs-dm-map-controls {
-	height: 5em;
-	margin-top: -5.1em;
-	position: relative;
+	position: absolute;
 	z-index: 2000;
+	bottom: 5%;
+	width: 100%;
 }
 
 #cnrs-dm-map-atmosphere {

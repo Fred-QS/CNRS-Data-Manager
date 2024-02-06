@@ -1,5 +1,5 @@
 let earth;
-let sunAngle = 90;
+let sunAngle = 0;
 let activeHotspot = null;
 let activeLabel = null;
 let config;
