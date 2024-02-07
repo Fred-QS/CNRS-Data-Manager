@@ -9,7 +9,6 @@
 
 namespace CnrsDataManager\Core;
 
-use CnrsDataManager\Core\Uninstall;
 use CnrsDataManager\Core\Install;
 use CnrsDataManager\Core\Controllers\Manager;
 

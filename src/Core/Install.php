@@ -22,7 +22,7 @@ class Install
     public static function registerHooks()
     {
         if (is_admin()) {
-            register_activation_hook(__FILE__, array(__CLASS__, 'activate'));
+            register_activation_hook(CNRS_DATA_MANAGER_FILE, [__CLASS__, 'activate']);
         }
     }
 
@@ -85,15 +85,8 @@ class Install
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_map_settings (sunlight, view, stars, black_bg, atmosphere) VALUES 
             (1, 'space', 1, 1, 1)"
         );
-        $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_relations (term_id, xml_entity_id, type) VALUES
-            (876, 1, 'teams'),
-            (898, 2, 'teams'),
-            (1070, 1, 'platforms'),
-            (0, 2, 'platforms'),
-            (0, 3, 'platforms')"
-        );
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_settings (filename, teams_category, teams_view_selector, services_category, services_view_selector, platforms_category, platforms_view_selector, mode, default_latitude, default_longitude) VALUES
-            ('umr_5805', 25, 1, 31, 1, 30, 1, 'widget', 44.869222, 0.494797)"
+            ('umr_5805', 1, 1, 1, 1, 1, 1, 'widget', 44.869222, 0.494797)"
         );
     }
 }
