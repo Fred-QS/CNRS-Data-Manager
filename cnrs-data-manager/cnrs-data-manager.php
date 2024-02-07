@@ -1,10 +1,8 @@
 <?php
 /**
- * CNRS Data Manager
- *
  * Plugin Name: CNRS Data Manager
- * Plugin URI:  https://github.com/Fred-QS/CNRS-Data-Manager
- * Description: Allows Wordpress to be powered by external data provided by an XML file on the agents, services, platforms and teams of the UMR EPOC.
+ * Plugin URI: https://github.com/Fred-QS/CNRS-Data-Manager
+ * Description: Allows WordPress to process the information transmitted to the CNRS UMRs by affiliating the categories created to agents, display the agent directory, manage the interactive 3D map by implementing markers and import UMR projects.
  * Version:     1.0.0
  * Author:      QS Conseils
  * Author URI:  https://github.com/Fred-QS/CNRS-Data-Manager
@@ -14,6 +12,8 @@
  * Domain Path: /languages
  * Requires at least: 6.4.2
  * Requires PHP: 8.1.0
+ *
+ * Copyright 2024 QS Conseils
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the MIT License, as published by QS Conseils.
  *

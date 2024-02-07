@@ -49,6 +49,8 @@ class Bootstrap
             add_action('admin_init', array(__CLASS__, 'adminInit'));
             add_action('admin_menu', array(__CLASS__, 'menuInit'));
             add_filter('admin_body_class', array(__CLASS__, 'addBodyClass'));
+            add_filter('plugin_action_links', array(__CLASS__, 'manageLink'), 10, 2);
+            //add_filter( 'plugin_row_meta', 'infoModalCall', 10, 2 );
             if (isset($_POST['cnrs-dm-restore']) && stripslashes($_POST['cnrs-dm-restore']) === 'restore') {
                 cnrs_remove_folders();
             }
@@ -187,7 +189,7 @@ class Bootstrap
                 'page_title'             => __('Tools', 'cnrs-data-manager'),
                 'menu_title'             => __('Tools', 'cnrs-data-manager'),
                 'capability'             => 'manage_options',
-                'menu_slug'              => 'tools',
+                'menu_slug'              => 'data-manager-tools',
                 'callback'               => function () {
                     include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Tools.php');
                 }
@@ -197,9 +199,19 @@ class Bootstrap
                 'page_title'             => __('3D Map', 'cnrs-data-manager'),
                 'menu_title'             => __('3D Map', 'cnrs-data-manager'),
                 'capability'             => 'manage_options',
-                'menu_slug'              => '3D-map',
+                'menu_slug'              => 'data-manager-3D-map',
                 'callback'               => function () {
                     include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/MapSettings.php');
+                }
+            ],
+            [
+                'parent_slug'            => 'cnrs-data-manager',
+                'page_title'             => __('Import', 'cnrs-data-manager'),
+                'menu_title'             => __('Import', 'cnrs-data-manager'),
+                'capability'             => 'manage_options',
+                'menu_slug'              => 'data-manager-import',
+                'callback'               => function () {
+                    include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Import.php');
                 }
             ],
             [
@@ -207,11 +219,35 @@ class Bootstrap
                 'page_title'             => __('Settings', 'cnrs-data-manager'),
                 'menu_title'             => __('Settings', 'cnrs-data-manager'),
                 'capability'             => 'manage_options',
-                'menu_slug'              => 'settings',
+                'menu_slug'              => 'data-manager-settings',
                 'callback'               => function () {
                     include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Settings.php');
                 }
             ]
         ];
+    }
+
+    /**
+     * Manages the links for a plugin.
+     *
+     * This method adds a settings link to the plugin's links array if the file is the main plugin file.
+     *
+     * @param array $links The existing links for the plugin.
+     * @param string $file The current plugin file.
+     *
+     * @return array|string The updated links array with the settings link added if applicable.
+     */
+    public static function manageLink(array $links, string $file): array|string
+    {
+        static $this_plugin;
+        if (!$this_plugin) {
+            $this_plugin = plugin_basename(CNRS_DATA_MANAGER_FILE);
+        }
+
+        if ($file == $this_plugin) {
+              $settings_link = '<a href="admin.php?page=data-manager-settings">' . esc_html__("Settings", 'cnrs-data-manager') . '</a>';
+              $links[] = $settings_link;
+        }
+        return $links;
     }
 }

@@ -19,8 +19,11 @@
             <!-- Start CNRS Data Manager agents list -->
             <div class="cnrs-dm-front-agents-container">
                 <?php foreach ($entities as $agent): ?>
-                    <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
-                    <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
+                    <div class="cnrs-dm-front-agent-wrapper">
+                        <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
+                        <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
+                        <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php')?>
+                    </div>
                 <?php endforeach; ?>
             </div>
             <!-- End CNRS Data Manager agents list -->
@@ -36,8 +39,11 @@
                     <!-- Start CNRS Data Manager agents list -->
                     <div class="cnrs-dm-front-agents-container">
                         <?php foreach ($entity['agents'] as $agent): ?>
-                            <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
-                            <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
+                            <div class="cnrs-dm-front-agent-wrapper">
+                                <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
+                                <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
+                                <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php')?>
+                            </div>
                         <?php endforeach; ?>
                     </div>
                     <!-- End CNRS Data Manager agents list -->
@@ -49,7 +55,10 @@
         <!-- Start CNRS Data Manager all agent render -->
         <div class="cnrs-dm-front-all-agents-container">
             <?php foreach ($entities as $agent): ?>
-                <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-list-item.php')?>
+                <div class="cnrs-dm-front-agent-wrapper">
+                    <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-list-item.php')?>
+                    <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php')?>
+                </div>
             <?php endforeach; ?>
         </div>
         <!-- End CNRS Data Manager all agent render -->

@@ -6,20 +6,18 @@ Tested up to: 6.2
 Stable tag: 1.0.0
 Requires PHP: 8.1
 License: MIT
-License URI: https://opensource.org/license/mit
-
 This program is distributed for the sole use by the CNRS IS.
 
 == Description ==
 
-The CNRS Data Manager extension was developed as part of the redesign of the UMR EPOC site, in order to be able to use the data transmitted via XML file submission in the Wordpress par SI folder of the CNRS.
+> The CNRS Data Manager extension was developed as part of the redesign of the UMR CNRS sites, in order to be able to use the data transmitted via the CNRS SI.
 
-It provides Wordpress:
+It provides to Wordpress:
 
 * Agents
 * Teams
 * Services
-* platforms
+* Platforms
 
 This extension can operate outside of these permit constraints.
 
@@ -32,7 +30,11 @@ Please note that this extension only works in the UMR EPOC and CNRS ecosystem.
 
 1. Main Interface on admin side
 2. Providing data by category
-3. Render on Frontend
+3. Interactive map settings
+4. Render agents on Frontend
+5. Render map on Frontend
+
+== Frequently Asked Questions ==
 
 = Does CNRS Data Manager have a knowledge base or FAQ? =
 Yes. Please see [Documentation](https://github.com/Fred-QS/CNRS-Data-Manager/documentation) on Github.
@@ -40,8 +42,7 @@ Yes. Please see [Documentation](https://github.com/Fred-QS/CNRS-Data-Manager/doc
 = Installation Instructions =
 1. Upload `cnrs-data-manager` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Click on the CNRS DM link from the main menu
-4. Check out the help by clicking the help icon and create your first package.
+3. Click on the My JRU link from the main menu
 
 The CNRS Data Manager requires php 8.1 or higher.
 
@@ -56,3 +57,5 @@ Go to the [Documentation](https://github.com/Fred-QS/CNRS-Data-Manager/documenta
 
 Please see the following url:
 [https://github.com/Fred-QS/CNRS-Data-Manager/Changelog.md](https://github.com/Fred-QS/CNRS-Data-Manager/Changelog.md)
+
+== Upgrade Notice ==
