@@ -10,6 +10,7 @@
 namespace CnrsDataManager\Core;
 
 use CnrsDataManager\Core\Uninstall;
+use CnrsDataManager\Core\Install;
 use CnrsDataManager\Core\Controllers\Manager;
 
 class Bootstrap
@@ -24,12 +25,11 @@ class Bootstrap
     public static function init(): void
     {
         add_action('init', array(__CLASS__, 'hookWpInit'));
-        @mkdir(ABSPATH . '/XML', 0755);
         define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
 
         if (is_admin()) {
+            Install::registerHooks();
             add_action('plugins_loaded', array(__CLASS__, 'loadTextDomain'));
-            Uninstall::registerHooks();
         }
 
         add_shortcode( 'cnrs-data-manager', 'cnrsReadShortCode' );

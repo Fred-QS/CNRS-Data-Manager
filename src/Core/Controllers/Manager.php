@@ -174,12 +174,24 @@ final class Manager
                         }
                     }
                 }
+                $agentsLinks = [];
+                foreach ($agents['agent']['liens_externes'] as $agentsLink) {
+                    if (isset($agentsLink['nom'])) {
+                        $agentsLinks[] = $agentsLink;
+                    } else {
+                        foreach ($agentsLink as $l) {
+                            $agentsLinks[] = $l;
+                        }
+                    }
+                }
                 $agents['agent']['equipes'] = $agentTeams;
                 $agents['agent']['services'] = $agentServices;
                 $agents['agent']['plateformes'] = $agentPlatforms;
+                $agents['agent']['external_links'] = $agentsLinks;
                 usort($agents['agent']['equipes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                 usort($agents['agent']['services'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                 usort($agents['agent']['plateformes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
+                usort($agents['agent']['external_links'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                 $final['agents'][] = $agents['agent'];
             } else {
                 foreach ($agents['agent'] as $agent) {
@@ -226,12 +238,24 @@ final class Manager
                             }
                         }
                     }
+                    $agentLinks = [];
+                    foreach ($agent['liens_externes'] as $agentLink) {
+                        if (isset($agentLink['nom'])) {
+                            $agentLinks[] = $agentLink;
+                        } else {
+                            foreach ($agentLink as $l) {
+                                $agentLinks[] = $l;
+                            }
+                        }
+                    }
                     $agent['equipes'] = $agentTeams;
                     $agent['services'] = $agentServices;
                     $agent['plateformes'] = $agentPlatforms;
+                    $agent['external_links'] = $agentLinks;
                     usort($agent['equipes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                     usort($agent['services'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                     usort($agent['plateformes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
+                    usort($agent['external_links'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                     $final['agents'][] = $agent;
                 }
             }
