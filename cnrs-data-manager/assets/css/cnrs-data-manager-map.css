@@ -1,0 +1,311 @@
+.cnrs-dm-overlay {
+
+}
+
+.cnrs-dm-container {
+	width: 100%;
+	margin: 0 auto;
+	max-width: 600px;
+}
+
+#cnrs-dm-map-res {
+	position: fixed;
+	top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+	z-index: 1;
+}
+
+.cnrs-dm-map.cnrs-dm-ready {
+	opacity: 1;
+}
+
+.cnrs-dm-map {
+	width: 100%;
+	height: 100%;
+	max-height: 100vw;
+	overflow: hidden;
+	opacity: 0;
+	transition: opacity 2s ease;
+	border-radius: 12px;
+}
+
+.cnrs-dm-map-stars {
+	background-color: black;
+}
+
+#cnrs-dm-map-controls {
+	position: absolute;
+	z-index: 2000;
+	bottom: 5%;
+	width: 100%;
+}
+
+#cnrs-dm-map-atmosphere {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 100%;
+	height: 100%;
+	transform: translate(-50%, -50%);
+	background: radial-gradient(ellipse at center, rgba(200,230,255,0) 40%,rgba(130,195,255,0.2) 49%,rgba(33,63,255,0.05) 50.5%,rgba(18,0,255,0) 64%);
+	z-index: 1200;
+	pointer-events: none;
+}
+
+#cnrs-dm-map-sun-slider-wrap {
+	position: relative;
+	margin: 20px auto 0 auto;
+	width: 20em;
+	max-width: 80%;
+	box-sizing: border-box;
+}
+
+/*#cnrs-dm-map-sun-slider-wrap::before {
+	content: "";
+	background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNNC4wNjkgMTNoLTQuMDY5di0yaDQuMDY5Yy0uMDQxLjMyOC0uMDY5LjY2MS0uMDY5IDFzLjAyOC42NzIuMDY5IDF6bTMuMDM0LTcuMzEybC0yLjg4MS0yLjg4MS0xLjQxNCAxLjQxNCAyLjg4MSAyLjg4MWMuNDExLS41MjkuODg1LTEuMDAzIDEuNDE0LTEuNDE0em0xMS4yMDkgMS40MTRsMi44ODEtMi44ODEtMS40MTQtMS40MTQtMi44ODEgMi44ODFjLjUyOC40MTEgMS4wMDIuODg2IDEuNDE0IDEuNDE0em0tNi4zMTItMy4xMDJjLjMzOSAwIC42NzIuMDI4IDEgLjA2OXYtNC4wNjloLTJ2NC4wNjljLjMyOC0uMDQxLjY2MS0uMDY5IDEtLjA2OXptMCAxNmMtLjMzOSAwLS42NzItLjAyOC0xLS4wNjl2NC4wNjloMnYtNC4wNjljLS4zMjguMDQxLS42NjEuMDY5LTEgLjA2OXptNy45MzEtOWMuMDQxLjMyOC4wNjkuNjYxLjA2OSAxcy0uMDI4LjY3Mi0uMDY5IDFoNC4wNjl2LTJoLTQuMDY5em0tMy4wMzMgNy4zMTJsMi44OCAyLjg4IDEuNDE1LTEuNDE0LTIuODgtMi44OGMtLjQxMi41MjgtLjg4NiAxLjAwMi0xLjQxNSAxLjQxNHptLTExLjIxLTEuNDE1bC0yLjg4IDIuODggMS40MTQgMS40MTQgMi44OC0yLjg4Yy0uNTI4LS40MTEtMS4wMDMtLjg4NS0xLjQxNC0xLjQxNHptMi4zMTItNC44OTdjMCAyLjIwNiAxLjc5NCA0IDQgNHM0LTEuNzk0IDQtNC0xLjc5NC00LTQtNC00IDEuNzk0LTQgNHptMTAgMGMwIDMuMzE0LTIuNjg2IDYtNiA2cy02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNiA2IDIuNjg2IDYgNnoiLz48L3N2Zz4=) center center no-repeat;
+	position: absolute;
+	top: calc(50% - 1em);
+	left: -3em;
+	width: 2em;
+	height: 2em;
+	background-size: 60%;
+}*/
+
+#cnrs-dm-map-sun-slider {
+	-webkit-appearance: none;
+	width: 100%;
+	background: transparent;
+	display: block;
+	height: 1em;
+}
+
+#cnrs-dm-map-sun-slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+}
+
+#cnrs-dm-map-sun-slider:focus {
+	outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+
+#cnrs-dm-map-sun-slider::-ms-track {
+	width: 100%;
+	cursor: pointer;
+
+	/* Hides the slider so custom styles can be added */
+	background: transparent;
+	border-color: transparent;
+	color: transparent;
+}
+
+
+#cnrs-dm-map-sun-slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	height: 24px;
+	width: 24px;
+	border-radius: 12px;
+	background: #fff;
+	cursor: grab;
+	position: relative;
+	z-index: 2;
+}
+
+/* All the same stuff for Firefox */
+#cnrs-dm-map-sun-slider::-moz-range-thumb {
+	height: 24px;
+	width: 24px;
+	border-radius: 12px;
+	background: #fff;
+	cursor: grab;
+	position: relative;
+	z-index: 2;
+}
+
+/* All the same stuff for IE */
+#cnrs-dm-map-sun-slider::-ms-thumb {
+	height: 24px;
+	width: 24px;
+	border-radius: 12px;
+	background: #fff;
+	cursor: grab;
+	position: relative;
+	z-index: 2;
+}
+
+#cnrs-dm-map-sun-slider-wrap::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	border-top: 1px white solid;
+	left: 2px;
+	right: 2px;
+	z-index: 0;
+}
+
+[class^="cnrs-dm-map-hotspot"] {
+	display: block;
+	width: 3em;
+	height: 3em;
+	cursor: pointer;
+	border-radius: 50%;
+	pointer-events: all;
+	transform: translate(-50%, -50%);
+}
+
+.cnrs-dm-map-hotspot-hologram {
+	display: block;
+	width: 2em;
+	height: 2em;
+	cursor: pointer;
+	pointer-events: all;
+	transform: translate(-50%, -50%);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-image: url("/wp-content/plugins/cnrs-data-manager/assets/media/maps/hologram/hologram-shine.svg");
+	animation: pulse 1s infinite;
+}
+
+.cnrs-dm-map-hotspot::before {
+	background-color: white;
+}
+
+.cnrs-dm-map-hotspot-news::before {
+	background-color: red;
+}
+
+.cnrs-dm-map-hotspot-classic::before {
+	background-color: goldenrod;
+}
+
+[class^="cnrs-dm-map-hotspot"]::before {
+	content: "";
+	position: absolute;
+	left: 0.75em;
+	top: 0.75em;
+	width: 1.5em;
+	height: 1.5em;
+	opacity: 0.7;
+	border-radius: 50%;
+}
+[class^="cnrs-dm-map-hotspot"]:hover::before {
+	opacity: 1;
+}
+
+.cnrs-dm-map-hotspot::after {
+	border: 1px white solid;
+}
+
+.cnrs-dm-map-hotspot-news::after {
+	border: 1px red solid;
+}
+
+.cnrs-dm-map-hotspot-classic::after {
+	border: 1px goldenrod solid;
+}
+
+[class^="cnrs-dm-map-hotspot"]::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 1.5em;
+	height: 1.5em;
+	opacity: 0.8;
+	border-radius: 50%;
+	transform: translate(-50%, -50%) scale(1);
+	animation: pulse 2s infinite;
+}
+
+[class^="cnrs-dm-map-hotspot"]+ [class^="cnrs-dm-map-hotspot"]::after {
+	animation-delay: 1.5s;
+}
+
+@keyframes pulse {
+	0% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+	50%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(2.5); }
+}
+
+.cnrs-dm-map-label {
+	background-color: #fff;
+	color: #3c3c3c;
+}
+
+.cnrs-dm-map-label-news {
+	background-color: red;
+	color: #fff;
+}
+
+.cnrs-dm-map-label-classic {
+	background-color: #3c3c3c;
+	color: #fff;
+}
+
+.cnrs-dm-map-label-hologram {
+	background-color: transparent;
+	color: yellow;
+}
+
+[class^="cnrs-dm-map-label"] {
+	padding: 0 10px;
+	border-radius: 6px;
+	font-family: inherit, sans-serif;
+	font-size: 15px;
+	text-align: center;
+	position: relative;
+	transform: translate(-50%, 0);
+}
+
+[class^="cnrs-dm-map-label"] span {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+[class^="cnrs-dm-map-label"] span strong {
+	position: relative;
+	z-index: 2;
+}
+
+.cnrs-dm-map-label span svg {
+	background-color: #fff;
+	outline: 4px solid #fff;
+}
+
+.cnrs-dm-map-label span svg path {
+	fill: #3c3c3c;
+}
+
+.cnrs-dm-map-label-news span svg {
+	background-color: red;
+	outline: 4px solid red;
+}
+
+.cnrs-dm-map-label-hologram span svg {
+	background-color: transparent;
+	outline: 4px solid transparent;
+}
+
+.cnrs-dm-map-label-classic span svg {
+	background-color: #3c3c3c;
+	outline: 4px solid #3c3c3c;
+}
+
+.cnrs-dm-map-label-news span svg path, .cnrs-dm-map-label-classic span svg path {
+	fill: #fff;
+}
+
+.cnrs-dm-map-label-hologram span svg path {
+	fill: yellow;
+}
+
+[class^="cnrs-dm-map-label"] span svg {
+	position: absolute;
+	border-radius: 600px;
+	border: none;
+	z-index: 1;
+	bottom: 100%;
+	width: 20px;
+	height: 20px;
+}

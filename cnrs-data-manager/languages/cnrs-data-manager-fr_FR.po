@@ -1,0 +1,717 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CNRS Data Manager\n"
+"POT-Creation-Date: 2024-02-06 17:57+0100\n"
+"PO-Revision-Date: 2024-02-06 18:12+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: cnrs-data-manager.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: src/Core/Bootstrap.php:136
+msgid "My JRU"
+msgstr "Mon UMR"
+
+#: src/Core/Bootstrap.php:178 src/Core/Bootstrap.php:179
+#: src/Core/Views/Dashboard.php:38
+msgid "Dashboard"
+msgstr "Général"
+
+#: src/Core/Bootstrap.php:188 src/Core/Bootstrap.php:189
+#: src/Core/Views/Tools.php:18
+msgid "Tools"
+msgstr "Outils"
+
+#: src/Core/Bootstrap.php:198 src/Core/Bootstrap.php:199
+#: src/Core/Views/MapSettings.php:16
+msgid "3D Map"
+msgstr "Carte 3D"
+
+#: src/Core/Bootstrap.php:208 src/Core/Bootstrap.php:209
+#: src/Core/Views/Settings.php:16
+msgid "Settings"
+msgstr "Paramètres"
+
+#: src/Core/Views/Agents.php:7
+msgid "Display"
+msgstr "Affichage"
+
+#: src/Core/Views/Dashboard.php:12
+msgid "Name"
+msgstr "Nom"
+
+#: src/Core/Views/Dashboard.php:12
+msgid "Description"
+msgstr "Description"
+
+#: src/Core/Views/Dashboard.php:15 src/Core/Views/Dashboard.php:128
+#: src/Core/Views/Dashboard.php:194
+msgid "Identity"
+msgstr "Identité"
+
+#: src/Core/Views/Dashboard.php:16
+msgid "Status"
+msgstr "Statut"
+
+#: src/Core/Views/Dashboard.php:17
+msgid "Guardianship"
+msgstr "Tutelle"
+
+#: src/Core/Views/Dashboard.php:18 src/Core/Views/Dashboard.php:48
+#: src/Core/Views/Settings.php:159 src/Core/Views/Settings.php:198
+msgid "Teams"
+msgstr "Equipes"
+
+#: src/Core/Views/Dashboard.php:19 src/Core/Views/Dashboard.php:49
+#: src/Core/Views/Settings.php:120 src/Core/Views/Settings.php:199
+msgid "Services"
+msgstr "Services"
+
+#: src/Core/Views/Dashboard.php:20 src/Core/Views/Dashboard.php:50
+#: src/Core/Views/Settings.php:121 src/Core/Views/Settings.php:160
+msgid "Platforms"
+msgstr "Plateformes"
+
+#: src/Core/Views/Dashboard.php:24
+msgid "No result found in teams."
+msgstr "Aucun résultat n’a été trouvé dans les équipes."
+
+#: src/Core/Views/Dashboard.php:26
+msgid "No result found in services."
+msgstr "Aucun résultat n’a été trouvé dans les services."
+
+#: src/Core/Views/Dashboard.php:28
+msgid "No result found in platforms."
+msgstr "Aucun résultat n’a été trouvé dans les plateformes."
+
+#: src/Core/Views/Dashboard.php:30
+msgid "No result found in agents."
+msgstr "Aucun résultat n’a été trouvé dans les agents."
+
+#: src/Core/Views/Dashboard.php:40
+msgid ""
+"In this section, you will find an overview of the information provided by "
+"the XML file containing the data updated by the CNRS IS."
+msgstr ""
+"Dans cette rubrique, vous trouverez un aperçu des informations fournies par "
+"le fichier XML contenant les données mises à jour par le SI du CNRS."
+
+#: src/Core/Views/Dashboard.php:41
+msgid ""
+"Select a data type using the selection field below to browse results for "
+"teams, services, platforms or agents."
+msgstr ""
+"Sélectionnez un type de données à l’aide du champ de sélection ci-dessous "
+"pour parcourir les résultats des équipes, des services, des plateformes ou "
+"des agents."
+
+#: src/Core/Views/Dashboard.php:45
+msgid "Choose a data type"
+msgstr "Choisir un type de données"
+
+#: src/Core/Views/Dashboard.php:51
+msgid "Agents"
+msgstr "Agents"
+
+#: src/Core/Views/Dashboard.php:58
+msgid "Total"
+msgstr "Total"
+
+#: src/Core/Views/Dashboard.php:62 src/Core/Views/Dashboard.php:67
+msgid "Search"
+msgstr "Rechercher"
+
+#: src/Core/Views/Dashboard.php:73
+msgid ""
+"Either the data source does not contain any results or you need to modify "
+"your search."
+msgstr ""
+"Soit la source de données ne contient aucun résultat, soit vous devez "
+"modifier votre recherche."
+
+#: src/Core/Views/Dashboard.php:78 src/Core/Views/Dashboard.php:206
+msgid "Select items number per page."
+msgstr "Sélectionnez le nombre d’articles par page."
+
+#: src/Core/Views/Dashboard.php:80 src/Core/Views/Dashboard.php:208
+msgid "5 items per page"
+msgstr "5 éléments par page"
+
+#: src/Core/Views/Dashboard.php:81 src/Core/Views/Dashboard.php:209
+msgid "10 items per page"
+msgstr "10 éléments par page"
+
+#: src/Core/Views/Dashboard.php:82 src/Core/Views/Dashboard.php:210
+msgid "20 items per page"
+msgstr "20 éléments par page"
+
+#: src/Core/Views/Dashboard.php:83 src/Core/Views/Dashboard.php:211
+msgid "50 items per page"
+msgstr "50 articles par page"
+
+#: src/Core/Views/Dashboard.php:85 src/Core/Views/Dashboard.php:213
+msgid "Apply"
+msgstr "Appliquer"
+
+#: src/Core/Views/Dashboard.php:89 src/Core/Views/Dashboard.php:217
+msgid "elements"
+msgstr "éléments"
+
+#: src/Core/Views/Dashboard.php:93 src/Core/Views/Dashboard.php:221
+msgid "First page"
+msgstr "Première page"
+
+#: src/Core/Views/Dashboard.php:96 src/Core/Views/Dashboard.php:224
+msgid "Previous page"
+msgstr "Page précédente"
+
+#: src/Core/Views/Dashboard.php:103 src/Core/Views/Dashboard.php:230
+msgid "Current page"
+msgstr "Page actuelle"
+
+#: src/Core/Views/Dashboard.php:105 src/Core/Views/Dashboard.php:232
+msgid "of"
+msgstr "sur"
+
+#: src/Core/Views/Dashboard.php:109 src/Core/Views/Dashboard.php:236
+msgid "Next page"
+msgstr "Page suivante"
+
+#: src/Core/Views/Dashboard.php:112 src/Core/Views/Dashboard.php:239
+msgid "Last page"
+msgstr "Dernière page"
+
+#: src/Core/Views/Dashboard.php:123
+msgid "Table ordered hierarchically."
+msgstr "Tableau ordonné hiérarchiquement."
+
+#: src/Core/Views/Dashboard.php:123
+msgid "Ascending."
+msgstr "Croissant."
+
+#: src/Core/Views/Dashboard.php:150
+msgid "No authorization for the distribution of the avatar."
+msgstr "Pas d’autorisation pour la distribution de l’avatar."
+
+#: src/Core/Views/Dashboard.php:152 src/Core/Views/Dashboard.php:176
+msgid "No description"
+msgstr "Pas de description"
+
+#: src/Core/Views/Dashboard.php:179
+msgid "Show more details"
+msgstr "Afficher plus de détails"
+
+#: src/Core/Views/MapSettings.php:19
+msgid ""
+"In this section, you will be able to configure the display of the <b>3D "
+"world map</b> to firstly specify the position coordinates of the default "
+"map, then define all the markers you need with the <b>GPS coordinates</b> "
+"and the name of each marker."
+msgstr ""
+"Dans cette section, vous pourrez configurer l’affichage de la carte <b>du "
+"monde 3D</b> pour spécifier d’abord les coordonnées de position de la carte "
+"par défaut, puis définir tous les marqueurs dont vous avez besoin avec les "
+"<b>coordonnées GPS</b> et le nom de chaque marqueur."
+
+#: src/Core/Views/MapSettings.php:21
+msgid ""
+"You will also be able to <b>configure the type of display</b> as well as all "
+"the options allowing you to define the rendering of the 3D world map."
+msgstr ""
+"Vous pourrez également <b>configurer le type d’affichage</b> ainsi que "
+"toutes les options vous permettant de définir le rendu de la carte du monde "
+"en 3D."
+
+#: src/Core/Views/MapSettings.php:24
+msgid "Map Options"
+msgstr "Options de la carte"
+
+#: src/Core/Views/MapSettings.php:25
+msgid "Preview"
+msgstr "Aperçu"
+
+#: src/Core/Views/MapSettings.php:32
+msgid "Localize me"
+msgstr "Localisez moi"
+
+#: src/Core/Views/MapSettings.php:34
+msgid "Geolocation not supported"
+msgstr "La géolocalisation n’est pas prise en charge"
+
+#: src/Core/Views/MapSettings.php:43
+msgid "Default latitude"
+msgstr "Latitude par défaut"
+
+#: src/Core/Views/MapSettings.php:53
+msgid "Default longitude"
+msgstr "Longitude par défaut"
+
+#: src/Core/Views/MapSettings.php:63
+msgid "Map view"
+msgstr "Vue carte"
+
+#: src/Core/Views/MapSettings.php:67
+msgid "Space"
+msgstr "Espace"
+
+#: src/Core/Views/MapSettings.php:68
+msgid "Hologram"
+msgstr "Hologramme"
+
+#: src/Core/Views/MapSettings.php:69
+msgid "News"
+msgstr "Actualités"
+
+#: src/Core/Views/MapSettings.php:70
+msgid "Classic"
+msgstr "Classique"
+
+#: src/Core/Views/MapSettings.php:71
+msgid "Cork"
+msgstr "Liège"
+
+#: src/Core/Views/MapSettings.php:77
+msgid "Solar illumination effect"
+msgstr "Effet d’éclairage solaire"
+
+#: src/Core/Views/MapSettings.php:82 src/Core/Views/MapSettings.php:99
+#: src/Core/Views/MapSettings.php:116 src/Core/Views/MapSettings.php:134
+#: src/Core/Views/Settings.php:134 src/Core/Views/Settings.php:173
+#: src/Core/Views/Settings.php:212
+msgid "Yes"
+msgstr "Oui"
+
+#: src/Core/Views/MapSettings.php:87 src/Core/Views/MapSettings.php:104
+#: src/Core/Views/MapSettings.php:121 src/Core/Views/MapSettings.php:139
+#: src/Core/Views/Settings.php:135 src/Core/Views/Settings.php:174
+#: src/Core/Views/Settings.php:213
+msgid "No"
+msgstr "Non"
+
+#: src/Core/Views/MapSettings.php:94
+msgid "Star Generator"
+msgstr "Générateur d’étoiles"
+
+#: src/Core/Views/MapSettings.php:111
+msgid "Black background"
+msgstr "Fond noir"
+
+#: src/Core/Views/MapSettings.php:129
+msgid "Atmosphere"
+msgstr "Atmosphère"
+
+#: src/Core/Views/MapSettings.php:146
+msgid "Map preview"
+msgstr "Aperçu de la carte"
+
+#: src/Core/Views/MapSettings.php:149
+msgid "Refresh"
+msgstr "Actualiser"
+
+#: src/Core/Views/MapSettings.php:154
+msgid "Close"
+msgstr "Fermer"
+
+#: src/Core/Views/MapSettings.php:186 src/Core/Views/Settings.php:230
+#: src/Core/Views/Tools.php:85 src/Core/Views/Tools.php:130
+#: src/Core/Views/Tools.php:175
+msgid "Update"
+msgstr "Mettre à jour"
+
+#: src/Core/Views/MapSettings.php:191
+msgid "Markers"
+msgstr "Marqueurs"
+
+#: src/Core/Views/MapSettings.php:192 src/Core/Views/MapSettings.php:230
+msgid "Latitude"
+msgstr "Latitude"
+
+#: src/Core/Views/MapSettings.php:192 src/Core/Views/MapSettings.php:240
+msgid "Longitude"
+msgstr "Longitude"
+
+#: src/Core/Views/MapSettings.php:192 src/Core/Views/MapSettings.php:214
+msgid "Title"
+msgstr "Titre"
+
+#: src/Core/Views/MapSettings.php:192 src/Core/Views/MapSettings.php:250
+msgid "Delete"
+msgstr "Supprimer"
+
+#: src/Core/Views/MapSettings.php:201
+msgid "Add a new marker"
+msgstr "Ajouter un nouveau marqueur"
+
+#: src/Core/Views/MapSettings.php:261
+msgid "Please add your first marker by clicking on the button above."
+msgstr ""
+"Veuillez ajouter votre premier marqueur en cliquant sur le bouton ci-dessus."
+
+#: src/Core/Views/MapSettings.php:263
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: src/Core/Views/NoResult.php:1
+msgid ""
+"No agents to display at this time. Please check the URL of the requested "
+"page, or try again later."
+msgstr ""
+"Aucun agent à afficher pour le moment. Veuillez vérifier l’URL de la page "
+"demandée ou réessayer plus tard."
+
+#: src/Core/Views/Settings.php:19
+msgid "Here you can update the settings of the CNRS Data Manager extension."
+msgstr ""
+"Ici, vous pouvez mettre à jour les paramètres de l’extension CNRS Data "
+"Manager."
+
+#: src/Core/Views/Settings.php:21
+msgid ""
+"In order to save your changes, please click on the <b>Update</b> button."
+msgstr ""
+"Afin d’enregistrer vos modifications, veuillez cliquer sur le bouton "
+"<b>Mettre à jour</b> ."
+
+#: src/Core/Views/Settings.php:31
+msgid "XML file name"
+msgstr "Nom du fichier XML"
+
+#: src/Core/Views/Settings.php:35
+msgid "The field cannot be empty and has a maximum of 100 characters."
+msgstr ""
+"Le champ ne peut pas être vide et comporte un maximum de 100 caractères."
+
+#: src/Core/Views/Settings.php:42
+msgid "List display mode"
+msgstr "Mode d’affichage de la liste"
+
+#: src/Core/Views/Settings.php:47
+msgid "Widget"
+msgstr "Widget"
+
+#: src/Core/Views/Settings.php:48
+msgid "Page"
+msgstr "Page"
+
+#: src/Core/Views/Settings.php:58
+msgid ""
+"The <b>CNRS Data Manager</b> extension uses Shortcodes to be able to render "
+"the different views. You can use the <b>Filter</b> and <b>Default View</b> "
+"options in order to best personalize the renderings according to your "
+"integration."
+msgstr ""
+"L’extension <b>CNRS Data Manager</b> utilise des Shortcodes pour pouvoir "
+"restituer les différentes vues. Vous pouvez utiliser les options <b>Filtre</"
+"b> et <b>Vue par défaut</b> afin de personnaliser au mieux les rendus en "
+"fonction de votre intégration."
+
+#: src/Core/Views/Settings.php:65
+msgid "Agents directory"
+msgstr "Annuaire des agents"
+
+#: src/Core/Views/Settings.php:70 src/Core/Views/Settings.php:86
+#: src/Core/Views/Settings.php:140 src/Core/Views/Settings.php:179
+#: src/Core/Views/Settings.php:218
+msgid "Copied to clipboard"
+msgstr "Copié dans le presse-papier"
+
+#: src/Core/Views/Settings.php:81
+msgid "3D Map builder"
+msgstr "Constructeur de cartes 3D"
+
+#: src/Core/Views/Settings.php:98
+msgid ""
+"To allow the extension to link the data in the XML file to the corresponding "
+"categories, please select for teams, services and platforms a category for "
+"each of its entities."
+msgstr ""
+"Pour permettre à l’extension de lier les données du fichier XML aux "
+"catégories correspondantes, veuillez sélectionner pour les équipes, les "
+"services et les plateformes une catégorie pour chacune de ses entités."
+
+#: src/Core/Views/Settings.php:100
+msgid ""
+"Once selected, you can, in the <b>Options</b> tab, assign each team, "
+"services and platforms to the corresponding categorized articles, thus "
+"allowing you to link the agents to the different entities in the WordPress "
+"application."
+msgstr ""
+"Une fois sélectionné, vous pouvez, dans l’onglet <b>Options</b> , affecter "
+"chaque équipe, service et plateforme aux articles catégorisés "
+"correspondants, vous permettant ainsi de lier les agents aux différentes "
+"entités de l’application WordPress."
+
+#: src/Core/Views/Settings.php:103
+msgid ""
+"As you make your choices, the <b>generated shortcode</b> must be copied then "
+"pasted into the text space of your choice in the articles or pages of your "
+"choice, while of course respecting the operating logic of the extension, "
+"either in the articles whose categories have been assigned or in the pages "
+"whose url will provide the key/value expected by the extension to display "
+"the expected rendering."
+msgstr ""
+"Au fur et à mesure de vos choix, le <b>shortcode généré</b> doit être copié "
+"puis collé dans l’espace texte de votre choix dans les articles ou pages de "
+"votre choix, tout en respectant bien sûr la logique de fonctionnement de "
+"l’extension, que ce soit dans les articles dont les catégories ont été "
+"attribuées ou dans les pages dont l’url fournira la clé/valeur attendue par "
+"l’extension pour afficher le rendu attendu."
+
+#: src/Core/Views/Settings.php:106
+msgid ""
+"The filter and view selectors are not dynamic and just allow you to generate "
+"the shortcode to use. On the other hand, the <b>Show view selector</b> "
+"selector is dynamic and will be saved in the database."
+msgstr ""
+"Les sélecteurs de filtre et de vue ne sont pas dynamiques et permettent "
+"simplement de générer le shortcode à utiliser. D’autre part, le <b>sélecteur "
+"de vue Show est</b> dynamique et sera enregistré dans la base de données."
+
+#: src/Core/Views/Settings.php:112 src/Core/Views/Tools.php:47
+msgid "Assign a category to teams"
+msgstr "Attribuer une catégorie aux équipes"
+
+#: src/Core/Views/Settings.php:117 src/Core/Views/Settings.php:156
+#: src/Core/Views/Settings.php:195
+msgid "Filter"
+msgstr "Filtre"
+
+#: src/Core/Views/Settings.php:119 src/Core/Views/Settings.php:158
+#: src/Core/Views/Settings.php:197
+msgid "None"
+msgstr "Aucun"
+
+#: src/Core/Views/Settings.php:125 src/Core/Views/Settings.php:164
+#: src/Core/Views/Settings.php:203
+msgid "Default view"
+msgstr "Vue par défaut"
+
+#: src/Core/Views/Settings.php:127 src/Core/Views/Settings.php:166
+#: src/Core/Views/Settings.php:205
+msgid "List"
+msgstr "Liste"
+
+#: src/Core/Views/Settings.php:128 src/Core/Views/Settings.php:167
+#: src/Core/Views/Settings.php:206
+msgid "Grid"
+msgstr "Grille"
+
+#: src/Core/Views/Settings.php:132 src/Core/Views/Settings.php:171
+#: src/Core/Views/Settings.php:210
+msgid "Show view selector"
+msgstr "Afficher le sélecteur de vue"
+
+#: src/Core/Views/Settings.php:151 src/Core/Views/Tools.php:92
+msgid "Assign a category to services"
+msgstr "Attribuer une catégorie aux services"
+
+#: src/Core/Views/Settings.php:190 src/Core/Views/Tools.php:137
+msgid "Assign a category to platforms"
+msgstr "Attribuer une catégorie aux plateformes"
+
+#: src/Core/Views/Tools.php:21
+msgid "The files have been restored."
+msgstr "Les fichiers ont été restaurés."
+
+#: src/Core/Views/Tools.php:23
+msgid ""
+"The <b>Tools</b> section allows you to assign entities from the XML file to "
+"those created in WordPress. The extension will then be able to find the "
+"agents belonging to each entity in order to be able to filter their "
+"affiliations in the public part of WordPress."
+msgstr ""
+"La section <b>Outils</b> vous permet d’affecter des entités du fichier XML à "
+"celles créées dans WordPress. L’extension pourra alors retrouver les agents "
+"appartenant à chaque entité afin de pouvoir filtrer leurs affiliations dans "
+"la partie publique de WordPress."
+
+#: src/Core/Views/Tools.php:24
+msgid ""
+"You can also decide to restore the initial state of the files provided by "
+"the extension listed below used for style, javascript and php template"
+msgstr ""
+"Vous pouvez également décider de restaurer l’état initial des fichiers "
+"fournis par l’extension listée ci-dessous utilisée pour le style, le "
+"javascript et le template php"
+
+#: src/Core/Views/Tools.php:26
+msgid ""
+"The <b>CSS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-"
+"style.css</i></b>"
+msgstr ""
+"Le fichier <b>CSS</b> <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-"
+"style.css</i></b>"
+
+#: src/Core/Views/Tools.php:27
+msgid ""
+"The <b>JS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-"
+"script.js</i></b>"
+msgstr ""
+"Le fichier <b>JS</b><b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-"
+"script.js</i></b>"
+
+#: src/Core/Views/Tools.php:28
+msgid ""
+"The <b>PHP</b> template file for displaying agents in a list <b><i>/wp-"
+"includes/cnrs-data-manager/templates/cnrs-data-manager-inline.php</i></b>"
+msgstr ""
+"Le fichier de template <b>PHP</b> pour l’affichage des agents dans une liste "
+"<b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-inline.php</"
+"i></b>"
+
+#: src/Core/Views/Tools.php:29
+msgid ""
+"The <b>PHP</b> template file for the agent card display <b><i>/wp-includes/"
+"cnrs-data-manager/templates/cnrs-data-manager-card.php</i></b>"
+msgstr ""
+"Le fichier de template <b>PHP</b> pour la carte de l’agent affiche <b><i>/wp-"
+"includes/cnrs-data-manager/templates/cnrs-data-manager-card.php</i></b>"
+
+#: src/Core/Views/Tools.php:30
+msgid ""
+"The <b>PHP</b> template file for the full agent list item <b><i>/wp-includes/"
+"cnrs-data-manager/templates/cnrs-data-manager-list-item.php</i></b>"
+msgstr ""
+"Le fichier <b>de modèle PHP</b> pour l’élément complet de la liste des "
+"agents <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-list-"
+"item.php</i></b>"
+
+#: src/Core/Views/Tools.php:31
+msgid ""
+"The <b>PHP</b> template file for the entity title if display mode is sorted "
+"<b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-sorted-"
+"title.php</i></b>"
+msgstr ""
+"Le fichier <b>de template PHP</b> pour le titre de l’entité si le mode "
+"d’affichage est trié <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-"
+"data-manager-sorted-title.php</i></b>"
+
+#: src/Core/Views/Tools.php:32
+msgid ""
+"The <b>SVG</b> file for the list view button <b><i>/wp-includes/cnrs-data-"
+"manager/svg/list.svg</i></b>"
+msgstr ""
+"Le fichier <b>SVG</b> pour le bouton d’affichage de liste <b><i>/wp-includes/"
+"cnrs-data-manager/svg/list.svg</i></b>"
+
+#: src/Core/Views/Tools.php:33
+msgid ""
+"The <b>SVG</b> file for the grid view button <b><i>/wp-includes/cnrs-data-"
+"manager/svg/grid.svg</i></b>"
+msgstr ""
+"Le fichier <b>SVG</b> pour le bouton d’affichage en grille <b><i>/wp-"
+"includes/cnrs-data-manager/svg/grid.svg</i></b>"
+
+#: src/Core/Views/Tools.php:36
+msgid ""
+"These files allow you to customize the rendering of agents in the front part "
+"of <b>WordPress</b>."
+msgstr ""
+"Ces fichiers vous permettent de personnaliser le rendu des agents dans la "
+"partie avant de <b>WordPress</b>."
+
+#: src/Core/Views/Tools.php:38
+msgid ""
+"Keep in mind that the files must keep <b>the same name and path</b>. Only "
+"the content can be modified at your convenience for personalization."
+msgstr ""
+"Gardez à l’esprit que les fichiers doivent conserver le même <b>nom et le "
+"même chemin d’accès</b>. Seul le contenu peut être modifié à votre "
+"convenance pour la personnalisation."
+
+#: src/Core/Views/Tools.php:42
+msgid "Restore files"
+msgstr "Restaurer les fichiers"
+
+#: src/Core/Views/Tools.php:48 src/Core/Views/Tools.php:93
+#: src/Core/Views/Tools.php:138
+msgid "Category"
+msgstr "Catégorie"
+
+#: src/Core/Views/Tools.php:64 src/Core/Views/Tools.php:109
+#: src/Core/Views/Tools.php:154
+msgid "Select a post"
+msgstr "Sélectionner une publication"
+
+#: src/Core/Views/Tools.php:70 src/Core/Views/Tools.php:115
+#: src/Core/Views/Tools.php:160
+msgid "No article available for this category."
+msgstr "Aucun article n’est disponible pour cette catégorie."
+
+#: src/Tools/helper.php:348
+msgid "Unspecified"
+msgstr "Non spécifié"
+
+#: src/Tools/helper.php:351
+msgid "Mister"
+msgstr "Monsieur"
+
+#: src/Tools/helper.php:353
+msgid "Misses"
+msgstr "Madame"
+
+#: src/Utils/CnrsDataManagerPhpVersionCheck.php:58
+#, php-format
+msgid ""
+"CNRS Data Manager: Your system is running a very old version of PHP (%s) "
+"that is no longer supported by CNRS Data Manager.  "
+msgstr ""
+"CNRS Data Manager : Votre système exécute une très ancienne version de PHP "
+"(%s) qui n’est plus supportée par CNRS Data Manager.  "
+
+#: src/Utils/CnrsDataManagerPhpVersionCheck.php:68
+#, php-format
+msgid ""
+"Please ask your host or server administrator to update to PHP %1s or greater."
+msgstr ""
+"Veuillez demander à votre hôte ou administrateur de serveur de mettre à jour "
+"vers PHP %1s ou une version ultérieure."
+
+#: src/Utils/CnrsDataManagerPhpVersionCheck.php:77
+#, php-format
+msgid ""
+"If this is not possible, please visit the FAQ link titled \n"
+"                            %1$s\"What version of PHP Does CNRS Data Manager "
+"Support?\"%2$s\n"
+"                            for instructions on how to download a previous "
+"version of CNRS Data Manager compatible with PHP %3$s."
+msgstr ""
+"Si cela n'est pas possible, veuillez visiter le lien FAQ intitulé\n"
+"                             %1$s\"Quelle version de PHP le gestionnaire de "
+"données du CNRS prend-il en charge ?\"%2$s\n"
+"                             pour obtenir des instructions sur la façon de "
+"télécharger une version précédente de CNRS Data Manager compatible avec PHP "
+"%3$s."
+
+#. Plugin Name of the plugin/theme
+msgid "CNRS Data Manager"
+msgstr "CNRS Data Manager"
+
+#. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
+msgid "https://github.com/Fred-QS/CNRS-Data-Manager"
+msgstr "https://github.com/Fred-QS/CNRS-Data-Manager"
+
+#. Description of the plugin/theme
+msgid ""
+"Allows Wordpress to be powered by external data provided by an XML file on "
+"the agents, services, platforms and teams of the UMR EPOC."
+msgstr ""
+"Permet d'alimenter Wordpress à partir de données externes fournies par un "
+"fichier XML sur les agents, services, plateformes et équipes de l'UMR EPOC."
+
+#. Author of the plugin/theme
+msgid "QS Conseils"
+msgstr "QS Conseils"
