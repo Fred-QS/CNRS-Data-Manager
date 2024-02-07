@@ -1,0 +1,1 @@
+<p class="cnrs-dm-front-no-result"><?= __('No agents to display at this time. Please check the URL of the requested page, or try again later.') ?></p>
