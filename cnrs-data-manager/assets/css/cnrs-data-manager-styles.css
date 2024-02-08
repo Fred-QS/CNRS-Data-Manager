@@ -537,6 +537,27 @@ label[for="cnrs-dm-filename"] {
     }
 }
 
+#cnrs-dm-import-file,
+#cnrs-dm-file-import-form-submit {
+    display: none;
+}
+
+#cnrs-dm-import-file-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#cnrs-dm-import-file-btn svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+#cnrs-dm-import-file-btn svg path {
+    fill: #fff;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;

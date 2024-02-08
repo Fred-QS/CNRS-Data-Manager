@@ -12,6 +12,7 @@ namespace CnrsDataManager\Core;
 use CnrsDataManager\Core\Install;
 use CnrsDataManager\Core\Controllers\Manager;
 use CnrsDataManager\Core\Controllers\HttpClient;
+use CnrsDataManager\Core\Controllers\Ajax;
 use CnrsDataManager\Core\Models\Settings;
 
 class Bootstrap
@@ -29,6 +30,7 @@ class Bootstrap
         define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
 
         if (is_admin()) {
+            Ajax::registerHooks();
             Install::registerHooks();
             add_action('plugins_loaded', array(__CLASS__, 'loadTextDomain'));
         }
@@ -52,7 +54,7 @@ class Bootstrap
             add_action('admin_menu', array(__CLASS__, 'menuInit'));
             add_filter('admin_body_class', array(__CLASS__, 'addBodyClass'));
             add_filter('plugin_action_links', array(__CLASS__, 'manageLink'), 10, 2);
-            //add_filter( 'plugin_row_meta', 'infoModalCall', 10, 2 );
+
             if (isset($_POST['cnrs-dm-restore']) && stripslashes($_POST['cnrs-dm-restore']) === 'restore') {
                 cnrs_remove_folders();
             }

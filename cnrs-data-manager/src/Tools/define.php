@@ -20,6 +20,7 @@ define('CNRS_DATA_MANAGER_ICON', 'data:image/svg+xml;base64,' . base64_encode(CN
 define('CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH', ABSPATH . '/wp-includes/cnrs-data-manager/templates');
 define('CNRS_DATA_MANAGER_DEPORTED_SVG_PATH', ABSPATH . '/wp-includes/cnrs-data-manager/svg');
 define('CNRS_DATA_MANAGER_LIMIT_OFFSET', 5);
+define('CNRS_DATA_MANAGER_IMPORT_TMP_PATH', CNRS_DATA_MANAGER_PATH . '/tmp');
 
 if (function_exists('plugin_dir_url')) {
 

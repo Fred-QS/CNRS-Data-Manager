@@ -29,5 +29,4 @@ if (CnrsDataManagerPhpVersionCheck::check(CNRS_DATA_MANAGER_PHP_MINIMUM_VERSION,
     return;
 }
 $currentPluginBootFile = __FILE__;
-
 require_once dirname(__FILE__) . '/src/cnrs-main.php';

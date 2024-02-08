@@ -37,7 +37,12 @@ const filnameStates = document.querySelectorAll('.cnrs-dm-filename-states');
 const filenameStateOk = document.querySelector('#cnrs-dm-filename-good');
 const filenameStateKo = document.querySelector('#cnrs-dm-filename-bad');
 const filenameStateRefresh = document.querySelector('#cnrs-dm-filename-refresh');
+const fileImportForm = document.querySelector('#cnrs-dm-file-import-form');
+const fileImportInput = document.querySelector('#cnrs-dm-import-file');
+const fileImportBtn = document.querySelector('#cnrs-dm-import-file-btn');
+const fileImportSubmitBtn = document.querySelector('#cnrs-dm-file-import-form-submit');
 let filenameTimeout;
+let xlsFile = null;
 
 prepareListeners();
 
@@ -177,6 +182,54 @@ function prepareListeners() {
             deleteMarker();
             addKeyupOnCoordsInput();
         });
+    }
+
+    if (fileImportForm) {
+
+        fileImportForm.addEventListener('submit', function (e){
+            e.preventDefault();
+            if (fileImportInput.files[0]) {
+                xlsFile = fileImportInput.files[0];
+                const formData = new FormData();
+                const url = '/wp-admin/admin-ajax.php';
+                formData.append('file', fileImportInput.files[0]);
+                formData.append('action', 'check_xml_file');
+                fileImportInput.value = null;
+                const options = {
+                    method: 'POST',
+                    body: formData,
+                };
+                fetch(url, options)
+                    .then(
+                        response => response.json()
+                    ).then(
+                        success => handleXMLCheckResult(success.data)
+                    ).catch(
+                        //error => handleXMLCheckResult({error: fileImportInput.dataset.error, data: null})
+                        error => handleXMLCheckResult({error: error, data: null})
+                    );
+            }
+        });
+
+        fileImportBtn.addEventListener('click', function(){
+            fileImportInput.click();
+        });
+
+        fileImportInput.addEventListener('input', function(e){
+            if (e.target.files.length === 1 && e.target.files[0].type === 'application/zip') {
+                xlsFile = null;
+                fileImportSubmitBtn.click();
+            }
+        });
+    }
+}
+
+function handleXMLCheckResult(json) {
+    if (json.error === null) {
+        let xlsArray = json.data;
+        console.log(xlsFile, xlsArray)
+    } else {
+        console.log(json.error);
     }
 }
 

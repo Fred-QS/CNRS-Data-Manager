@@ -15,6 +15,7 @@ namespace CnrsDataManager\Utils;
 final class Autoloader
 {
     const ROOT_NAMESPACE           = 'CnrsDataManager\\';
+    const ROOT_NAMESPACE_SPREADSHEET           = 'PhpOffice\\PhpSpreadsheet';
 
     protected static $nameSpacesMapping = null;
 
