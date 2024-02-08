@@ -176,7 +176,7 @@ input[name="cnrs-dm-filename"].too-large, .cnrs-dm-error {
     font-size: 12px;
 }
 
-.my-umr_page_tools .form-table tr > * {
+body[class*="data-manager-tools"] .form-table tr > * {
     padding-bottom: 5px!important;
 }
 
@@ -480,8 +480,61 @@ input[name="cnrs-dm-filename"].too-large, .cnrs-dm-error {
     margin-top: 10px;
 }
 
+label[for="cnrs-dm-filename"] {
+    position: relative;
+}
+
 #cnrs-dm-page-option-shortcode.hide {
     display: none;
+}
+
+.cnrs-dm-filename-states-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    right: -24px;
+    top: 0;
+    z-index: 1;
+}
+
+.cnrs-dm-display-state {
+    display: flex!important;
+}
+
+.cnrs-dm-filename-states {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    transform-origin: 50% 50%;
+}
+
+#cnrs-dm-filename-bad path {
+    fill: red;
+}
+
+#cnrs-dm-filename-good path {
+    fill: green;
+}
+
+#cnrs-dm-filename-refresh path {
+    fill: #2271b1;
+}
+
+#cnrs-dm-filename-refresh {
+    animation: rotateState linear 1s infinite;
+}
+
+@keyframes rotateState {
+    0% {
+        transform: rotate(0);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @media only screen and (min-width: 783px) {
@@ -636,7 +689,9 @@ input[name="cnrs-dm-filename"].too-large, .cnrs-dm-error {
         padding-right: 50px;
     }
 
-    .my-umr_page_tools p.submit, .my-umr_page_settings p.submit, .my-umr_page_3D-map p.submit {
+    body[class*="data-manager-tools"] p.submit,
+    body[class*="data-manager-settings"] p.submit,
+    body[class*="data-manager-3D-map"] p.submit {
         text-align: center;
         margin-left: auto;
         margin-right: auto;

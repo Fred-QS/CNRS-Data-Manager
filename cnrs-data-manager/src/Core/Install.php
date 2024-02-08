@@ -64,7 +64,7 @@ class Install
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='CNRS Data Manager relation table between terms and XML data'"
         );
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_settings (
-              filename varchar(100) NOT NULL DEFAULT 'my_umr' COMMENT 'XML filename without extension.',
+              filename varchar(255) DEFAULT NULL COMMENT 'XML endpoint url.',
               teams_category int(11) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Category for teams',
               teams_view_selector tinyint(4) NOT NULL DEFAULT 1 COMMENT 'Display teams view selector',
               services_category int(11) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Category for services',

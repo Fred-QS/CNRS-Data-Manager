@@ -2,6 +2,8 @@
 
 namespace CnrsDataManager\Core\Models;
 
+use CnrsDataManager\Core\Controllers\HttpClient;
+
 class Settings
 {
     /**
@@ -20,12 +22,31 @@ class Settings
         return $result[0];
     }
 
+    /**
+     * Updates the filename setting in the WordPress database.
+     *
+     * This method updates the filename setting in the `wp_{$wpdb->prefix}cnrs_data_manager_settings`
+     * table based on the value provided in the $_POST['cnrs-dm-filename'] variable. The new filename
+     * value is prepared using stripslashes() to remove any slashes that might have been added to
+     * escape special characters. The update operation is executed using the global $wpdb object.
+     *
+     * @return void
+     * @global wpdb $wpdb The WordPress database object.
+     */
+    public static function updateFilename(): void
+    {
+        if (isset($_POST['cnrs-dm-filename']) && HttpClient::call($_POST['cnrs-dm-filename'], true)) {
+            global $wpdb;
+            $wpdb->query($wpdb->prepare(
+                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET filename=%s",
+                stripslashes($_POST['cnrs-dm-filename'])
+            ));
+        }
+    }
+
     public static function update(): void
     {
-        if (isset($_POST['cnrs-dm-filename'])
-            && strlen($_POST['cnrs-dm-filename']) > 0
-            && strlen($_POST['cnrs-dm-filename']) <= 100
-            && isset($_POST['cnrs-dm-mode'])
+        if (isset($_POST['cnrs-dm-mode'])
             && isset($_POST['cnrs-dm-selector-teams'])
             && isset($_POST['cnrs-dm-selector-services'])
             && isset($_POST['cnrs-dm-selector-platforms'])
@@ -34,7 +55,6 @@ class Settings
             && isset($_POST['cnrs-data-manager-categories-list-platforms']))
         {
             $post = [
-                'filename' => stripslashes($_POST['cnrs-dm-filename']),
                 'mode' => stripslashes($_POST['cnrs-dm-mode']),
                 'teams_category' => stripslashes($_POST['cnrs-data-manager-categories-list-teams']),
                 'teams_view_selector' => stripslashes($_POST['cnrs-dm-selector-teams']),
@@ -63,8 +83,7 @@ class Settings
             }
 
             $wpdb->query($wpdb->prepare(
-                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET filename=%s,teams_category=%d,teams_view_selector=%d,services_category=%d,services_view_selector=%d,platforms_category=%d,platforms_view_selector=%d,mode=%s",
-                $post['filename'],
+                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category=%d,teams_view_selector=%d,services_category=%d,services_view_selector=%d,platforms_category=%d,platforms_view_selector=%d,mode=%s",
                 $post['teams_category'],
                 $post['teams_view_selector'],
                 $post['services_category'],

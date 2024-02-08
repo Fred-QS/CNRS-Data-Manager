@@ -15,10 +15,6 @@ define('CNRS_DATA_MANAGER_PATH', dirname($currentPluginBootFile));
 define('CNRS_DATA_MANAGER_FILE', $currentPluginBootFile);
 define('CNRS_DATA_MANAGER_PLUGIN_URL', plugins_url('', $currentPluginBootFile));
 
-if (!defined('DMXABSPATH')) {
-    define('DMXABSPATH', dirname(CNRS_DATA_MANAGER_FILE));
-}
-
 require_once(CNRS_DATA_MANAGER_PATH . '/src/Utils/Autoloader.php');
 \CnrsDataManager\Utils\Autoloader::register();
 

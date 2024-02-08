@@ -11,6 +11,8 @@ namespace CnrsDataManager\Core;
 
 use CnrsDataManager\Core\Install;
 use CnrsDataManager\Core\Controllers\Manager;
+use CnrsDataManager\Core\Controllers\HttpClient;
+use CnrsDataManager\Core\Models\Settings;
 
 class Bootstrap
 {
@@ -173,47 +175,10 @@ class Bootstrap
      */
     protected static function getSubmenuItems(): array
     {
-        return [
-            [
-                'parent_slug' => 'cnrs-data-manager',
-                'page_title'  => __('Dashboard', 'cnrs-data-manager'),
-                'menu_title'  => __('Dashboard', 'cnrs-data-manager'),
-                'capability'  => 'manage_options',
-                'menu_slug'   => 'data-manager',
-                'callback'    => function () {
-                    include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Dashboard.php');
-                }
-            ],
-            [
-                'parent_slug'            => 'cnrs-data-manager',
-                'page_title'             => __('Tools', 'cnrs-data-manager'),
-                'menu_title'             => __('Tools', 'cnrs-data-manager'),
-                'capability'             => 'manage_options',
-                'menu_slug'              => 'data-manager-tools',
-                'callback'               => function () {
-                    include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Tools.php');
-                }
-            ],
-            [
-                'parent_slug'            => 'cnrs-data-manager',
-                'page_title'             => __('3D Map', 'cnrs-data-manager'),
-                'menu_title'             => __('3D Map', 'cnrs-data-manager'),
-                'capability'             => 'manage_options',
-                'menu_slug'              => 'data-manager-3D-map',
-                'callback'               => function () {
-                    include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/MapSettings.php');
-                }
-            ],
-            [
-                'parent_slug'            => 'cnrs-data-manager',
-                'page_title'             => __('Import', 'cnrs-data-manager'),
-                'menu_title'             => __('Import', 'cnrs-data-manager'),
-                'capability'             => 'manage_options',
-                'menu_slug'              => 'data-manager-import',
-                'callback'               => function () {
-                    include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Import.php');
-                }
-            ],
+        global $wpdb;
+        $settings = $wpdb->get_results( "SELECT filename FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $filename = $settings[0]['filename'];
+        $menu = [
             [
                 'parent_slug'            => 'cnrs-data-manager',
                 'page_title'             => __('Settings', 'cnrs-data-manager'),
@@ -225,6 +190,52 @@ class Bootstrap
                 }
             ]
         ];
+        if ($filename !== null) {
+            $menuComplete = [
+                [
+                    'parent_slug' => 'cnrs-data-manager',
+                    'page_title'  => __('Dashboard', 'cnrs-data-manager'),
+                    'menu_title'  => __('Dashboard', 'cnrs-data-manager'),
+                    'capability'  => 'manage_options',
+                    'menu_slug'   => 'data-manager',
+                    'callback'    => function () {
+                        include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Dashboard.php');
+                    }
+                ],
+                [
+                    'parent_slug'            => 'cnrs-data-manager',
+                    'page_title'             => __('Tools', 'cnrs-data-manager'),
+                    'menu_title'             => __('Tools', 'cnrs-data-manager'),
+                    'capability'             => 'manage_options',
+                    'menu_slug'              => 'data-manager-tools',
+                    'callback'               => function () {
+                        include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Tools.php');
+                    }
+                ],
+                [
+                    'parent_slug'            => 'cnrs-data-manager',
+                    'page_title'             => __('3D Map', 'cnrs-data-manager'),
+                    'menu_title'             => __('3D Map', 'cnrs-data-manager'),
+                    'capability'             => 'manage_options',
+                    'menu_slug'              => 'data-manager-3D-map',
+                    'callback'               => function () {
+                        include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/MapSettings.php');
+                    }
+                ],
+                [
+                    'parent_slug'            => 'cnrs-data-manager',
+                    'page_title'             => __('Import', 'cnrs-data-manager'),
+                    'menu_title'             => __('Import', 'cnrs-data-manager'),
+                    'capability'             => 'manage_options',
+                    'menu_slug'              => 'data-manager-import',
+                    'callback'               => function () {
+                        include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Import.php');
+                    }
+                ]
+            ];
+            $menu = array_merge($menu, $menuComplete);
+        }
+        return $menu;
     }
 
     /**

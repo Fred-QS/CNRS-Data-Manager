@@ -14,7 +14,7 @@ const limitSelector2 = document.querySelector('#cnrs-data-manager-limit-2');
 const limitInput = document.querySelector('input[name="cnrs-data-manager-limit"]');
 const filenameInput = document.querySelector('input[name="cnrs-dm-filename"]');
 const filenameError = document.querySelector('#cnrs-dm-filename-error-input');
-const filenameSubmit = document.querySelector('.my-umr_page_settings #submit');
+const filenameSubmit = document.querySelector('body[class*="data-manager-settings"] #submit');
 const shortCodes = document.querySelectorAll('.cnrs-data-manager-copy-shortcode');
 const addMarkersButton = document.querySelector('#cnrs-dm-marker-adder');
 const markersContainer = document.querySelector('#cnrs-dm-markers-list');
@@ -33,7 +33,11 @@ const getCoordsBtn = document.querySelector('#cnrs-dm-localize-me-container');
 const restoreFoldersMessage = document.querySelector('#cnrs-dm-restore-message');
 const modeDisplaySelector = document.querySelector('#cnrs-dm-mode');
 const modeDisplayInfo = document.querySelector('#cnrs-dm-page-option-shortcode');
-
+const filnameStates = document.querySelectorAll('.cnrs-dm-filename-states');
+const filenameStateOk = document.querySelector('#cnrs-dm-filename-good');
+const filenameStateKo = document.querySelector('#cnrs-dm-filename-bad');
+const filenameStateRefresh = document.querySelector('#cnrs-dm-filename-refresh');
+let filenameTimeout;
 
 prepareListeners();
 
@@ -63,8 +67,10 @@ function prepareListeners() {
     }
 
     if (filenameInput) {
+        checkURLValidity(filenameInput.value);
         filenameInput.addEventListener('input', function() {
             checkSettingsIntegrity();
+            checkURLValidity(this.value);
         });
     }
 
@@ -174,6 +180,50 @@ function prepareListeners() {
     }
 }
 
+function checkURLValidity(value) {
+    for (let i = 0; i < filnameStates.length; i++) {
+        filnameStates[i].classList.remove('cnrs-dm-display-state');
+    }
+    filenameStateRefresh.classList.add('cnrs-dm-display-state');
+    clearTimeout(filenameTimeout);
+    filenameTimeout = setTimeout(async function(){
+        fetch(value)
+            .then(response => response.text())
+            .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+            .then(data => getDataFromXML(data))
+            .catch((error) => {
+                getDataFromXML();
+            });
+    }, 1000);
+}
+
+function getDataFromXML(data = null) {
+    let error = true;
+    if (data !== null
+        && data.querySelector('reference')
+        && data.querySelector('reference > equipes')
+        && data.querySelector('reference > services')
+        && data.querySelector('reference > plateformes')
+        && data.querySelector('reference > agents')
+        && data.querySelectorAll('reference > equipes > equipe').length > 0
+        && data.querySelectorAll('reference > services > service').length > 0
+        && data.querySelectorAll('reference > plateformes > plateforme').length > 0
+        && data.querySelectorAll('reference > agents > agent').length > 0
+    ) {
+        error = false;
+    }
+    for (let i = 0; i < filnameStates.length; i++) {
+        filnameStates[i].classList.remove('cnrs-dm-display-state');
+    }
+    if (error === true) {
+        filenameStateKo.classList.add('cnrs-dm-display-state');
+        filenameSubmit.disabled = true;
+    } else {
+        filenameStateOk.classList.add('cnrs-dm-display-state');
+        filenameSubmit.disabled = false;
+    }
+}
+
 function addDisplayRowMarkerListener() {
     const markersOpenButtons = document.querySelectorAll('.cnrs-dm-markers-toggle');
     for (let i = 0; i < markersOpenButtons.length; i++) {
@@ -229,14 +279,18 @@ function checkIntegrityFromMapView(view) {
 }
 
 function checkSettingsIntegrity() {
-    if (filenameInput.value.length < 1 || filenameInput.value.length > 100) {
+    if (filenameInput.value.length > 255) {
         filenameInput.classList.add('too-large');
         filenameError.classList.add('display-error');
-        filenameSubmit.disabled = true;
+    } else if (filenameInput.value.length < 1) {
+        filenameInput.classList.remove('too-large');
+        filenameError.classList.remove('display-error');
+    } else if (filenameInput.value.length < 8) {
+        filenameInput.classList.add('too-large');
+        filenameError.classList.remove('display-error');
     } else {
         filenameInput.classList.remove('too-large');
         filenameError.classList.remove('display-error');
-        filenameSubmit.disabled = false;
     }
 }
 

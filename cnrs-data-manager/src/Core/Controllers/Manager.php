@@ -9,6 +9,7 @@
 
 namespace CnrsDataManager\Core\Controllers;
 
+use CnrsDataManager\Core\Models\Settings;
 use Error;
 use Exception;
 use JsonException;
@@ -75,27 +76,15 @@ final class Manager
     }
 
     /**
-     * Return true if XML file exists
+     * Parse XML file and return an array of teams, services, platforms and agents
      *
-     * @return bool
+     * @param string $xmlFile The XML file to parse
+     * @return array The parsed data as an array
      */
-    private static function isXMLExists(): bool
-    {
-        $fileName = 'umr_5805';
-        self::$xmlPath = ABSPATH . 'XML/' . $fileName . '.xml';
-        return file_exists(self::$xmlPath);
-    }
-
-    /**
-     * Return array from xml file
-     *
-     * @return array
-     */
-    private static function parseXML(): array
+    private static function parseXML(string $xmlFile): array
     {
         $final = ['teams' => [], 'services' => [], 'platforms' => [], 'agents' => []];
         try {
-            $xmlFile = file_get_contents(self::$xmlPath);
             $new = simplexml_load_string($xmlFile);
             $con = json_encode($new, JSON_THROW_ON_ERROR);
             $array = json_decode($con, true, 512, JSON_THROW_ON_ERROR);
@@ -277,8 +266,13 @@ final class Manager
      */
     public static function defineArrayFromXML(): array
     {
-        if (self::isXMLExists()) {
-            return self::parseXML();
+        Settings::updateFilename();
+        global $wpdb;
+        $settings = $wpdb->get_results( "SELECT filename FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $filename = $settings[0]['filename'];
+
+        if (HttpClient::call($filename, true)) {
+            return self::parseXML(HttpClient::call($filename));
         }
         return ['teams' => [], 'services' => [], 'platforms' => [], 'agents' => []];
     }
@@ -301,13 +295,13 @@ final class Manager
     /**
      * Check current page
      *
-     * @param string      $page  page key
-     * @param null|string $tabL1 tab level 1 key, null not check
-     * @param null|string $tabL2 tab level 12key, null not check
+     * @param string $page  page key
+     * @param string|null $tabL1 tab level 1 key, null not check
+     * @param string|null $tabL2 tab level 12key, null not check
      *
      * @return boolean
      */
-    public static function isCurrentPage($page, $tabL1 = null, $tabL2 = null)
+    public static function isCurrentPage(string $page, string|null $tabL1 = null, string|null $tabL2 = null): bool
     {
         $levels = self::getMenuLevels();
 
@@ -333,7 +327,7 @@ final class Manager
      *
      * @return string
      */
-    public static function getCurrentLink($extraData = array())
+    public static function getCurrentLink(array $extraData = array()): string
     {
         $levels = self::getMenuLevels();
         return self::getMenuLink(
@@ -441,12 +435,12 @@ final class Manager
      *
      * @param int $type             One of INPUT_GET, INPUT_POST, INPUT_COOKIE, INPUT_SERVER, INPUT_ENV or SnapUtil::INPUT_REQUEST
      * @param string $varName          Name of a variable to get.
-     * @param false|null $default          default value if var $varName don't exists
+     * @param bool|null $default          default value if var $varName don't exists
      * @param string $extraAcceptChars extra accepted chars
      *
      * @return string|string[]|mixed return default value if varName isn't defined
      */
-    private static function sanitizeStrictInput(int $type, string $varName, mixed $default = false, string $extraAcceptChars = ''): mixed
+    private static function sanitizeStrictInput(int $type, string $varName, bool|null $default = false, string $extraAcceptChars = ''): mixed
     {
         if (($value = self::getValueByType($type, $varName)) === null) {
             return $default;

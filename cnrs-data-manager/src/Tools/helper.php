@@ -64,7 +64,6 @@ if (!function_exists('cnrs_install_folders')) {
     function cnrs_install_folders(): void
     {
         $folders = [
-            ABSPATH . '/XML',
             ABSPATH . '/wp-includes/cnrs-data-manager',
             CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH,
             CNRS_DATA_MANAGER_DEPORTED_SVG_PATH
@@ -149,7 +148,6 @@ if (!function_exists('cnrs_remove_folders')) {
         rrmdir(ABSPATH . '/wp-includes/cnrs-data-manager');
         if ($all === true) {
             cnrs_remove_translations();
-            rrmdir(ABSPATH . '/XML');
         }
     }
 }
