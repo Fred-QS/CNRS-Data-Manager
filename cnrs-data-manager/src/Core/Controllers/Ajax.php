@@ -40,7 +40,11 @@ class Ajax
      */
     public static function inspectXLSFile(): void
     {
-        $response = ['error' => __('Bad file type. Only <b>.zip</b> file is allowed.', 'cnrs-data-manager'), 'data' => null];
+        $error = __('Bad file type. Only <b>.zip</b> file is allowed.', 'cnrs-data-manager');
+        ob_start();
+        include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
+        $html = ob_get_clean();
+        $response = ['error' => $error, 'data' => null, 'html' => $html];
         if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip') {
             $response = self::analyseFiles($_FILES['file']['tmp_name']);
         }
@@ -69,7 +73,11 @@ class Ajax
                 if (in_array($ext, ['xls', 'xlsx'], true)) {
                     $xlsFiles++;
                     if ($xlsFiles > 1) {
-                        return ['error' => __('There is more than one Excel file in the zip archive. The archive must contain a single Excel file.', 'cnrs-data-manager'), 'data' => null];
+                        $error = __('There is more than one Excel file in the zip archive. The archive must contain a single Excel file.', 'cnrs-data-manager');
+                        ob_start();
+                        include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
+                        $html = ob_get_clean();
+                        return ['error' => $error, 'data' => null, 'html' => $html];
                     }
                     $fileToExtract = $zip->getFromName($filename);
                     $excel = self::moveFileAndTransformToArray($fileinfo, $fileToExtract);
@@ -78,11 +86,19 @@ class Ajax
                 }
             }
             if (self::checkImagesIntegrity($images, $excel) === false) {
-                return ['error' => __('There are photos missing from the zip file.', 'cnrs-data-manager'), 'data' => null];
+                $error = __('There are photos missing from the zip file.', 'cnrs-data-manager');
+                ob_start();
+                include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
+                $html = ob_get_clean();
+                return ['error' => $error, 'data' => null, 'html' => $html];
             }
             $zip->close();
         }
-        return ['error' => null, 'data' => $excel];
+        $error = null;
+        ob_start();
+        include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
+        $html = ob_get_clean();
+        return ['error' => $error, 'data' => $excel, 'html' => $html];
     }
 
     /**

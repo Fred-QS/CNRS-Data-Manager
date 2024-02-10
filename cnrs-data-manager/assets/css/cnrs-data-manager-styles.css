@@ -504,6 +504,12 @@ label[for="cnrs-dm-filename"] {
 
 .cnrs-dm-filename-states {
     display: none;
+}
+
+.cnrs-dm-filename-states,
+#cnrs-dm-import-good,
+#cnrs-dm-import-refresh,
+#cnrs-dm-import-bad {
     align-items: center;
     justify-content: center;
     width: 16px;
@@ -511,20 +517,63 @@ label[for="cnrs-dm-filename"] {
     transform-origin: 50% 50%;
 }
 
-#cnrs-dm-filename-bad path {
+.cnrs-dm-import-state-logo {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    margin-left: 6px;
+}
+
+.cnrs-dm-import-state-response.hide,
+#cnrs-dm-import-initial-state-container.hide {
+    display: none;
+}
+
+#cnrs-dm-filename-bad path, #cnrs-dm-import-bad path {
     fill: red;
 }
 
-#cnrs-dm-filename-good path {
+#cnrs-dm-filename-good path, #cnrs-dm-import-good path {
     fill: green;
 }
 
-#cnrs-dm-filename-refresh path {
+#cnrs-dm-filename-refresh path, #cnrs-dm-import-refresh path {
     fill: #2271b1;
 }
 
-#cnrs-dm-filename-refresh {
+#cnrs-dm-filename-refresh, #cnrs-dm-import-refresh {
     animation: rotateState linear 1s infinite;
+}
+
+.cnrs-dm-import-state-container,
+.cnrs-dm-import-state-container > ul,
+.cnrs-dm-import-state-container > ul li {
+    width: 100%;
+}
+
+.cnrs-dm-import-state {
+    width: max-content;
+}
+
+.cnrs-dm-import-state.hide, .cnrs-dm-import-state-logo.hide {
+    display: none;
+}
+
+.cnrs-dm-import-state-container > ul li {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 14px;
+    color: #5d5d5d;
+}
+
+.cnrs-dm-import-state-waiting {
+    opacity: 0.5;
+}
+
+.cnrs-dm-import-state-response {
+    color: #2271b1;
+    opacity: 1!important;
 }
 
 @keyframes rotateState {
@@ -555,7 +604,91 @@ label[for="cnrs-dm-filename"] {
 }
 
 #cnrs-dm-import-file-btn svg path {
-    fill: #fff;
+    fill: #2271b1;
+}
+
+#cnrs-dm-import-structure-container {
+    background-color: #fff;
+    border-radius: 8px;
+    border: 1px solid #e1e1e1;
+    padding: 10px 20px;
+}
+
+#cnrs-dm-import-structure-container > span {
+    font-weight: bold;
+    font-style: italic;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: max-content;
+    padding-bottom: 6px;
+    margin-top: 2px;
+}
+
+#cnrs-dm-import-structure-container svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    color: inherit;
+}
+
+#cnrs-dm-import-structure-container > span svg path {
+    fill: #2271b1;
+}
+
+.cnrs-dm-import-file-excel svg path {
+    fill: green;
+}
+
+.cnrs-dm-import-file-image svg path {
+    fill: #d8a8f0;
+}
+
+.cnrs-dm-import-file-ellipsis svg {
+    margin-left: 2px;
+}
+
+.cnrs-dm-import-file-ellipsis svg path {
+    fill: #5f5f5f;
+}
+
+#cnrs-dm-import-structure-container > ul {
+    margin: 0 0 0 8px;
+    border-left: 1px dashed;
+    padding-left: 8px;
+    position: relative;
+}
+
+#cnrs-dm-import-structure-container > ul > li {
+    font-style: italic;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: max-content;
+    position: relative;
+    padding-left: 8px;
+    top: 10px;
+}
+
+#cnrs-dm-import-structure-container > ul > li::before {
+    content: "";
+    width: 12px;
+    height: 1px;
+    border-top: 1px dashed;
+    position: absolute;
+    left:  -8px;
+}
+
+.cnrs-dm-label-like {
+    text-align: left;
+    margin: 15px 0 5px;
+    width: 200px;
+    line-height: 1.3;
+    font-weight: 600;
+    color: #1d2327;
+    text-shadow: none;
+    vertical-align: baseline;
+    font-size: 14px;
 }
 
 @media only screen and (min-width: 783px) {
@@ -660,9 +793,18 @@ label[for="cnrs-dm-filename"] {
     .cnrs-dm-map-marker-container {
         padding: 0 15px 15px;
     }
+
+    #cnrs-dm-import-structure-container {
+        width: 200px;
+    }
+
+    .cnrs-dm-import-state-container > ul li {
+        justify-content: flex-start;
+    }
 }
 
 @media only screen and (max-width: 782px) {
+
     .cnrs-dm-data-selector-td {
         padding: 10px 0 0!important;
     }
@@ -815,5 +957,32 @@ label[for="cnrs-dm-filename"] {
 
     .cnrs-dm-map-marker-container {
         padding: 0 15px 10px;;
+    }
+
+    #cnrs-dm-import-structure-container {
+        width: 260px;
+        margin: auto;
+    }
+
+    #cnrs-dm-file-import-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cnrs-dm-label-like {
+        width: 100%;
+        text-align: center;
+    }
+
+    .cnrs-dm-import-state-container > ul li {
+        justify-content: center;
+    }
+}
+
+@media only screen and (max-width: 300px) {
+
+    #cnrs-dm-import-structure-container {
+        width: calc(100% - 40px);
     }
 }

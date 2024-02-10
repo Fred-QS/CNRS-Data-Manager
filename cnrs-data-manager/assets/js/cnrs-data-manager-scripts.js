@@ -41,6 +41,8 @@ const fileImportForm = document.querySelector('#cnrs-dm-file-import-form');
 const fileImportInput = document.querySelector('#cnrs-dm-import-file');
 const fileImportBtn = document.querySelector('#cnrs-dm-import-file-btn');
 const fileImportSubmitBtn = document.querySelector('#cnrs-dm-file-import-form-submit');
+const importInitialStateContainer = document.querySelector('#cnrs-dm-import-initial-state-container');
+const importResponseStateContainer = document.querySelector('#cnrs-dm-import-response-state-container');
 let filenameTimeout;
 let xlsFile = null;
 
@@ -195,6 +197,7 @@ function prepareListeners() {
                 formData.append('file', fileImportInput.files[0]);
                 formData.append('action', 'check_xml_file');
                 fileImportInput.value = null;
+                importState(1);
                 const options = {
                     method: 'POST',
                     body: formData,
@@ -205,8 +208,7 @@ function prepareListeners() {
                     ).then(
                         success => handleXMLCheckResult(success.data)
                     ).catch(
-                        //error => handleXMLCheckResult({error: fileImportInput.dataset.error, data: null})
-                        error => handleXMLCheckResult({error: error, data: null})
+                        error => handleXMLCheckResult({error: fileImportInput.dataset.error, data: null, html: null})
                     );
             }
         });
@@ -225,11 +227,50 @@ function prepareListeners() {
 }
 
 function handleXMLCheckResult(json) {
+    importState(2);
     if (json.error === null) {
         let xlsArray = json.data;
-        console.log(xlsFile, xlsArray)
+        importResponseStateContainer.innerHTML = json.html;
+        let form = document.querySelector('#cnrs-dm-import-confirm-form');
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            console.log(xlsFile, xlsArray);
+        };
     } else {
-        console.log(json.error);
+        importResponseStateContainer.innerHTML = `<ul>
+            <li class="cnrs-dm-import-state-pending">
+                <i class="cnrs-dm-import-state-response cnrs-dm-import-state">1.&nbsp;${fileImportInput.dataset.step1}</i>
+                <span class="cnrs-dm-import-state-logo">
+                    <svg id="cnrs-dm-import-good" viewBox="0 0 448 512">
+                        <path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                    </svg>
+                </span>
+            </li>
+            <li class="cnrs-dm-import-state-pending">
+                <i class="cnrs-dm-import-state-response cnrs-dm-import-state">2.&nbsp;${fileImportInput.dataset.step2}</i>
+                <span class="cnrs-dm-import-state-logo">
+                    <svg id="cnrs-dm-import-bad" viewBox="0 0 384 512">
+                        <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                    </svg>
+                </span>
+            </li>
+        </ul>
+        <p class="cnrs-dm-import-error-message">${json.error}</p>`;
+    }
+}
+
+function importState(step) {
+    if (step === 1) {
+        importResponseStateContainer.innerHTML = '';
+        importInitialStateContainer.classList.remove('hide');
+        let svg = importInitialStateContainer.querySelectorAll('.cnrs-dm-import-state-logo');
+        for (let i = 0; i < svg.length; i++) {
+            svg[i].classList.remove('hide');
+        }
+        importInitialStateContainer.querySelector('.cnrs-dm-import-state-response').classList.remove('hide');
+        importInitialStateContainer.querySelector('.cnrs-dm-import-state-waiting').classList.add('hide');
+    } else if (step === 2) {
+        importInitialStateContainer.classList.add('hide');
     }
 }
 
