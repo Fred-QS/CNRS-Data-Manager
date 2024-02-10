@@ -10,6 +10,7 @@
  *  - $renderMode (string): The render mode value ('sorted', 'simple').
  *  - $agent (array): The agent data.
  *  - $shortCodesCounter (int): Shortcode iteration in the page.
+ *  - $defaultView (string): Default view (null, 'list', 'grid').
  */
 
 ?>

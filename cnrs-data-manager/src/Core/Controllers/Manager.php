@@ -176,11 +176,11 @@ final class Manager
                 $agents['agent']['equipes'] = $agentTeams;
                 $agents['agent']['services'] = $agentServices;
                 $agents['agent']['plateformes'] = $agentPlatforms;
-                $agents['agent']['external_links'] = $agentsLinks;
+                $agents['agent']['liens_externes'] = $agentsLinks;
                 usort($agents['agent']['equipes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                 usort($agents['agent']['services'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                 usort($agents['agent']['plateformes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
-                usort($agents['agent']['external_links'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
+                usort($agents['agent']['liens_externes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                 $final['agents'][] = $agents['agent'];
             } else {
                 foreach ($agents['agent'] as $agent) {
@@ -240,11 +240,11 @@ final class Manager
                     $agent['equipes'] = $agentTeams;
                     $agent['services'] = $agentServices;
                     $agent['plateformes'] = $agentPlatforms;
-                    $agent['external_links'] = $agentLinks;
+                    $agent['liens_externes'] = $agentLinks;
                     usort($agent['equipes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                     usort($agent['services'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                     usort($agent['plateformes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
-                    usort($agent['external_links'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
+                    usort($agent['liens_externes'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
                     $final['agents'][] = $agent;
                 }
             }

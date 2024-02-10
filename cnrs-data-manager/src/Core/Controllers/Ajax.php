@@ -2,16 +2,21 @@
 
 namespace CnrsDataManager\Core\Controllers;
 
+use JsonException;
 use ZipArchive;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\RichText\RichText;
 
 class Ajax
 {
     private static array $adminActions = [
-        'check_xml_file' => 'inspectXLSFile'
+        'check_xml_file' => 'inspectXLSFile',
+        'import_xml_file' => 'importXLSFile'
     ];
 
     private static array $publicActions = [];
+
+    private static string $timestamp = '';
 
     /**
      * Registers hooks for AJAX actions in WordPress.
@@ -85,6 +90,20 @@ class Ajax
                     $images[] = $fileinfo['basename'];
                 }
             }
+            if (is_bool($excel) && $excel === false) {
+                $error = __('The Excel file does not have the expected structure.', 'cnrs-data-manager');
+                ob_start();
+                include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
+                $html = ob_get_clean();
+                return ['error' => $error, 'data' => null, 'html' => $html];
+            }
+            if (is_array($excel) && empty($excel)) {
+                $error = __('No Excel file found in the zip archive.', 'cnrs-data-manager');
+                ob_start();
+                include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
+                $html = ob_get_clean();
+                return ['error' => $error, 'data' => null, 'html' => $html];
+            }
             if (self::checkImagesIntegrity($images, $excel) === false) {
                 $error = __('There are photos missing from the zip file.', 'cnrs-data-manager');
                 ob_start();
@@ -112,9 +131,9 @@ class Ajax
      *
      * @param array $fileinfo An array containing information about the file.
      * @param string $fileToExtract The contents of the file to be extracted.
-     * @return array The transformed array.
+     * @return array|bool The transformed array.
      */
-    private static function moveFileAndTransformToArray(array $fileinfo, string $fileToExtract): array
+    private static function moveFileAndTransformToArray(array $fileinfo, string $fileToExtract): array|bool
     {
         rrmdir(CNRS_DATA_MANAGER_IMPORT_TMP_PATH);
         @mkdir(CNRS_DATA_MANAGER_IMPORT_TMP_PATH, 0755);
@@ -132,14 +151,30 @@ class Ajax
                 $deadCellsCnt = 0;
                 $cellsCnt = 0;
                 foreach ($cellIterator as $cell) {
-                    if ($cell->getValue() === null) {
+                    if ($cell->getValue() === null && !in_array($mapper[$cellsCnt], ['EQUIPE', 'PORTEUR'], true)) {
                         $deadCellsCnt++;
                     }
-                    $rowArray[$mapper[$cellsCnt]] = $cell->getValue();
+                    $value = $cell->getValue();
+                    $richText = '';
+                    if ($value instanceof RichText) {
+                        foreach ($value->getRichTextElements() as $richTextElement) {
+                            $richText .= $richTextElement->getText();
+                        }
+                    }
+                    $value = strlen($richText) < 1 ? $value : $richText;
+                    $rowArray[$mapper[$cellsCnt]] = $value;
                     $cellsCnt++;
                 }
-                if ($deadCellsCnt < 7) {
+                if ($deadCellsCnt <= 2) {
                     $array[] = $rowArray;
+                }
+            } else {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(TRUE);
+                foreach ($cellIterator as $cell) {
+                    if (!in_array($cell->getValue(), $mapper, true)) {
+                        return false;
+                    }
                 }
             }
             $cnt++;
@@ -167,5 +202,151 @@ class Ajax
         $images = array_values($images);
         $diff = array_diff($xlsImages, $images);
         return count($diff) === 0;
+    }
+
+    /**
+     * Imports an XLS file and processes the data.
+     *
+     * @return void
+     * @throws JsonException
+     */
+    public static function importXLSFile(): void
+    {
+        $json = ['error' => null, 'data' => null];
+        try {
+            if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip' && isset($_POST['data'])) {
+                $strip = str_replace('\\n', '<br>', $_POST['data']);
+                $strip = str_replace('\\', '', $strip);
+                $data = json_decode($strip, true, 512, JSON_THROW_ON_ERROR);
+                $path = wp_upload_dir()['path'];
+                $dir = $path . '/';
+                $moved = self::importImagesInTmpDir($dir);
+                if ($moved === false) {
+                    $json['error'] = __('The images could not be processed.', 'cnrs-data-manager');
+                } else {
+                    $json['data'] = __('The projects were imported successfully.', 'cnrs-data-manager');
+                    $import = self::importProjectsToDB($data, $dir);
+                    if ($import === false) {
+                        $json = ['error' => __('Importing projects into the database failed.', 'cnrs-data-manager'), 'data' => null];
+                    }
+                    $json['data'] = $import;
+                }
+            }
+        } catch (JsonException $e) {
+            $json['error'] = __('The import failed.', 'cnrs-data-manager');
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+
+    /**
+     * Imports images from a ZIP file into a temporary directory.
+     *
+     * @param string $dir The path of the temporary directory to store the extracted images.
+     * @return bool Returns true if the ZIP file was opened successfully and the images were extracted,
+     *              or false if there was an error opening the ZIP file.
+     */
+    private static function importImagesInTmpDir(string $dir): bool
+    {
+        $zip = new ZipArchive;
+        $path = $_FILES['file']['tmp_name'];
+        $test = $zip->open($path);
+        self::$timestamp = date("YmdHis");
+        if ($test === true) {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $filename = $zip->getNameIndex($i);
+                $fileinfo = pathinfo($filename);
+                $ext = $fileinfo['extension'] ?? null;
+                if (in_array($ext, ['jpg', 'jpeg', 'png'], true)) {
+                    $fileToExtract = $zip->getFromName($filename);
+                    file_put_contents($dir . self::$timestamp . '-' . $fileinfo['basename'], $fileToExtract);
+                }
+            }
+            $zip->close();
+        }
+        return $test;
+    }
+
+    /**
+     * Imports projects into the database with their associated images.
+     *
+     * @param array $data The data of the projects to be imported.
+     * @param string $uploadPath The path where the images are uploaded.
+     * @return bool|string Returns false if any image is missing or a string of the HTML list.
+     */
+    private static function importProjectsToDB(array $data, string $uploadPath): bool|string
+    {
+        $posts = [];
+        foreach ($data as $row) {
+            $imagePath = $uploadPath . self::$timestamp . '-' . $row['PHOTO'];
+            if (!file_exists($imagePath)) {
+                return false;
+            }
+            $imageData = exif_read_data($imagePath);
+            $url = site_url() . '/wp-content' . explode('wp-content', $imagePath)[1];
+            $fileName = str_replace(['.jpg', '.jpeg', '.png'], '', $imageData['FileName']);
+            $wpImageToDB = [
+                'guid'                  => $url,
+                'post_mime_type'        => $imageData['MimeType'],
+                'post_title'            => $fileName,
+                'post_name'             => $fileName,
+                'post_status'           => 'inherit',
+            ];
+            $id = wp_insert_attachment($wpImageToDB, $imagePath, 0);
+            $attach_data = wp_generate_attachment_metadata($id, $imagePath);
+            wp_update_attachment_metadata($id, $attach_data);
+            $wpProjectToDB = [
+                'post_author' => get_current_user_id(),
+                'post_content' => self::preparePostContent($row),
+                'post_title' => $row['ACRONYME'] !== null ? $row['ACRONYME'] . ' - ' . $row['TITRE'] : $row['TITRE'],
+                'post_excerpt' => $row['RESUME'] === null ? '' : $row['RESUME'],
+                'post_status' => 'publish',
+                'post_type' => 'project',
+                'comment_status' => 'open',
+                'ping_status' => 'closed',
+                '_thumbnail_id' => $id,
+            ];
+            $postId = wp_insert_post($wpProjectToDB);
+            $recorded = get_post($postId, ARRAY_A);
+            $posts[] = [
+                'url' => $recorded['guid'],
+                'image' => $url,
+                'excerpt' => $recorded['post_excerpt'],
+                'title' => $recorded['post_title']
+            ];
+        }
+        ob_start();
+        include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-list.php');
+        return ob_get_clean();
+    }
+
+    /**
+     * Prepare the post content based on the given data.
+     *
+     * @param array $data The data used to generate the post content.
+     * @return string The prepared post content.
+     */
+    private static function preparePostContent(array $data): string
+    {
+        $excerpt = '';
+        if ($data['RESUME'] !== null) {
+            $excerpt = "<h4>{$data['RESUME']}</h4>" . "\n";
+        }
+        $finance = __('', 'cnrs-data-manager');
+        $content = $excerpt . $data['CONTENU'] . "\n";
+        $content .= "&nbsp;" . "\n";
+        $content .= "<h6><em>{$data['RESPONSABLE']}";
+        if ($data['EQUIPE'] !== null) {
+            $content .= ", {$data['EQUIPE']}";
+        }
+        if ($data['PORTEUR'] !== null) {
+            $content .= ", {$data['PORTEUR']}";
+        }
+        if ($data['FINANCEUR'] !== null) {
+            $content .= ", {$finance} {$data['FINANCEUR']}";
+        }
+        $content .= "</em></h6>";
+        return str_replace('<br>', "\n", $content);
     }
 }

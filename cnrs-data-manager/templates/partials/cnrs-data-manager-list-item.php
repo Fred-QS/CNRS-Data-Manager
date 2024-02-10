@@ -11,6 +11,7 @@
  *  - $entities (array): All the agents (plus filter data if sorted render).
  *  - $agent (array): The agent data.
  *  - $shortCodesCounter (int): Shortcode iteration in the page.
+ *  - $defaultView (string): Default view (null, 'list', 'grid').
  */
 
 ?>

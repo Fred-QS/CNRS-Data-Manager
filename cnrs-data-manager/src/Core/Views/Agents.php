@@ -5,10 +5,10 @@
             <!-- Start CNRS Data Manager display selector -->
             <div class="cnrs-dm-front-selector-container">
                 <p class="cnrs-dm-front-selector-title"><?= __('Display', 'cnrs-data-manager') ?></p>
-                <button type="button" data-action="list" class="cnrs-dm-front-selector cnrs-dm-front-selector-list">
+                <button type="button" data-action="list" class="cnrs-dm-front-selector cnrs-dm-front-selector-list<?= in_array($defaultView, [null, 'list']) ? ' selected' : '' ?>">
                     <?php include_once(CNRS_DATA_MANAGER_DEPORTED_SVG_PATH . '/list.svg') ?>
                 </button>
-                <button type="button" data-action="grid" class="cnrs-dm-front-selector cnrs-dm-front-selector-grid">
+                <button type="button" data-action="grid" class="cnrs-dm-front-selector cnrs-dm-front-selector-grid<?= $defaultView === 'grid' ? ' selected' : '' ?>">
                     <?php include_once(CNRS_DATA_MANAGER_DEPORTED_SVG_PATH . '/grid.svg') ?>
                 </button>
             </div>
@@ -20,8 +20,12 @@
             <div class="cnrs-dm-front-agents-container">
                 <?php foreach ($entities as $agent): ?>
                     <div class="cnrs-dm-front-agent-wrapper">
-                        <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
-                        <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
+                        <?php if ($isSelectorAvailable === true || in_array($defaultView, [null, 'list'])): ?>
+                            <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
+                        <?php endif; ?>
+                        <?php if ($isSelectorAvailable === true || $defaultView === 'grid'): ?>
+                            <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
+                        <?php endif; ?>
                         <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php')?>
                     </div>
                 <?php endforeach; ?>
@@ -40,8 +44,12 @@
                     <div class="cnrs-dm-front-agents-container">
                         <?php foreach ($entity['agents'] as $agent): ?>
                             <div class="cnrs-dm-front-agent-wrapper">
-                                <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
-                                <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
+                                <?php if ($isSelectorAvailable === true || in_array($defaultView, [null, 'list'])): ?>
+                                    <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
+                                <?php endif; ?>
+                                <?php if ($isSelectorAvailable === true || $defaultView === 'grid'): ?>
+                                    <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
+                                <?php endif; ?>
                                 <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php')?>
                             </div>
                         <?php endforeach; ?>

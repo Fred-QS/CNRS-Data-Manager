@@ -10,6 +10,7 @@
  *  - $renderMode (string): The render mode value ('sorted', 'simple').
  *  - $entity (array): the entity data (xml name, wp name)
  *  - $shortCodesCounter (int): Shortcode iteration in the page.
+ *  - $defaultView (string): Default view (null, 'list', 'grid').
  */
 
 ?>

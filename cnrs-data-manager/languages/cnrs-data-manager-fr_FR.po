@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-02-06 17:57+0100\n"
-"PO-Revision-Date: 2024-02-06 18:12+0100\n"
+"POT-Creation-Date: 2024-02-10 19:06+0100\n"
+"PO-Revision-Date: 2024-02-10 19:17+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -20,29 +20,73 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: src/Core/Bootstrap.php:136
+#: src/Core/Bootstrap.php:141
 msgid "My JRU"
 msgstr "Mon UMR"
 
-#: src/Core/Bootstrap.php:178 src/Core/Bootstrap.php:179
+#: src/Core/Bootstrap.php:186 src/Core/Bootstrap.php:187
+#: src/Core/Bootstrap.php:261 src/Core/Views/Settings.php:16
+msgid "Settings"
+msgstr "Paramètres"
+
+#: src/Core/Bootstrap.php:199 src/Core/Bootstrap.php:200
 #: src/Core/Views/Dashboard.php:38
 msgid "Dashboard"
 msgstr "Général"
 
-#: src/Core/Bootstrap.php:188 src/Core/Bootstrap.php:189
+#: src/Core/Bootstrap.php:209 src/Core/Bootstrap.php:210
 #: src/Core/Views/Tools.php:18
 msgid "Tools"
 msgstr "Outils"
 
-#: src/Core/Bootstrap.php:198 src/Core/Bootstrap.php:199
+#: src/Core/Bootstrap.php:219 src/Core/Bootstrap.php:220
 #: src/Core/Views/MapSettings.php:16
 msgid "3D Map"
 msgstr "Carte 3D"
 
-#: src/Core/Bootstrap.php:208 src/Core/Bootstrap.php:209
-#: src/Core/Views/Settings.php:16
-msgid "Settings"
-msgstr "Paramètres"
+#: src/Core/Bootstrap.php:229 src/Core/Bootstrap.php:230
+msgid "Import"
+msgstr "Importation"
+
+#: src/Core/Controllers/Ajax.php:48
+msgid "Bad file type. Only <b>.zip</b> file is allowed."
+msgstr "Type de fichier incorrect. Seul le format  <b>.zip</b>  est autorisé."
+
+#: src/Core/Controllers/Ajax.php:81
+msgid ""
+"There is more than one Excel file in the zip archive. The archive must "
+"contain a single Excel file."
+msgstr ""
+"Il y a plus d’un fichier Excel dans l’archive zip. L’archive doit contenir "
+"un seul fichier Excel."
+
+#: src/Core/Controllers/Ajax.php:94
+msgid "The Excel file does not have the expected structure."
+msgstr "Le fichier Excel n’a pas la structure attendue."
+
+#: src/Core/Controllers/Ajax.php:101
+msgid "No Excel file found in the zip archive."
+msgstr "Aucun fichier Excel n’a été trouvé dans l’archive zip."
+
+#: src/Core/Controllers/Ajax.php:108
+msgid "There are photos missing from the zip file."
+msgstr "Il manque des photos dans le fichier zip."
+
+#: src/Core/Controllers/Ajax.php:225
+msgid "The images could not be processed."
+msgstr "Les images n’ont pas pu être traitées."
+
+#: src/Core/Controllers/Ajax.php:227 src/Core/Views/Import.php:23
+msgid "The projects were imported successfully."
+msgstr "Les projets ont été importés avec succès."
+
+#: src/Core/Controllers/Ajax.php:230
+msgid "Importing projects into the database failed."
+msgstr "L’importation de projets dans la base de données a échoué."
+
+#: src/Core/Controllers/Ajax.php:236 src/Core/Views/Import.php:23
+msgid "The import failed."
+msgstr "L’importation a échoué."
 
 #: src/Core/Views/Agents.php:7
 msgid "Display"
@@ -70,17 +114,17 @@ msgid "Guardianship"
 msgstr "Tutelle"
 
 #: src/Core/Views/Dashboard.php:18 src/Core/Views/Dashboard.php:48
-#: src/Core/Views/Settings.php:159 src/Core/Views/Settings.php:198
+#: src/Core/Views/Settings.php:188 src/Core/Views/Settings.php:227
 msgid "Teams"
 msgstr "Equipes"
 
 #: src/Core/Views/Dashboard.php:19 src/Core/Views/Dashboard.php:49
-#: src/Core/Views/Settings.php:120 src/Core/Views/Settings.php:199
+#: src/Core/Views/Settings.php:149 src/Core/Views/Settings.php:228
 msgid "Services"
 msgstr "Services"
 
 #: src/Core/Views/Dashboard.php:20 src/Core/Views/Dashboard.php:50
-#: src/Core/Views/Settings.php:121 src/Core/Views/Settings.php:160
+#: src/Core/Views/Settings.php:150 src/Core/Views/Settings.php:189
 msgid "Platforms"
 msgstr "Plateformes"
 
@@ -213,6 +257,73 @@ msgstr "Pas de description"
 msgid "Show more details"
 msgstr "Afficher plus de détails"
 
+#: src/Core/Views/Import.php:12
+msgid "Import projects"
+msgstr "Importer des projets"
+
+#: src/Core/Views/Import.php:15
+msgid ""
+"The extension allows you to import <b>Projects</b> in bulk. To do this, "
+"please follow the instructions below, namely the type of file to upload in "
+"<b>ZIP</b> format, the structure contained in the file as well as the "
+"columns that must be present and completed in the expected format for the "
+"file import."
+msgstr ""
+"L’extension vous permet d’importer des <b>projets</b> en masse. Pour ce "
+"faire, veuillez suivre les instructions ci-dessous, à savoir le type de "
+"fichier à télécharger au format <b>ZIP</b> , la structure contenue dans le "
+"fichier ainsi que les colonnes qui doivent être présentes et complétées dans "
+"le format attendu pour l’importation du fichier."
+
+#: src/Core/Views/Import.php:17
+msgid "Expected structure"
+msgstr "Structure attendue"
+
+#: src/Core/Views/Import.php:20
+msgid ""
+"The file will be tested first. If errors are present, these will be listed "
+"so that the file can be modified accordingly. Otherwise, you will be able to "
+"confirm the import."
+msgstr ""
+"Le fichier sera d’abord testé. Si des erreurs sont présentes, celles-ci "
+"seront répertoriées afin que le fichier puisse être modifié en conséquence. "
+"Dans le cas contraire, vous pourrez confirmer l’importation."
+
+#: src/Core/Views/Import.php:23
+msgid ""
+"WordPress was unable to load the file correctly. Please try Again by "
+"checking your file content to fit the waited structure."
+msgstr ""
+"WordPress n’a pas pu charger le fichier correctement. Veuillez réessayer en "
+"vérifiant le contenu de votre fichier pour qu’il corresponde à la structure "
+"attendue."
+
+#: src/Core/Views/Import.php:23 src/Core/Views/Import.php:40
+#: templates/includes/import-result.php:3
+msgid "File uploaded"
+msgstr "Fichier téléversé"
+
+#: src/Core/Views/Import.php:23 src/Core/Views/Import.php:48
+#: templates/includes/import-result.php:11
+msgid "Checking files"
+msgstr "Vérification des fichiers"
+
+#: src/Core/Views/Import.php:25
+msgid "Maximum file size"
+msgstr "Taille maximale du fichier"
+
+#: src/Core/Views/Import.php:30
+msgid "Import <b>.zip</b> file"
+msgstr "Importer le fichier <b>.zip</b>"
+
+#: src/Core/Views/Import.php:35
+msgid "Import steps"
+msgstr "Étapes d’importation"
+
+#: src/Core/Views/Import.php:39
+msgid "Waiting for file"
+msgstr "En attente d’un fichier"
+
 #: src/Core/Views/MapSettings.php:19
 msgid ""
 "In this section, you will be able to configure the display of the <b>3D "
@@ -288,15 +399,15 @@ msgstr "Effet d’éclairage solaire"
 
 #: src/Core/Views/MapSettings.php:82 src/Core/Views/MapSettings.php:99
 #: src/Core/Views/MapSettings.php:116 src/Core/Views/MapSettings.php:134
-#: src/Core/Views/Settings.php:134 src/Core/Views/Settings.php:173
-#: src/Core/Views/Settings.php:212
+#: src/Core/Views/Settings.php:163 src/Core/Views/Settings.php:202
+#: src/Core/Views/Settings.php:241
 msgid "Yes"
 msgstr "Oui"
 
 #: src/Core/Views/MapSettings.php:87 src/Core/Views/MapSettings.php:104
 #: src/Core/Views/MapSettings.php:121 src/Core/Views/MapSettings.php:139
-#: src/Core/Views/Settings.php:135 src/Core/Views/Settings.php:174
-#: src/Core/Views/Settings.php:213
+#: src/Core/Views/Settings.php:164 src/Core/Views/Settings.php:203
+#: src/Core/Views/Settings.php:242
 msgid "No"
 msgstr "Non"
 
@@ -324,7 +435,7 @@ msgstr "Actualiser"
 msgid "Close"
 msgstr "Fermer"
 
-#: src/Core/Views/MapSettings.php:186 src/Core/Views/Settings.php:230
+#: src/Core/Views/MapSettings.php:186 src/Core/Views/Settings.php:260
 #: src/Core/Views/Tools.php:85 src/Core/Views/Tools.php:130
 #: src/Core/Views/Tools.php:175
 msgid "Update"
@@ -384,28 +495,57 @@ msgstr ""
 "Afin d’enregistrer vos modifications, veuillez cliquer sur le bouton "
 "<b>Mettre à jour</b> ."
 
-#: src/Core/Views/Settings.php:31
-msgid "XML file name"
-msgstr "Nom du fichier XML"
+#: src/Core/Views/Settings.php:25
+msgid ""
+"Before you can use the extension, you must enter the URL of the <b>Soap API</"
+"b> that WordPress must contact to retrieve data from your UMR."
+msgstr ""
+"Avant de pouvoir utiliser l’extension, vous devez saisir l’URL de <b>l’API "
+"Soap</b> que WordPress doit contacter pour récupérer les données de votre "
+"UMR."
 
 #: src/Core/Views/Settings.php:35
-msgid "The field cannot be empty and has a maximum of 100 characters."
-msgstr ""
-"Le champ ne peut pas être vide et comporte un maximum de 100 caractères."
+msgid "API endpoint URL"
+msgstr "URL d'endpoint de l'API"
 
-#: src/Core/Views/Settings.php:42
+#: src/Core/Views/Settings.php:51
+msgid "The field cannot be empty and has a maximum of 255 characters."
+msgstr ""
+"Le champ ne peut pas être vide et comporte un maximum de 255 caractères."
+
+#: src/Core/Views/Settings.php:59
 msgid "List display mode"
 msgstr "Mode d’affichage de la liste"
 
-#: src/Core/Views/Settings.php:47
+#: src/Core/Views/Settings.php:64
 msgid "Widget"
 msgstr "Widget"
 
-#: src/Core/Views/Settings.php:48
+#: src/Core/Views/Settings.php:65
 msgid "Page"
 msgstr "Page"
 
-#: src/Core/Views/Settings.php:58
+#: src/Core/Views/Settings.php:75
+msgid ""
+"If <b>Page</b> mode is enabled, please use this shortcode as the value for "
+"the button link which will point to the page of the agents concerned by the "
+"article and its category."
+msgstr ""
+"Si le mode <b>Page</b> est activé, merci d’utiliser ce shortcode comme "
+"valeur pour le lien du bouton qui pointera vers la page des agents concernés "
+"par l’article et sa catégorie."
+
+#: src/Core/Views/Settings.php:78 src/Core/Views/Settings.php:99
+#: src/Core/Views/Settings.php:115 src/Core/Views/Settings.php:169
+#: src/Core/Views/Settings.php:208 src/Core/Views/Settings.php:247
+msgid "Copied to clipboard"
+msgstr "Copié dans le presse-papier"
+
+#: src/Core/Views/Settings.php:79
+msgid "/url/to/reach"
+msgstr "/url/à/atteindre"
+
+#: src/Core/Views/Settings.php:87
 msgid ""
 "The <b>CNRS Data Manager</b> extension uses Shortcodes to be able to render "
 "the different views. You can use the <b>Filter</b> and <b>Default View</b> "
@@ -417,21 +557,15 @@ msgstr ""
 "b> et <b>Vue par défaut</b> afin de personnaliser au mieux les rendus en "
 "fonction de votre intégration."
 
-#: src/Core/Views/Settings.php:65
+#: src/Core/Views/Settings.php:94
 msgid "Agents directory"
 msgstr "Annuaire des agents"
 
-#: src/Core/Views/Settings.php:70 src/Core/Views/Settings.php:86
-#: src/Core/Views/Settings.php:140 src/Core/Views/Settings.php:179
-#: src/Core/Views/Settings.php:218
-msgid "Copied to clipboard"
-msgstr "Copié dans le presse-papier"
-
-#: src/Core/Views/Settings.php:81
+#: src/Core/Views/Settings.php:110
 msgid "3D Map builder"
 msgstr "Constructeur de cartes 3D"
 
-#: src/Core/Views/Settings.php:98
+#: src/Core/Views/Settings.php:127
 msgid ""
 "To allow the extension to link the data in the XML file to the corresponding "
 "categories, please select for teams, services and platforms a category for "
@@ -441,7 +575,7 @@ msgstr ""
 "catégories correspondantes, veuillez sélectionner pour les équipes, les "
 "services et les plateformes une catégorie pour chacune de ses entités."
 
-#: src/Core/Views/Settings.php:100
+#: src/Core/Views/Settings.php:129
 msgid ""
 "Once selected, you can, in the <b>Options</b> tab, assign each team, "
 "services and platforms to the corresponding categorized articles, thus "
@@ -453,7 +587,7 @@ msgstr ""
 "correspondants, vous permettant ainsi de lier les agents aux différentes "
 "entités de l’application WordPress."
 
-#: src/Core/Views/Settings.php:103
+#: src/Core/Views/Settings.php:132
 msgid ""
 "As you make your choices, the <b>generated shortcode</b> must be copied then "
 "pasted into the text space of your choice in the articles or pages of your "
@@ -469,7 +603,7 @@ msgstr ""
 "attribuées ou dans les pages dont l’url fournira la clé/valeur attendue par "
 "l’extension pour afficher le rendu attendu."
 
-#: src/Core/Views/Settings.php:106
+#: src/Core/Views/Settings.php:135
 msgid ""
 "The filter and view selectors are not dynamic and just allow you to generate "
 "the shortcode to use. On the other hand, the <b>Show view selector</b> "
@@ -479,45 +613,45 @@ msgstr ""
 "simplement de générer le shortcode à utiliser. D’autre part, le <b>sélecteur "
 "de vue Show est</b> dynamique et sera enregistré dans la base de données."
 
-#: src/Core/Views/Settings.php:112 src/Core/Views/Tools.php:47
+#: src/Core/Views/Settings.php:141 src/Core/Views/Tools.php:47
 msgid "Assign a category to teams"
 msgstr "Attribuer une catégorie aux équipes"
 
-#: src/Core/Views/Settings.php:117 src/Core/Views/Settings.php:156
-#: src/Core/Views/Settings.php:195
+#: src/Core/Views/Settings.php:146 src/Core/Views/Settings.php:185
+#: src/Core/Views/Settings.php:224
 msgid "Filter"
 msgstr "Filtre"
 
-#: src/Core/Views/Settings.php:119 src/Core/Views/Settings.php:158
-#: src/Core/Views/Settings.php:197
+#: src/Core/Views/Settings.php:148 src/Core/Views/Settings.php:187
+#: src/Core/Views/Settings.php:226
 msgid "None"
 msgstr "Aucun"
 
-#: src/Core/Views/Settings.php:125 src/Core/Views/Settings.php:164
-#: src/Core/Views/Settings.php:203
+#: src/Core/Views/Settings.php:154 src/Core/Views/Settings.php:193
+#: src/Core/Views/Settings.php:232
 msgid "Default view"
 msgstr "Vue par défaut"
 
-#: src/Core/Views/Settings.php:127 src/Core/Views/Settings.php:166
-#: src/Core/Views/Settings.php:205
+#: src/Core/Views/Settings.php:156 src/Core/Views/Settings.php:195
+#: src/Core/Views/Settings.php:234
 msgid "List"
 msgstr "Liste"
 
-#: src/Core/Views/Settings.php:128 src/Core/Views/Settings.php:167
-#: src/Core/Views/Settings.php:206
+#: src/Core/Views/Settings.php:157 src/Core/Views/Settings.php:196
+#: src/Core/Views/Settings.php:235
 msgid "Grid"
 msgstr "Grille"
 
-#: src/Core/Views/Settings.php:132 src/Core/Views/Settings.php:171
-#: src/Core/Views/Settings.php:210
+#: src/Core/Views/Settings.php:161 src/Core/Views/Settings.php:200
+#: src/Core/Views/Settings.php:239
 msgid "Show view selector"
 msgstr "Afficher le sélecteur de vue"
 
-#: src/Core/Views/Settings.php:151 src/Core/Views/Tools.php:92
+#: src/Core/Views/Settings.php:180 src/Core/Views/Tools.php:92
 msgid "Assign a category to services"
 msgstr "Attribuer une catégorie aux services"
 
-#: src/Core/Views/Settings.php:190 src/Core/Views/Tools.php:137
+#: src/Core/Views/Settings.php:219 src/Core/Views/Tools.php:137
 msgid "Assign a category to platforms"
 msgstr "Attribuer une catégorie aux plateformes"
 
@@ -650,15 +784,15 @@ msgstr "Sélectionner une publication"
 msgid "No article available for this category."
 msgstr "Aucun article n’est disponible pour cette catégorie."
 
-#: src/Tools/helper.php:348
+#: src/Tools/helper.php:386
 msgid "Unspecified"
 msgstr "Non spécifié"
 
-#: src/Tools/helper.php:351
+#: src/Tools/helper.php:389
 msgid "Mister"
 msgstr "Monsieur"
 
-#: src/Tools/helper.php:353
+#: src/Tools/helper.php:391
 msgid "Misses"
 msgstr "Madame"
 
@@ -695,6 +829,54 @@ msgstr ""
 "télécharger une version précédente de CNRS Data Manager compatible avec PHP "
 "%3$s."
 
+#: templates/includes/import-file-structure.php:6
+msgid "ZIP file"
+msgstr "Fichier ZIP"
+
+#: templates/includes/import-file-structure.php:13
+msgid "my-projects-list.xls"
+msgstr "ma-liste-de-projets.xls"
+
+#: templates/includes/import-file-structure.php:19
+msgid "project-image-1.jpg"
+msgstr "image-du-projet-1.jpg"
+
+#: templates/includes/import-file-structure.php:25
+msgid "project-image-2.jpeg"
+msgstr "image-du-projet-2.jpeg"
+
+#: templates/includes/import-file-structure.php:31
+msgid "project-image-3.png"
+msgstr "image-du-projet-3.png"
+
+#: templates/includes/import-file-structure.php:37
+msgid "project-image-4.png"
+msgstr "image-du-projet-4.png"
+
+#: templates/includes/import-file-structure.php:43
+msgid "project-image-5.jpg"
+msgstr "image-du-projet-5.jpg"
+
+#: templates/includes/import-file-structure.php:49
+msgid "project-image-6.jpeg"
+msgstr "image-du-projet-6.jpeg"
+
+#: templates/includes/import-file-structure.php:55
+msgid "project-image-7.jpg"
+msgstr "image-du-projet-7.jpg"
+
+#: templates/includes/import-list.php:1
+msgid "List of imported projects"
+msgstr "Liste des projets importés"
+
+#: templates/includes/import-result.php:29
+msgid "Confirm import"
+msgstr "Confirmer l’importation"
+
+#: templates/partials/cnrs-data-manager-sorted-title.php:18
+msgid "Without belonging"
+msgstr "Sans appartenance"
+
 #. Plugin Name of the plugin/theme
 msgid "CNRS Data Manager"
 msgstr "CNRS Data Manager"
@@ -706,12 +888,27 @@ msgstr "https://github.com/Fred-QS/CNRS-Data-Manager"
 
 #. Description of the plugin/theme
 msgid ""
-"Allows Wordpress to be powered by external data provided by an XML file on "
-"the agents, services, platforms and teams of the UMR EPOC."
+"Allows WordPress to process the information transmitted to the CNRS UMRs by "
+"affiliating the categories created to agents, display the agent directory, "
+"manage the interactive 3D map by implementing markers and import UMR "
+"projects."
 msgstr ""
-"Permet d'alimenter Wordpress à partir de données externes fournies par un "
-"fichier XML sur les agents, services, plateformes et équipes de l'UMR EPOC."
+"Permet à WordPress de traiter les informations transmises aux UMR du CNRS en "
+"affiliant les catégories créées aux agents, d’afficher l’annuaire des "
+"agents, de gérer la carte 3D interactive en mettant en place des marqueurs "
+"et d’importer des projets UMR."
 
 #. Author of the plugin/theme
 msgid "QS Conseils"
 msgstr "QS Conseils"
+
+#~ msgid "XML file name"
+#~ msgstr "Nom du fichier XML"
+
+#~ msgid ""
+#~ "Allows Wordpress to be powered by external data provided by an XML file "
+#~ "on the agents, services, platforms and teams of the UMR EPOC."
+#~ msgstr ""
+#~ "Permet d'alimenter Wordpress à partir de données externes fournies par un "
+#~ "fichier XML sur les agents, services, plateformes et équipes de l'UMR "
+#~ "EPOC."

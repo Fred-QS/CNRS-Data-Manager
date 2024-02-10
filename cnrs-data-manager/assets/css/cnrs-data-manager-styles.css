@@ -691,6 +691,93 @@ label[for="cnrs-dm-filename"] {
     font-size: 14px;
 }
 
+.cnrs-dm-import-error-message,
+.cnrs-dm-import-ok-message {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    background-color: #fff;
+    max-width: max-content;
+    padding: 5px 10px;
+    border-radius: 8px;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.cnrs-dm-import-error-message {
+    color: red;
+    border: 1px solid red;
+}
+
+.cnrs-dm-import-ok-message {
+    color: green;
+    border: 1px solid green;
+}
+
+.cnrs-dm-import-filesize {
+    opacity: 0.7;
+}
+
+#cnrs-dm-import-confirm-form p {
+    display: flex;
+    align-items: center;
+}
+
+#cnrs-dm-import-confirm-form p svg {
+    margin-left: 10px;
+}
+
+#cnrs-dm-import-confirm-form p svg path {
+    fill: #fff;
+}
+
+#cnrs-dm-import-confirm-form p svg.hide {
+    display: none;
+}
+
+#cnrs-dm-import-confirm-form button {
+    display: flex;
+    align-items: center;
+}
+
+.cnrs-dm-imported-item {
+    justify-content: flex-start!important;
+}
+
+.cnrs-dm-imported-item-image {
+    width: 60px;
+    height: 40px;
+    min-height: 40px;
+    min-width: 60px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-right: 10px;
+    border-radius: 4px;
+}
+
+.cnrs-dm-imported-item-info {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.cnrs-dm-imported-item-info span {
+    font-size: 14px;
+}
+
+.cnrs-dm-imported-item-info i {
+    color: #5d5d5d;
+    font-size: 11px;
+    line-height: 1em;
+    margin-top: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;
@@ -800,6 +887,11 @@ label[for="cnrs-dm-filename"] {
 
     .cnrs-dm-import-state-container > ul li {
         justify-content: flex-start;
+    }
+
+    .cnrs-dm-imported-item-info i {
+        width: calc(100vw - 300px);
+        max-width: 400px;
     }
 }
 
@@ -964,7 +1056,7 @@ label[for="cnrs-dm-filename"] {
         margin: auto;
     }
 
-    #cnrs-dm-file-import-form {
+    #cnrs-dm-file-import-form, #cnrs-dm-import-confirm-form {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -977,6 +1069,14 @@ label[for="cnrs-dm-filename"] {
 
     .cnrs-dm-import-state-container > ul li {
         justify-content: center;
+    }
+
+    .cnrs-dm-import-error-message {
+        margin: 20px auto 0;
+    }
+
+    .cnrs-dm-imported-item-info i {
+        width: calc(100vw - 100px);
     }
 }
 

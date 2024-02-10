@@ -234,7 +234,24 @@ function handleXMLCheckResult(json) {
         let form = document.querySelector('#cnrs-dm-import-confirm-form');
         form.onsubmit = function(e) {
             e.preventDefault();
-            console.log(xlsFile, xlsArray);
+            form.querySelector('svg').classList.remove('hide');
+            const formData = new FormData();
+            const url = '/wp-admin/admin-ajax.php';
+            formData.append('file', xlsFile);
+            formData.append('data', JSON.stringify(xlsArray));
+            formData.append('action', 'import_xml_file');
+            const options = {
+                method: 'POST',
+                body: formData,
+            };
+            fetch(url, options)
+                .then(
+                    response => response.json()
+                ).then(
+                success => getImportResponse(success.data)
+            ).catch(
+                error => getImportResponse({error: fileImportInput.dataset.ko, data: null})
+            );
         };
     } else {
         importResponseStateContainer.innerHTML = `<ul>
@@ -257,6 +274,20 @@ function handleXMLCheckResult(json) {
         </ul>
         <p class="cnrs-dm-import-error-message">${json.error}</p>`;
     }
+}
+
+function getImportResponse(data) {
+    const info = data.data;
+    const error = data.error;
+    let message = '';
+    document.querySelector('#cnrs-dm-import-confirm-form').remove();
+    if (error !== null) {
+        message = `<p class="cnrs-dm-import-error-message">${error}</p>`;
+    } else {
+        message = `<p class="cnrs-dm-import-ok-message">${fileImportInput.dataset.ok}</p>`;
+        message += info;
+    }
+    importResponseStateContainer.innerHTML += message;
 }
 
 function importState(step) {

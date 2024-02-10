@@ -139,7 +139,7 @@ class Bootstrap
     public static function menuInit(): void
     {
         $menuLabel = apply_filters('cnrs_data_manager_menu_label_cnrs_data_manager', __('My JRU', 'cnrs-data-manager'));
-        $hook_prefix = add_menu_page('CNRS Data Manager Plugin', $menuLabel, 'manage', 'cnrs-data-manager', null, CNRS_DATA_MANAGER_ICON);
+        $hook_prefix = add_menu_page('CNRS Data Manager Plugin', $menuLabel, 'manage', 'cnrs-data-manager', null, CNRS_DATA_MANAGER_ICON, 26);
         add_action('admin_print_scripts-' . $hook_prefix, array(__CLASS__, 'scripts'));
         add_action('admin_print_styles-' . $hook_prefix, array(__CLASS__, 'styles'));
 
@@ -235,7 +235,7 @@ class Bootstrap
                     }
                 ]
             ];
-            $menu = array_merge($menu, $menuComplete);
+            $menu = array_merge($menuComplete, $menu);
         }
         return $menu;
     }

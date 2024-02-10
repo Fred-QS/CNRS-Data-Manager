@@ -10,11 +10,12 @@
  *  - $renderMode (string): The render mode value ('sorted', 'simple').
  *  - $agent (array): The agent data.
  *  - $shortCodesCounter (int): Shortcode iteration in the page.
+ *  - $defaultView (string): Default view (null, 'list', 'grid').
  */
 
 ?>
 
-<div class="cnrs-dm-front-agent-container cnrs-dm-front-inline">
+<div class="cnrs-dm-front-agent-container cnrs-dm-front-inline<?= in_array($defaultView, [null, 'list']) ? ' selected' : '' ?>">
     <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
     <small><?= $agent['statut'] ?> <?= $agent['tutelle'] ?></small>
     <br/>
