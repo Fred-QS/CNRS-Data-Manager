@@ -117,4 +117,10 @@ class Tools
 
         return compact('teams', 'services', 'platforms');
     }
+
+    public static function getAllRelations(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results( "SELECT term_id as cat, xml_entity_id as xml, type FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE term_id != 0", ARRAY_A );
+    }
 }

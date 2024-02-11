@@ -16,7 +16,8 @@
 
 ?>
 
-<div class="cnrs-dm-front-list-item-container">
+<div class="et_had_animation cnrs-dm-front-list-item-container">
+    <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
     <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
     <small><?= $agent['statut'] ?> <?= $agent['tutelle'] ?></small>
     <br/>

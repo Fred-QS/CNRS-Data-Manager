@@ -137,6 +137,14 @@
     align-items: center;
 }
 
+.cnrs-dm-front-agent-info-data-container:not(.mobile-version) {
+    overflow-y: scroll;
+}
+
+.cnrs-dm-front-agent-info-data-container.mobile-version {
+    overflow-y: auto;
+}
+
 .cnrs-dm-front-entity-title-container > p {
     color: #fff;
     font-family: 'Josefin Sans',Helvetica,Arial,Lucida,sans-serif!important;
@@ -244,13 +252,14 @@
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 2000;
+    z-index: 99999;
     width: 100%;
     height: 100vh;
     display: flex;
     justify-content: center;
+    cursor: default;
     align-items: center;
-    transition: opacity ease-out 0.5s;
+    transition: opacity ease-out 0.5s, visibility ease-out 0.5s;
     background-color: rgba(255, 255, 255, 0.5);
 }
 
@@ -261,15 +270,6 @@
 
 .cnrs-dm-front-agent-info-wrapper.show .cnrs-dm-front-agent-info {
     transform: scale(1);
-}
-
-.cnrs-dm-front-agent-info {
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.2);
-    transform-origin: 50% 50%;
-    transform: scale(0.95);
-    transition: transform ease-out 0.2s 1s;
 }
 
 .cnrs-dm-front-agent-wrapper-grid {
@@ -302,6 +302,271 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+}
+
+.cnrs-dm-info-avatar {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 2000px;
+    box-shadow: 6px 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.cnrs-dm-front-agent-info-data-container h3 {
+    padding: 0;
+}
+
+.cnrs-dm-front-agent-info-data-container a {
+    font-size: 12px;
+    line-height: 1.2em;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-style: italic;
+}
+
+.cnrs-dm-front-agent-info-data-container a svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+.cnrs-dm-front-agent-info-data-container a svg path {
+    fill: #69C0B5;
+}
+
+.cnrs-dm-front-agent-info-data > h5 {
+    margin-top: 20px;
+    padding: 0;
+    margin-bottom: 3px;
+}
+
+.cnrs-dm-front-agent-info-data > p {
+    padding: 0;
+    color: #69C0B5;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.2em;
+}
+
+.cnrs-dm-front-agent-info-data ul {
+    margin-bottom: 10px;
+}
+
+.cnrs-dm-front-agent-info-data li {
+    padding-left: 5px;
+}
+
+.cnrs-dm-front-agent-info-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.cnrs-dm-front-agent-info-data span {
+    font-size: 13px;
+    line-height: 1.2em;
+}
+
+@media only screen and (min-width: 796px) {
+
+    .cnrs-dm-close-info-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 200px;
+        cursor: pointer;
+        border: 2px solid #6ab7e6;
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        z-index: 5;
+    }
+
+    .cnrs-dm-close-info-container svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .cnrs-dm-close-info-container svg path {
+        fill: #6ab7e6;
+    }
+
+    .cnrs-dm-front-agent-info {
+        width: 700px;
+        max-width: calc(100% - 80px);
+        max-height: 80vh;
+        padding: 20px;
+        transform-origin: 50% 50%;
+        transform: scale(0.95);
+        transition: transform ease-out 0.2s;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cnrs-dm-front-agent-info-left {
+        width: 40%;
+        min-height: 100%;
+        background-color: #6ab7e6;
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .cnrs-dm-front-agent-info-right {
+        width: 100%;
+        background-color: #fff;
+        height: 100%;
+        box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .cnrs-dm-info-avatar {
+        margin-left: 30px;
+    }
+
+    .cnrs-dm-divider-mobile {
+        display: none;
+    }
+
+    .cnrs-dm-front-agent-info-left-shadow {
+        position: absolute;
+        z-index: 1;
+        box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.1);
+        top: calc(100% - 20px);
+        width: 40%;
+        height: 20px;
+        left: 0;
+    }
+
+    .cnrs-dm-front-agent-info-left-divider {
+        position: absolute;
+        z-index: 3;
+        top: 0;
+        left: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .cnrs-dm-front-agent-info-left-divider svg {
+        height: 100%;
+    }
+
+    .cnrs-dm-front-agent-info-data-container {
+        width: calc(60% - 53px);
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        margin-left: calc(40% + 53px);
+        height: 100%;
+        max-height: 480px;
+    }
+}
+
+@media only screen and (max-width: 795px) {
+
+    .cnrs-dm-close-info-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 200px;
+        cursor: pointer;
+        border: 2px solid #fff;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        z-index: 5;
+    }
+
+    .cnrs-dm-close-info-container svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .cnrs-dm-close-info-container svg path {
+        fill: #fff;
+    }
+
+    .cnrs-dm-front-agent-info-right {
+        padding: 10px 0 20px 0;
+        width: 100%;
+        margin-top: 313px;
+        height: calc(100% - 263px);
+    }
+
+    .cnrs-dm-front-agent-info-data-container {
+        height: 100%;
+    }
+
+    .cnrs-dm-front-agent-info {
+        width: 90%;
+        height: 85vh;
+        background-color: #fff;
+        padding: 20px;
+        transform-origin: 50% 50%;
+        transform: scale(0.95);
+        transition: transform ease-out 0.2s;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .cnrs-dm-front-agent-info-left {
+        background-color: #6ab7e6;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 260px;
+        position: absolute;
+        z-index: 2;
+        top: 0;
+        left: 0;
+    }
+
+    .cnrs-dm-divider-desktop {
+        display: none;
+    }
+
+    .cnrs-dm-front-agent-info-left-shadow {
+        display: none;
+    }
+
+    .cnrs-dm-front-agent-info-left-divider {
+        position: absolute;
+        z-index: 3;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .cnrs-dm-front-agent-info-left-divider svg {
+        width: 100%;
+    }
 }
 
 @media only screen and (min-width: 1101px) {
@@ -370,4 +635,38 @@
     .cnrs-dm-front-entity-title-container {
         justify-content: center!important;
     }
+}
+
+.cnrs-dm-front-agent-info-data-container.mobile-version::-webkit-scrollbar {
+    display: none!important;
+}
+
+.cnrs-dm-front-agent-info-data-container::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+.cnrs-dm-front-agent-info-data-container::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 100px;
+}
+
+.cnrs-dm-front-agent-info-data-container::-webkit-scrollbar-thumb {
+    background-color: #6ab7e6;
+    border-radius: 100px;
+    background-clip: padding-box;
+    border: 5px solid transparent;
+    -webkit-border-radius: 100px;
+    -webkit-box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.05), inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+    -webkit-transition: all linear 0.2s;
+}
+
+.cnrs-dm-front-agent-info-data-container::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.cnrs-dm-front-agent-info-data-container::-webkit-scrollbar-corner {
+    background-color: transparent;
 }

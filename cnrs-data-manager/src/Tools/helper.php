@@ -5,6 +5,7 @@ defined('ABSPATH') || exit;
 use CnrsDataManager\Core\Models\Agents;
 use CnrsDataManager\Core\Models\Map;
 use CnrsDataManager\Core\Models\Settings;
+use CnrsDataManager\Core\Models\Tools;
 
 $shortCodesCounter = 0;
 
@@ -528,6 +529,7 @@ if (!function_exists('cnrsReadShortCode')) {
         if (in_array($type, ['all', 'teams', 'services', 'platforms', null], true)) {
 
             $shortCodesCounter++;
+            $cats = getAllLinkedCats();
             $type = $type === null ? 'all' : $type;
             $isSelectorAvailable = $type === 'all' ? false : Settings::isSelectorAvailable($type);
             $renderMode = $filter !== null ? 'sorted' : 'simple';
@@ -589,5 +591,106 @@ if (!function_exists('cnrsReadShortCode')) {
             return "<a class='cnrs-dm-front-btn cnrs-dm-front-btn-{$id}' id='cnrs-dm-front-btn-{$shortCodesCounter}' href='{$link}'>{$text}</a>";
         }
         return '';
+    }
+}
+
+if (!function_exists('getAllLinkedCats')) {
+
+    /**
+     * Retrieves all linked categories.
+     *
+     * Retrieves all linked categories by iterating over the relations array obtained
+     * from the static method getAllRelations() of the Tools class. For each relation,
+     * it retrieves the associated post using the 'cat' value as the post ID, and adds
+     * the 'ref', 'url', and 'title' properties to the final result array.
+     *
+     * @return array An array containing the 'ref', 'url', and 'title' properties of each linked category.
+     */
+    function getAllLinkedCats(): array
+    {
+        $relations = Tools::getAllRelations();
+        $final = [];
+        foreach ($relations as $relation) {
+            $post = get_post($relation['cat'], ARRAY_A);
+            $final[] = [
+                'ref' => $relation['xml'],
+                'type' => $relation['type'],
+                'url' => $post['guid'],
+                'title' => $post['post_title']
+            ];
+        }
+        return $final;
+    }
+}
+
+if (!function_exists('filterEntity')) {
+
+    /**
+     * Filters an array of relations to find a specific entity by its ID.
+     *
+     * @param int $id The ID of the entity to search for.
+     * @param array $relations The array of relations to filter.
+     * @return array|null Returns an array containing the title and URL of the found entity, or null if not found.
+     */
+    function filterEntity(int $id, array $relations, string $type): array|null
+    {
+        foreach ($relations as $relation) {
+            if ((int) $relation['ref'] === $id && $type === $relation['type']) {
+                return ['title' => $relation['title'], 'url' => $relation['url']];
+            }
+        }
+        return null;
+    }
+}
+
+if (!function_exists('filterAgents')) {
+
+    /**
+     * Filters an array of agents to add extra information from the entitiesData array.
+     *
+     * @param array $agents The array of agents to filter.
+     * @return array Returns an array of agents with additional information from the entitiesData array.
+     */
+    function filterAgents(array $agents): array
+    {
+        $entitiesData = getAllLinkedCats();
+        $results = [];
+        foreach ($agents as $agent) {
+
+            $teams = $agent['equipes'];
+            $filteredTeams = [];
+            foreach ($teams as $team) {
+                $exist = filterEntity($team['equipe_id'], $entitiesData, 'teams');
+                if ($exist !== null) {
+                    $team['extra'] = $exist;
+                    $filteredTeams[] = $team;
+                }
+            }
+            $agent['equipes'] = $filteredTeams;
+
+            $services = $agent['services'];
+            $filteredServices = [];
+            foreach ($services as $service) {
+                $exist = filterEntity($service['service_id'], $entitiesData, 'services');
+                if ($exist !== null) {
+                    $service['extra'] = $exist;
+                    $filteredServices[] = $service;
+                }
+            }
+            $agent['services'] = $filteredServices;
+
+            $platforms = $agent['plateformes'];
+            $filteredPlatforms = [];
+            foreach ($platforms as $platform) {
+                $exist = filterEntity($platform['plateforme_id'], $entitiesData, 'platforms');
+                if ($exist !== null) {
+                    $platform['extra'] = $exist;
+                    $filteredPlatforms[] = $platform;
+                }
+            }
+            $agent['plateformes'] = $filteredPlatforms;
+            $results[] = $agent;
+        }
+        return $results;
     }
 }

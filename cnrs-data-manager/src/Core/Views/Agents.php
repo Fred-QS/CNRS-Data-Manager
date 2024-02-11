@@ -1,5 +1,5 @@
 <!-- Start CNRS Data Manager render -->
-<div class="cnrs-dm-front-container">
+<div class="cnrs-dm-front-container" style="display: none">
     <?php if ($type !== 'all'): ?>
         <?php if ($isSelectorAvailable === true): ?>
             <!-- Start CNRS Data Manager display selector -->
@@ -16,6 +16,7 @@
         <?php endif; ?>
 
         <?php if ($renderMode === 'simple'): ?>
+            <?php $entities = filterAgents($entities); ?>
             <!-- Start CNRS Data Manager agents list -->
             <div class="cnrs-dm-front-agents-container">
                 <?php foreach ($entities as $agent): ?>
@@ -42,6 +43,7 @@
                     <!-- End CNRS Data Manager <?= $type ?> title -->
                     <!-- Start CNRS Data Manager agents list -->
                     <div class="cnrs-dm-front-agents-container">
+                        <?php $entity['agents'] = filterAgents($entity['agents']); ?>
                         <?php foreach ($entity['agents'] as $agent): ?>
                             <div class="cnrs-dm-front-agent-wrapper<?= in_array($defaultView, [null, 'list']) ? ' cnrs-dm-front-agent-wrapper-list' : ' cnrs-dm-front-agent-wrapper-grid' ?>">
                                 <?php if ($isSelectorAvailable === true || in_array($defaultView, [null, 'list'])): ?>
