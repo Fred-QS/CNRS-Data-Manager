@@ -16,8 +16,7 @@
 ?>
 
 <div class="cnrs-dm-front-agent-container cnrs-dm-front-inline<?= in_array($defaultView, [null, 'list']) ? ' selected' : '' ?>">
-    <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
-    <small><?= $agent['statut'] ?> <?= $agent['tutelle'] ?></small>
-    <br/>
-    <a href="mailto:<?= $agent['email_pro'] ?>"><?= $agent['email_pro'] ?></a>
+    <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
+    <p><?= strtoupper($agent['nom']) ?> <?= $agent['prenom'] ?></p>
+    <i><?= $agent['expertise'] ?><?= $agent['tutelle'] !== null ? ' ' . $agent['tutelle'] : '' ?><?= $agent['responsabilite'] !== null ? ' ' . $agent['responsabilite'] : '' ?></i>
 </div>

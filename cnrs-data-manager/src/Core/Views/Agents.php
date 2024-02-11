@@ -19,7 +19,7 @@
             <!-- Start CNRS Data Manager agents list -->
             <div class="cnrs-dm-front-agents-container">
                 <?php foreach ($entities as $agent): ?>
-                    <div class="cnrs-dm-front-agent-wrapper">
+                    <div class="cnrs-dm-front-agent-wrapper<?= in_array($defaultView, [null, 'list']) ? ' cnrs-dm-front-agent-wrapper-list' : ' cnrs-dm-front-agent-wrapper-grid' ?>">
                         <?php if ($isSelectorAvailable === true || in_array($defaultView, [null, 'list'])): ?>
                             <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
                         <?php endif; ?>
@@ -43,7 +43,7 @@
                     <!-- Start CNRS Data Manager agents list -->
                     <div class="cnrs-dm-front-agents-container">
                         <?php foreach ($entity['agents'] as $agent): ?>
-                            <div class="cnrs-dm-front-agent-wrapper">
+                            <div class="cnrs-dm-front-agent-wrapper<?= in_array($defaultView, [null, 'list']) ? ' cnrs-dm-front-agent-wrapper-list' : ' cnrs-dm-front-agent-wrapper-grid' ?>">
                                 <?php if ($isSelectorAvailable === true || in_array($defaultView, [null, 'list'])): ?>
                                     <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
                                 <?php endif; ?>

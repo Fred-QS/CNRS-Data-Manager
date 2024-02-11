@@ -16,9 +16,15 @@
 ?>
 
 <div class="cnrs-dm-front-agent-container cnrs-dm-front-card<?= $defaultView === 'grid' ? ' selected' : '' ?>">
-    <img src="<?= $agent['photo'] ?>" alt="<?= $agent['nom'] ?> <?= $agent['prenom'] ?> avatar">
-    <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
-    <small><?= $agent['statut'] ?> <?= $agent['tutelle'] ?></small>
-    <br/>
-    <a href="mailto:<?= $agent['email_pro'] ?>"><?= $agent['email_pro'] ?></a>
+    <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
+    <span>
+        <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
+        <i><?= $agent['expertise'] ?></i>
+        <?php if ($agent['tutelle'] !== null): ?>
+            <small><?= $agent['tutelle'] ?></small>
+        <?php endif; ?>
+    </span>
+    <?php if ($agent['responsabilite'] !== null): ?>
+        <small><?= $agent['responsabilite'] ?></small>
+    <?php endif; ?>
 </div>

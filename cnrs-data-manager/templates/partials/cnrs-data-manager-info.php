@@ -14,3 +14,9 @@
  */
 
 ?>
+
+<div class="cnrs-dm-front-agent-info-wrapper">
+    <div class="cnrs-dm-front-agent-info">
+
+    </div>
+</div>
