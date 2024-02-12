@@ -694,3 +694,38 @@ if (!function_exists('filterAgents')) {
         return $results;
     }
 }
+
+if (!function_exists('inlineInfo')) {
+
+    /**
+     * Constructs an inline information string based on the given agent data.
+     *
+     * @param array $agent The agent data to construct the inline information from.
+     *                     The array should have the following structure:
+     *                     [
+     *                         'specialite' => string|null,
+     *                         'tutelle' => string|null,
+     *                         'responsabilite' => string|null
+     *                     ]
+     * @return string Returns a comma-separated string that contains the non-null values
+     *                of 'specialite', 'tutelle', and 'responsabilite' fields of the agent data.
+     *                If all three fields are null or empty, an empty string is returned.
+     */
+    function inlineInfo(array $agent): string
+    {
+        $line = [];
+        if ($agent['specialite'] !== null) {
+            $line[] = '<span>' . $agent['specialite'] . '</span>';
+        }
+        if ($agent['tutelle'] !== null) {
+            $line[] = '<span>' . $agent['tutelle'] . '</span>';
+        }
+        if ($agent['responsabilite'] !== null) {
+            $line[] = '<span>' . $agent['responsabilite'] . '</span>';
+        }
+        if (empty($line)) {
+            return '';
+        }
+        return implode('<span class="cnrs-dm-front-comma">, </span>', $line);
+    }
+}

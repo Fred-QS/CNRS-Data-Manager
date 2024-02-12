@@ -414,6 +414,10 @@
     width: 49px;
 }
 
+.cnrs-dm-front-inline p {
+    padding-left: 5px;
+}
+
 @media only screen and (min-width: 796px) {
 
     .cnrs-dm-front-all-agents-titles-container-mobile {
@@ -619,6 +623,24 @@
 }
 
 @media only screen and (max-width: 795px) {
+
+    .cnrs-dm-front-inline i {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .cnrs-dm-front-inline p {
+        width: calc(100% - 44px);
+        margin-right: 0;
+    }
+
+    .cnrs-dm-front-comma {
+        display: none;
+    }
 
     .cnrs-dm-front-all-agents-titles-container {
         display: none;

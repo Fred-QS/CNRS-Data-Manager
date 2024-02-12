@@ -12,14 +12,15 @@
  *  - $shortCodesCounter (int): Shortcode iteration in the page.
  *  - $defaultView (string): Default view (null, 'list', 'grid').
  */
-
 ?>
 
 <div class="cnrs-dm-front-agent-container cnrs-dm-front-card<?= $defaultView === 'grid' ? ' selected' : '' ?>">
     <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
     <span>
         <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
-        <i><?= $agent['expertise'] ?></i>
+        <?php if ($agent['specialite'] !== null): ?>
+            <i><?= $agent['specialite'] ?></i>
+        <?php endif; ?>
         <?php if ($agent['tutelle'] !== null): ?>
             <small><?= $agent['tutelle'] ?></small>
         <?php endif; ?>
