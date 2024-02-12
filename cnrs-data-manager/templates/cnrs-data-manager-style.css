@@ -386,6 +386,10 @@
     line-height: 1.2em;
 }
 
+.cnrs-dm-front-agent-info-data > p:last-of-type {
+    margin-top: 10px;
+}
+
 .cnrs-dm-front-agent-info-data ul {
     margin-bottom: 10px;
 }
@@ -653,6 +657,11 @@
 
     .cnrs-dm-front-agent-info-data-container {
         height: 100%;
+        padding-top: 10px;
+    }
+
+    .cnrs-dm-info-avatar {
+        margin-top: 18px;
     }
 
     .cnrs-dm-front-agent-info {
