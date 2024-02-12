@@ -12,8 +12,14 @@ const dataWrapper = document.querySelectorAll('.cnrs-dm-front-agent-info-data-co
 const parentContainers = document.querySelectorAll('.cnrs-dm-front-container');
 
 window.addEventListener('load', function(){
-    displayCOntainers();
     isMobile();
+    displayContainers();
+    dispatchWrapperListener();
+});
+
+
+function dispatchWrapperListener() {
+
     for (let i = 0; i < viewSelector.length; i++) {
         viewSelector[i].addEventListener('click', function (){
             const action = this.dataset.action;
@@ -38,24 +44,23 @@ window.addEventListener('load', function(){
             }
         });
     }
-    dispatchWrapperListener();
-});
 
-
-function dispatchWrapperListener() {
     for (let i = 0; i < allRows.length; i++) {
-        allRows[i].onclick = function (){
-            let element = this.querySelector('.cnrs-dm-front-agent-info-wrapper').cloneNode(true);
-            document.body.appendChild(element);
-            setTimeout(function (){
-                document.querySelector('body > .cnrs-dm-front-agent-info-wrapper').classList.add('show');
-                document.querySelector('body > .cnrs-dm-front-agent-info-wrapper .cnrs-dm-close-info-container').onclick = function () {
-                    document.querySelector('body > .cnrs-dm-front-agent-info-wrapper').classList.remove('show');
-                    setTimeout(function(){
-                        document.querySelector('body > .cnrs-dm-front-agent-info-wrapper').remove();
-                    }, 550);
-                }
-            }, 50);
+        allRows[i].onclick = function (e){
+            const target = e.target;
+            if (!target.classList.contains('cnrs-dm-front-membership-item')) {
+                let element = this.querySelector('.cnrs-dm-front-agent-info-wrapper').cloneNode(true);
+                document.body.appendChild(element);
+                setTimeout(function () {
+                    document.querySelector('body > .cnrs-dm-front-agent-info-wrapper').classList.add('show');
+                    document.querySelector('body > .cnrs-dm-front-agent-info-wrapper .cnrs-dm-close-info-container').onclick = function () {
+                        document.querySelector('body > .cnrs-dm-front-agent-info-wrapper').classList.remove('show');
+                        setTimeout(function () {
+                            document.querySelector('body > .cnrs-dm-front-agent-info-wrapper').remove();
+                        }, 550);
+                    }
+                }, 50);
+            }
         };
     }
 }
@@ -77,7 +82,7 @@ function isMobile() {
     }
 }
 
-function displayCOntainers() {
+function displayContainers() {
     for (let i = 0; i < parentContainers.length; i++) {
         parentContainers[i].style.display = 'block';
     }

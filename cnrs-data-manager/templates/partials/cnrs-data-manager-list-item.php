@@ -13,13 +13,31 @@
  *  - $shortCodesCounter (int): Shortcode iteration in the page.
  *  - $defaultView (string): Default view (null, 'list', 'grid').
  */
-
 ?>
 
-<div class="et_had_animation cnrs-dm-front-list-item-container">
-    <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
-    <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
-    <small><?= $agent['statut'] ?> <?= $agent['tutelle'] ?></small>
-    <br/>
-    <a href="mailto:<?= $agent['email_pro'] ?>"><?= $agent['email_pro'] ?></a>
+<div class="cnrs-dm-front-list-item-container">
+    <div class="cnrs-dm-front-list-item-avatar cnrs-dm-front-list-item-desktop">
+        <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
+    </div>
+    <div class="cnrs-dm-front-list-item-info">
+        <div class="cnrs-dm-front-list-item cnrs-dm-front-list-item-desktop">
+            <p><?= $agent['nom'] ?></p>
+        </div>
+        <div class="cnrs-dm-front-list-item cnrs-dm-front-list-item-desktop">
+            <p><?= $agent['prenom'] ?></p>
+        </div>
+        <div class="cnrs-dm-front-list-item cnrs-dm-front-list-item-desktop">
+            <p><?= $agent['statut'] ?></p>
+        </div>
+        <div class="cnrs-dm-front-list-item-mobile">
+            <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
+            <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
+            <i><?= $agent['statut'] ?></i>
+        </div>
+        <div class="cnrs-dm-front-list-item cnrs-dm-front-list-item-membership">
+            <?php foreach ($agent['equipes'] as $team): ?>
+                <a class="cnrs-dm-front-membership-item" href="<?= $team['extra']['url'] ?>"><?= $team['extra']['title'] ?></a>
+            <?php endforeach; ?>
+        </div>
+    </div>
 </div>
