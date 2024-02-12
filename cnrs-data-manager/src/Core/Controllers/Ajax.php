@@ -18,6 +18,10 @@ class Ajax
 
     private static string $timestamp = '';
 
+    private static array $mapper = ["ACRONYME", "INTITULE", "RESPONSABLE_SCIENTIFIQUE", "EQUIPE", "FINANCEUR", "RESUME", "LIEN_SITE", "IMAGE"];
+
+    private static array $optionals = ["INTITULE", "FINANCEUR", "LIEN_SITE", "IMAGE"];
+
     /**
      * Registers hooks for AJAX actions in WordPress.
      *
@@ -141,7 +145,6 @@ class Ajax
         $spreadsheet = IOFactory::load(CNRS_DATA_MANAGER_IMPORT_TMP_PATH . '/' . $fileinfo['basename']);
         $worksheet = $spreadsheet->getActiveSheet();
         $array = [];
-        $mapper = ["TITRE", "ACRONYME", "RESUME", "CONTENU", "RESPONSABLE", "EQUIPE", "PORTEUR", "FINANCEUR", "PHOTO"];
         $cnt = 0;
         foreach ($worksheet->getRowIterator() as $row) {
             if ($cnt > 0) {
@@ -151,7 +154,7 @@ class Ajax
                 $deadCellsCnt = 0;
                 $cellsCnt = 0;
                 foreach ($cellIterator as $cell) {
-                    if ($cell->getValue() === null && !in_array($mapper[$cellsCnt], ['EQUIPE', 'PORTEUR'], true)) {
+                    if ($cell->getValue() === null && !in_array(self::$mapper[$cellsCnt], self::$optionals, true)) {
                         $deadCellsCnt++;
                     }
                     $value = $cell->getValue();
@@ -162,7 +165,7 @@ class Ajax
                         }
                     }
                     $value = strlen($richText) < 1 ? $value : $richText;
-                    $rowArray[$mapper[$cellsCnt]] = $value;
+                    $rowArray[self::$mapper[$cellsCnt]] = $value;
                     $cellsCnt++;
                 }
                 if ($deadCellsCnt <= 2) {
@@ -172,7 +175,7 @@ class Ajax
                 $cellIterator = $row->getCellIterator();
                 $cellIterator->setIterateOnlyExistingCells(TRUE);
                 foreach ($cellIterator as $cell) {
-                    if (!in_array($cell->getValue(), $mapper, true)) {
+                    if (!in_array($cell->getValue(), self::$mapper, true)) {
                         return false;
                     }
                 }
@@ -194,7 +197,9 @@ class Ajax
     {
         $xlsImages = [];
         foreach ($excel as $row) {
-            $xlsImages[] = $row['PHOTO'];
+            if ($row['IMAGE'] !== null) {
+                $xlsImages[] = $row['IMAGE'];
+            }
         }
         $xlsImages = array_unique($xlsImages);
         $xlsImages = array_values($xlsImages);
@@ -279,40 +284,45 @@ class Ajax
     {
         $posts = [];
         foreach ($data as $row) {
-            $imagePath = $uploadPath . self::$timestamp . '-' . $row['PHOTO'];
-            if (!file_exists($imagePath)) {
-                return false;
+            $id = null;
+            $url = site_url() . '/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg';
+            if ($row['IMAGE'] !== null) {
+                $imagePath = $uploadPath . self::$timestamp . '-' . $row['IMAGE'];
+                if (!file_exists($imagePath)) {
+                    return false;
+                }
+                $imageData = exif_read_data($imagePath);
+                $url = site_url() . '/wp-content' . explode('wp-content', $imagePath)[1];
+                $fileName = str_replace(['.jpg', '.jpeg', '.png'], '', $imageData['FileName']);
+                $wpImageToDB = [
+                    'guid' => $url,
+                    'post_mime_type' => $imageData['MimeType'],
+                    'post_title' => $fileName,
+                    'post_name' => $fileName,
+                    'post_status' => 'inherit',
+                ];
+                $id = wp_insert_attachment($wpImageToDB, $imagePath, 0);
+                $attach_data = wp_generate_attachment_metadata($id, $imagePath);
+                wp_update_attachment_metadata($id, $attach_data);
             }
-            $imageData = exif_read_data($imagePath);
-            $url = site_url() . '/wp-content' . explode('wp-content', $imagePath)[1];
-            $fileName = str_replace(['.jpg', '.jpeg', '.png'], '', $imageData['FileName']);
-            $wpImageToDB = [
-                'guid'                  => $url,
-                'post_mime_type'        => $imageData['MimeType'],
-                'post_title'            => $fileName,
-                'post_name'             => $fileName,
-                'post_status'           => 'inherit',
-            ];
-            $id = wp_insert_attachment($wpImageToDB, $imagePath, 0);
-            $attach_data = wp_generate_attachment_metadata($id, $imagePath);
-            wp_update_attachment_metadata($id, $attach_data);
             $wpProjectToDB = [
                 'post_author' => get_current_user_id(),
                 'post_content' => self::preparePostContent($row),
-                'post_title' => $row['ACRONYME'] !== null ? $row['ACRONYME'] . ' - ' . $row['TITRE'] : $row['TITRE'],
-                'post_excerpt' => $row['RESUME'] === null ? '' : $row['RESUME'],
+                'post_title' => $row['ACRONYME'],
                 'post_status' => 'publish',
                 'post_type' => 'project',
                 'comment_status' => 'open',
-                'ping_status' => 'closed',
-                '_thumbnail_id' => $id,
+                'ping_status' => 'closed'
             ];
+            if ($id !== null) {
+                $wpProjectToDB['_thumbnail_id'] = $id;
+            }
             $postId = wp_insert_post($wpProjectToDB);
             $recorded = get_post($postId, ARRAY_A);
             $posts[] = [
                 'url' => $recorded['guid'],
                 'image' => $url,
-                'excerpt' => $recorded['post_excerpt'],
+                'excerpt' => $row['INTITULE'],
                 'title' => $recorded['post_title']
             ];
         }
@@ -329,24 +339,27 @@ class Ajax
      */
     private static function preparePostContent(array $data): string
     {
-        $excerpt = '';
-        if ($data['RESUME'] !== null) {
-            $excerpt = "<h4>{$data['RESUME']}</h4>" . "\n";
+        $content = '';
+        if ($data['INTITULE'] !== null) {
+            $content = "<h4>{$data['INTITULE']}</h4>" . "\n";
         }
-        $finance = __('', 'cnrs-data-manager');
-        $content = $excerpt . $data['CONTENU'] . "\n";
-        $content .= "&nbsp;" . "\n";
-        $content .= "<h6><em>{$data['RESPONSABLE']}";
+        if ($data['RESUME'] !== null) {
+            $content .= $data['RESUME'] . "\n";
+            $content .= "&nbsp;" . "\n";
+        }
+        $content .= "<h6><em>{$data['RESPONSABLE_SCIENTIFIQUE']}";
         if ($data['EQUIPE'] !== null) {
             $content .= ", {$data['EQUIPE']}";
         }
-        if ($data['PORTEUR'] !== null) {
-            $content .= ", {$data['PORTEUR']}";
-        }
         if ($data['FINANCEUR'] !== null) {
+            $finance = __('financier', 'cnrs-data-manager');
             $content .= ", {$finance} {$data['FINANCEUR']}";
         }
         $content .= "</em></h6>";
+        if ($data['LIEN_SITE'] !== null) {
+            $content .= "&nbsp;" . "\n";
+            $content .= `<a href="{$data['LIEN_SITE']}" target="_blank">{$data['LIEN_SITE']}</a>`;
+        }
         return str_replace('<br>', "\n", $content);
     }
 }

@@ -1,11 +1,3 @@
-<?php
-
-use CnrsDataManager\Core\Models\Projects;
-
-Projects::uploadFile();
-
-?>
-
 <div class="wrap" style="position: relative">
     <h1 class="wp-heading-inline title-and-logo">
         <?= svgFromBase64(CNRS_DATA_MANAGER_IMPORT_ICON, '#5d5d5d', 26) ?>
@@ -13,6 +5,14 @@ Projects::uploadFile();
     </h1>
     <p>
         <?= __('The extension allows you to import <b>Projects</b> in bulk. To do this, please follow the instructions below, namely the type of file to upload in <b>ZIP</b> format, the structure contained in the file as well as the columns that must be present and completed in the expected format for the file import.', 'cnrs-data-manager') ?>
+    </p>
+    <p>
+        <a class="cnrs-dm-template-link" href="/wp-content/plugins/cnrs-data-manager/templates/projects.xlsx" download="<?= __('projects', 'cnrs-data-manager') ?>.xlsx">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM155.7 250.2L192 302.1l36.3-51.9c7.6-10.9 22.6-13.5 33.4-5.9s13.5 22.6 5.9 33.4L221.3 344l46.4 66.2c7.6 10.9 5 25.8-5.9 33.4s-25.8 5-33.4-5.9L192 385.8l-36.3 51.9c-7.6 10.9-22.6 13.5-33.4 5.9s-13.5-22.6-5.9-33.4L162.7 344l-46.4-66.2c-7.6-10.9-5-25.8 5.9-33.4s25.8-5 33.4 5.9z"/>
+            </svg>
+            <span><?= __('Download <b>.xlsx</b> file template', 'cnrs-data-manager') ?></span>
+        </a>
     </p>
     <p class="cnrs-dm-label-like"><?= __('Expected structure', 'cnrs-data-manager') ?></p>
     <?php include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-file-structure.php'); ?>

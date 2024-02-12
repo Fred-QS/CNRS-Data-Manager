@@ -762,10 +762,15 @@ label[for="cnrs-dm-filename"] {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+    outline: none;
+    color: #2271b1!important;
 }
 
 .cnrs-dm-imported-item-info span {
     font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cnrs-dm-imported-item-info i {
@@ -776,6 +781,23 @@ label[for="cnrs-dm-filename"] {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.cnrs-dm-template-link {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.cnrs-dm-template-link svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    color: inherit;
+}
+
+.cnrs-dm-template-link svg path {
+    fill: currentColor;
 }
 
 @media only screen and (min-width: 783px) {
@@ -889,7 +911,7 @@ label[for="cnrs-dm-filename"] {
         justify-content: flex-start;
     }
 
-    .cnrs-dm-imported-item-info i {
+    .cnrs-dm-imported-item-info i, .cnrs-dm-imported-item-info span {
         width: calc(100vw - 300px);
         max-width: 400px;
     }
@@ -1075,7 +1097,7 @@ label[for="cnrs-dm-filename"] {
         margin: 20px auto 0;
     }
 
-    .cnrs-dm-imported-item-info i {
+    .cnrs-dm-imported-item-info i, .cnrs-dm-imported-item-info span {
         width: calc(100vw - 100px);
     }
 }

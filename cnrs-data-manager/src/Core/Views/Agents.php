@@ -62,10 +62,42 @@
             <!-- End CNRS Data Manager agents list filtered by <?= $type ?> -->
         <?php endif; ?>
     <?php else: ?>
+        <?php $entities = filterAgents($entities); ?>
         <!-- Start CNRS Data Manager all agent render -->
         <div class="cnrs-dm-front-all-agents-container">
+            <div class="cnrs-dm-front-all-agents-titles-container">
+                <div class="cnrs-dm-front-all-agents-title cnrs-dm-front-all-agents-title-avatar">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                        <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
+                    </svg>
+                </div>
+                <div class="cnrs-dm-front-all-agents-titles">
+                    <div class="cnrs-dm-front-all-agents-title">
+                        <p><?= __('Lastname', 'cnrs-data-manager') ?></p>
+                    </div>
+                    <div class="cnrs-dm-front-all-agents-title">
+                        <p><?= __('Firstname', 'cnrs-data-manager') ?></p>
+                    </div>
+                    <div class="cnrs-dm-front-all-agents-title">
+                        <p><?= __('Status', 'cnrs-data-manager') ?></p>
+                    </div>
+                    <div class="cnrs-dm-front-all-agents-title">
+                        <p><?= __('Membership', 'cnrs-data-manager') ?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="cnrs-dm-front-all-agents-titles-container-mobile">
+                <div class="cnrs-dm-front-all-agents-titles">
+                    <div class="cnrs-dm-front-all-agents-title">
+                        <p><?= __('Identity', 'cnrs-data-manager') ?></p>
+                    </div>
+                    <div class="cnrs-dm-front-all-agents-title">
+                        <p><?= __('Membership', 'cnrs-data-manager') ?></p>
+                    </div>
+                </div>
+            </div>
             <?php foreach ($entities as $agent): ?>
-                <div class="cnrs-dm-front-agent-wrapper">
+                <div class="cnrs-dm-front-agent-wrapper cnrs-dm-front-all-mode-wrapper">
                     <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-list-item.php')?>
                     <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php')?>
                 </div>
