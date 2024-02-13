@@ -19,7 +19,7 @@ class Agents
      */
     public static function getAgents(int $cat_id, string $mode, string|null $filter): array
     {
-        $provider = CNRS_DATA_MANAGER_XML_DATA['agents'];
+        $provider = filterAgents(CNRS_DATA_MANAGER_XML_DATA['agents']);
         if (in_array($mode, ['teams', 'services', 'platforms'])) {
             global $wpdb;
             $xml = $wpdb->get_results( "SELECT xml_entity_id as id FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE type = '{$mode}' AND term_id = {$cat_id}", ARRAY_A );
@@ -49,7 +49,35 @@ class Agents
             }
             return [];
         }
-        return $provider;
+
+        $provider = self::provideSearchResults($provider);
+
+        if (count($provider) === 0) {
+            return [
+                'count' => 0,
+                'displayed_items' => 0,
+                'data' => [],
+                'pages' => 0,
+                'current' => 1,
+                'next' => null,
+                'previous' => null
+            ];
+        }
+
+        $batch = isset($_GET['cdm-pagi']) && ctype_digit($_GET['cdm-pagi']) ? (int) $_GET['cdm-pagi'] : 10;
+        $page = isset($_GET['cdm-page']) && ctype_digit($_GET['cdm-page']) ? (int) $_GET['cdm-page'] : 1;
+        $index = $page > 0 ? $page - 1 : 0;
+        $length = count($provider);
+        $chunk = array_chunk($provider, $batch);
+        return [
+            'count' => $length,
+            'displayed_items' => count($chunk[$index]),
+            'data' => $chunk[$index],
+            'pages' => count($chunk),
+            'current' => $index + 1,
+            'next' => $index >= count($chunk) - 1 ? null : $index + 2,
+            'previous' => $index === 0 ? null : $index
+        ];
     }
 
     private static function filter(array $users, string $filter): array
@@ -84,5 +112,61 @@ class Agents
         $render['orphans'] = $orphans;
         ksort($render, SORT_STRING);
         return $render;
+    }
+
+    /**
+     * Provides search results based on the given agents array and filters specified in $_GET parameters.
+     *
+     * @param array $agents The array of agents to search through.
+     *
+     * @return array The filtered array of agents based on the search and filter criteria.
+     */
+    private static function provideSearchResults(array $agents): array
+    {
+        if (empty($agents)) {
+            return $agents;
+        }
+
+        $allowedFilters = ['all', 'lastname', 'firstname', 'status', 'membership'];
+
+        $search = isset($_GET['cdm-search']) && strlen($_GET['cdm-search']) > 0 ? stripslashes($_GET['cdm-search']) : '';
+        $filter = isset($_GET['cdm-type']) && in_array($_GET['cdm-type'], $allowedFilters, true) ? stripslashes($_GET['cdm-type']) : 'all';
+        $filteredAgents = $agents;
+        if (strlen($search) > 0) {
+            $filteredAgents = array_filter($agents, function ($agent) use ($search, $filter) {
+                if ($filter === 'all') {
+                    return stripos($agent['nom'], $search) !== false || stripos($agent['prenom'], $search) !== false || stripos($agent['statut'], $search) !== false || self::searchInCats($agent['equipes'], $search) !== false;
+                } else if ($filter === 'lastname') {
+                    return stripos($agent['nom'], $search) !== false;
+                } else if ($filter === 'firstname') {
+                    return stripos($agent['prenom'], $search) !== false;
+                } else if ($filter === 'status') {
+                    return stripos($agent['statut'], $search) !== false;
+                } else if ($filter === 'membership') {
+                    return self::searchInCats($agent['equipes'], $search) !== false;
+                }
+                return false;
+            });
+        }
+        return $filteredAgents;
+    }
+
+    /**
+     * Searches for a specific string in the titles of teams.
+     *
+     * @param array $teams The array of teams to search in.
+     * @param string $search The string to search for.
+     *
+     * @return bool Returns true if the string is found in any of the team titles, otherwise false.
+     */
+    private static function searchInCats(array $teams, string $search): bool
+    {
+        foreach ($teams as $team) {
+            $extra = $team['extra'];
+            if (stripos($extra['title'], $search) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 }

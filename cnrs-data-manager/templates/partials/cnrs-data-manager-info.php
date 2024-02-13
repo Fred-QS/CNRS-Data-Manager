@@ -16,6 +16,7 @@
 
 <div class="cnrs-dm-front-agent-info-wrapper">
     <div class="cnrs-dm-front-agent-info">
+        <div class="cnrs-dm-front-close-shadow"></div>
         <div class="cnrs-dm-front-agent-info-left">
             <div class="cnrs-dm-info-avatar" style="background-image: url(<?= $agent['photo'] ?>);"></div>
             <div class="cnrs-dm-front-agent-info-left-divider">
@@ -30,12 +31,14 @@
             </div>
         </div>
         <div class="cnrs-dm-front-agent-info-left-shadow"></div>
+        <div class="cnrs-dm-close-info-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.51 79.54">
+                <polygon fill="#b0d3ec" points="53.54 70.95 33.58 44.55 16.35 31.03 0 0 79.51 .03 79.51 79.54 53.54 70.95"/>
+                <polygon fill="#6ab7e6" points="30.21 51.39 27.61 27.44 0 0 79.51 .03 79.51 79.54 56.93 59.55 30.21 51.39"/>
+                <path fill="#fff" d="M52.71,26.1c-.12-.12-.18-.19-.25-.26-1.38-1.38-2.76-2.76-4.13-4.14-.08-.08-.16-.16-.21-.25-.14-.22-.15-.45.03-.66.16-.19.43-.24.67-.1.12.07.22.16.32.25,1.37,1.36,2.73,2.73,4.1,4.1.08.08.12.19.18.29.14-.13.2-.18.26-.24.79-.79,1.58-1.57,2.38-2.36.6-.59,1.2-1.18,1.8-1.77.38-.37.7-.44.94-.19.25.26.18.6-.2.98-1.37,1.37-2.73,2.73-4.1,4.1-.07.07-.14.14-.22.23.09.1.16.19.25.27,1.39,1.4,2.78,2.81,4.17,4.21.15.15.28.32.23.55-.1.44-.57.56-.92.23-.41-.39-.81-.79-1.22-1.19-1.04-1.03-2.08-2.07-3.11-3.1-.06-.06-.12-.11-.26-.24-.06.1-.1.21-.18.29-1.37,1.38-2.74,2.75-4.11,4.12-.1.1-.2.19-.32.25-.24.13-.53.06-.67-.13-.16-.23-.16-.45.04-.67.4-.43.81-.85,1.22-1.26,1.1-1.09,2.2-2.17,3.32-3.29Z"/>
+            </svg>
+        </div>
         <div class="cnrs-dm-front-agent-info-right">
-            <div class="cnrs-dm-close-info-container">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                    <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
-                </svg>
-            </div>
             <div class="cnrs-dm-front-agent-info-data-container">
                 <h3><?= ucfirst($agent['prenom']) ?> <?= strtoupper($agent['nom']) ?></h3>
                 <a href="mailto:<?= $agent['email_pro'] ?>">

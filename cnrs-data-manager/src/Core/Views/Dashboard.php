@@ -84,16 +84,17 @@ if ($providerType === 'services') {
                 </select>
                 <input type="submit" id="cnrs-data-manager-limit-action-1" class="button action cnrs-data-manager-limit-action" value="<?= __('Apply', 'cnrs-data-manager') ?>">
             </div>
-            <div class="alignleft actions">
-            </div>
-            <div class="tablenav-pages<?= $pages < 2 ? ' one-page' : '' ?>"><span class="displaying-num"><?= count($rows) . ' ' .  __('elements', 'cnrs-data-manager') ?></span>
+            <div class="tablenav-pages<?= $pages < 2 ? ' one-page' : '' ?>">
+                <span class="displaying-num"><?= count($rows) . ' ' .  __('elements', 'cnrs-data-manager') ?></span>
                 <span class="pagination-links">
                     <?php if($previous !== null): ?>
                         <a class="first-page button" href="<?= sanitizeURIForPagination(1) ?>">
-                            <span class="screen-reader-text"><?= __('First page', 'cnrs-data-manager') ?></span><span aria-hidden="true">«</span>
+                            <span class="screen-reader-text"><?= __('First page', 'cnrs-data-manager') ?></span>
+                            <span aria-hidden="true">«</span>
                         </a>
                         <a class="prev-page button" href="<?= sanitizeURIForPagination($previous) ?>">
-                            <span class="screen-reader-text"><?= __('Previous page', 'cnrs-data-manager') ?></span><span aria-hidden="true">‹</span>
+                            <span class="screen-reader-text"><?= __('Previous page', 'cnrs-data-manager') ?></span>
+                            <span aria-hidden="true">‹</span>
                         </a>
                     <?php else: ?>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
@@ -102,14 +103,19 @@ if ($providerType === 'services') {
                     <span class="paging-input">
                         <label for="current-page-selector" class="screen-reader-text"><?= __('Current page', 'cnrs-data-manager') ?></label>
                         <input class="current-page" id="current-page-selector" type="text" name="cnrs-data-manager-pagi" value="<?= $current ?>" size="1" aria-describedby="table-paging">
-                        <span class="tablenav-paging-text"> <?= __('of') ?> <span class="total-pages"><?= $pages ?></span></span>
+                        <span class="tablenav-paging-text">
+                            <?= __('of', 'cnrs-data-manager') ?>
+                            <span class="total-pages"><?= $pages ?></span>
+                        </span>
                     </span>
                     <?php if($next !== null): ?>
                         <a class="next-page button" href="<?= sanitizeURIForPagination($next) ?>">
-                            <span class="screen-reader-text"><?= __('Next page', 'cnrs-data-manager') ?></span><span aria-hidden="true">›</span>
+                            <span class="screen-reader-text"><?= __('Next page', 'cnrs-data-manager') ?></span>
+                            <span aria-hidden="true">›</span>
                         </a>
                         <a class="last-page button" href="<?= sanitizeURIForPagination($pages) ?>">
-                            <span class="screen-reader-text"><?= __('Last page', 'cnrs-data-manager') ?></span><span aria-hidden="true">»</span>
+                            <span class="screen-reader-text"><?= __('Last page', 'cnrs-data-manager') ?></span>
+                            <span aria-hidden="true">»</span>
                         </a>
                     <?php else: ?>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">›</span>
@@ -212,16 +218,17 @@ if ($providerType === 'services') {
                 </select>
                 <input type="submit" id="cnrs-data-manager-limit-action-2" class="button action cnrs-data-manager-limit-action" value="<?= __('Apply') ?>">
             </div>
-            <div class="alignleft actions">
-            </div>
-            <div class="tablenav-pages<?= $pages < 2 ? ' one-page' : '' ?>"><span class="displaying-num"><?= count($rows) . ' ' .  __('elements') ?></span>
+            <div class="tablenav-pages<?= $pages < 2 ? ' one-page' : '' ?>">
+                <span class="displaying-num"><?= count($rows) . ' ' .  __('elements') ?></span>
                 <span class="pagination-links">
                     <?php if($previous !== null): ?>
                         <a class="first-page button" href="<?= sanitizeURIForPagination(1) ?>">
-                            <span class="screen-reader-text"><?= __('First page', 'cnrs-data-manager') ?></span><span aria-hidden="true">«</span>
+                            <span class="screen-reader-text"><?= __('First page', 'cnrs-data-manager') ?></span>
+                            <span aria-hidden="true">«</span>
                         </a>
                         <a class="prev-page button" href="<?= sanitizeURIForPagination($previous) ?>">
-                            <span class="screen-reader-text"><?= __('Previous page', 'cnrs-data-manager') ?></span><span aria-hidden="true">‹</span>
+                            <span class="screen-reader-text"><?= __('Previous page', 'cnrs-data-manager') ?></span>
+                            <span aria-hidden="true">‹</span>
                         </a>
                     <?php else: ?>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">«</span>
@@ -229,14 +236,19 @@ if ($providerType === 'services') {
                     <?php endif; ?>
                     <span class="screen-reader-text"><?= __('Current page') ?></span>
                     <span id="table-paging" class="paging-input">
-                        <span class="tablenav-paging-text"><?= $current ?> <?= __('of', 'cnrs-data-manager') ?> <span class="total-pages"><?= $pages ?></span></span>
+                        <span class="tablenav-paging-text">
+                            <?= $current ?> <?= __('of', 'cnrs-data-manager') ?>
+                            <span class="total-pages"><?= $pages ?></span>
+                        </span>
                     </span>
                     <?php if($next !== null): ?>
                         <a class="next-page button" href="<?= sanitizeURIForPagination($next) ?>">
-                            <span class="screen-reader-text"><?= __('Next page', 'cnrs-data-manager') ?></span><span aria-hidden="true">›</span>
+                            <span class="screen-reader-text"><?= __('Next page', 'cnrs-data-manager') ?></span>
+                            <span aria-hidden="true">›</span>
                         </a>
                         <a class="last-page button" href="<?= sanitizeURIForPagination($pages) ?>">
-                            <span class="screen-reader-text"><?= __('Last page', 'cnrs-data-manager') ?></span><span aria-hidden="true">»</span>
+                            <span class="screen-reader-text"><?= __('Last page', 'cnrs-data-manager') ?></span>
+                            <span aria-hidden="true">»</span>
                         </a>
                     <?php else: ?>
                         <span class="tablenav-pages-navspan button disabled" aria-hidden="true">›</span>

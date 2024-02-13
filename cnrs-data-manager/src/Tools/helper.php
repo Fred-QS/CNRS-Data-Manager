@@ -82,6 +82,10 @@ if (!function_exists('cnrs_install_folders')) {
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css'
             ],
             [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-filters-style.css',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css'
+            ],
+            [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-script.js',
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js'
             ],
@@ -104,6 +108,10 @@ if (!function_exists('cnrs_install_folders')) {
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-info.php',
                 'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-filters.php',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-filters.php'
             ],
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/svg/list.svg',
@@ -395,16 +403,18 @@ if (!function_exists('humanizeCivility')) {
 
 if (!function_exists('sanitizeURIForPagination')) {
 
+
     /**
-     * Sanitize the URI by removing any existing pagination parameter and adding the new page number.
+     * Sanitizes the current URI for pagination.
      *
-     * @param int $page The page number to be added to the URI.
-     * @return string The sanitized URI with the page parameter included.
+     * @param int $page The page number to append to the URI.
+     * @param string $mode The mode of pagination ('back' or 'cdm').
+     * @return string Returns the sanitized URI with the appended page number.
      */
-    function sanitizeURIForPagination(int $page): string
+    function sanitizeURIForPagination(int $page, string $mode = 'back'): string
     {
         $current = $_SERVER['REQUEST_URI'];
-        $trigger = 'cnrs-data-manager-pagi';
+        $trigger = $mode === 'back' ? 'cnrs-data-manager-pagi' : 'cdm-page';
         if (stripos($current, $trigger) !== false) {
             $current = explode($trigger, $current)[0];
             if (str_ends_with($current, '&')) {
@@ -511,9 +521,9 @@ if (!function_exists('cnrsReadShortCode')) {
         global $shortCodesCounter;
 
         $id = get_the_ID();
-        $displayMode = Settings::getDisplayMode();
+        $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && is_int($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -535,10 +545,25 @@ if (!function_exists('cnrsReadShortCode')) {
             $renderMode = $filter !== null ? 'sorted' : 'simple';
             $entities = Agents::getAgents($id, $type, $filter);
 
-            if (empty($entities)) {
-                return '';
+            if ($type !== 'all' && empty($entities)) {
+                ob_start();
+                include_once(dirname(__DIR__) . '/Core/Views/NoResult.php');
+                return ob_get_clean();
             }
 
+            if ($type === 'all') {
+                wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css', [], null);
+
+                $pagination = [
+                    'count' => $entities['count'],
+                    'displayed_items' => $entities['displayed_items'],
+                    'pages' => $entities['pages'],
+                    'current' => $entities['current'],
+                    'next' => $entities['next'],
+                    'previous' => $entities['previous']
+                ];
+                $entities = $entities['data'];
+            }
             wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
             wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js', [], null);
 
@@ -581,6 +606,7 @@ if (!function_exists('cnrsReadShortCode')) {
             && strlen($target) > 0
             && strlen($text) > 0)
         {
+
             $shortCodesCounter++;
 
             wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
@@ -589,6 +615,15 @@ if (!function_exists('cnrsReadShortCode')) {
             $link = stripos($target, '?') !== false ? $target . '&cnrs-dm-ref=' . $id  : $target . '?cnrs-dm-ref=' . $id;
             $link = $link[0] === '/' || stripos($link, 'http') === 0 ? $link : '/' . $link;
             return "<a class='cnrs-dm-front-btn cnrs-dm-front-btn-{$id}' id='cnrs-dm-front-btn-{$shortCodesCounter}' href='{$link}'>{$text}</a>";
+
+        } else if ($type === 'filters') {
+
+            $shortCodesCounter++;
+            wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css', [], null);
+
+            ob_start();
+            include_once(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-filters.php');
+            return ob_get_clean();
         }
         return '';
     }

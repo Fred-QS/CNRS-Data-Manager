@@ -800,6 +800,15 @@ label[for="cnrs-dm-filename"] {
     fill: currentColor;
 }
 
+.cnrs-data-manager-disclaimer {
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 1em;
+    display: flex;
+    margin-top: 3px;
+    color: #2271B1;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;

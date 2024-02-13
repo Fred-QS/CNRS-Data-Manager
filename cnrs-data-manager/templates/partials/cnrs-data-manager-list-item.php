@@ -1,5 +1,4 @@
 <?php
-
 /**
  * List item Agent Template for full content render.
  * Available variables:
@@ -12,6 +11,7 @@
  *  - $agent (array): The agent data.
  *  - $shortCodesCounter (int): Shortcode iteration in the page.
  *  - $defaultView (string): Default view (null, 'list', 'grid').
+ *  - $pagination (array): Pagination data to build le UI logic.
  */
 ?>
 

@@ -24,11 +24,14 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
     <p><?= __('You can also decide to restore the initial state of the files provided by the extension listed below used for style, javascript and php template', 'cnrs-data-manager') ?>:</p>
     <ul class="cnrs-dm-files-list">
         <li><?= __('The <b>CSS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>CSS</b> filters file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>JS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>PHP</b> template file for displaying agents in a list <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-inline.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>PHP</b> template file for the agent card display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-card.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>PHP</b> template file for the full agent list item <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-list-item.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>PHP</b> template file for the entity title if display mode is sorted <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-sorted-title.php</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>PHP</b> template file for the agent modal display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-info.php</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>PHP</b> template file for the filters display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-filters.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>SVG</b> file for the list view button <b><i>/wp-includes/cnrs-data-manager/svg/list.svg</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>SVG</b> file for the grid view button <b><i>/wp-includes/cnrs-data-manager/svg/grid.svg</i></b>', 'cnrs-data-manager') ?></li>
     </ul>
