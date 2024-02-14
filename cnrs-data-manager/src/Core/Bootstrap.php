@@ -64,6 +64,7 @@ class Bootstrap
             define('CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER', $currentThemeFolder);
         }
         cnrs_install_folders();
+        addQueryVars();
     }
 
     /**

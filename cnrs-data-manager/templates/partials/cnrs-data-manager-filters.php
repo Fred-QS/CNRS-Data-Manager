@@ -1,4 +1,3 @@
-
 <!-- Start CNRS Data Manager filter section -->
 <form method="get" class="cnrs-dm-front-filters-wrapper">
     <div id="cnrs-dm-front-filters-container">
@@ -37,3 +36,4 @@
         </button>
     </div>
 </form>
+<!-- End CNRS Data Manager filter section -->

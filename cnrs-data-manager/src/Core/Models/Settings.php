@@ -62,6 +62,7 @@ class Settings
                 'services_view_selector' => stripslashes($_POST['cnrs-dm-selector-services']),
                 'platforms_category' => stripslashes($_POST['cnrs-data-manager-categories-list-platforms']),
                 'platforms_view_selector' => stripslashes($_POST['cnrs-dm-selector-platforms']),
+                'category_template' => stripslashes($_POST['cnrs-dm-category-template']) === 'on' ? 1 : 0,
             ];
             global $wpdb;
             $currents = $wpdb->get_results( "SELECT teams_category, services_category, platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings ", ARRAY_A );
@@ -83,14 +84,15 @@ class Settings
             }
 
             $wpdb->query($wpdb->prepare(
-                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category=%d,teams_view_selector=%d,services_category=%d,services_view_selector=%d,platforms_category=%d,platforms_view_selector=%d,mode=%s",
+                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category=%d,teams_view_selector=%d,services_category=%d,services_view_selector=%d,platforms_category=%d,platforms_view_selector=%d,mode=%s,category_template=%d",
                 $post['teams_category'],
                 $post['teams_view_selector'],
                 $post['services_category'],
                 $post['services_view_selector'], 
                 $post['platforms_category'],
                 $post['platforms_view_selector'],
-                $post['mode']
+                $post['mode'],
+                $post['category_template']
             ));
         }
     }
@@ -198,5 +200,18 @@ class Settings
         global $wpdb;
         $settings = $wpdb->get_results( "SELECT {$type}_view_selector FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
         return $settings[0][$type . '_view_selector'] === '1';
+    }
+
+    public static function deployCategoryTemplate(): void
+    {
+        global $wpdb;
+        $settings = $wpdb->get_results( "SELECT category_template FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $newFile = get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/category.php';
+        if ((int) $settings[0]['category_template'] === 1 && !file_exists($newFile)) {
+            $template = CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-category.php';
+            copy($template, $newFile);
+        } else if ((int) $settings[0]['category_template'] === 0 && file_exists($newFile)) {
+            unlink($newFile);
+        }
     }
 }

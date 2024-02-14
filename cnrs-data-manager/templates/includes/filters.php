@@ -36,3 +36,4 @@
         </button>
     </div>
 </form>
+<!-- End CNRS Data Manager filter section -->

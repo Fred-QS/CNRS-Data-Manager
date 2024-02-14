@@ -86,8 +86,16 @@ if (!function_exists('cnrs_install_folders')) {
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css'
             ],
             [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-pagination-style.css',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-style.css'
+            ],
+            [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-script.js',
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-pagination-script.js',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-script.js'
             ],
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-inline.php',
@@ -620,12 +628,47 @@ if (!function_exists('cnrsReadShortCode')) {
 
             $shortCodesCounter++;
             wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css', [], null);
-
+            cnrsFiltersController();
             ob_start();
             include_once(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-filters.php');
             return ob_get_clean();
+
+        } else if ($type === 'pagination') {
+
+            $shortCodesCounter++;
+            wp_enqueue_style('cnrs-data-manager-pagination-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-pagination-script', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-script.js', [], null);
+            cnrsFiltersController();
+            ob_start();
+            include_once(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-pagination.php');
+            return ob_get_clean();
+
         }
         return '';
+    }
+}
+
+if (!function_exists('cnrsFiltersController')) {
+
+    /**
+     * Filters the posts in the current category based on pagination and limit.
+     *
+     * @global WP_Query $wp_query WordPress global variable used to store the query.
+     */
+    function cnrsFiltersController()
+    {
+        $currentCat = get_the_category(get_the_ID());
+        $currentCatSlug = trim($currentCat[0]->slug);
+
+        global $wp_query;
+        $paged = (get_query_var('paged')) ? absint(get_query_var('paged')) : 1;
+        $posts_per_page = (get_query_var('limit')) ? absint(get_query_var('limit')) : 5;
+        $args = array(
+            'posts_per_page' => $posts_per_page,
+            'category_name' => $currentCatSlug,
+            'paged' => $paged,
+        );
+        $wp_query = new WP_Query($args);
     }
 }
 
@@ -762,5 +805,21 @@ if (!function_exists('inlineInfo')) {
             return '';
         }
         return implode('<span class="cnrs-dm-front-comma">, </span>', $line);
+    }
+}
+
+if (!function_exists('addQueryVars')) {
+
+    /**
+     * Adds a query variable "limit" to the global query variables.
+     *
+     * @return void
+     */
+    function addQueryVars(): void
+    {
+        add_filter('query_vars', function ($qvars) {
+            $qvars[] = 'limit';
+            return $qvars;
+        });
     }
 }
