@@ -223,12 +223,12 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                                 <input<?= (int) $settings['silent_pagination'] === 1 ? ' checked' : '' ?> type="checkbox" id="cnrs-dm-pagination-ajax-checkbox" data-code='[cnrs-data-manager type="pagination" silent-selector="#my-css-selector"]' name="cnrs-dm-pagination-ajax-checkbox">
                                 <b><?= __('Silent paging', 'cnrs-data-manager') ?></b></label>
                             <br/>
-                            <i class="cnrs-data-manager-disclaimer"><?= __('If you choose <b>silent pagination</b>, you must enter the CSS selector of the element containing the elements to be paginated.', 'cnrs-data-manager') ?></i>
+                            <i class="cnrs-data-manager-disclaimer"><?= __('If you choose <b>silent pagination</b>, you must add <b>class="cnrs-dm-front-silent-container"</b> attribute to the HTML element containing the posts.', 'cnrs-data-manager') ?></i>
                         </div>
                         <p class="cnrs-dm-shortcode-p">
-                            <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="pagination"]'>
+                            <span class="cnrs-data-manager-copy-shortcode">
                                 <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
-                                <code id="cnrs-dm-pagination-ajax-code"><?= (int) $settings['silent_pagination'] === 1 ? '[cnrs-data-manager type="pagination" silent-selector="#my-css-selector"]' : '[cnrs-data-manager type="pagination"]' ?></code>
+                                <code>[cnrs-data-manager type="pagination"]</code>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
                                     <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
                                 </svg>

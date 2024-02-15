@@ -43,8 +43,6 @@ const fileImportBtn = document.querySelector('#cnrs-dm-import-file-btn');
 const fileImportSubmitBtn = document.querySelector('#cnrs-dm-file-import-form-submit');
 const importInitialStateContainer = document.querySelector('#cnrs-dm-import-initial-state-container');
 const importResponseStateContainer = document.querySelector('#cnrs-dm-import-response-state-container');
-const isAjaxPaginationCheckbox = document.querySelector('#cnrs-dm-pagination-ajax-checkbox');
-const paginationCode = document.querySelector('#cnrs-dm-pagination-ajax-code');
 let filenameTimeout;
 let xlsFile = null;
 
@@ -706,14 +704,5 @@ function initSettingsShortCodeFilters() {
                 }
             });
         }
-    }
-    if (isAjaxPaginationCheckbox) {
-        isAjaxPaginationCheckbox.addEventListener('input', function() {
-            if (this.checked === true) {
-                paginationCode.innerHTML = this.dataset.code;
-            } else {
-                paginationCode.innerHTML = paginationCode.closest('.cnrs-data-manager-copy-shortcode').dataset.code;
-            }
-        })
     }
 }
