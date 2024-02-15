@@ -45,9 +45,6 @@ const importInitialStateContainer = document.querySelector('#cnrs-dm-import-init
 const importResponseStateContainer = document.querySelector('#cnrs-dm-import-response-state-container');
 const isAjaxPaginationCheckbox = document.querySelector('#cnrs-dm-pagination-ajax-checkbox');
 const paginationCode = document.querySelector('#cnrs-dm-pagination-ajax-code');
-const filterModules = document.querySelectorAll('input[name="cnrs-dm-filter-module"]');
-const filterModulesCode = document.querySelector('#cnrs-dm-filter-code');
-const hiddenModulesInput = document.querySelector('#cnrs-data-manager-filters-modules-input');
 let filenameTimeout;
 let xlsFile = null;
 
@@ -718,19 +715,5 @@ function initSettingsShortCodeFilters() {
                 paginationCode.innerHTML = paginationCode.closest('.cnrs-data-manager-copy-shortcode').dataset.code;
             }
         })
-    }
-    for (let i = 0; i < filterModules.length; i++) {
-        filterModules[i].addEventListener('input', function (){
-            let modules = [];
-            for (let i = 0; i < filterModules.length; i++) {
-                if (filterModules[i].checked === true) {
-                    modules.push(filterModules[i].value);
-                }
-            }
-            let joinModules = modules.join(',');
-            let modulesString = modules.length > 0 ? ' modules="' + joinModules + '"]' : ']';
-            filterModulesCode.innerHTML = '[cnrs-data-manager type="filters"' + modulesString;
-            hiddenModulesInput.value = joinModules.length > 0 ? joinModules : 'none';
-        });
     }
 }

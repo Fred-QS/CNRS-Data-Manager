@@ -177,33 +177,32 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                     <td>
                         <b><?= __('Filter modules list', 'cnrs-data-manager') ?></b>
                         <br/>
-                        <input type="hidden" id="cnrs-data-manager-filters-modules-input" name="cnrs-data-manager-filters-modules" value="<?= $settings['filter_modules'] ?>">
                         <ul class="cnrs-dm-filter-modules">
                             <li>
                                 <label>
-                                    <input<?= stripos($settings['filter_modules'], 'per-page') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module" value="per-page"><i><?= __('Posts per page', 'cnrs-data-manager') ?></i>
+                                    <input<?= stripos($settings['filter_modules'], 'per-page') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module[]" value="per-page"><i><?= __('Posts per page', 'cnrs-data-manager') ?></i>
                                 </label>
                             </li>
                             <li>
                                 <label>
-                                    <input<?= stripos($settings['filter_modules'], 'sub-categories-list') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module" value="sub-categories-list"><i><?= __('Categories selector', 'cnrs-data-manager') ?></i>
+                                    <input<?= stripos($settings['filter_modules'], 'sub-categories-list') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module[]" value="sub-categories-list"><i><?= __('Categories selector', 'cnrs-data-manager') ?></i>
                                 </label>
                             </li>
                             <li>
                                 <label>
-                                    <input<?= stripos($settings['filter_modules'], 'by-year') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module" value="by-year"><i><?= __('Filter by years', 'cnrs-data-manager') ?></i>
+                                    <input<?= stripos($settings['filter_modules'], 'by-year') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module[]" value="by-year"><i><?= __('Filter by years', 'cnrs-data-manager') ?></i>
                                 </label>
                             </li>
                             <li>
                                 <label>
-                                    <input<?= stripos($settings['filter_modules'], 'search-field') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module" value="search-field"><i><?= __('Search field', 'cnrs-data-manager') ?></i>
+                                    <input<?= stripos($settings['filter_modules'], 'search-field') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module[]" value="search-field"><i><?= __('Search field', 'cnrs-data-manager') ?></i>
                                 </label>
                             </li>
                         </ul>
                         <p class="cnrs-dm-shortcode-p">
-                            <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="filters"]'>
+                            <span class="cnrs-data-manager-copy-shortcode">
                                 <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
-                                <code id="cnrs-dm-filter-code"><?= createModulesFromDB($settings['filter_modules']) ?></code>
+                                <code>[cnrs-data-manager type="filters"]</code>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
                                     <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
                                 </svg>

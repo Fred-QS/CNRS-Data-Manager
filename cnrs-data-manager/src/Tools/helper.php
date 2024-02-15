@@ -856,18 +856,3 @@ if (!function_exists('addQueryVars')) {
         });
     }
 }
-
-if (!function_exists('createModulesFromDB')) {
-
-    /**
-     * Creates a string to form a module with settings from the database.
-     *
-     * @param string $settings The settings for the module.
-     * @return string Returns a string representing the module with the specified settings.
-     */
-    function createModulesFromDB(string $settings): string
-    {
-        $string = $settings === 'none' ? ']' : ' modules="' . $settings . '"]';
-        return '[cnrs-data-manager type="filters"' . $string;
-    }
-}

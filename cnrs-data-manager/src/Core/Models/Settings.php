@@ -53,7 +53,7 @@ class Settings
             && isset($_POST['cnrs-data-manager-categories-list-teams'])
             && isset($_POST['cnrs-data-manager-categories-list-services'])
             && isset($_POST['cnrs-data-manager-categories-list-platforms'])
-            && isset($_POST['cnrs-data-manager-filters-modules']))
+            && isset($_POST['cnrs-dm-filter-module']))
         {
             $post = [
                 'mode' => stripslashes($_POST['cnrs-dm-mode']),
@@ -65,7 +65,7 @@ class Settings
                 'platforms_view_selector' => stripslashes($_POST['cnrs-dm-selector-platforms']),
                 'category_template' => stripslashes($_POST['cnrs-dm-category-template']) === 'on' ? 1 : 0,
                 'silent_pagination' => stripslashes($_POST['cnrs-dm-pagination-ajax-checkbox']) === 'on' ? 1 : 0,
-                'filter_modules' => stripslashes($_POST['cnrs-data-manager-filters-modules']),
+                'filter_modules' => !empty($_POST['cnrs-dm-filter-module']) ? stripslashes(implode(',', $_POST['cnrs-dm-filter-module'])) : 'none',
             ];
             global $wpdb;
             $currents = $wpdb->get_results( "SELECT teams_category, services_category, platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings ", ARRAY_A );
