@@ -52,7 +52,8 @@ class Settings
             && isset($_POST['cnrs-dm-selector-platforms'])
             && isset($_POST['cnrs-data-manager-categories-list-teams'])
             && isset($_POST['cnrs-data-manager-categories-list-services'])
-            && isset($_POST['cnrs-data-manager-categories-list-platforms']))
+            && isset($_POST['cnrs-data-manager-categories-list-platforms'])
+            && isset($_POST['cnrs-data-manager-filters-modules']))
         {
             $post = [
                 'mode' => stripslashes($_POST['cnrs-dm-mode']),
@@ -63,6 +64,8 @@ class Settings
                 'platforms_category' => stripslashes($_POST['cnrs-data-manager-categories-list-platforms']),
                 'platforms_view_selector' => stripslashes($_POST['cnrs-dm-selector-platforms']),
                 'category_template' => stripslashes($_POST['cnrs-dm-category-template']) === 'on' ? 1 : 0,
+                'silent_pagination' => stripslashes($_POST['cnrs-dm-pagination-ajax-checkbox']) === 'on' ? 1 : 0,
+                'filter_modules' => stripslashes($_POST['cnrs-data-manager-filters-modules']),
             ];
             global $wpdb;
             $currents = $wpdb->get_results( "SELECT teams_category, services_category, platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings ", ARRAY_A );
@@ -84,7 +87,7 @@ class Settings
             }
 
             $wpdb->query($wpdb->prepare(
-                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category=%d,teams_view_selector=%d,services_category=%d,services_view_selector=%d,platforms_category=%d,platforms_view_selector=%d,mode=%s,category_template=%d",
+                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category=%d,teams_view_selector=%d,services_category=%d,services_view_selector=%d,platforms_category=%d,platforms_view_selector=%d,mode=%s,category_template=%d,silent_pagination=%d,filter_modules=%s",
                 $post['teams_category'],
                 $post['teams_view_selector'],
                 $post['services_category'],
@@ -92,7 +95,9 @@ class Settings
                 $post['platforms_category'],
                 $post['platforms_view_selector'],
                 $post['mode'],
-                $post['category_template']
+                $post['category_template'],
+                $post['silent_pagination'],
+                $post['filter_modules']
             ));
         }
     }

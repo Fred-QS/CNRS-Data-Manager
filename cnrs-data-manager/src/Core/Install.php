@@ -64,7 +64,7 @@ class Install
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='CNRS Data Manager relation table between terms and XML data'"
         );
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_settings (
-              filename varchar(255) DEFAULT NULL COMMENT 'XML endpoint url.',
+              filename varchar(255) DEFAULT NULL COMMENT 'XML endpoint url',
               teams_category int(11) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Category for teams',
               teams_view_selector tinyint(4) NOT NULL DEFAULT 1 COMMENT 'Display teams view selector',
               services_category int(11) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Category for services',
@@ -75,6 +75,8 @@ class Install
               default_latitude decimal(8,6) NOT NULL DEFAULT 48.883890 COMMENT 'Default latitude value for 3D map',
               default_longitude decimal(9,6) NOT NULL DEFAULT 2.353520 COMMENT 'Default longitude value for 3D map',
               category_template tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Tells if the category.php file has to be created',
+              silent_pagination tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Define if posts silent pagination is activate',
+              filter_modules varchar(255) NOT NULL DEFAULT 'per-page,sub-categories-list,by-year,search-field' COMMENT 'Module selection for post filters',
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='CNRS Data Manager extension settings'"
         );
         // Populate tables
@@ -86,8 +88,8 @@ class Install
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_map_settings (sunlight, view, stars, black_bg, atmosphere) VALUES 
             (1, 'space', 1, 1, 1)"
         );
-        $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_settings (filename, teams_category, teams_view_selector, services_category, services_view_selector, platforms_category, platforms_view_selector, mode, default_latitude, default_longitude, category_template) VALUES
-            ('umr_5805', 1, 1, 1, 1, 1, 1, 'widget', 44.869222, 0.494797, 0)"
+        $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_settings (filename, teams_category, teams_view_selector, services_category, services_view_selector, platforms_category, platforms_view_selector, mode, default_latitude, default_longitude, category_template, silent_pagination, filter_modules) VALUES
+            ('umr_5805', 1, 1, 1, 1, 1, 1, 'widget', 44.869222, 0.494797, 0, 0, 'per-page,sub-categories-list,by-year,search-field')"
         );
     }
 }

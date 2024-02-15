@@ -476,7 +476,7 @@ body[class*="data-manager-tools"] .form-table tr > * {
     margin-bottom: 30px;
 }
 
-#cnrs-dm-page-option-shortcode > span {
+#cnrs-dm-page-option-shortcode > span:not(.cnrs-data-manager-copy-shortcode-page-mode) {
     margin-top: 10px;
 }
 
@@ -804,9 +804,14 @@ label[for="cnrs-dm-filename"] {
     font-weight: normal;
     font-size: 12px;
     line-height: 1em;
-    display: flex;
+    display: inline-block;
     margin-top: 3px;
     color: #2271B1;
+}
+
+.cnrs-dm-filter-modules i {
+    font-size: 13px;
+    margin-left: 4px;
 }
 
 @media only screen and (min-width: 783px) {

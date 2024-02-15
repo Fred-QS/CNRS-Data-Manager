@@ -2,7 +2,7 @@
 $data = json_encode($json, JSON_THROW_ON_ERROR);
 ?>
 
-<div class="cnrs-dm-map">
+<div class="cnrs-dm-map" data-shortcode="cnrs-data-manager-shortcode-<?= $shortCodesCounter ?>">
     <pre style="display: none;" class="cnrs-dm-map-data"><?= $data ?></pre>
     <?php if ($json['atmosphere'] === true): ?>
         <div id="cnrs-dm-map-atmosphere"></div>

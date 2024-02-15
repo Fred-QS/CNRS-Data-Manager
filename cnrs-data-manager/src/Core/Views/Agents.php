@@ -1,5 +1,5 @@
 <!-- Start CNRS Data Manager render -->
-<div class="cnrs-dm-front-container" style="display: none">
+<div class="cnrs-dm-front-container" style="display: none" data-shortcode="cnrs-data-manager-shortcode-<?= $shortCodesCounter ?>">
     <?php if ($type !== 'all'): ?>
         <?php if ($isSelectorAvailable === true): ?>
             <!-- Start CNRS Data Manager display selector -->

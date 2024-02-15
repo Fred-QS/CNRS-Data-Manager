@@ -21,6 +21,10 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
         <br/>
         <?= __('In order to save your changes, please click on the <b>Update</b> button.', 'cnrs-data-manager') ?>
     </p>
+
+    <p>
+        <?= __('The <b>CNRS Data Manager</b> extension uses Shortcodes to be able to render the different views. You can use the <b>Filter</b> and <b>Default View</b> options in order to best personalize the renderings according to your integration.', 'cnrs-data-manager') ?>
+    </p>
     <?php if ($settings['filename'] === null): ?>
         <p>
             <?= __('Before you can use the extension, you must enter the URL of the <b>Soap API</b> that WordPress must contact to retrieve data from your UMR.', 'cnrs-data-manager') ?>
@@ -75,19 +79,44 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
             <p class="cnrs-dm-shortcode-p<?= $settings['mode'] === 'page' ? '' : ' hide' ?>" id="cnrs-dm-page-option-shortcode">
                 <?= __('If <b>Page</b> mode is enabled, please use this shortcode as the value for the button link which will point to the page of the agents concerned by the article and its category.', 'cnrs-data-manager') ?>
                 <br/>
-                <span class="cnrs-data-manager-copy-shortcode">
+                <?= __('You can also use the shortcode below that of the <b>navigation</b> to display a dynamic title showing the title <b>Member of the <i>"entity"</i> <i>"entity name"</i></b> in the page where the <b>type="all"</b> shortcode will be implemented.', 'cnrs-data-manager') ?>
+                <br/>
+                <span class="cnrs-data-manager-copy-shortcode cnrs-data-manager-copy-shortcode-page-mode">
                     <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
                     <code>[cnrs-data-manager type="navigate" text="button title" target="<?= __('/url/to/reach', 'cnrs-data-manager') ?>"]</code>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
                         <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
                     </svg>
                 </span>
+                <br/>
+                <b><?= __('Team page title', 'cnrs-data-manager') ?></b>
+                <span class="cnrs-data-manager-copy-shortcode cnrs-data-manager-copy-shortcode-page-mode">
+                    <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                    <code>[cnrs-data-manager type="page-title" entity="teams"]</code>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                        <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                    </svg>
+                </span>
+                <br/>
+                <b><?= __('Service page title', 'cnrs-data-manager') ?></b>
+                <span class="cnrs-data-manager-copy-shortcode cnrs-data-manager-copy-shortcode-page-mode">
+                    <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                    <code>[cnrs-data-manager type="page-title" entity="services"]</code>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                        <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                    </svg>
+                </span>
+                <br/>
+                <b><?= __('Platform page title', 'cnrs-data-manager') ?></b>
+                <span class="cnrs-data-manager-copy-shortcode cnrs-data-manager-copy-shortcode-page-mode">
+                    <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                    <code>[cnrs-data-manager type="page-title" entity="platforms"]</code>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                        <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                    </svg>
+                </span>
             </p>
-
-            <p>
-                <?= __('The <b>CNRS Data Manager</b> extension uses Shortcodes to be able to render the different views. You can use the <b>Filter</b> and <b>Default View</b> options in order to best personalize the renderings according to your integration.', 'cnrs-data-manager') ?>
-            </p>
-
+            <hr/>
             <table class="form-table" role="presentation">
                 <tbody
                     <tr>
@@ -124,6 +153,7 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                     </tr>
                 </tbody>
             </table>
+            <hr/>
             <p>
                 <?= __('In order to optimize the use of filters and pagination, you can choose to use the <b>category.php</b> page provided by the extension. It will be up to you to make your own design in the corresponding CSS and JS files (see the list in the <b>Tools</b> tab).', 'cnrs-data-manager') ?>
                 <br/>
@@ -145,10 +175,35 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                         <i class="cnrs-data-manager-disclaimer"><?= __('To be implemented in category page only.', 'cnrs-data-manager') ?></i>
                     </th>
                     <td>
+                        <b><?= __('Filter modules list', 'cnrs-data-manager') ?></b>
+                        <br/>
+                        <input type="hidden" id="cnrs-data-manager-filters-modules-input" name="cnrs-data-manager-filters-modules" value="<?= $settings['filter_modules'] ?>">
+                        <ul class="cnrs-dm-filter-modules">
+                            <li>
+                                <label>
+                                    <input<?= stripos($settings['filter_modules'], 'per-page') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module" value="per-page"><i><?= __('Posts per page', 'cnrs-data-manager') ?></i>
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input<?= stripos($settings['filter_modules'], 'sub-categories-list') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module" value="sub-categories-list"><i><?= __('Categories selector', 'cnrs-data-manager') ?></i>
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input<?= stripos($settings['filter_modules'], 'by-year') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module" value="by-year"><i><?= __('Filter by years', 'cnrs-data-manager') ?></i>
+                                </label>
+                            </li>
+                            <li>
+                                <label>
+                                    <input<?= stripos($settings['filter_modules'], 'search-field') !== false ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-module" value="search-field"><i><?= __('Search field', 'cnrs-data-manager') ?></i>
+                                </label>
+                            </li>
+                        </ul>
                         <p class="cnrs-dm-shortcode-p">
                             <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="filters"]'>
                                 <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
-                                <code>[cnrs-data-manager type="filters"]</code>
+                                <code id="cnrs-dm-filter-code"><?= createModulesFromDB($settings['filter_modules']) ?></code>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
                                     <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
                                 </svg>
@@ -163,10 +218,17 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                         <i class="cnrs-data-manager-disclaimer"><?= __('To be implemented in category page only.', 'cnrs-data-manager') ?></i>
                     </th>
                     <td>
+                        <div>
+                            <label>
+                                <input<?= (int) $settings['silent_pagination'] === 1 ? ' checked' : '' ?> type="checkbox" id="cnrs-dm-pagination-ajax-checkbox" data-code='[cnrs-data-manager type="pagination" silent-selector="#my-css-selector"]' name="cnrs-dm-pagination-ajax-checkbox">
+                                <b><?= __('Silent paging', 'cnrs-data-manager') ?></b></label>
+                            <br/>
+                            <i class="cnrs-data-manager-disclaimer"><?= __('If you choose <b>silent pagination</b>, you must enter the CSS selector of the element containing the elements to be paginated.', 'cnrs-data-manager') ?></i>
+                        </div>
                         <p class="cnrs-dm-shortcode-p">
                             <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="pagination"]'>
                                 <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
-                                <code>[cnrs-data-manager type="pagination"]</code>
+                                <code id="cnrs-dm-pagination-ajax-code"><?= (int) $settings['silent_pagination'] === 1 ? '[cnrs-data-manager type="pagination" silent-selector="#my-css-selector"]' : '[cnrs-data-manager type="pagination"]' ?></code>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
                                     <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
                                 </svg>
@@ -176,6 +238,7 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                 </tr>
                 </tbody>
             </table>
+            <hr/>
             <p>
                 <?= __('To allow the extension to link the data in the XML file to the corresponding categories, please select for teams, services and platforms a category for each of its entities.', 'cnrs-data-manager') ?>
                 <br/>
