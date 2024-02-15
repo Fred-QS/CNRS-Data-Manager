@@ -79,8 +79,6 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
             <p class="cnrs-dm-shortcode-p<?= $settings['mode'] === 'page' ? '' : ' hide' ?>" id="cnrs-dm-page-option-shortcode">
                 <?= __('If <b>Page</b> mode is enabled, please use this shortcode as the value for the button link which will point to the page of the agents concerned by the article and its category.', 'cnrs-data-manager') ?>
                 <br/>
-                <?= __('You can also use the shortcode below that of the <b>navigation</b> to display a dynamic title showing the title <b>Member of the <i>"entity"</i> <i>"entity name"</i></b> in the page where the <b>type="all"</b> shortcode will be implemented.', 'cnrs-data-manager') ?>
-                <br/>
                 <span class="cnrs-data-manager-copy-shortcode cnrs-data-manager-copy-shortcode-page-mode">
                     <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
                     <code>[cnrs-data-manager type="navigate" text="button title" target="<?= __('/url/to/reach', 'cnrs-data-manager') ?>"]</code>
@@ -88,6 +86,9 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                         <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
                     </svg>
                 </span>
+                <br/>
+                <?= __('You can also use the shortcode below that of the <b>navigation</b> to display a dynamic title showing the title <b>Member of the <i>"entity"</i> <i>"entity name"</i></b> in the page where the <b>members list</b> shortcode will be implemented.', 'cnrs-data-manager') ?>
+                <br/>
                 <br/>
                 <b><?= __('Team page title', 'cnrs-data-manager') ?></b>
                 <span class="cnrs-data-manager-copy-shortcode cnrs-data-manager-copy-shortcode-page-mode">
