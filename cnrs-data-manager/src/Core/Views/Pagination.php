@@ -11,7 +11,7 @@ $pagination = [
 ];
 ?>
 <!-- Start CNRS Data Manager pagination section -->
-<div class="cnrs-dm-front-pagination-module-wrapper" data-shortcode="cnrs-data-manager-shortcode-<?= $shortCodesCounter ?>">
+<div class="cnrs-dm-front-pagination-module-wrapper" data-shortcode="cnrs-data-manager-shortcode-<?= $shortCodesCounter ?>" style="display: none">
     <?php include(CNRS_DATA_MANAGER_PATH . '/templates/includes/pagination.php') ?>
 </div>
 <!-- End CNRS Data Manager pagination section -->
