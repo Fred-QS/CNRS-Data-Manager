@@ -96,6 +96,7 @@ function getFetchHTML(data, uri, error) {
         window.history.pushState(nextState, nextTitle, nextURL);
 
         prepareListeners();
+        dispatchWrapperListenerReload();
 
     } else {
 
@@ -110,4 +111,27 @@ function serialise(obj) {
         serialised += encodeURIComponent(key).replace(/%20/g, '+') + '=' + encodeURIComponent(obj[key]).replace(/%20/g, '+') + '&';
     });
     return serialised.slice(0, -1);
+}
+
+function dispatchWrapperListenerReload() {
+
+    let allRowsRefresh = document.querySelectorAll('.cnrs-dm-front-agent-wrapper');
+    for (let i = 0; i < allRowsRefresh.length; i++) {
+        allRowsRefresh[i].onclick = function (e){
+            const target = e.target;
+            if (!target.classList.contains('cnrs-dm-front-membership-item')) {
+                let element = this.querySelector('.cnrs-dm-front-agent-info-wrapper').cloneNode(true);
+                document.body.appendChild(element);
+                setTimeout(function () {
+                    document.querySelector('body > .cnrs-dm-front-agent-info-wrapper').classList.add('show');
+                    document.querySelector('body > .cnrs-dm-front-agent-info-wrapper .cnrs-dm-close-info-container').onclick = function () {
+                        document.querySelector('body > .cnrs-dm-front-agent-info-wrapper').classList.remove('show');
+                        setTimeout(function () {
+                            document.querySelector('body > .cnrs-dm-front-agent-info-wrapper').remove();
+                        }, 550);
+                    }
+                }, 50);
+            }
+        };
+    }
 }
