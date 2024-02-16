@@ -102,6 +102,20 @@ class Settings
         }
     }
 
+    /**
+     * Retrieve the default marker coordinates.
+     *
+     * This method queries the database to fetch the latitude and longitude
+     * values of the default marker from the cnrs_data_manager_settings table.
+     *
+     * @return array An associative array containing the latitude and longitude
+     *               values of the default marker. The array will have the
+     *               following structure:
+     *               [
+     *                   'lat' => The latitude value as a string,
+     *                   'lng' => The longitude value as a string
+     *               ]
+     */
     public static function getDefaultMarker(): array
     {
         global $wpdb;
@@ -109,6 +123,14 @@ class Settings
         return $result[0];
     }
 
+    /**
+     * Update the map markers in the database.
+     *
+     * This method is used to update the map markers in the cnrs_data_manager_map_markers table based on the
+     * data received from the $_POST superglobal array.
+     *
+     * @return void
+     */
     public static function updateMarkers(): void
     {
         if (isset($_POST['action'])) {
@@ -218,5 +240,53 @@ class Settings
         } else if ((int) $settings[0]['category_template'] === 0 && file_exists($newFile)) {
             unlink($newFile);
         }
+    }
+
+    /**
+     * Retrieve the active filters.
+     *
+     * This method fetches the active filters from the cnrs_data_manager_settings
+     * table in the database. If the retrieved result is 'none', it returns
+     * an empty array indicating that no filters are active. Otherwise, it splits
+     * the result by comma (',') and returns it as an array.
+     *
+     * @return array An array containing the active filters. If no filters are
+     *               active, an empty array is returned.
+     */
+    public static function getFilters(): array
+    {
+        global $wpdb;
+        $result = $wpdb->get_results( "SELECT filter_modules FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $filters = $result[0]['filter_modules'];
+        return $filters === 'none' ? [] : explode(',', $filters);
+    }
+
+
+    /**
+     * Retrieves the pagination type from the database.
+     *
+     * Retrieves the value of the 'silent_pagination' field from the 'cnrs_data_manager_settings'
+     * table in the WordPress database and determines the pagination type based on the returned value.
+     *
+     * @return bool Returns true if the pagination type is silent pagination, false otherwise.
+     */
+    public static function getPaginationType(): bool
+    {
+        global $wpdb;
+        $result = $wpdb->get_results( "SELECT silent_pagination FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $filters = (int) $result[0]['silent_pagination'];
+        return $filters === 1;
+    }
+
+    public static function getSubCategoriesFromParentSlug(string $slug): array
+    {
+        global $wpdb;
+        $parent = $wpdb->get_results( "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '{$slug}'", ARRAY_A );
+        if (empty($parent)) {
+            return [];
+        }
+
+        $parent_term_id = (int) $parent[0]['term_id'];
+        return $wpdb->get_results( "SELECT {$wpdb->prefix}terms.slug, {$wpdb->prefix}terms.name FROM {$wpdb->prefix}term_taxonomy INNER JOIN {$wpdb->prefix}terms ON {$wpdb->prefix}term_taxonomy.term_id = {$wpdb->prefix}terms.term_id WHERE {$wpdb->prefix}term_taxonomy.parent = {$parent_term_id} ");
     }
 }

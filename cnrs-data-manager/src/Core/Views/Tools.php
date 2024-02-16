@@ -22,23 +22,25 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
     <?php endif; ?>
     <p><?= __('The <b>Tools</b> section allows you to assign entities from the XML file to those created in WordPress. The extension will then be able to find the agents belonging to each entity in order to be able to filter their affiliations in the public part of WordPress.', 'cnrs-data-manager') ?></p>
     <p><?= __('You can also decide to restore the initial state of the files provided by the extension listed below used for style, javascript and php template', 'cnrs-data-manager') ?>:</p>
-    <b><?= __('Styles and scripts templates') ?></b>
+    <b><?= __('Styles templates') ?></b>
     <ul class="cnrs-dm-files-list">
         <li><?= __('The <b>CSS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>CSS</b> filters file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>CSS</b> pagination file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-style.css</i></b>', 'cnrs-data-manager') ?></li>
-        <li><?= __('The <b>JS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js</i></b>', 'cnrs-data-manager') ?></li>
-        <li><?= __('The <b>JS</b> pagination file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-script.js</i></b>', 'cnrs-data-manager') ?></li>
     </ul>
     <br>
-    <b><?= __('PHP templates') ?></b>
+    <b><?= __('Scripts templates') ?></b>
+    <ul class="cnrs-dm-files-list">
+        <li><?= __('The <b>JS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js</i></b>', 'cnrs-data-manager') ?></li>
+    </ul>
+    <br>
+    <b><?= __('Build templates') ?></b>
     <ul class="cnrs-dm-files-list">
         <li><?= __('The <b>PHP</b> template file for displaying agents in a list <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-inline.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>PHP</b> template file for the agent card display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-card.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>PHP</b> template file for the full agent list item <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-list-item.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>PHP</b> template file for the entity title if display mode is sorted <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-sorted-title.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>PHP</b> template file for the agent modal display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-info.php</i></b>', 'cnrs-data-manager') ?></li>
-        <li><?= __('The <b>PHP</b> template file for the filters display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-filters.php</i></b>', 'cnrs-data-manager') ?></li>
     </ul>
     <br>
     <b><?= __('Icons templates') ?></b>

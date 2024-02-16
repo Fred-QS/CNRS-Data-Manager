@@ -94,10 +94,6 @@ if (!function_exists('cnrs_install_folders')) {
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js'
             ],
             [
-                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-pagination-script.js',
-                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-script.js'
-            ],
-            [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-inline.php',
                 'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php'
             ],
@@ -116,10 +112,6 @@ if (!function_exists('cnrs_install_folders')) {
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-info.php',
                 'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php'
-            ],
-            [
-                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-filters.php',
-                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-filters.php'
             ],
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/svg/list.svg',
@@ -539,7 +531,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -636,46 +628,43 @@ if (!function_exists('cnrsReadShortCode')) {
 
             $shortCodesCounter++;
             wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css', [], null);
-            cnrsFiltersController();
+
+            $filters = Settings::getFilters();
+            $parentCatSlug = get_queried_object()->slug;
+            $parentAttributes = get_the_category();
+            $currentCatSlug = $parentAttributes[0]->slug;
+            $terms = Settings::getSubCategoriesFromParentSlug($parentCatSlug);
+            cnrsFiltersController($currentCatSlug);
+
             ob_start();
-            include_once(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-filters.php');
-            return ob_get_clean();
+            include_once(dirname(__DIR__) . '/Core/Views/Filters.php');
+            return !empty($filters) ? ob_get_clean() : '';
 
         } else if ($type === 'pagination') {
 
             $shortCodesCounter++;
+            $isSilentPagination = Settings::getPaginationType();
             wp_enqueue_style('cnrs-data-manager-pagination-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-style.css', [], null);
-            wp_enqueue_script('cnrs-data-manager-pagination-script', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-script.js', [], null);
-            cnrsFiltersController();
+
+            if ($isSilentPagination === true) {
+                wp_enqueue_script(
+                    'cnrs-data-manager-pagination-script',
+                    plugin_dir_url(dirname(__DIR__)) . 'assets/js/cnrs-data-manager-pagination.js',
+                    array(),
+                    filemtime(dirname(__DIR__) . '/assets/js/cnrs-data-manager-pagination.js')
+                );
+            }
+
             ob_start();
-            include_once(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-pagination.php');
+            include_once(dirname(__DIR__) . '/Core/Views/Pagination.php');
             return ob_get_clean();
 
         } else if ($type === 'page-title') {
 
             $shortCodesCounter++;
-            if (in_array($entity, ['teams', 'services', 'platforms'], true) && $displayMode === 'page') {
-                $message = [
-                    'teams' => __('No members in this team', 'cnrs-data-manager'),
-                    'services' => __('No members in this service', 'cnrs-data-manager'),
-                    'platforms' => __('No members in this platform', 'cnrs-data-manager'),
-                ];
-                if (!isset($_GET['cnrs-dm-ref']) || ctype_digit($_GET['cnrs-dm-ref']) === false) {
-                    return "<span data-shortcode='cnrs-data-manager-shortcode-{$shortCodesCounter}'>" . $message[$entity] . "</span>";
-                }
-                $id = (int) $_GET['cnrs-dm-ref'];
-                $catName = get_the_title($id);
-                if (strlen($catName) === 0) {
-                    return "<span data-shortcode='cnrs-data-manager-shortcode-{$shortCodesCounter}'>" . $message[$entity] . "</span>";
-                }
-                $message = [
-                    'teams' => __('%s team members', 'cnrs-data-manager'),
-                    'services' => __('%s service members', 'cnrs-data-manager'),
-                    'platforms' => __('%s platform members', 'cnrs-data-manager'),
-                ];
-                return "<span data-shortcode='cnrs-data-manager-shortcode-{$shortCodesCounter}'>" . sprintf($message[$entity], $catName) . "</span>";
-            }
-            return "<span data-shortcode='cnrs-data-manager-shortcode-{$shortCodesCounter}'>" . __('No member available', 'cnrs-data-manager') . "</span>";
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/Title.php');
+            return ob_get_clean();
         }
         return '';
     }
@@ -684,23 +673,46 @@ if (!function_exists('cnrsReadShortCode')) {
 if (!function_exists('cnrsFiltersController')) {
 
     /**
-     * Filters the posts in the current category based on pagination and limit.
+     * Controller for CNRS filters.
      *
-     * @global WP_Query $wp_query WordPress global variable used to store the query.
+     * @param string $currentCatSlug The current category slug.
+     * @return void
      */
-    function cnrsFiltersController()
+    function cnrsFiltersController(string $currentCatSlug): void
     {
-        $currentCat = get_the_category(get_the_ID());
-        $currentCatSlug = trim($currentCat[0]->slug);
+        $paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
+        $search = get_query_var('s') ? get_query_var('s') : '';
+        $tax_query = get_query_var('cdm-tax') && get_query_var('cdm-tax') !== $currentCatSlug
+            ? [
+                'relation' => 'AND',
+                array(
+                    'taxonomy' => 'category',
+                    'field' => 'slug',
+                    'terms' => [get_query_var('cdm-tax')]
+                )
+            ]
+            : [];
+        $posts_per_page = get_query_var('cdm-limit') ? absint(get_query_var('cdm-limit')) : 5;
 
-        global $wp_query;
-        $paged = (get_query_var('paged')) ? absint(get_query_var('paged')) : 1;
-        $posts_per_page = (get_query_var('limit')) ? absint(get_query_var('limit')) : 5;
         $args = array(
             'posts_per_page' => $posts_per_page,
             'category_name' => $currentCatSlug,
-            'paged' => $paged,
+            'paged' => $paged
         );
+
+        if (get_query_var('s')) {
+            $args['s'] = get_query_var('s');
+        }
+
+        if (get_query_var('cdm-year') && get_query_var('cdm-year') !== 'all') {
+            $args['year'] = (int) get_query_var('cdm-year');
+        }
+
+        if (!empty($tax_query)) {
+            $args['tax_query'] = $tax_query;
+        }
+
+        global $wp_query;
         $wp_query = new WP_Query($args);
     }
 }
@@ -851,7 +863,10 @@ if (!function_exists('addQueryVars')) {
     function addQueryVars(): void
     {
         add_filter('query_vars', function ($qvars) {
-            $qvars[] = 'limit';
+            $qvars[] = 'cdm-limit';
+            $qvars[] = 'cdm-tax';
+            $qvars[] = 'cdm-year';
+            $qvars[] = 'cdm-parent';
             return $qvars;
         });
     }
