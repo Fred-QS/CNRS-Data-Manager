@@ -450,7 +450,7 @@ html, body {
     margin-top: 20px;
     width: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
 }
 
@@ -463,6 +463,8 @@ html, body {
     background-color: #fff;
     box-shadow: 0 10px 16px rgba(0, 0, 0, 0.1);
     padding: 10px 15px;
+    border-radius: 3px;
+    border: 1px solid #f7f7f7;
     display: flex;
     justify-content: center;
     align-items: center;

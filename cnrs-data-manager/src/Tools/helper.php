@@ -78,20 +78,20 @@ if (!function_exists('cnrs_install_folders')) {
 
         $files = [
             [
-                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-style.css',
-                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css'
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-style.css',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css'
             ],
             [
-                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-filters-style.css',
-                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css'
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-filters-style.css',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-filters-style.css'
             ],
             [
-                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-pagination-style.css',
-                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-style.css'
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-pagination-style.css',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-pagination-style.css'
             ],
             [
-                'from' => CNRS_DATA_MANAGER_PATH . '/templates/cnrs-data-manager-script.js',
-                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js'
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-script.js',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js'
             ],
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-inline.php',
@@ -414,7 +414,7 @@ if (!function_exists('sanitizeURIForPagination')) {
     function sanitizeURIForPagination(int $page, string $mode = 'back'): string
     {
         $current = $_SERVER['REQUEST_URI'];
-        $trigger = $mode === 'back' ? 'cnrs-data-manager-pagi' : 'cdm-page';
+        $trigger = $mode === 'back' ? 'cnrs-data-manager-pagi' : 'paged';
         if (stripos($current, $trigger) !== false) {
             $current = explode($trigger, $current)[0];
             if (str_ends_with($current, '&')) {
@@ -537,7 +537,7 @@ if (!function_exists('cnrsReadShortCode')) {
                 $id = $_GET['cnrs-dm-ref'];
             } else {
                 $shortCodesCounter++;
-                wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
+                wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
                 ob_start();
                 include_once(dirname(__DIR__) . '/Core/Views/NoResult.php');
                 return ob_get_clean();
@@ -560,7 +560,7 @@ if (!function_exists('cnrsReadShortCode')) {
             }
 
             if ($type === 'all') {
-                wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css', [], null);
+                wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-filters-style.css', [], null);
 
                 $pagination = [
                     'count' => $entities['count'],
@@ -572,8 +572,8 @@ if (!function_exists('cnrsReadShortCode')) {
                 ];
                 $entities = $entities['data'];
             }
-            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
-            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js', [], null);
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', [], null);
 
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Agents.php');
@@ -617,24 +617,29 @@ if (!function_exists('cnrsReadShortCode')) {
 
             $shortCodesCounter++;
 
-            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css', [], null);
-            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js', [], null);
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', [], null);
 
             $link = stripos($target, '?') !== false ? $target . '&cnrs-dm-ref=' . $id  : $target . '?cnrs-dm-ref=' . $id;
             $link = $link[0] === '/' || stripos($link, 'http') === 0 ? $link : '/' . $link;
             return "<a class='cnrs-dm-front-btn cnrs-dm-front-btn-{$id}' data-shortcode='cnrs-data-manager-{$shortCodesCounter}' id='cnrs-dm-front-btn-{$shortCodesCounter}' href='{$link}'>{$text}</a>";
 
+        } else if ($type === 'page-title') {
+
+            $shortCodesCounter++;
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/Title.php');
+            return ob_get_clean();
+
         } else if ($type === 'filters') {
 
             $shortCodesCounter++;
-            wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css', [], null);
+            wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-filters-style.css', [], null);
 
             $filters = Settings::getFilters();
             $parentCatSlug = get_queried_object()->slug;
-            $parentAttributes = get_the_category();
-            $currentCatSlug = $parentAttributes[0]->slug;
             $terms = Settings::getSubCategoriesFromParentSlug($parentCatSlug);
-            cnrsFiltersController($currentCatSlug);
+            cnrsFiltersController($parentCatSlug);
 
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Filters.php');
@@ -644,7 +649,8 @@ if (!function_exists('cnrsReadShortCode')) {
 
             $shortCodesCounter++;
             $isSilentPagination = Settings::getPaginationType();
-            wp_enqueue_style('cnrs-data-manager-pagination-styling', get_site_url() . '/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-style.css', [], null);
+            $parentCatSlug = get_queried_object()->slug;
+            wp_enqueue_style('cnrs-data-manager-pagination-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-pagination-style.css', [], null);
 
             if ($isSilentPagination === true) {
                 wp_enqueue_script(
@@ -654,16 +660,8 @@ if (!function_exists('cnrsReadShortCode')) {
                     filemtime(dirname(__DIR__) . '/assets/js/cnrs-data-manager-pagination.js')
                 );
             }
-
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Pagination.php');
-            return ob_get_clean();
-
-        } else if ($type === 'page-title') {
-
-            $shortCodesCounter++;
-            ob_start();
-            include_once(dirname(__DIR__) . '/Core/Views/Title.php');
             return ob_get_clean();
         }
         return '';
@@ -673,9 +671,9 @@ if (!function_exists('cnrsReadShortCode')) {
 if (!function_exists('cnrsFiltersController')) {
 
     /**
-     * Controller for CNRS filters.
+     * The controller method for CNRS filters.
      *
-     * @param string $currentCatSlug The current category slug.
+     * @param string $currentCatSlug The slug of the current category.
      * @return void
      */
     function cnrsFiltersController(string $currentCatSlug): void
@@ -692,7 +690,7 @@ if (!function_exists('cnrsFiltersController')) {
                 )
             ]
             : [];
-        $posts_per_page = get_query_var('cdm-limit') ? absint(get_query_var('cdm-limit')) : 5;
+        $posts_per_page = get_query_var('cdm-limit') ? absint(get_query_var('cdm-limit')) : 10;
 
         $args = array(
             'posts_per_page' => $posts_per_page,

@@ -1,4 +1,7 @@
 <?php
+if (empty($terms) && $index = array_search('sub-categories-list', $filters, true) !== false) {
+    unset($filters[$index]);
+}
 switch (count($filters)) {
     case 4: $moduleSizeClass = 'cnrs-dm-front-filters-size-25'; break;
     case 3: $moduleSizeClass = 'cnrs-dm-front-filters-size-33'; break;
@@ -15,16 +18,16 @@ switch (count($filters)) {
             <div class="cnrs-dm-front-filter cnrs-dm-front-filter-column cnrs-dm-front-filters-modules <?= $moduleSizeClass ?>" id="cnrs-dm-front-filter-pagi-container-<?= $shortCodesCounter ?>">
                 <label class="cnrs-dm-front-single-input-label" for="cnrs-dm-front-filter-pagination-selector"><?= __('Number of elements per page', 'cnrs-data-manager') ?></label>
                 <select id="cnrs-dm-front-filter-pagination-selector" name="cdm-limit">
-                    <option<?= isset($_GET['limit']) && $_GET['limit'] === '5' ? ' selected' : '' ?> value="5">5</option>
-                    <option<?= (isset($_GET['limit']) && $_GET['limit'] === '10') || !isset($_GET['limit']) ? ' selected' : '' ?> value="10">10</option>
-                    <option<?= isset($_GET['limit']) && $_GET['limit'] === '20' ? ' selected' : '' ?> value="20">20</option>
-                    <option<?= isset($_GET['limit']) && $_GET['limit'] === '50' ? ' selected' : '' ?> value="50">50</option>
-                    <option<?= isset($_GET['limit']) && $_GET['limit'] === '100' ? ' selected' : '' ?> value="100">100</option>
+                    <option<?= isset($_GET['cdm-limit']) && $_GET['cdm-limit'] === '5' ? ' selected' : '' ?> value="5">5</option>
+                    <option<?= (isset($_GET['cdm-limit']) && $_GET['cdm-limit'] === '10') || !isset($_GET['cdm-limit']) ? ' selected' : '' ?> value="10">10</option>
+                    <option<?= isset($_GET['cdm-limit']) && $_GET['cdm-limit'] === '20' ? ' selected' : '' ?> value="20">20</option>
+                    <option<?= isset($_GET['cdm-limit']) && $_GET['cdm-limit'] === '50' ? ' selected' : '' ?> value="50">50</option>
+                    <option<?= isset($_GET['cdm-limit']) && $_GET['cdm-limit'] === '100' ? ' selected' : '' ?> value="100">100</option>
                 </select>
             </div>
             <!-- End CNRS Data Manager posts limit per page filter module section -->
         <?php endif; ?>
-        <?php if (in_array('sub-categories-list', $filters, true) && !empty($terms)): ?>
+        <?php if (in_array('sub-categories-list', $filters, true)): ?>
             <!-- Start CNRS Data Manager posts categories list filter module section -->
             <div class="cnrs-dm-front-filter cnrs-dm-front-filter-column cnrs-dm-front-filters-modules <?= $moduleSizeClass ?>" id="cnrs-dm-front-filter-cats-container-<?= $shortCodesCounter ?>">
                 <label class="cnrs-dm-front-single-input-label" for="cnrs-dm-front-filter-cats-selector"><?= __('Select a category', 'cnrs-data-manager') ?></label>

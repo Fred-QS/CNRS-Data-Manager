@@ -235,7 +235,7 @@ class Settings
         $settings = $wpdb->get_results( "SELECT category_template FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
         $newFile = get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/category.php';
         if ((int) $settings[0]['category_template'] === 1 && !file_exists($newFile)) {
-            $template = CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-category.php';
+            $template = CNRS_DATA_MANAGER_PATH . '/templates/samples/category.php';
             copy($template, $newFile);
         } else if ((int) $settings[0]['category_template'] === 0 && file_exists($newFile)) {
             unlink($newFile);

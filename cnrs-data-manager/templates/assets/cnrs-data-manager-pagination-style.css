@@ -1,0 +1,145 @@
+/*********************************************************************************************
+*                              CNRS Data Manager Pagination CSS                              *
+*********************************************************************************************/
+
+.cnrs-dm-front-pagination-module-wrapper .cnrs-dm-front-pagination-wrapper {
+    margin-top: 0!important;
+}
+
+.cnrs-dm-front-pagination-wrapper {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cnrs-dm-front-pagination-displaying-num {
+    margin-right: 20px;
+    color: #69c0b5;
+}
+
+.cnrs-dm-front-pagination {
+    background-color: #fff;
+    box-shadow: 0 10px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    border: 1px solid #f7f7f7;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cnrs-dm-front-pagination-pagination-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cnrs-dm-front-pagination-pagination-links > *:not(.cnrs-dm-front-pagination-paging) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+    margin: 0 5px;
+}
+
+.cnrs-dm-front-pagination-pages-link-like.button.disabled {
+    color: #e1e1e1;
+}
+
+.cnrs-dm-front-stepper-svg {
+    width: 15px;
+    height: 15px;
+    color: inherit;
+    cursor: pointer;
+}
+
+.cnrs-dm-front-stepper-svg.reverse {
+    transform-origin: 50% 50%;
+    transform: rotate(180deg);
+}
+
+.cnrs-dm-front-jumper-svg {
+    width: 18px;
+    height: 18px;
+    color: inherit;
+    cursor: pointer;
+    top: 1px;
+}
+
+.cnrs-dm-front-stepper-svg, .cnrs-dm-front-jumper-svg {
+    fill: currentColor;
+}
+
+#cnrs-dm-front-loader-wrapper {
+    position: fixed;
+    z-index: 2000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.7);
+    opacity: 1;
+    visibility: visible;
+    transition: all linear 0.2s;
+}
+
+#cnrs-dm-front-loader-wrapper.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#cnrs-dm-front-loader-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    transform-origin: 50% 50%;
+    transform: rotate(0);
+    animation: rotateLoader ease-in-out 1.2s infinite;
+}
+
+#cnrs-dm-front-loader-icon svg {
+    width: 100%;
+    height: 100%;
+    color: #69c0b5;
+
+}
+
+#cnrs-dm-front-loader-icon svg path {
+    fill: currentColor;
+}
+
+@keyframes rotateLoader {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media only screen and (min-width: 796px) {
+
+    .cnrs-dm-front-pagination-pagination-links a svg {
+        transition: color linear 0.15s;
+    }
+
+    .cnrs-dm-front-pagination-pagination-links a:hover svg {
+        color: #69C0B5;
+    }
+}
+
+@media only screen and (max-width: 795px) {
+
+    .cnrs-dm-front-pagination {
+        width: 100%;
+    }
+}
+

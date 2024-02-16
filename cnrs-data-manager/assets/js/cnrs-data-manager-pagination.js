@@ -2,4 +2,73 @@
  *                              CNRS Data Manager Pagination JS                              *
  ********************************************************************************************/
 
-console.log('pagination')
+const articlesContainer = document.querySelector('.cnrs-dm-front-silent-container');
+const silentLoader = document.querySelector('#cnrs-dm-front-loader-wrapper');
+const loaderIcon = document.querySelector('#cnrs-dm-front-loader-icon');
+
+if (!silentLoader && loaderIcon && articlesContainer) {
+
+    let loaderWrapper = document.createElement('div');
+    loaderWrapper.setAttribute('id', 'cnrs-dm-front-loader-wrapper');
+    loaderWrapper.className = 'hide';
+    loaderWrapper.appendChild(loaderIcon);
+    loaderIcon.removeAttribute('style');
+    document.body.appendChild(loaderWrapper);
+
+    let form = document.querySelector('.cnrs-dm-front-filters-wrapper');
+    let pagination = document.querySelector('.cnrs-dm-front-pagination-module-wrapper');
+
+    if (form && pagination) {
+
+        let links = pagination.querySelectorAll('[class^="cnrs-dm-front-pagination-"]');
+
+        form.onsubmit = function (e) {
+
+            e.preventDefault();
+            let inputs = this.querySelectorAll('[name]');
+            let json = {};
+
+            for (let i = 0; i < inputs.length; i++) {
+                json[inputs[i].name] = inputs[i].value;
+            }
+
+            let uri = window.location.pathname + '?' + serialise(json);
+            sendRequest(uri);
+        }
+
+        for (let i = 0; i < links.length; i++) {
+            links[i].onclick = function (e) {
+
+                e.preventDefault();
+                let uri = this.href;
+
+                if (uri !== undefined) {
+                    let split = this.href.split(window.location.pathname);
+
+                    if (split[1]) {
+                        uri = window.location.pathname + this.href.split(window.location.pathname)[1];
+                        sendRequest(uri);
+                    }
+                }
+            }
+        }
+    }
+}
+
+function sendRequest(uri) {
+
+    const loader = document.querySelector('#cnrs-dm-front-loader-wrapper');
+    loader.classList.remove('hide');
+    console.log(uri)
+    setTimeout(function (){
+        loader.classList.add('hide');
+    }, 2000)
+}
+
+function serialise(obj) {
+    serialised = '';
+    Object.keys(obj).forEach(function(key) {
+        serialised += encodeURIComponent(key).replace(/%20/g, '+') + '=' + encodeURIComponent(obj[key]).replace(/%20/g, '+') + '&';
+    });
+    return serialised.slice(0, -1);
+}
