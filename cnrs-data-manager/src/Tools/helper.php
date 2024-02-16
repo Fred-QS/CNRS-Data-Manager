@@ -419,6 +419,7 @@ if (!function_exists('sanitizeURIForPagination')) {
     {
         $current = $_SERVER['REQUEST_URI'];
         $trigger = $mode === 'back' ? 'cnrs-data-manager-pagi' : 'paged';
+        $trigger = $mode === 'all' ? 'cdm-page' : $trigger;
         if (stripos($current, $trigger) !== false) {
             $current = explode($trigger, $current)[0];
             if (str_ends_with($current, '&')) {
@@ -564,7 +565,18 @@ if (!function_exists('cnrsReadShortCode')) {
             }
 
             if ($type === 'all') {
+
+                $isSilentPagination = Settings::getPaginationType();
                 wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-filters-style.css', [], null);
+
+                if ($isSilentPagination === true) {
+                    wp_enqueue_script(
+                        'cnrs-data-manager-pagination-all-script',
+                        plugin_dir_url(dirname(__DIR__)) . 'assets/js/cnrs-data-manager-pagination-all.js',
+                        array(),
+                        filemtime(dirname(__DIR__) . '/assets/js/cnrs-data-manager-pagination-all.js')
+                    );
+                }
 
                 $pagination = [
                     'count' => $entities['count'],

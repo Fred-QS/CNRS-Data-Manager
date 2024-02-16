@@ -1,3 +1,7 @@
+/*********************************************************************************************
+ *                              CNRS Data Manager JS                              *
+ ********************************************************************************************/
+
 const cnrs_data_manager_provider = document.querySelector('#cnrs-data-manager-provider');
 const dataManagerPageSegment = '?page=data-manager';
 const generalURL = [

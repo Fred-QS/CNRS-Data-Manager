@@ -65,6 +65,9 @@
             <!-- End CNRS Data Manager agents list filtered by <?= $type ?> -->
         <?php endif; ?>
     <?php else: ?>
+        <div id="cnrs-dm-front-loader-icon" style="display: none">
+            <?php include_once(CNRS_DATA_MANAGER_DEPORTED_SVG_PATH . '/loader.svg') ?>
+        </div>
         <!-- Start CNRS Data Manager all agent render -->
         <?php require_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/filters.php') ?>
         <?php if (count($entities) > 0): ?>
