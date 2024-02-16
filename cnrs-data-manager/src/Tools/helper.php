@@ -122,6 +122,10 @@ if (!function_exists('cnrs_install_folders')) {
                 'to' => CNRS_DATA_MANAGER_DEPORTED_SVG_PATH . '/grid.svg'
             ],
             [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/svg/loader.svg',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_SVG_PATH . '/loader.svg'
+            ],
+            [
                 'from' => CNRS_DATA_MANAGER_PATH . '/languages/cnrs-data-manager-fr_FR.mo',
                 'to' => ABSPATH . '/wp-content/languages/plugins/cnrs-data-manager-fr_FR.mo'
             ],

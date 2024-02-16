@@ -47,6 +47,7 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
     <ul class="cnrs-dm-files-list">
         <li><?= __('The <b>SVG</b> file for the list view button <b><i>/wp-includes/cnrs-data-manager/svg/list.svg</i></b>', 'cnrs-data-manager') ?></li>
         <li><?= __('The <b>SVG</b> file for the grid view button <b><i>/wp-includes/cnrs-data-manager/svg/grid.svg</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?= __('The <b>SVG</b> file for the loader icon <b><i>/wp-includes/cnrs-data-manager/svg/loader.svg</i></b>', 'cnrs-data-manager') ?></li>
     </ul>
     <br>
     <p>
