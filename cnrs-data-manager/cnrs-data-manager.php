@@ -4,10 +4,9 @@
  * Plugin URI: https://github.com/Fred-QS/CNRS-Data-Manager
  * Description: Allows WordPress to process the information transmitted to the CNRS UMRs by affiliating the categories created to agents, display the agent directory, manage the interactive 3D map by implementing markers and import UMR projects.
  * Version:     1.0.0
- * Author:      QS Conseils
+ * Author:      Frédéric GEFFRAY - QS Conseils
  * Author URI:  https://github.com/Fred-QS/CNRS-Data-Manager
- * License:     MIT
- * License URI: https://opensource.org/license/mit
+ * License: GPLv2 or later
  * Text Domain: cnrs-data-manager
  * Domain Path: /languages
  * Requires at least: 6.4.2
@@ -29,4 +28,5 @@ if (CnrsDataManagerPhpVersionCheck::check(CNRS_DATA_MANAGER_PHP_MINIMUM_VERSION,
     return;
 }
 $currentPluginBootFile = __FILE__;
-require_once dirname(__FILE__) . '/src/cnrs-main.php';
+
+require_once(__DIR__ . '/src/cnrs-main.php');

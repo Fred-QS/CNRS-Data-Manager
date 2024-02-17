@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 6.2
 Stable tag: 1.0.0
 Requires PHP: 8.1
-License: MIT
+License: GPLv2 or later
 This program is distributed for the sole use by the CNRS IS.
 
 == Description ==
@@ -33,6 +33,7 @@ Please note that this extension only works in the UMR EPOC and CNRS ecosystem.
 3. Interactive map settings
 4. Render agents on Frontend
 5. Render map on Frontend
+6. Import projects
 
 == Frequently Asked Questions ==
 
@@ -55,7 +56,16 @@ Go to the [Documentation](https://github.com/Fred-QS/CNRS-Data-Manager/documenta
 
 == Changelog ==
 
-Please see the following url:
-[https://github.com/Fred-QS/CNRS-Data-Manager/Changelog.md](https://github.com/Fred-QS/CNRS-Data-Manager/Changelog.md)
+> 1.0.0
+
+ - Implemented URL checking for SOAP API
+ - Creation of all shortcodes and their insertion logic in WordPress
+ - Export of customizable assets for displaying shortcode renderings
+ - Logic for assigning XML entities received from the API to entities created in WordPress
+ - Addition in ./libs of the dependencies necessary for importing projects via ZIP file
+ - Checking the integrity of the imported file
+ - Logic for Installing/Uninstalling the plugin
+ - Implementation of silent paging
+ - Category.php page template exportable to the active theme
 
 == Upgrade Notice ==

@@ -47,7 +47,7 @@
             </div>
 
         <?php else: ?>
-            <p>Sorry, no posts matched your criteria.</p>
+            <p><?= __('Sorry, no posts matched your criteria.', 'cnrs-data-manager') ?></p>
         <?php endif;
         ?>
 
