@@ -3783,13 +3783,13 @@ final class UTF8
      * Check if $url is an correct url.
      *
      * @param string $url
-     * @param bool   $disallow_localhost
+     * @param bool   $disallow_lh
      *
      * @psalm-pure
      *
      * @return bool
      */
-    public static function is_url(string $url, bool $disallow_localhost = false): bool
+    public static function is_url(string $url, bool $disallow_lh = false): bool
     {
         if ($url === '') {
             return false;
@@ -3800,15 +3800,15 @@ final class UTF8
             return false;
         }
 
-        // e.g. -> the server itself connect to "https://foo.localhost/phpmyadmin/...
-        if ($disallow_localhost) {
+        // e.g. -> the server itself connect to "https://foo.lh/phpmyadmin/...
+        if ($disallow_lh) {
             if (self::str_istarts_with_any(
                 $url,
                 [
-                    'http://localhost',
-                    'https://localhost',
-                    'http://127.0.0.1',
-                    'https://127.0.0.1',
+                    'http://local',
+                    'https://local',
+                    'http://127.',
+                    'https://127.',
                     'http://::1',
                     'https://::1',
                 ]
@@ -3816,7 +3816,7 @@ final class UTF8
                 return false;
             }
 
-            $regex = '/^(?:http(?:s)?:\/\/).*?(?:\.localhost)/iu';
+            $regex = '/^(?:http(?:s)?:\/\/).*?(?:\.lh)/iu';
             if (\preg_match($regex, $url)) {
                 return false;
             }
