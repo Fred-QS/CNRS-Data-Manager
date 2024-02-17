@@ -15,7 +15,6 @@ namespace CnrsDataManager\Utils;
 final class Autoloader
 {
     const ROOT_NAMESPACE           = 'CnrsDataManager\\';
-    const ROOT_NAMESPACE_SPREADSHEET           = 'PhpOffice\\PhpSpreadsheet';
 
     protected static $nameSpacesMapping = null;
 
@@ -38,7 +37,6 @@ final class Autoloader
      */
     public static function load($className)
     {
-        // @todo remove legacy logic in autoloading when duplicator is fully converted.
         if (strpos($className, self::ROOT_NAMESPACE) !== 0) {
             $legacyMappging = self::customLegacyMapping();
             $legacyClass    = strtolower(ltrim($className, '\\'));

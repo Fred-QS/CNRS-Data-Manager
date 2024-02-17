@@ -1128,8 +1128,6 @@ final class AntiXSS
                     &&
                     (
                         \filter_var($matchInner['link'], \FILTER_VALIDATE_URL) !== false
-                        ||
-                        \filter_var('https://localhost.localdomain/' . $matchInner['link'], \FILTER_VALIDATE_URL) !== false
                     )
                 ) {
                     $needProtection = false;
