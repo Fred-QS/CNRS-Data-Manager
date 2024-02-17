@@ -5,6 +5,7 @@
  * Description: Allows WordPress to process the information transmitted to the CNRS UMRs by affiliating the categories created to agents, display the agent directory, manage the interactive 3D map by implementing markers and import UMR projects.
  * Version:     1.0.0
  * Author:      Frédéric GEFFRAY - QS Conseils
+ * Author URI:  https://www.linkedin.com/in/freduino
  * License: GPLv2 or later
  * Text Domain: cnrs-data-manager
  * Domain Path: /languages
