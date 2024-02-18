@@ -15,7 +15,7 @@
 ### V. [Carte 3D](/documentation/EN/06%20-%20Carte%203D.md)
  - L'onglet **Carte 3D** permet de paramétrer la carte interactive.
 ### VI. [Importation](/documentation/EN/07%20-%20Importation.md)
- - L'onglet **Importation** pour la l'import en masse de projets.
+ - L'onglet **Importation** pour l'import en masse de projets.
 ### VII. [Désinstallation](/documentation/EN/08%20-%20Désinstallation.md)
  - Tout ce qu'implique la désinstallation de l'extension.
 

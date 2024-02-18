@@ -5,9 +5,9 @@
 <h1 align="center">Plugin summary<br><span style="font-weight: normal;font-size: 0.8em;opacity: 0.5;">User guide</span></h1>
 
 ### I. [Installation](/documentation/EN/02%20-%20Installation.md)
-All the detailed installation as well as starting the extension.
+ - All the detailed installation as well as starting the extension.
 ### II. [Settings](/documentation/EN/03%20-%20Settings.md)
-Preparation of all the parameters necessary for the proper functioning of the extension.
+ - Preparation of all the parameters necessary for the proper functioning of the extension.
 ### III. [Dashboard](/documentation/EN/04%20-%20Dashboard.md)
  - The **Dashboard** tab which offers an overall view of the information received by the Soap API.
 ### IV. [Tools](/documentation/EN/05%20-%20Tools.md)
