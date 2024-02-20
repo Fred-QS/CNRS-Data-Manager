@@ -8,7 +8,7 @@ $previous = $pagination['previous'];
 $mode = isset($fromModule) ? 'front' : 'all';
 ?>
 
-<?php if ($count > 0): ?>
+<?php if (have_posts()): ?>
     <div class="cnrs-dm-front-pagination-wrapper">
         <div class="cnrs-dm-front-pagination<?= $pages < 2 ? ' one-page' : '' ?>">
             <span class="cnrs-dm-front-pagination-displaying-num"><?= $rowsCount === 1 ? sprintf('%d element on %d', $rowsCount, $count) : sprintf('%d elements on %d', $rowsCount, $count) ?></span>

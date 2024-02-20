@@ -49,12 +49,9 @@
         <?php else: ?>
             <p><?= __('Sorry, no posts matched your criteria.', 'cnrs-data-manager') ?></p>
         <?php endif;
-        ?>
 
-        <?php if (have_posts()):
-            // Pagination
-            echo do_shortcode('[cnrs-data-manager type="pagination"]');
-        endif; ?>
+        // Pagination
+        echo do_shortcode('[cnrs-data-manager type="pagination"]'); ?>
 
     </div>
 </section>
