@@ -118,9 +118,60 @@ class Tools
         return compact('teams', 'services', 'platforms');
     }
 
+    /**
+     * Retrieves all relations from the database.
+     *
+     * @return array The array containing all relations.
+     */
     public static function getAllRelations(): array
     {
         global $wpdb;
         return $wpdb->get_results( "SELECT term_id as cat, xml_entity_id as xml, type FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE term_id != 0", ARRAY_A );
+    }
+
+    /**
+     * Retrieves the teams.
+     *
+     * @return array The array containing the teams' term ID and related xml entity ID.
+     */
+    public static function getTeams(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results( "SELECT term_id as cat, xml_entity_id as xml FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE type = 'teams' AND term_id != 0", ARRAY_A );
+    }
+
+    /**
+     * Sets the relation between a team and a project.
+     *
+     * @param int $postID The ID of the project.
+     * @param int $teamID The ID of the team.
+     * @return void
+     */
+    public static function setTeamProjectRelation(int $postID, int $teamID): void
+    {
+        global $wpdb;
+        $insert = [
+            'team_id' => $teamID,
+            'project_id' => $postID
+        ];
+
+        $wpdb->insert($wpdb->prefix . 'cnrs_data_manager_team_project', $insert, ['%d', '%d']);
+    }
+
+    /**
+     * Cleans up ghost projects from the team project table.
+     *
+     * @return void
+     */
+    public static function cleanGhostProjects(): void
+    {
+        global $wpdb;
+        $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_team_project WHERE project_id NOT IN (SELECT ID FROM {$wpdb->prefix}posts WHERE post_type = 'project')");
+    }
+
+    public static function getProjects(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_team_project", ARRAY_A);
     }
 }

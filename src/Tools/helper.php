@@ -885,3 +885,117 @@ if (!function_exists('addQueryVars')) {
         });
     }
 }
+
+if (!function_exists('getTeams')) {
+
+    /**
+     * Retrieves an array of teams.
+     *
+     * @return array Returns an array of teams with their IDs and names.
+     */
+    function getTeams(): array
+    {
+        $xmlTeams = CNRS_DATA_MANAGER_XML_DATA['teams'];
+        $teams = Tools::getTeams();
+        $result = [];
+        foreach ($xmlTeams as $xmlTeam) {
+            $id = $xmlTeam['equipe_id'];
+            $xml_name = $xmlTeam['nom'];
+            $wp_name = (function () use ($teams, $id) {
+                foreach ($teams as $team) {
+                    if ((int) $team['xml'] === (int) $id) {
+                        $post = get_post((int) $team['cat']);
+                        $title = $post->post_title;
+                        return strlen($title) > 0 ? $title : null;
+                    }
+                }
+                return null;
+            })();
+            $result[] = [
+                'id' => $id,
+                'name' => $xml_name . ($wp_name !== null
+                    ? ' (' . $wp_name . ')'
+                    : ' (' . __('not assigned', 'cnrs-data-manager') . ')')
+            ];
+        }
+        return $result;
+    }
+}
+
+if (!function_exists('getProjects')) {
+
+    /**
+     * Retrieves the list of projects.
+     *
+     * @return array Returns an array containing the projects.
+     */
+    function getProjects(): array
+    {
+        $projects = get_posts([
+            'post_type' => 'project',
+            'orderby'    => 'ID',
+            'sort_order' => 'desc'
+        ]);
+        $relations = Tools::getProjects();
+        $results = [];
+        foreach ($projects as $project) {
+            $res = [
+                'id' => $project->ID,
+                'url' => $project->guid,
+                'name' => $project->post_title,
+                'excerpt' => $project->post_excerpt,
+                'image' => get_the_post_thumbnail($project->ID),
+                'teams' => []
+            ];
+            foreach ($relations as $relation) {
+                if ((int) $relation['project_id'] === $project->ID) {
+                    $res['teams'][] = [
+                        'id' => $relation['team_id'],
+                        'order' => $relation['display_order']
+                    ];
+                }
+            }
+
+            $results[] = $res;
+        }
+        return $results;
+    }
+}
+
+if (!function_exists('isTeamSelected')) {
+
+    /**
+     * Checks if a team is selected based on its ID.
+     *
+     * @param int $teamID The ID of the team to check.
+     * @param array $teams The array of teams to search in.
+     * @return bool Returns true if the team is selected, false otherwise.
+     */
+    function isTeamSelected(int $teamID, array $teams): bool
+    {
+        foreach ($teams as $team) {
+            if ((int) $team['id'] === $teamID) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+if (!function_exists('isOrderSelected')) {
+
+    function isOrderSelected(int $value, int $teamID, array $teams): bool
+    {
+        if ($value > 0) {
+            foreach ($teams as $team) {
+                if ($team['order'] !== null
+                    && (int) $team['id'] === $teamID
+                    && (int) $team['order'] === $value
+                ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}

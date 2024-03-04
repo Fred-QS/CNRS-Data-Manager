@@ -40,6 +40,7 @@ class Install
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_map_settings");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_relations");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_settings");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_team_project");
         // Create tables
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_map_markers (
               id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
@@ -78,6 +79,12 @@ class Install
               silent_pagination tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Define if posts silent pagination is activate',
               filter_modules varchar(255) NOT NULL DEFAULT 'per-page,sub-categories-list,by-year,search-field' COMMENT 'Module selection for post filters',
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='CNRS Data Manager extension settings'"
+        );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_team_project (
+              team_id int(10) UNSIGNED NOT NULL COMMENT 'Team unique ID',
+              project_id int(10) UNSIGNED NOT NULL COMMENT 'Project unique ID',
+              display_order int(10) UNSIGNED DEFAULT NULL COMMENT 'Display order from 1 to 16. Not displayed if NULL'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Relations and display order between projects and teams'"
         );
         // Populate tables
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_map_markers (title, lat, lng) VALUES

@@ -44,6 +44,7 @@ class CnrsDataManagerUninstall // phpcs:ignore
             $wpdb->prefix . 'cnrs_data_manager_map_settings',
             $wpdb->prefix . 'cnrs_data_manager_relations',
             $wpdb->prefix . 'cnrs_data_manager_settings',
+            $wpdb->prefix . 'cnrs_data_manager_team_project',
         ];
         foreach ($tables as $table) {
             $wpdb->query("DROP TABLE IF EXISTS {$table}");

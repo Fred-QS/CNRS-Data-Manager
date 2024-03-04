@@ -17,10 +17,28 @@
     <p class="cnrs-dm-label-like"><?= __('Expected structure', 'cnrs-data-manager') ?></p>
     <?php include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-file-structure.php'); ?>
     <p>
+        <?= __('You must choose a main team to assign the import file projects to it. You can then assign several teams per project in the <b>Tools</b> tab of the extension.', 'cnrs-data-manager') ?>
+        <br/>
         <?= __('The file will be tested first. If errors are present, these will be listed so that the file can be modified accordingly. Otherwise, you will be able to confirm the import.', 'cnrs-data-manager') ?>
     </p>
     <form method="post" enctype="multipart/form-data" id="cnrs-dm-file-import-form">
         <input type="file" name="cnrs-dm-projects" id="cnrs-dm-import-file" accept=".zip" data-error="<?= __('WordPress was unable to load the file correctly. Please try Again by checking your file content to fit the waited structure.', 'cnrs-data-manager') ?>" data-step1="<?= __('File uploaded', 'cnrs-data-manager') ?>" data-step2="<?= __('Checking files', 'cnrs-data-manager') ?>" data-ko="<?= __('The import failed.', 'cnrs-data-manager') ?>" data-ok="<?= __('The projects were imported successfully.', 'cnrs-data-manager') ?>">
+        <table class="form-table" role="presentation">
+            <tbody>
+            <tr>
+                <th scope="row" class="cnrs-dm-data-selector-th">
+                    <label for="cnrs-data-manager-projects-team"><?= __('Select a team', 'cnrs-data-manager') ?></label>
+                </th>
+                <td>
+                    <select id="cnrs-data-manager-projects-team" name="cnrs-data-manager-projects-team">
+                        <?php foreach (getTeams() as $team): ?>
+                            <option value="<?= $team['id'] ?>"><?= $team['name'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+            </tr>
+            </tbody>
+        </table>
         <p>
             <i class="cnrs-dm-import-filesize"><?= __('Maximum file size', 'cnrs-data-manager') ?>: <?= ini_get('upload_max_filesize') ?></i>
             <button id="cnrs-dm-import-file-btn" type="button" class="button">
