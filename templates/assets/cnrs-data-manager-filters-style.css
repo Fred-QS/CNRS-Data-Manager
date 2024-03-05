@@ -92,6 +92,7 @@ html, body {
     flex-wrap: wrap;
     padding: 5px 20px 20px;
     box-shadow: 10px 10px 16px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
 }
 
 #cnrs-dm-front-filters-container {

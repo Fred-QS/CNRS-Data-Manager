@@ -21,6 +21,7 @@ define('CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH', ABSPATH . '/wp-includes/cnrs
 define('CNRS_DATA_MANAGER_DEPORTED_SVG_PATH', ABSPATH . '/wp-includes/cnrs-data-manager/svg');
 define('CNRS_DATA_MANAGER_LIMIT_OFFSET', 5);
 define('CNRS_DATA_MANAGER_IMPORT_TMP_PATH', CNRS_DATA_MANAGER_PATH . '/tmp');
+define('CNRS_DATA_MANAGER_PROJECTS_DISPLAY_NUMBER', 16);
 
 if (function_exists('plugin_dir_url')) {
 

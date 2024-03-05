@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-02-17 08:34+0100\n"
-"PO-Revision-Date: 2024-02-17 08:47+0100\n"
+"POT-Creation-Date: 2024-03-05 20:09+0100\n"
+"PO-Revision-Date: 2024-03-05 20:15+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -20,39 +20,39 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: src/Core/Bootstrap.php:142
+#: src/Core/Bootstrap.php:143
 msgid "My JRU"
 msgstr "Mon UMR"
 
-#: src/Core/Bootstrap.php:187 src/Core/Bootstrap.php:188
-#: src/Core/Bootstrap.php:262 src/Core/Views/Settings.php:17
+#: src/Core/Bootstrap.php:188 src/Core/Bootstrap.php:189
+#: src/Core/Bootstrap.php:263 src/Core/Views/Settings.php:17
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/Core/Bootstrap.php:200 src/Core/Bootstrap.php:201
-#: src/Core/Views/Dashboard.php:38
+#: src/Core/Bootstrap.php:201 src/Core/Bootstrap.php:202
+#: src/Core/Views/Dashboard.php:41
 msgid "Dashboard"
 msgstr "Général"
 
-#: src/Core/Bootstrap.php:210 src/Core/Bootstrap.php:211
+#: src/Core/Bootstrap.php:211 src/Core/Bootstrap.php:212
 #: src/Core/Views/Tools.php:18
 msgid "Tools"
 msgstr "Outils"
 
-#: src/Core/Bootstrap.php:220 src/Core/Bootstrap.php:221
+#: src/Core/Bootstrap.php:221 src/Core/Bootstrap.php:222
 #: src/Core/Views/MapSettings.php:16
 msgid "3D Map"
 msgstr "Carte 3D"
 
-#: src/Core/Bootstrap.php:230 src/Core/Bootstrap.php:231
+#: src/Core/Bootstrap.php:231 src/Core/Bootstrap.php:232
 msgid "Import"
 msgstr "Importation"
 
-#: src/Core/Controllers/Ajax.php:52
+#: src/Core/Controllers/Ajax.php:53
 msgid "Bad file type. Only <b>.zip</b> file is allowed."
 msgstr "Type de fichier incorrect. Seul le format  <b>.zip</b>  est autorisé."
 
-#: src/Core/Controllers/Ajax.php:85
+#: src/Core/Controllers/Ajax.php:86
 msgid ""
 "There is more than one Excel file in the zip archive. The archive must "
 "contain a single Excel file."
@@ -60,35 +60,35 @@ msgstr ""
 "Il y a plus d’un fichier Excel dans l’archive zip. L’archive doit contenir "
 "un seul fichier Excel."
 
-#: src/Core/Controllers/Ajax.php:98
+#: src/Core/Controllers/Ajax.php:99
 msgid "The Excel file does not have the expected structure."
 msgstr "Le fichier Excel n’a pas la structure attendue."
 
-#: src/Core/Controllers/Ajax.php:105
+#: src/Core/Controllers/Ajax.php:106
 msgid "No Excel file found in the zip archive."
 msgstr "Aucun fichier Excel n’a été trouvé dans l’archive zip."
 
-#: src/Core/Controllers/Ajax.php:112
+#: src/Core/Controllers/Ajax.php:113
 msgid "There are photos missing from the zip file."
 msgstr "Il manque des photos dans le fichier zip."
 
-#: src/Core/Controllers/Ajax.php:230
+#: src/Core/Controllers/Ajax.php:232
 msgid "The images could not be processed."
 msgstr "Les images n’ont pas pu être traitées."
 
-#: src/Core/Controllers/Ajax.php:232 src/Core/Views/Import.php:23
+#: src/Core/Controllers/Ajax.php:234 src/Core/Views/Import.php:25
 msgid "The projects were imported successfully."
 msgstr "Les projets ont été importés avec succès."
 
-#: src/Core/Controllers/Ajax.php:235
+#: src/Core/Controllers/Ajax.php:237
 msgid "Importing projects into the database failed."
 msgstr "L’importation de projets dans la base de données a échoué."
 
-#: src/Core/Controllers/Ajax.php:241 src/Core/Views/Import.php:23
+#: src/Core/Controllers/Ajax.php:243 src/Core/Views/Import.php:25
 msgid "The import failed."
 msgstr "L’importation a échoué."
 
-#: src/Core/Controllers/Ajax.php:355
+#: src/Core/Controllers/Ajax.php:358
 msgid "financier"
 msgstr "financier"
 
@@ -108,7 +108,7 @@ msgstr "Nom"
 msgid "Firstname"
 msgstr "Prénom"
 
-#: src/Core/Views/Agents.php:96 src/Core/Views/Dashboard.php:16
+#: src/Core/Views/Agents.php:96 src/Core/Views/Dashboard.php:18
 #: templates/includes/filters.php:23
 #: templates/partials/cnrs-data-manager-info.php:51
 msgid "Status"
@@ -120,8 +120,8 @@ msgstr "Statut"
 msgid "Membership"
 msgstr "Appartenance"
 
-#: src/Core/Views/Agents.php:106 src/Core/Views/Dashboard.php:15
-#: src/Core/Views/Dashboard.php:134 src/Core/Views/Dashboard.php:200
+#: src/Core/Views/Agents.php:106 src/Core/Views/Dashboard.php:17
+#: src/Core/Views/Dashboard.php:138 src/Core/Views/Dashboard.php:204
 msgid "Identity"
 msgstr "Identité"
 
@@ -129,53 +129,57 @@ msgstr "Identité"
 msgid "No agent matches your search criteria."
 msgstr "Aucun agent ne correspond à vos critères de recherche."
 
-#: src/Core/Views/Dashboard.php:12
+#: src/Core/Views/Dashboard.php:14
 msgid "Name"
 msgstr "Nom"
 
-#: src/Core/Views/Dashboard.php:12
+#: src/Core/Views/Dashboard.php:14
 msgid "Description"
 msgstr "Description"
 
-#: src/Core/Views/Dashboard.php:17
+#: src/Core/Views/Dashboard.php:19
 msgid "Guardianship"
 msgstr "Tutelle"
 
-#: src/Core/Views/Dashboard.php:18 src/Core/Views/Dashboard.php:48
+#: src/Core/Views/Dashboard.php:20 src/Core/Views/Dashboard.php:52
 #: src/Core/Views/Settings.php:304 src/Core/Views/Settings.php:343
 #: templates/partials/cnrs-data-manager-info.php:57
 msgid "Teams"
 msgstr "Equipes"
 
-#: src/Core/Views/Dashboard.php:19 src/Core/Views/Dashboard.php:49
+#: src/Core/Views/Dashboard.php:21 src/Core/Views/Dashboard.php:53
 #: src/Core/Views/Settings.php:265 src/Core/Views/Settings.php:344
 #: templates/partials/cnrs-data-manager-info.php:65
 msgid "Services"
 msgstr "Services"
 
-#: src/Core/Views/Dashboard.php:20 src/Core/Views/Dashboard.php:50
+#: src/Core/Views/Dashboard.php:22 src/Core/Views/Dashboard.php:54
 #: src/Core/Views/Settings.php:266 src/Core/Views/Settings.php:305
 #: templates/partials/cnrs-data-manager-info.php:73
 msgid "Platforms"
 msgstr "Plateformes"
 
-#: src/Core/Views/Dashboard.php:24
+#: src/Core/Views/Dashboard.php:26
 msgid "No result found in teams."
 msgstr "Aucun résultat n’a été trouvé dans les équipes."
 
-#: src/Core/Views/Dashboard.php:26
+#: src/Core/Views/Dashboard.php:28
 msgid "No result found in services."
 msgstr "Aucun résultat n’a été trouvé dans les services."
 
-#: src/Core/Views/Dashboard.php:28
+#: src/Core/Views/Dashboard.php:30
 msgid "No result found in platforms."
 msgstr "Aucun résultat n’a été trouvé dans les plateformes."
 
-#: src/Core/Views/Dashboard.php:30
+#: src/Core/Views/Dashboard.php:32
 msgid "No result found in agents."
 msgstr "Aucun résultat n’a été trouvé dans les agents."
 
-#: src/Core/Views/Dashboard.php:40
+#: src/Core/Views/Dashboard.php:43
+msgid "Overview"
+msgstr "Vue globale"
+
+#: src/Core/Views/Dashboard.php:44
 msgid ""
 "In this section, you will find an overview of the information provided by "
 "the XML file containing the data updated by the CNRS IS."
@@ -183,7 +187,7 @@ msgstr ""
 "Dans cette rubrique, vous trouverez un aperçu des informations fournies par "
 "le fichier XML contenant les données mises à jour par le SI du CNRS."
 
-#: src/Core/Views/Dashboard.php:41
+#: src/Core/Views/Dashboard.php:45
 msgid ""
 "Select a data type using the selection field below to browse results for "
 "teams, services, platforms or agents."
@@ -192,24 +196,25 @@ msgstr ""
 "pour parcourir les résultats des équipes, des services, des plateformes ou "
 "des agents."
 
-#: src/Core/Views/Dashboard.php:45
+#: src/Core/Views/Dashboard.php:49
 msgid "Choose a data type"
 msgstr "Choisir un type de données"
 
-#: src/Core/Views/Dashboard.php:51
+#: src/Core/Views/Dashboard.php:55
 msgid "Agents"
 msgstr "Agents"
 
-#: src/Core/Views/Dashboard.php:58
+#: src/Core/Views/Dashboard.php:62
 msgid "Total"
 msgstr "Total"
 
-#: src/Core/Views/Dashboard.php:62 src/Core/Views/Dashboard.php:67
-#: src/Core/Views/Filters.php:59
+#: src/Core/Views/Dashboard.php:66 src/Core/Views/Dashboard.php:71
+#: src/Core/Views/Dashboard.php:276 src/Core/Views/Dashboard.php:278
+#: src/Core/Views/Filters.php:80
 msgid "Search"
 msgstr "Rechercher"
 
-#: src/Core/Views/Dashboard.php:73
+#: src/Core/Views/Dashboard.php:77
 msgid ""
 "Either the data source does not contain any results or you need to modify "
 "your search."
@@ -217,104 +222,146 @@ msgstr ""
 "Soit la source de données ne contient aucun résultat, soit vous devez "
 "modifier votre recherche."
 
-#: src/Core/Views/Dashboard.php:78 src/Core/Views/Dashboard.php:212
+#: src/Core/Views/Dashboard.php:82 src/Core/Views/Dashboard.php:216
 msgid "Select items number per page."
 msgstr "Sélectionnez le nombre d’articles par page."
 
-#: src/Core/Views/Dashboard.php:80 src/Core/Views/Dashboard.php:214
+#: src/Core/Views/Dashboard.php:84 src/Core/Views/Dashboard.php:218
 msgid "5 items per page"
 msgstr "5 éléments par page"
 
-#: src/Core/Views/Dashboard.php:81 src/Core/Views/Dashboard.php:215
+#: src/Core/Views/Dashboard.php:85 src/Core/Views/Dashboard.php:219
 msgid "10 items per page"
 msgstr "10 éléments par page"
 
-#: src/Core/Views/Dashboard.php:82 src/Core/Views/Dashboard.php:216
+#: src/Core/Views/Dashboard.php:86 src/Core/Views/Dashboard.php:220
 msgid "20 items per page"
 msgstr "20 éléments par page"
 
-#: src/Core/Views/Dashboard.php:83 src/Core/Views/Dashboard.php:217
+#: src/Core/Views/Dashboard.php:87 src/Core/Views/Dashboard.php:221
 msgid "50 items per page"
 msgstr "50 articles par page"
 
-#: src/Core/Views/Dashboard.php:85 src/Core/Views/Dashboard.php:219
+#: src/Core/Views/Dashboard.php:89 src/Core/Views/Dashboard.php:223
 msgid "Apply"
 msgstr "Appliquer"
 
-#: src/Core/Views/Dashboard.php:88 src/Core/Views/Dashboard.php:222
+#: src/Core/Views/Dashboard.php:92 src/Core/Views/Dashboard.php:226
 msgid "elements"
 msgstr "éléments"
 
-#: src/Core/Views/Dashboard.php:92 src/Core/Views/Dashboard.php:226
+#: src/Core/Views/Dashboard.php:96 src/Core/Views/Dashboard.php:230
 #: templates/includes/pagination.php:18
 msgid "First page"
 msgstr "Première page"
 
-#: src/Core/Views/Dashboard.php:96 src/Core/Views/Dashboard.php:230
+#: src/Core/Views/Dashboard.php:100 src/Core/Views/Dashboard.php:234
 #: templates/includes/pagination.php:24
 msgid "Previous page"
 msgstr "Page précédente"
 
-#: src/Core/Views/Dashboard.php:104 src/Core/Views/Dashboard.php:237
+#: src/Core/Views/Dashboard.php:108 src/Core/Views/Dashboard.php:241
 msgid "Current page"
 msgstr "Page actuelle"
 
-#: src/Core/Views/Dashboard.php:107 src/Core/Views/Dashboard.php:240
+#: src/Core/Views/Dashboard.php:111 src/Core/Views/Dashboard.php:244
 #: templates/includes/pagination.php:43
 msgid "of"
 msgstr "sur"
 
-#: src/Core/Views/Dashboard.php:113 src/Core/Views/Dashboard.php:246
+#: src/Core/Views/Dashboard.php:117 src/Core/Views/Dashboard.php:250
 #: templates/includes/pagination.php:49
 msgid "Next page"
 msgstr "Page suivante"
 
-#: src/Core/Views/Dashboard.php:117 src/Core/Views/Dashboard.php:250
+#: src/Core/Views/Dashboard.php:121 src/Core/Views/Dashboard.php:254
 #: templates/includes/pagination.php:55
 msgid "Last page"
 msgstr "Dernière page"
 
-#: src/Core/Views/Dashboard.php:129
+#: src/Core/Views/Dashboard.php:133
 msgid "Table ordered hierarchically."
 msgstr "Tableau ordonné hiérarchiquement."
 
-#: src/Core/Views/Dashboard.php:129
+#: src/Core/Views/Dashboard.php:133
 msgid "Ascending."
 msgstr "Croissant."
 
-#: src/Core/Views/Dashboard.php:156
+#: src/Core/Views/Dashboard.php:160
 msgid "No authorization for the distribution of the avatar."
 msgstr "Pas d’autorisation pour la distribution de l’avatar."
 
-#: src/Core/Views/Dashboard.php:158 src/Core/Views/Dashboard.php:182
+#: src/Core/Views/Dashboard.php:162 src/Core/Views/Dashboard.php:186
 msgid "No description"
 msgstr "Pas de description"
 
-#: src/Core/Views/Dashboard.php:185
+#: src/Core/Views/Dashboard.php:189
 msgid "Show more details"
 msgstr "Afficher plus de détails"
 
-#: src/Core/Views/Filters.php:19 templates/includes/filters.php:6
+#: src/Core/Views/Dashboard.php:268
+msgid "Teams & projects"
+msgstr "Équipes & Projets"
+
+#: src/Core/Views/Dashboard.php:270
+msgid ""
+"This section allows you to assign projects to the different teams as well as "
+"their display priority orders on the pages of the different teams (from 1 to "
+"16 in order of priority)."
+msgstr ""
+"Cette section permet d’assigner des projets aux différentes équipes ainsi "
+"que leurs ordres de priorité d’affichage sur les pages des différentes "
+"équipes (de 1 à 16 par ordre de priorité)."
+
+#: src/Core/Views/Dashboard.php:272
+msgid ""
+"These selections allow the filter on the projects page to refine the team "
+"search."
+msgstr ""
+"Ces sélections permettent au filtre de la page des projets d’affiner la "
+"recherche d’équipe."
+
+#: src/Core/Views/Dashboard.php:292
+msgid "Default image"
+msgstr "Image par défaut"
+
+#: src/Core/Views/Dashboard.php:309
+msgid "Hided"
+msgstr "Caché"
+
+#: src/Core/Views/Dashboard.php:321 src/Core/Views/MapSettings.php:263
+msgid "Save"
+msgstr "Sauvegarder"
+
+#: src/Core/Views/Filters.php:27 templates/includes/filters.php:6
 msgid "Number of elements per page"
 msgstr "Nombre d’éléments par page"
 
-#: src/Core/Views/Filters.php:33
+#: src/Core/Views/Filters.php:41
 msgid "Select a category"
 msgstr "Sélectionner une catégorie"
 
-#: src/Core/Views/Filters.php:35
+#: src/Core/Views/Filters.php:43
 msgid "All categories"
 msgstr "Toutes les catégories"
 
-#: src/Core/Views/Filters.php:46
+#: src/Core/Views/Filters.php:54 src/Core/Views/Import.php:30
+msgid "Select a team"
+msgstr "Sélectionnez une équipe"
+
+#: src/Core/Views/Filters.php:56
+msgid "All teams"
+msgstr "Toutes les équipes"
+
+#: src/Core/Views/Filters.php:67
 msgid "Select a date"
 msgstr "Sélectionnez une date"
 
-#: src/Core/Views/Filters.php:48
+#: src/Core/Views/Filters.php:69
 msgid "All years"
 msgstr "Toutes les années"
 
-#: src/Core/Views/Filters.php:67 templates/includes/filters.php:35
+#: src/Core/Views/Filters.php:88 templates/includes/filters.php:35
 msgid "Apply filters"
 msgstr "Appliquer les filtres"
 
@@ -350,6 +397,16 @@ msgstr "Structure attendue"
 
 #: src/Core/Views/Import.php:20
 msgid ""
+"You must choose a main team to assign the import file projects to it. You "
+"can then assign several teams per project in the <b>Tools</b> tab of the "
+"extension."
+msgstr ""
+"Vous devez choisir une équipe principale pour lui affecter les projets de "
+"fichiers d’importation. Vous pouvez ensuite affecter plusieurs équipes par "
+"projet dans l’onglet <b>Outils</b> de l’extension."
+
+#: src/Core/Views/Import.php:22
+msgid ""
 "The file will be tested first. If errors are present, these will be listed "
 "so that the file can be modified accordingly. Otherwise, you will be able to "
 "confirm the import."
@@ -358,7 +415,7 @@ msgstr ""
 "seront répertoriées afin que le fichier puisse être modifié en conséquence. "
 "Dans le cas contraire, vous pourrez confirmer l’importation."
 
-#: src/Core/Views/Import.php:23
+#: src/Core/Views/Import.php:25
 msgid ""
 "WordPress was unable to load the file correctly. Please try Again by "
 "checking your file content to fit the waited structure."
@@ -367,29 +424,29 @@ msgstr ""
 "vérifiant le contenu de votre fichier pour qu’il corresponde à la structure "
 "attendue."
 
-#: src/Core/Views/Import.php:23 src/Core/Views/Import.php:40
+#: src/Core/Views/Import.php:25 src/Core/Views/Import.php:58
 #: templates/includes/import-result.php:3
 msgid "File uploaded"
 msgstr "Fichier téléversé"
 
-#: src/Core/Views/Import.php:23 src/Core/Views/Import.php:48
+#: src/Core/Views/Import.php:25 src/Core/Views/Import.php:66
 #: templates/includes/import-result.php:11
 msgid "Checking files"
 msgstr "Vérification des fichiers"
 
-#: src/Core/Views/Import.php:25
+#: src/Core/Views/Import.php:43
 msgid "Maximum file size"
 msgstr "Taille maximale du fichier"
 
-#: src/Core/Views/Import.php:30
+#: src/Core/Views/Import.php:48
 msgid "Import <b>.zip</b> file"
 msgstr "Importer le fichier <b>.zip</b>"
 
-#: src/Core/Views/Import.php:35
+#: src/Core/Views/Import.php:53
 msgid "Import steps"
 msgstr "Étapes d’importation"
 
-#: src/Core/Views/Import.php:39
+#: src/Core/Views/Import.php:57
 msgid "Waiting for file"
 msgstr "En attente d’un fichier"
 
@@ -539,10 +596,6 @@ msgid "Please add your first marker by clicking on the button above."
 msgstr ""
 "Veuillez ajouter votre premier marqueur en cliquant sur le bouton ci-dessus."
 
-#: src/Core/Views/MapSettings.php:263
-msgid "Save"
-msgstr "Sauvegarder"
-
 #: src/Core/Views/NoResult.php:1
 msgid ""
 "No agents to display at this time. Please check the URL of the requested "
@@ -550,6 +603,10 @@ msgid ""
 msgstr ""
 "Aucun agent à afficher pour le moment. Veuillez vérifier l’URL de la page "
 "demandée ou réessayer plus tard."
+
+#: src/Core/Views/Projects.php:3
+msgid "No projects referenced for this team."
+msgstr "Aucun projet référencé pour cette équipe."
 
 #: src/Core/Views/Settings.php:20
 msgid "Here you can update the settings of the CNRS Data Manager extension."
@@ -664,28 +721,30 @@ msgstr "Constructeur de cartes 3D"
 #: src/Core/Views/Settings.php:159
 msgid ""
 "In order to optimize the use of filters and pagination, you can choose to "
-"use the <b>category.php</b> page provided by the extension. It will be up to "
-"you to make your own design in the corresponding CSS and JS files (see the "
+"use the custom page kit containing the files <b>category.php</b>, <b>archive."
+"php</b> and <b>project.php</b> provided by the extension. It will be up to "
+"you to create your own design in the corresponding CSS and JS files (see the "
 "list in the <b>Tools</b> tab)."
 msgstr ""
 "Afin d’optimiser l’utilisation des filtres et de la pagination, vous pouvez "
-"choisir d’utiliser la page <b>category.php</b> fournie par l’extension. Ce "
-"sera à vous de créer votre propre design dans les fichiers CSS et JS "
-"correspondants (voir la liste dans l’onglet <b>Outils</b> )."
+"choisir d’utiliser le kit de page personnalisé contenant les fichiers "
+"<b>category.php</b>, <b>archive.php</b> et <b>project.php</b> fournis par "
+"l’extension. Ce sera à vous de créer votre propre design dans les fichiers "
+"CSS et JS correspondants (voir la liste dans l’onglet <b>Outils</b> )."
 
 #: src/Core/Views/Settings.php:161
 msgid ""
-"To use this template, please check the <b>Use template</b> box below. The "
-"extension will create the <b>category.php</b> page at the root of the "
+"To use these templates, please check the <b>Use templates</b> box below. The "
+"extension will create the <b>custom pages kit</b> at the root of the "
 "activated theme, including filters and pagination."
 msgstr ""
-"Pour utiliser ce modèle, veuillez cocher la case <b>Utiliser le modèle</b> "
-"ci-dessous. L’extension créera la page <b>category.php</b> à la racine du "
-"thème activé, y compris les filtres et la pagination."
+"Pour utiliser ces modèles, veuillez cocher la case <b>Utiliser les modèles</"
+"b> ci-dessous. L’extension créera le <b>kit de pages personnalisées</b> à la "
+"racine du thème activé, y compris les filtres et la pagination."
 
 #: src/Core/Views/Settings.php:166
-msgid "Use template"
-msgstr "Utiliser le modèle"
+msgid "Use templates"
+msgstr "Utiliser les modèles"
 
 #: src/Core/Views/Settings.php:169
 msgid ""
@@ -904,7 +963,7 @@ msgid ""
 "The <b>CSS</b> filters file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-"
 "manager-filters-style.css</i></b>"
 msgstr ""
-"Le fichier <b>CSS</b> des filtres  <b><i>/wp-includes/cnrs-data-manager/cnrs-"
+"Le fichier <b>CSS</b> des filtres <b><i>/wp-includes/cnrs-data-manager/cnrs-"
 "data-manager-filters-style.css</i></b>"
 
 #: src/Core/Views/Tools.php:29
@@ -924,7 +983,7 @@ msgid ""
 "The <b>JS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-"
 "script.js</i></b>"
 msgstr ""
-"Le fichier <b>JS</b><b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-"
+"Le fichier <b>JS</b> <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-"
 "script.js</i></b>"
 
 #: src/Core/Views/Tools.php:37
@@ -1039,17 +1098,21 @@ msgstr "Sélectionner une publication"
 msgid "No article available for this category."
 msgstr "Aucun article n’est disponible pour cette catégorie."
 
-#: src/Tools/helper.php:399
+#: src/Tools/helper.php:400
 msgid "Unspecified"
 msgstr "Non spécifié"
 
-#: src/Tools/helper.php:402
+#: src/Tools/helper.php:403
 msgid "Mister"
 msgstr "Monsieur"
 
-#: src/Tools/helper.php:404
+#: src/Tools/helper.php:405
 msgid "Misses"
 msgstr "Madame"
+
+#: src/Tools/helper.php:962
+msgid "not assigned"
+msgstr "non assigné"
 
 #: src/Utils/CnrsDataManagerPhpVersionCheck.php:58
 #, php-format
@@ -1168,7 +1231,7 @@ msgstr "Lien"
 msgid "Without belonging"
 msgstr "Sans appartenance"
 
-#: templates/samples/category.php:50
+#: templates/samples/category.php:50 templates/samples/project.php:44
 msgid "Sorry, no posts matched your criteria."
 msgstr "Aucun message ne correspond à vos critères de recherche."
 
@@ -1177,7 +1240,6 @@ msgid "CNRS Data Manager"
 msgstr "CNRS Data Manager"
 
 #. Plugin URI of the plugin/theme
-#. Author URI of the plugin/theme
 msgid "https://github.com/Fred-QS/CNRS-Data-Manager"
 msgstr "https://github.com/Fred-QS/CNRS-Data-Manager"
 
@@ -1194,8 +1256,15 @@ msgstr ""
 "et d’importer des projets UMR."
 
 #. Author of the plugin/theme
-msgid "QS Conseils"
-msgstr "QS Conseils"
+msgid "Frédéric GEFFRAY - QS Conseils"
+msgstr "Frédéric GEFFRAY - QS Conseils"
+
+#. Author URI of the plugin/theme
+msgid "https://www.linkedin.com/in/freduino"
+msgstr "https://www.linkedin.com/in/freduino"
+
+#~ msgid "QS Conseils"
+#~ msgstr "QS Conseils"
 
 #~ msgid "XML file name"
 #~ msgstr "Nom du fichier XML"

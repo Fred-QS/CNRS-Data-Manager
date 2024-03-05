@@ -1,3 +1,18 @@
+.cnrs-data-manager-page {
+    position: relative;
+    z-index: 2;
+}
+
+.cnrs-data-manager-cnrs-logo {
+    position: fixed;
+    height: 50vh;
+    width: 50vh;
+    z-index: 1;
+    bottom: -10%;
+    right: -5%;
+    opacity: 0.02;
+}
+
 .title-and-logo {
     display: flex !important;
     align-items: center;
@@ -127,9 +142,9 @@ th.sortable p span, th.sorted p span {
     font-weight: 400;
 }
 
-.cnrs-dm-data-selector-th {
-    padding: 0 10px 0 0!important;
+.cnrs-dm-data-selector-th:not(.cnrs-dm-data-selector-th-top) {
     vertical-align: middle!important;
+    padding: 0 10px 0 0!important;
 }
 
 .cnrs-dm-data-selector-td {
@@ -137,7 +152,8 @@ th.sortable p span, th.sorted p span {
     vertical-align: middle!important;
 }
 
-#cnrs-dm-search-box-form {
+#cnrs-dm-search-box-form,
+#cnrs-dm-search-box-form-project {
     display: flex;
     justify-content: flex-end;
 }
@@ -289,7 +305,7 @@ body[class*="data-manager-tools"] .form-table tr > * {
     font-size: 13px;
 }
 
-#cnrs-dm-no-marker.hide {
+#cnrs-dm-no-marker.hide, .cnrs-dm-projects-row.hide {
     display: none;
 }
 
@@ -814,6 +830,53 @@ label[for="cnrs-dm-filename"] {
     margin-left: 4px;
 }
 
+.cnrs-data-manager-project-teams {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 100%;
+}
+
+label[for="cnrs-data-manager-projects-team"] {
+    vertical-align: top;
+}
+
+.cnrs-data-manager-project-teams {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    width: calc(100% - 20px);
+}
+
+.cnrs-dm-project-image-tag {
+    width: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.cnrs-dm-project-image-tag > img {
+    width: 100%;
+    height: auto;
+}
+
+.cnrs-dm-project-item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: calc(100% - 20px);
+    padding: 0 0 10px;
+    margin: 0 auto;
+}
+
+.cnrs-dm-projects-row.even {
+    background-color: #e1e1e1;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;
@@ -929,6 +992,18 @@ label[for="cnrs-dm-filename"] {
         width: calc(100vw - 300px);
         max-width: 400px;
     }
+
+    .cnrs-data-manager-project-teams > label select {
+        margin: 5px 10px;
+    }
+
+    .cnrs-dm-project-item {
+        max-width: 300px;
+    }
+
+    .cnrs-dm-project-item i {
+        max-width: 200px;
+    }
 }
 
 @media only screen and (max-width: 782px) {
@@ -947,7 +1022,8 @@ label[for="cnrs-dm-filename"] {
         font-size: 16px;
     }
 
-    #cnrs-dm-search-box-form > .search-box {
+    #cnrs-dm-search-box-form > .search-box,
+    #cnrs-dm-search-box-form-project > .search-box {
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -1113,6 +1189,20 @@ label[for="cnrs-dm-filename"] {
 
     .cnrs-dm-imported-item-info i, .cnrs-dm-imported-item-info span {
         width: calc(100vw - 100px);
+    }
+
+    .cnrs-data-manager-project-teams > label {
+        width: 100%;
+        margin: 0 10px;
+    }
+
+    .cnrs-data-manager-project-teams > label select {
+        margin: 5px 0 20px;
+        width: 100%;
+    }
+
+    .cnrs-dm-project-item i {
+        width: calc(100vw - 130px);
     }
 }
 
