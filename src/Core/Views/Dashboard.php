@@ -1,5 +1,7 @@
 <?php
 
+updateProjectsRelations();
+
 $data = selectCNRSDataProvider();
 $rows = $data['provider']['data'];
 $pages = $data['provider']['pages'];
@@ -32,7 +34,7 @@ if ($providerType === 'services') {
 
 ?>
 
-<div class="wrap">
+<div class="wrap cnrs-data-manager-page">
     <form method="get" style="margin-bottom: 20px;">
         <h1 class="wp-heading-inline title-and-logo">
             <?= svgFromBase64(CNRS_DATA_MANAGER_DASHBOARD_ICON, '#5d5d5d', 22) ?>
@@ -279,10 +281,10 @@ if ($providerType === 'services') {
     <form method="post">
         <table class="form-table" role="presentation">
             <tbody>
-            <?php foreach (getProjects() as $project): ?>
-                <tr class="cnrs-dm-projects-row">
+            <?php foreach (getProjects() as $key => $project): ?>
+                <tr class="cnrs-dm-projects-row<?= ($key + 1) % 2 === 0 ? ' even' : '' ?>">
                     <th scope="row" class="cnrs-dm-data-selector-th cnrs-dm-data-selector-th-top">
-                        <input type="hidden" name="cnrs-data-manager-project" value="<?= $project['id'] ?>">
+                        <input type="hidden" name="cnrs-data-manager-project[]" value="<?= $project['id'] ?>">
                         <div class="cnrs-dm-project-item">
                         <span class="cnrs-dm-project-image-tag cnrs-dm-imported-item-image">
                                 <?= $project['image'] !== ''
@@ -302,9 +304,9 @@ if ($providerType === 'services') {
                                 <label>
                                     <input <?= isTeamSelected($team['id'], $project['teams']) ? 'checked' : '' ?> type="checkbox" value="<?= $team['id'] ?>" name="cnrs-data-manager-project-teams-<?= $project['id'] ?>[]">
                                     <i><?= $team['name'] ?></i>
-                                    <select name="cnrs-data-manager-project-order-<?= $project['id'] ?>">
+                                    <select name="cnrs-data-manager-project-order-<?= $project['id'] ?>[]">
                                         <?php for ($i = 0; $i <= CNRS_DATA_MANAGER_PROJECTS_DISPLAY_NUMBER; $i++): ?>
-                                            <option <?= isOrderSelected($i, $team['id'], $project['teams']) ? 'selected' : '' ?> value="<?= $i ?>"><?= $i === 0 ? __('not displayed', 'cnrs-data-manager') : $i ?></option>
+                                            <option <?= isOrderSelected($i, $team['id'], $project['teams']) ? 'selected' : '' ?> value="<?= $i ?>"><?= $i === 0 ? __('Hided', 'cnrs-data-manager') : $i ?></option>
                                         <?php endfor; ?>
                                     </select>
                                 </label>
@@ -320,3 +322,4 @@ if ($providerType === 'services') {
         </p>
     </form>
 </div>
+<?php include_once CNRS_DATA_MANAGER_PATH . '/assets/icons/cnrs.svg';

@@ -9,7 +9,7 @@ $mapData = json_encode($json, JSON_THROW_ON_ERROR);
 $markers = $json['markers'];
 ?>
 
-<div class="wrap">
+<div class="wrap cnrs-data-manager-page">
 
     <h1 class="wp-heading-inline title-and-logo">
         <?= svgFromBase64(CNRS_DATA_MANAGER_MAP_ICON, '#5d5d5d') ?>
@@ -264,3 +264,4 @@ $markers = $json['markers'];
         </p>
     </form>
 </div>
+<?php include_once CNRS_DATA_MANAGER_PATH . '/assets/icons/cnrs.svg';

@@ -13,7 +13,7 @@ use CnrsDataManager\Core\Install;
 use CnrsDataManager\Core\Controllers\Manager;
 use CnrsDataManager\Core\Controllers\Ajax;
 use CnrsDataManager\Core\Models\Settings;
-use CnrsDataManager\Core\Models\Tools;
+use CnrsDataManager\Core\Models\Projects;
 
 class Bootstrap
 {
@@ -28,7 +28,7 @@ class Bootstrap
     {
         add_action('init', array(__CLASS__, 'hookWpInit'));
         define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
-        Tools::cleanGhostProjects();
+        Projects::cleanGhostProjects();
 
         if (is_admin()) {
             Ajax::registerHooks();

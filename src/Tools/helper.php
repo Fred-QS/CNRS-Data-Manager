@@ -6,6 +6,7 @@ use CnrsDataManager\Core\Models\Agents;
 use CnrsDataManager\Core\Models\Map;
 use CnrsDataManager\Core\Models\Settings;
 use CnrsDataManager\Core\Models\Tools;
+use CnrsDataManager\Core\Models\Projects;
 
 $shortCodesCounter = 0;
 
@@ -536,7 +537,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -653,9 +654,15 @@ if (!function_exists('cnrsReadShortCode')) {
             wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-filters-style.css', [], null);
 
             $filters = Settings::getFilters();
-            $parentCatSlug = get_queried_object()->slug;
-            $terms = Settings::getSubCategoriesFromParentSlug($parentCatSlug);
-            cnrsFiltersController($parentCatSlug);
+            $filterType = get_queried_object()->name;
+            if ($filterType !== 'project') {
+                $parentCatSlug = get_queried_object()->slug;
+                $terms = Settings::getSubCategoriesFromParentSlug($parentCatSlug);
+                cnrsFiltersController($parentCatSlug);
+            } else {
+                $teams = getTeams(true);
+                cnrsFiltersController();
+            }
 
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Filters.php');
@@ -679,6 +686,18 @@ if (!function_exists('cnrsReadShortCode')) {
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Pagination.php');
             return ob_get_clean();
+
+        } else if ($type === 'projects') {
+
+            $shortCodesCounter++;
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            $post = get_queried_object();
+            $id = $post->ID;
+            $projects = Projects::getProjectsForTeam($id);
+
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/Projects.php');
+            return ob_get_clean();
         }
         return '';
     }
@@ -692,27 +711,44 @@ if (!function_exists('cnrsFiltersController')) {
      * @param string $currentCatSlug The slug of the current category.
      * @return void
      */
-    function cnrsFiltersController(string $currentCatSlug): void
+    function cnrsFiltersController(string $currentCatSlug = 'none'): void
     {
         $paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
-        $search = get_query_var('s') ? get_query_var('s') : '';
-        $tax_query = get_query_var('cdm-tax') && get_query_var('cdm-tax') !== $currentCatSlug
-            ? [
-                'relation' => 'AND',
-                array(
-                    'taxonomy' => 'category',
-                    'field' => 'slug',
-                    'terms' => [get_query_var('cdm-tax')]
-                )
-            ]
-            : [];
         $posts_per_page = get_query_var('cdm-limit') ? absint(get_query_var('cdm-limit')) : 10;
 
-        $args = array(
-            'posts_per_page' => $posts_per_page,
-            'category_name' => $currentCatSlug,
-            'paged' => $paged
-        );
+        if ($currentCatSlug !== 'none') {
+
+            $tax_query = get_query_var('cdm-tax') && get_query_var('cdm-tax') !== $currentCatSlug
+                ? [
+                    'relation' => 'AND',
+                    ['taxonomy' => 'category', 'field' => 'slug', 'terms' => [get_query_var('cdm-tax')]]
+                ]
+                : [];
+
+            $args = [
+                'posts_per_page' => $posts_per_page,
+                'category_name' => $currentCatSlug,
+                'paged' => $paged
+            ];
+
+        } else {
+
+            $teamID = absint(get_query_var('cdm-team'));
+            $forbiddenProjectsIDs = $teamID === 0
+                ? []
+                : Projects::getAllForbiddenProjectsIDs($teamID);
+            $tax_query = [];
+
+            $args = [
+                'posts_per_page' => $posts_per_page,
+                'post_type' => 'project',
+                'paged' => $paged
+            ];
+
+            if (!empty($forbiddenProjectsIDs)) {
+                $args['post__in'] = $forbiddenProjectsIDs;
+            }
+        }
 
         if (get_query_var('s')) {
             $args['s'] = get_query_var('s');
@@ -881,6 +917,7 @@ if (!function_exists('addQueryVars')) {
             $qvars[] = 'cdm-tax';
             $qvars[] = 'cdm-year';
             $qvars[] = 'cdm-parent';
+            $qvars[] = 'cdm-team';
             return $qvars;
         });
     }
@@ -889,11 +926,12 @@ if (!function_exists('addQueryVars')) {
 if (!function_exists('getTeams')) {
 
     /**
-     * Retrieves an array of teams.
+     * Retrieves teams with their names and optionally their WordPress names.
      *
-     * @return array Returns an array of teams with their IDs and names.
+     * @param bool $onlyNames If true, only the names of the teams will be returned.
+     * @return array Returns an array of teams, each containing the ID and name of the team. If $onlyNames is true, the array will only contain name data.
      */
-    function getTeams(): array
+    function getTeams(bool $onlyNames = false): array
     {
         $xmlTeams = CNRS_DATA_MANAGER_XML_DATA['teams'];
         $teams = Tools::getTeams();
@@ -911,12 +949,19 @@ if (!function_exists('getTeams')) {
                 }
                 return null;
             })();
-            $result[] = [
-                'id' => $id,
-                'name' => $xml_name . ($wp_name !== null
-                    ? ' (' . $wp_name . ')'
-                    : ' (' . __('not assigned', 'cnrs-data-manager') . ')')
-            ];
+            if ($onlyNames === true && $wp_name !== null) {
+                $result[] = [
+                    'id' => $id,
+                    'name' => $wp_name
+                ];
+            } else if ($onlyNames === false) {
+                $result[] = [
+                    'id' => $id,
+                    'name' => $xml_name . ($wp_name !== null
+                            ? ' (' . $wp_name . ')'
+                            : ' (' . __('not assigned', 'cnrs-data-manager') . ')')
+                ];
+            }
         }
         return $result;
     }
@@ -934,9 +979,9 @@ if (!function_exists('getProjects')) {
         $projects = get_posts([
             'post_type' => 'project',
             'orderby'    => 'ID',
-            'sort_order' => 'desc'
+            'numberposts' => -1,
         ]);
-        $relations = Tools::getProjects();
+        $relations = Projects::getProjects();
         $results = [];
         foreach ($projects as $project) {
             $res = [
@@ -984,6 +1029,14 @@ if (!function_exists('isTeamSelected')) {
 
 if (!function_exists('isOrderSelected')) {
 
+    /**
+     * Checks if a specific order is selected for a given team.
+     *
+     * @param int $value The order value to check.
+     * @param int $teamID The ID of the team.
+     * @param array $teams The array of teams to check.
+     * @return bool Returns true if the order is selected for the team, false otherwise.
+     */
     function isOrderSelected(int $value, int $teamID, array $teams): bool
     {
         if ($value > 0) {
@@ -997,5 +1050,51 @@ if (!function_exists('isOrderSelected')) {
             }
         }
         return false;
+    }
+}
+
+if (!function_exists('updateProjectsRelations')) {
+
+
+    /**
+     * Updates the relationships between projects and teams.
+     *
+     * This method processes the data sent via the $_POST['cnrs-data-manager-project'] array
+     * to update the relationships between projects and teams. It retrieves the project IDs
+     * from the $_POST['cnrs-data-manager-project'] array and then checks if there are team
+     * relationships for each project specified in the $_POST['cnrs-data-manager-project-teams-{projectID}']
+     * array. For each team relationship, it constructs an associative array containing the
+     * team ID, project ID, and the display order. This array is then added to the $inserts array,
+     * which will be used to update the relationships using the Tools::updateProjectsRelations() method.
+     *
+     * Note: The Tools class is assumed to have a static method called "updateProjectsRelations"
+     * that accepts an array of relationships as a parameter.
+     *
+     * @return void
+     */
+    function updateProjectsRelations(): void
+    {
+        if (isset($_POST['cnrs-data-manager-project'])) {
+
+            $projects = $_POST['cnrs-data-manager-project'];
+            $inserts = [];
+
+            foreach ($projects as $projectID) {
+                if (isset($_POST['cnrs-data-manager-project-teams-' . $projectID])) {
+
+                    $teams = $_POST['cnrs-data-manager-project-teams-' . $projectID];
+                    $orders = $_POST['cnrs-data-manager-project-order-' . $projectID];
+
+                    for ($i = 0; $i < count($teams); $i++) {
+                        $inserts[] = [
+                            'team_id' => (int) $teams[$i],
+                            'project_id' => (int) $projectID,
+                            'display_order' => $orders[$i] === '0' ? null : (int) $orders[$i]
+                        ];
+                    }
+                }
+            }
+            Projects::updateProjectsRelations($inserts);
+        }
     }
 }

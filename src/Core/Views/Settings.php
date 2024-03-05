@@ -11,7 +11,7 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
 
 ?>
 
-<div class="wrap">
+<div class="wrap cnrs-data-manager-page">
     <h1 class="wp-heading-inline title-and-logo">
         <?= svgFromBase64(CNRS_DATA_MANAGER_SETTINGS_ICON, '#5d5d5d') ?>
         <?= __('Settings', 'cnrs-data-manager'); ?>
@@ -156,14 +156,14 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
             </table>
             <hr/>
             <p>
-                <?= __('In order to optimize the use of filters and pagination, you can choose to use the <b>category.php</b> page provided by the extension. It will be up to you to make your own design in the corresponding CSS and JS files (see the list in the <b>Tools</b> tab).', 'cnrs-data-manager') ?>
+                <?= __('In order to optimize the use of filters and pagination, you can choose to use the custom page kit containing the files <b>category.php</b>, <b>archive.php</b> and <b>project.php</b> provided by the extension. It will be up to you to create your own design in the corresponding CSS and JS files (see the list in the <b>Tools</b> tab).', 'cnrs-data-manager') ?>
                 <br/>
-                <?= __('To use this template, please check the <b>Use template</b> box below. The extension will create the <b>category.php</b> page at the root of the activated theme, including filters and pagination.', 'cnrs-data-manager') ?>
+                <?= __('To use these templates, please check the <b>Use templates</b> box below. The extension will create the <b>custom pages kit</b> at the root of the activated theme, including filters and pagination.', 'cnrs-data-manager') ?>
             </p>
             <div>
                 <label>
                     <input<?= (int) $settings['category_template'] === 1 ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-category-template">
-                    <b><?= __('Use template', 'cnrs-data-manager') ?></b>
+                    <b><?= __('Use templates', 'cnrs-data-manager') ?></b>
                 </label>
             </div>
             <p><?= __('Otherwise, you can also implement the filter and/or pagination system <b>manually</b> using the shortcodes below.', 'cnrs-data-manager') ?></p>
@@ -377,3 +377,4 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
         </p>
     </form>
 </div>
+<?php include_once CNRS_DATA_MANAGER_PATH . '/assets/icons/cnrs.svg';

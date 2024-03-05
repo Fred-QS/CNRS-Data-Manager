@@ -1,4 +1,4 @@
-<div class="wrap" style="position: relative">
+<div class="wrap cnrs-data-manager-page" style="position: relative">
     <h1 class="wp-heading-inline title-and-logo">
         <?= svgFromBase64(CNRS_DATA_MANAGER_IMPORT_ICON, '#5d5d5d', 26) ?>
         <?= __('Import projects', 'cnrs-data-manager'); ?>
@@ -74,3 +74,4 @@
     </div>
     <div id="cnrs-dm-import-response-state-container" class="cnrs-dm-import-state-container"></div>
 </div>
+<?php include_once CNRS_DATA_MANAGER_PATH . '/assets/icons/cnrs.svg';

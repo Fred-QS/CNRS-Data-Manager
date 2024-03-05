@@ -229,16 +229,37 @@ class Settings
         return $settings[0][$type . '_view_selector'] === '1';
     }
 
+    /**
+     * Deploys the category template based on the settings in the database.
+     *
+     * Retrieves the value of the 'category_template' field from the 'cnrs_data_manager_settings'
+     * table in the WordPress database and determines whether to deploy or remove the category
+     * template files based on the returned value.
+     *
+     * @return void
+     */
     public static function deployCategoryTemplate(): void
     {
         global $wpdb;
         $settings = $wpdb->get_results( "SELECT category_template FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        $newFile = get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/category.php';
-        if ((int) $settings[0]['category_template'] === 1 && !file_exists($newFile)) {
-            $template = CNRS_DATA_MANAGER_PATH . '/templates/samples/category.php';
-            copy($template, $newFile);
-        } else if ((int) $settings[0]['category_template'] === 0 && file_exists($newFile)) {
-            unlink($newFile);
+        $newFiles = [
+            'category' => get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/category.php',
+            'archive' => get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/archive.php',
+            'project' => get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/project.php',
+        ];
+        if ((int) $settings[0]['category_template'] === 1) {
+            foreach ($newFiles as $name => $newFile) {
+                if (!file_exists($newFile)) {
+                    $template = CNRS_DATA_MANAGER_PATH . '/templates/samples/' . $name . '.php';
+                    copy($template, $newFile);
+                }
+            }
+        } else if ((int) $settings[0]['category_template'] === 0) {
+            foreach ($newFiles as $currentFile) {
+                if (file_exists($currentFile)) {
+                    unlink($currentFile);
+                }
+            }
         }
     }
 

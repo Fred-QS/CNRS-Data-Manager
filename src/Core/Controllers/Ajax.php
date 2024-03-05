@@ -6,7 +6,7 @@ use JsonException;
 use ZipArchive;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
-use CnrsDataManager\Core\Models\Tools;
+use CnrsDataManager\Core\Models\Projects;
 
 class Ajax
 {
@@ -320,7 +320,7 @@ class Ajax
                 $wpProjectToDB['_thumbnail_id'] = $id;
             }
             $postId = wp_insert_post($wpProjectToDB);
-            Tools::setTeamProjectRelation($postId, $teamId);
+            Projects::setTeamProjectRelation($postId, $teamId);
             $recorded = get_post($postId, ARRAY_A);
             $posts[] = [
                 'url' => $recorded['guid'],

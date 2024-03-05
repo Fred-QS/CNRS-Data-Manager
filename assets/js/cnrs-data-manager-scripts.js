@@ -48,6 +48,8 @@ const fileImportSubmitBtn = document.querySelector('#cnrs-dm-file-import-form-su
 const importInitialStateContainer = document.querySelector('#cnrs-dm-import-initial-state-container');
 const importResponseStateContainer = document.querySelector('#cnrs-dm-import-response-state-container');
 const fileImportTeamSelector = document.querySelector('#cnrs-data-manager-projects-team');
+const projectInputSearch = document.querySelector('#cnrs-data-manager-search-projects');
+const projectSearchButton = document.querySelector('#cnrs-data-manager-search-submit-projects');
 let filenameTimeout;
 let xlsFile = null;
 
@@ -228,6 +230,30 @@ function prepareListeners() {
                 fileImportSubmitBtn.click();
             }
         });
+    }
+
+    if (projectSearchButton) {
+        projectSearchButton.onclick = function () {
+            const input = projectInputSearch.value;
+            const rows = document.querySelectorAll('.cnrs-dm-projects-row');
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].classList.remove('hide');
+                rows[i].classList.remove('even');
+            }
+            if (input.length > 0) {
+                for (let i = 0; i < rows.length; i++) {
+                    if (!rows[i].querySelector('.cnrs-dm-project-item a span').innerHTML.toLowerCase().includes(input.toLowerCase())) {
+                        rows[i].classList.add('hide');
+                    }
+                }
+            }
+            const displayed = document.querySelectorAll('.cnrs-dm-projects-row:not(.hide)')
+            for (let i = 0; i < displayed.length; i++) {
+                if ((i + 1) % 2 === 0) {
+                    displayed[i].classList.add('even');
+                }
+            }
+        }
     }
 }
 
