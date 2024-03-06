@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-03-06 09:46+0100\n"
-"PO-Revision-Date: 2024-03-06 09:49+0100\n"
+"POT-Creation-Date: 2024-03-06 15:33+0100\n"
+"PO-Revision-Date: 2024-03-06 15:33+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -325,11 +325,11 @@ msgstr ""
 msgid "Default image"
 msgstr "Image par défaut"
 
-#: src/Core/Views/Dashboard.php:309
+#: src/Core/Views/Dashboard.php:314
 msgid "Hided"
 msgstr "Caché"
 
-#: src/Core/Views/Dashboard.php:321 src/Core/Views/MapSettings.php:263
+#: src/Core/Views/Dashboard.php:326 src/Core/Views/MapSettings.php:263
 msgid "Save"
 msgstr "Sauvegarder"
 
@@ -1063,8 +1063,8 @@ msgid ""
 "The <b>SVG</b> file for the loader icon <b><i>/wp-includes/cnrs-data-manager/"
 "svg/loader.svg</i></b>"
 msgstr ""
-"Le fichier <b>SVG</b> pour le bouton d’affichage de liste <b><i>/wp-includes/"
-"cnrs-data-manager/svg/list.svg</i></b>"
+"Le fichier <b>SVG</b> pour le loader <b><i>/wp-includes/cnrs-data-manager/"
+"svg/loader.svg</i></b>"
 
 #: src/Core/Views/Tools.php:54
 msgid ""
