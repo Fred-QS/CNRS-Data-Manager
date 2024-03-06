@@ -8,4 +8,9 @@
 
 ---
 
+La désinstallation de l'extension est commune à toutes les autres désinstallations. 
+En effet, il vous suffit d'aller dans les extensions installées, de désactiver l'extension CNRS Data Manager, puis de la supprimer. Attention la suppression de l'application de l'extension entraînera la suppression des tables nécessaires au fonctionnement de celle-ci, et supprimera également les fichiers qui auront été générés dans la partie /wp-include/cnrs-data-manager.
+
+---
+
 - [< Importation](/documentation/FR/07%20-%20Importation.md)

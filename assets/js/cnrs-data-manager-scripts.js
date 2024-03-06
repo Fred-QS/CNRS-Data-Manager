@@ -50,6 +50,7 @@ const importResponseStateContainer = document.querySelector('#cnrs-dm-import-res
 const fileImportTeamSelector = document.querySelector('#cnrs-data-manager-projects-team');
 const projectInputSearch = document.querySelector('#cnrs-data-manager-search-projects');
 const projectSearchButton = document.querySelector('#cnrs-data-manager-search-submit-projects');
+const projectExpander = document.querySelectorAll('.cnrs-dm-projects-expander');
 let filenameTimeout;
 let xlsFile = null;
 
@@ -252,6 +253,17 @@ function prepareListeners() {
                 if ((i + 1) % 2 === 0) {
                     displayed[i].classList.add('even');
                 }
+            }
+        }
+    }
+
+    for (let i = 0; i < projectExpander.length; i++) {
+        projectExpander[i].onclick = function() {
+            const tr = this.closest('tr');
+            if (tr.classList.contains('expand')) {
+                tr.classList.remove('expand');
+            } else {
+                tr.classList.add('expand');
             }
         }
     }
