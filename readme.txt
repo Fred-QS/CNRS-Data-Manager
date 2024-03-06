@@ -10,7 +10,7 @@ This program is distributed for the sole use by the CNRS IS.
 
 == Description ==
 
-> The CNRS Data Manager extension was developed as part of the redesign of the UMR CNRS sites, in order to be able to use the data transmitted via the CNRS SI.
+> The CNRS Data Manager extension was developed as part of the redesign of the UMR CNRS sites, in order to be able to use the data transmitted via the CNRS SI, use categories filters, import projects and use configurable 3D map.
 
 It provides to Wordpress:
 

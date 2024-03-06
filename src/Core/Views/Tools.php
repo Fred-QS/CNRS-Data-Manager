@@ -12,7 +12,7 @@ $servicesPosts = getAllPostsFromCategoryId(Tools::getServicesCategoryId());
 $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
 ?>
 
-<div class="wrap" style="position: relative">
+<div class="wrap cnrs-data-manager-page" style="position: relative">
     <h1 class="wp-heading-inline title-and-logo">
         <?= svgFromBase64(CNRS_DATA_MANAGER_TOOLS_ICON, '#5d5d5d', 19) ?>
         <?= __('Tools', 'cnrs-data-manager'); ?>
@@ -195,3 +195,4 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
         <?php endif; ?>
     </form>
 </div>
+<?php include_once CNRS_DATA_MANAGER_PATH . '/assets/icons/cnrs.svg';

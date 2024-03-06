@@ -1,14 +1,22 @@
 <?php
+
+if ($filterType === 'project') {
+    $index = array_search('sub-categories-list', $filters, true);
+    if ($index !== false) {
+        $filters[$index] = 'by-team';
+    }
+}
+
 if (empty($terms) && $index = array_search('sub-categories-list', $filters, true) !== false) {
     unset($filters[$index]);
 }
+
 switch (count($filters)) {
     case 4: $moduleSizeClass = 'cnrs-dm-front-filters-size-25'; break;
     case 3: $moduleSizeClass = 'cnrs-dm-front-filters-size-33'; break;
     case 2: $moduleSizeClass = 'cnrs-dm-front-filters-size-50'; break;
     default: $moduleSizeClass = 'cnrs-dm-front-filters-size-full'; break;
-}
-?>
+} ?>
 
 <!-- Start CNRS Data Manager filter section -->
 <form method="get" class="cnrs-dm-front-filters-wrapper" data-shortcode="cnrs-data-manager-shortcode-<?= $shortCodesCounter ?>">
@@ -39,6 +47,19 @@ switch (count($filters)) {
                 </select>
             </div>
             <!-- End CNRS Data Manager posts categories list filter module section -->
+        <?php endif; ?>
+        <?php if ($filterType === 'project' && in_array('by-team', $filters, true)): ?>
+            <!-- Start CNRS Data Manager posts teams list filter module section -->
+            <div class="cnrs-dm-front-filter cnrs-dm-front-filter-column cnrs-dm-front-filters-modules <?= $moduleSizeClass ?>" id="cnrs-dm-front-filter-cats-container-<?= $shortCodesCounter ?>">
+                <label class="cnrs-dm-front-single-input-label" for="cnrs-dm-front-filter-cats-selector"><?= __('Select a team', 'cnrs-data-manager') ?></label>
+                <select id="cnrs-dm-front-filter-cats-selector" name="cdm-team">
+                    <option selected value="0"><?= __('All teams', 'cnrs-data-manager') ?></option>
+                    <?php foreach ($teams as $team): ?>
+                        <option<?= isset($_GET['cdm-team']) && $_GET['cdm-team'] === $team['id'] ? ' selected' : '' ?> value="<?= $team['id'] ?>"><?= $team['name'] ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <!-- End CNRS Data Manager posts teams list filter module section -->
         <?php endif; ?>
         <?php if (in_array('by-year', $filters, true)): ?>
             <!-- Start CNRS Data Manager filter by date module section -->

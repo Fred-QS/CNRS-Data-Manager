@@ -6,6 +6,7 @@ use JsonException;
 use ZipArchive;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use CnrsDataManager\Core\Models\Projects;
 
 class Ajax
 {
@@ -219,7 +220,8 @@ class Ajax
     {
         $json = ['error' => null, 'data' => null];
         try {
-            if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip' && isset($_POST['data'])) {
+            if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip' && isset($_POST['data']) && isset($_POST['team'])) {
+                $team = (int) $_POST['team'];
                 $strip = str_replace('\\n', '<br>', $_POST['data']);
                 $strip = str_replace('\\', '', $strip);
                 $data = json_decode($strip, true, 512, JSON_THROW_ON_ERROR);
@@ -230,7 +232,7 @@ class Ajax
                     $json['error'] = __('The images could not be processed.', 'cnrs-data-manager');
                 } else {
                     $json['data'] = __('The projects were imported successfully.', 'cnrs-data-manager');
-                    $import = self::importProjectsToDB($data, $dir);
+                    $import = self::importProjectsToDB($data, $dir, $team);
                     if ($import === false) {
                         $json = ['error' => __('Importing projects into the database failed.', 'cnrs-data-manager'), 'data' => null];
                     }
@@ -280,7 +282,7 @@ class Ajax
      * @param string $uploadPath The path where the images are uploaded.
      * @return bool|string Returns false if any image is missing or a string of the HTML list.
      */
-    private static function importProjectsToDB(array $data, string $uploadPath): bool|string
+    private static function importProjectsToDB(array $data, string $uploadPath, int $teamId): bool|string
     {
         $posts = [];
         foreach ($data as $row) {
@@ -318,6 +320,7 @@ class Ajax
                 $wpProjectToDB['_thumbnail_id'] = $id;
             }
             $postId = wp_insert_post($wpProjectToDB);
+            Projects::setTeamProjectRelation($postId, $teamId);
             $recorded = get_post($postId, ARRAY_A);
             $posts[] = [
                 'url' => $recorded['guid'],

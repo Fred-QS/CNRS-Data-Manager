@@ -11,7 +11,7 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
 
 ?>
 
-<div class="wrap">
+<div class="wrap cnrs-data-manager-page">
     <h1 class="wp-heading-inline title-and-logo">
         <?= svgFromBase64(CNRS_DATA_MANAGER_SETTINGS_ICON, '#5d5d5d') ?>
         <?= __('Settings', 'cnrs-data-manager'); ?>
@@ -135,35 +135,51 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                                 </span>
                             </p>
                         </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">
-                            <label><?= __('3D Map builder', 'cnrs-data-manager') ?></label>
-                        </th>
-                        <td>
-                            <p class="cnrs-dm-shortcode-p">
-                                <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="map"]'>
-                                    <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
-                                    <code>[cnrs-data-manager type="map"]</code>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
-                                        <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
-                                    </svg>
-                                </span>
-                            </p>
-                        </td>
-                    </tr>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label><?= __('3D Map builder', 'cnrs-data-manager') ?></label>
+                    </th>
+                    <td>
+                        <p class="cnrs-dm-shortcode-p">
+                            <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="map"]'>
+                                <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                                <code>[cnrs-data-manager type="map"]</code>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                                    <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                                </svg>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label><?= __('Team projects', 'cnrs-data-manager') ?></label>
+                    </th>
+                    <td>
+                        <p class="cnrs-dm-shortcode-p">
+                            <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="projects"]'>
+                                <span class="cnrs-dm-copied-to-clipboard"><?= __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                                <code>[cnrs-data-manager type="projects"]</code>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                                    <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                                </svg>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
                 </tbody>
             </table>
             <hr/>
             <p>
-                <?= __('In order to optimize the use of filters and pagination, you can choose to use the <b>category.php</b> page provided by the extension. It will be up to you to make your own design in the corresponding CSS and JS files (see the list in the <b>Tools</b> tab).', 'cnrs-data-manager') ?>
+                <?= __('In order to optimize the use of filters and pagination, you can choose to use the custom page kit containing the files <b>category.php</b>, <b>archive.php</b> and <b>project.php</b> provided by the extension. It will be up to you to create your own design in the corresponding CSS and JS files (see the list in the <b>Tools</b> tab).', 'cnrs-data-manager') ?>
                 <br/>
-                <?= __('To use this template, please check the <b>Use template</b> box below. The extension will create the <b>category.php</b> page at the root of the activated theme, including filters and pagination.', 'cnrs-data-manager') ?>
+                <?= __('To use these templates, please check the <b>Use templates</b> box below. The extension will create the <b>custom pages kit</b> at the root of the activated theme, including filters and pagination.', 'cnrs-data-manager') ?>
             </p>
             <div>
                 <label>
                     <input<?= (int) $settings['category_template'] === 1 ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-category-template">
-                    <b><?= __('Use template', 'cnrs-data-manager') ?></b>
+                    <b><?= __('Use templates', 'cnrs-data-manager') ?></b>
                 </label>
             </div>
             <p><?= __('Otherwise, you can also implement the filter and/or pagination system <b>manually</b> using the shortcodes below.', 'cnrs-data-manager') ?></p>
@@ -377,3 +393,4 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
         </p>
     </form>
 </div>
+<?php include_once CNRS_DATA_MANAGER_PATH . '/assets/icons/cnrs.svg';

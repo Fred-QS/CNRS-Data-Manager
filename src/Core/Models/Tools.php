@@ -118,9 +118,25 @@ class Tools
         return compact('teams', 'services', 'platforms');
     }
 
+    /**
+     * Retrieves all relations from the database.
+     *
+     * @return array The array containing all relations.
+     */
     public static function getAllRelations(): array
     {
         global $wpdb;
         return $wpdb->get_results( "SELECT term_id as cat, xml_entity_id as xml, type FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE term_id != 0", ARRAY_A );
+    }
+
+    /**
+     * Retrieves the teams.
+     *
+     * @return array The array containing the teams' term ID and related xml entity ID.
+     */
+    public static function getTeams(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results( "SELECT term_id as cat, xml_entity_id as xml FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE type = 'teams' AND term_id != 0", ARRAY_A );
     }
 }
