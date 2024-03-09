@@ -1,4 +1,4 @@
-![Bannière CNRS Data Manager](/documentation/attachments/illustration-01.png?raw=true)
+![Bannière CNRS Data Manager](/documentation/attachments/banner.jpg?raw=true)
 
 > *L'extension CNRS Data Manager a été développée dans le cadre de la refonte des sites de l'UMR CNRS, afin de pouvoir exploiter les données transmises via le CNRS SI, utiliser des filtres de catégories, importer des projets et utiliser une carte 3D configurable.*
 

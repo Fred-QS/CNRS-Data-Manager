@@ -1,4 +1,4 @@
-![CNRS Data Manager banner](/documentation/attachments/illustration-01.png?raw=true)
+![CNRS Data Manager banner](/documentation/attachments/banner.jpg?raw=true)
 
 > *The CNRS Data Manager extension was developed as part of the redesign of the UMR CNRS sites, in order to be able to use the data transmitted via the CNRS SI, use categories filters, import projects and use configurable 3D map.*
 
