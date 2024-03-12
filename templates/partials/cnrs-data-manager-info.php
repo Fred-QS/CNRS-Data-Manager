@@ -50,7 +50,6 @@
                 <div class="cnrs-dm-front-agent-info-data">
                     <h5><?= __('Status', 'cnrs-data-manager') ?></h5>
                     <span><?= $agent['statut'] ?><?= $agent['tutelle'] !== null ? ', ' . $agent['tutelle'] : '' ?></span>
-                    <span><?= $agent['specialite'] ?></span>
                     <span><?= $agent['activite'] ?></span>
                     <h5><?= __('Membership', 'cnrs-data-manager') ?></h5>
                     <?php if (count($agent['equipes']) > 0): ?>
