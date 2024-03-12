@@ -18,9 +18,6 @@
     <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
     <span>
         <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
-        <?php if ($agent['specialite'] !== null): ?>
-            <i><?= $agent['specialite'] ?></i>
-        <?php endif; ?>
         <?php if ($agent['tutelle'] !== null): ?>
             <small><?= $agent['tutelle'] ?></small>
         <?php endif; ?>
