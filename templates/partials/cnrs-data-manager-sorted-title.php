@@ -16,6 +16,6 @@
 ?>
 
 <p class="cnrs-dm-front-entity-title">
-    <?= $entity['wp_name'] !== null ? $entity['wp_name'] : __('Without belonging', 'cnrs-data-manager') ?>
-    <?= $entity['xml_name'] !== null ? ' <i>' . $entity['xml_name'] . '</i>' : '' ?>
+    <?php echo $entity['wp_name'] !== null ? $entity['wp_name'] : __('Without belonging', 'cnrs-data-manager') ?>
+    <?php echo $entity['xml_name'] !== null ? ' <i>' . $entity['xml_name'] . '</i>' : '' ?>
 </p>

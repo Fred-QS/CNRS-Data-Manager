@@ -28,7 +28,7 @@
                 while (have_posts()): the_post(); ?>
                     <article>
                         <?php $image_url = wp_get_attachment_image_src(get_post_thumbnail_id(get_the_ID()), 'medium'); ?>
-                        <a href="<?= the_permalink() ?>" style="background-image: url(<?= esc_url( $image_url[0] ) ?>);"></a>
+                        <a href="<?php echo the_permalink() ?>" style="background-image: url(<?php echo esc_url( $image_url[0] ) ?>);"></a>
                         <h2>
                             <a href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>">
                                 <?php the_title(); ?>
@@ -41,7 +41,7 @@
             </div>
 
         <?php else: ?>
-            <p><?= __('Sorry, no posts matched your criteria.', 'cnrs-data-manager') ?></p>
+            <p><?php echo __('Sorry, no posts matched your criteria.', 'cnrs-data-manager') ?></p>
         <?php endif;
 
         // Pagination
