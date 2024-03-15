@@ -14,15 +14,15 @@
  */
 ?>
 
-<div class="cnrs-dm-front-agent-container cnrs-dm-front-card<?= $defaultView === 'grid' ? ' selected' : '' ?>">
-    <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
+<div class="cnrs-dm-front-agent-container cnrs-dm-front-card<?php echo $defaultView === 'grid' ? ' selected' : '' ?>">
+    <div style="background-image: url(<?php echo $agent['photo'] ?>)"></div>
     <span>
-        <p><?= $agent['nom'] ?> <?= $agent['prenom'] ?></p>
+        <p><?php echo $agent['nom'] ?> <?php echo $agent['prenom'] ?></p>
         <?php if ($agent['tutelle'] !== null): ?>
-            <small><?= $agent['tutelle'] ?></small>
+            <small><?php echo $agent['tutelle'] ?></small>
         <?php endif; ?>
     </span>
     <?php if ($agent['responsabilite'] !== null): ?>
-        <small><?= $agent['responsabilite'] ?></small>
+        <small><?php echo $agent['responsabilite'] ?></small>
     <?php endif; ?>
 </div>

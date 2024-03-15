@@ -1,1 +1,1 @@
-<p class="cnrs-dm-front-no-result" data-shortcode="cnrs-data-manager-shortcode-<?= $shortCodesCounter ?>"><?= __('No agents to display at this time. Please check the URL of the requested page, or try again later.') ?></p>
+<p class="cnrs-dm-front-no-result" data-shortcode="cnrs-data-manager-shortcode-<?php echo $shortCodesCounter ?>"><?php echo __('No agents to display at this time. Please check the URL of the requested page, or try again later.') ?></p>

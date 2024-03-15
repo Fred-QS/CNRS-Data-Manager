@@ -15,8 +15,8 @@
 $line = inlineInfo($agent);
 ?>
 
-<div class="cnrs-dm-front-agent-container cnrs-dm-front-inline<?= in_array($defaultView, [null, 'list']) ? ' selected' : '' ?>">
-    <div style="background-image: url(<?= $agent['photo'] ?>)"></div>
-    <p><?= strtoupper($agent['nom']) ?> <?= $agent['prenom'] ?></p>
-    <i><?= $line ?></i>
+<div class="cnrs-dm-front-agent-container cnrs-dm-front-inline<?php echo in_array($defaultView, [null, 'list']) ? ' selected' : '' ?>">
+    <div style="background-image: url(<?php echo $agent['photo'] ?>)"></div>
+    <p><?php echo strtoupper($agent['nom']) ?> <?php echo $agent['prenom'] ?></p>
+    <i><?php echo $line ?></i>
 </div>

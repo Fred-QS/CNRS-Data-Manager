@@ -12,7 +12,7 @@ $pagination = [
 $fromModule = true;
 ?>
 <!-- Start CNRS Data Manager pagination section -->
-<div class="cnrs-dm-front-pagination-module-wrapper" data-shortcode="cnrs-data-manager-shortcode-<?= $shortCodesCounter ?>" style="display: none">
+<div class="cnrs-dm-front-pagination-module-wrapper" data-shortcode="cnrs-data-manager-shortcode-<?php echo $shortCodesCounter ?>" style="display: none">
     <?php include(CNRS_DATA_MANAGER_PATH . '/templates/includes/pagination.php') ?>
 </div>
 <?php if ($isSilentPagination === false): ?>
