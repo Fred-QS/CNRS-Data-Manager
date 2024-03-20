@@ -151,7 +151,7 @@ if ($providerType === 'services') {
                     <tr id="cnrs-item-<?php echo $level ?>" class="level-<?php echo $level ?>">
                         <?php $subLevel = 0; ?>
                         <?php foreach ($item as $key => $value): ?>
-                            <?php if(!str_contains($key, '_id') && ((!in_array($key, ['type', 'autorise_pub_photo', 'prenom', 'photo', 'avatar', 'email_pro', 'civilite', 'expertise', 'responsabilite', 'liens_externes', 'activite']) && $providerType === 'agents') || ($key !== 'type' && $providerType !== 'agents'))): ?>
+                            <?php if(!str_contains($key, '_id') && ((!in_array($key, ['type', 'autorise_pub_photo', 'prenom', 'photo', 'avatar', 'email_pro', 'civilite', 'expertise', 'responsabilite', 'liens_externes', 'activites']) && $providerType === 'agents') || ($key !== 'type' && $providerType !== 'agents'))): ?>
                                 <td class="<?php echo $subLevel === 0 ? 'name column-name has-row-actions column-primary' : '' ?> <?php echo $class ?>" data-colname="<?php echo $head[$subLevel] ?>">
                                     <?php if ($key === 'nom' && $providerType === 'agents'): ?>
                                         <div class="cnrs-dm-split-column">

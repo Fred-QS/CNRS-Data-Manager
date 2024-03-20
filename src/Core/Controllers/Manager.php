@@ -98,6 +98,7 @@ final class Manager
             } else {
                 foreach ($teams['equipe'] as $team) {
                     $team['equipe_id'] = (int) $team['equipe_id'];
+                    $team['activite'] = is_array($team['activite']) && empty($team['activite']) ? null : $team['activite'];
                     $final['teams'][] = $team;
                 }
             }
@@ -107,6 +108,7 @@ final class Manager
             } else {
                 foreach ($services['service'] as $service) {
                     $service['service_id'] = (int) $service['service_id'];
+                    $service['activite'] = is_array($service['activite']) && empty($service['activite']) ? null : $service['activite'];
                     $final['services'][] = $service;
                 }
             }
@@ -116,6 +118,7 @@ final class Manager
             } else {
                 foreach ($platforms['plateforme'] as $platform) {
                     $platform['plateforme_id'] = (int) $platform['plateforme_id'];
+                    $platform['activite'] = is_array($platform['activite']) && empty($platform['activite']) ? null : $platform['activite'];
                     $final['platforms'][] = $platform;
                 }
             }
@@ -127,6 +130,9 @@ final class Manager
                     : $agents['agent']['photo'];
                 $agents['agent']['tutelle'] = is_array($agents['agent']['tutelle']) && empty($agents['agent']['tutelle']) ? null : $agents['agent']['tutelle'];
                 $agents['agent']['civilite'] = is_array($agents['agent']['civilite']) && empty($agents['agent']['civilite']) ? null : $agents['agent']['civilite'];
+                $agents['agent']['responsabilite'] = is_array($agents['agent']['responsabilite']) && empty($agents['agent']['responsabilite']) ? null : $agents['agent']['responsabilite'];
+                $agents['agent']['expertise'] = is_array($agents['agent']['expertise']) && empty($agents['agent']['expertise']) ? null : $agents['agent']['expertise'];
+                $agents['agent']['activites'] = is_array($agents['agent']['activites']) && empty($agents['agent']['activites']) ? null : $agents['agent']['activites'];
                 $agentTeams = [];
                 foreach ($agents['agent']['equipes'] as $agentTeam) {
                     if (isset($agentTeam['equipe_id'])) {
@@ -191,6 +197,9 @@ final class Manager
                         : $agent['photo'];
                     $agent['tutelle'] = is_array($agent['tutelle']) && empty($agent['tutelle']) ? null : $agent['tutelle'];
                     $agent['civilite'] = is_array($agent['civilite']) && empty($agent['civilite']) ? null : $agent['civilite'];
+                    $agent['responsabilite'] = is_array($agent['responsabilite']) && empty($agent['responsabilite']) ? null : $agent['responsabilite'];
+                    $agent['expertise'] = is_array($agent['expertise']) && empty($agent['expertise']) ? null : $agent['expertise'];
+                    $agent['activites'] = is_array($agent['activites']) && empty($agent['activites']) ? null : $agent['activites'];
                     $agentTeams = [];
                     foreach ($agent['equipes'] as $agentTeam) {
                         if (isset($agentTeam['equipe_id'])) {
