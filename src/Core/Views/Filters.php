@@ -19,7 +19,7 @@ switch (count($filters)) {
 } ?>
 
 <!-- Start CNRS Data Manager filter section -->
-<form method="get" class="cnrs-dm-front-filters-wrapper" data-shortcode="cnrs-data-manager-shortcode-<?php echo $shortCodesCounter ?>">
+<form method="get" class="cnrs-dm-front-filters-wrapper cnrs-dm-front-filters-wrapper-<?php echo $parentCatSlug ?>" data-shortcode="cnrs-data-manager-shortcode-<?php echo $shortCodesCounter ?>">
     <div id="cnrs-dm-front-filters-modules-container">
         <?php if (in_array('per-page', $filters, true)): ?>
             <!-- Start CNRS Data Manager posts limit per page filter module section -->
