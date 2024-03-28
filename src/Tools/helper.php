@@ -7,6 +7,7 @@ use CnrsDataManager\Core\Models\Map;
 use CnrsDataManager\Core\Models\Settings;
 use CnrsDataManager\Core\Models\Tools;
 use CnrsDataManager\Core\Models\Projects;
+use CnrsDataManager\Core\Controllers\Manager;
 
 $shortCodesCounter = 0;
 
@@ -534,6 +535,10 @@ if (!function_exists('cnrsReadShortCode')) {
         $entity = $atts['entity'];
         global $shortCodesCounter;
 
+        /*if (!defined('CNRS_DATA_MANAGER_XML_DATA')) {
+            define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
+        }*/
+
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
@@ -551,6 +556,10 @@ if (!function_exists('cnrsReadShortCode')) {
         }
 
         if (in_array($type, ['all', 'teams', 'services', 'platforms', null], true)) {
+
+            if (!defined('CNRS_DATA_MANAGER_XML_DATA')) {
+                define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
+            }
 
             $shortCodesCounter++;
             $cats = getAllLinkedCats();
