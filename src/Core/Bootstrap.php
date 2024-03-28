@@ -27,10 +27,15 @@ class Bootstrap
     public static function init(): void
     {
         add_action('init', array(__CLASS__, 'hookWpInit'));
-        define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
         Projects::cleanGhostProjects();
 
         if (is_admin()) {
+            if (isset($_GET['page']) 
+                && stripos($_GET['page'], 'data-manager') !== false
+                && !defined('CNRS_DATA_MANAGER_XML_DATA')
+            ) {
+                define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
+            }
             Ajax::registerHooks();
             Install::registerHooks();
             add_action('plugins_loaded', array(__CLASS__, 'loadTextDomain'));
