@@ -457,4 +457,36 @@ final class Manager
 
         return self::sanitizeStrict($value, $extraAcceptChars);
     }
+
+    /**
+     * @throws JsonException
+     */
+    public static function formToolsInit(string $type): string
+    {
+        $toolsLabels = [
+            'input' => __('New input field', 'cnrs-data-manager'),
+            'checkbox' => __('New multi choice field', 'cnrs-data-manager'),
+            'comment' => __('New comment field', 'cnrs-data-manager'),
+            'radio' => __('New single choice field', 'cnrs-data-manager'),
+            'separator' => __('New separator', 'cnrs-data-manager'),
+            'textarea' => __('New text field', 'cnrs-data-manager'),
+            'title' => __('New title field', 'cnrs-data-manager'),
+            'signs' => __('Signing pads', 'cnrs-data-manager'),
+        ];
+        $toolsConfig = [
+            'input' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
+            'checkbox' => ['value' => null, 'values' => [], 'choices' => [], 'required' => false],
+            'comment' => ['value' => [__('My comment', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false],
+            'radio' => ['value' => [], 'values' => null, 'choices' => [], 'required' => false],
+            'separator' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
+            'textarea' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
+            'title' => ['value' => [__('My title', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false],
+            'signs' => ['value' => [__('My signing pads', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false]
+        ];
+        return json_encode([
+            'type' => $type,
+            'label' => $toolsLabels[$type],
+            'data' => $toolsConfig[$type]
+        ], JSON_THROW_ON_ERROR);
+    }
 }

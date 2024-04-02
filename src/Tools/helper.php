@@ -7,7 +7,9 @@ use CnrsDataManager\Core\Models\Map;
 use CnrsDataManager\Core\Models\Settings;
 use CnrsDataManager\Core\Models\Tools;
 use CnrsDataManager\Core\Models\Projects;
+use CnrsDataManager\Core\Models\Forms;
 use CnrsDataManager\Core\Controllers\Manager;
+use CnrsDataManager\Core\Controllers\HttpClient;
 
 $shortCodesCounter = 0;
 
@@ -535,14 +537,10 @@ if (!function_exists('cnrsReadShortCode')) {
         $entity = $atts['entity'];
         global $shortCodesCounter;
 
-        /*if (!defined('CNRS_DATA_MANAGER_XML_DATA')) {
-            define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
-        }*/
-
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -656,6 +654,27 @@ if (!function_exists('cnrsReadShortCode')) {
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Title.php');
             return ob_get_clean();
+
+        } else if ($type === 'form') {
+
+            $shortCodesCounter++;
+
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-pad-sign-script', 'https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', ['cnrs-data-manager-pad-sign-script'], null);
+
+            $json = Forms::getCurrentForm();
+            $form = json_decode($json, true);
+
+            if (HttpClient::maintenance_mode()) {
+
+                ob_start();
+                include_once(dirname(__DIR__) . '/Core/Views/MissionForm.php');
+                return ob_get_clean();
+
+            } else {
+                return '';
+            }
 
         } else if ($type === 'filters') {
 

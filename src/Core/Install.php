@@ -98,5 +98,17 @@ class Install
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_settings (filename, teams_category, teams_view_selector, services_category, services_view_selector, platforms_category, platforms_view_selector, mode, default_latitude, default_longitude, category_template, silent_pagination, filter_modules) VALUES
             ('umr_5805', 1, 1, 1, 1, 1, 1, 'widget', 44.869222, 0.494797, 0, 0, 'per-page,sub-categories-list,by-year,search-field')"
         );
+
+        $post_type = 'page';
+        $post_title	= __('Mission form', 'cnrs-data-manager');
+        $post_content ='[cnrs-data-manager type="form"]';
+        $post_status = 'publish';
+        $post_author = 1;
+        $post_name = 'mission-form';
+
+        if (!get_page_by_path( $post_name, OBJECT, 'page')) {
+            $sql = $wpdb->prepare("INSERT INTO {$wpdb->prefix}posts (`post_type`, `post_title`, `post_content`, `post_status`, `post_author`, `post_name`) values (%s, %s, %s, %s, %d, %s)", $post_type, $post_title, $post_content, $post_status, $post_author, $post_name);
+            $wpdb->query($sql);
+        }
     }
 }

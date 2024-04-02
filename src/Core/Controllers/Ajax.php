@@ -7,12 +7,15 @@ use ZipArchive;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
 use CnrsDataManager\Core\Models\Projects;
+use CnrsDataManager\Core\Controllers\Manager;
 
 class Ajax
 {
     private static array $adminActions = [
         'check_xml_file' => 'inspectXLSFile',
-        'import_xml_file' => 'importXLSFile'
+        'import_xml_file' => 'importXLSFile',
+        'set_form_tool' => 'setFormTool',
+        'get_form_tool' => 'getFormTool'
     ];
 
     private static array $publicActions = [];
@@ -364,5 +367,65 @@ class Ajax
             $content .= `<a href="{$data['LIEN_SITE']}" target="_blank">{$data['LIEN_SITE']}</a>`;
         }
         return str_replace('<br>', "\n", $content);
+    }
+
+    /**
+     * Sets the form tool based on the user's selection and sends the updated tool data as a JSON response.
+     *
+     * @return void
+     * @throws JsonException
+     */
+    public static function setFormTool(): void
+    {
+        $data = null;
+        $html = null;
+        $json = ['error' => null, 'data' => $data, 'html' => $html, 'json' => '[]'];
+        if (!isset($_POST['tool']) || !isset($_POST['iteration'])) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        } else {
+            $tool = $_POST['tool'];
+            $iteration = (int) $_POST['iteration'];
+            try {
+                if (in_array($tool, ['input', 'checkbox', 'radio', 'textarea', 'title', 'comment', 'separator', 'signs'], true)) {
+                    $json['json'] = Manager::formToolsInit($tool);
+                    ob_start();
+                    include(CNRS_DATA_MANAGER_PATH . '/templates/includes/form-tools/tools/' . $tool . '.php');
+                    $json['data'] = ob_get_clean();
+                    if ($tool !== 'separator') {
+                        ob_start();
+                        include(CNRS_DATA_MANAGER_PATH . '/templates/includes/form-tools/modals/' . $tool . '.php');
+                        $json['html'] = ob_get_clean();
+                    }
+                }
+            } catch (JsonException $e) {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    public static function getFormTool(): void
+    {
+        $data = null;
+        $json = ['error' => null, 'data' => $data];
+        if (!isset($_POST['tool']) || !isset($_POST['iteration']) || !isset($_POST['json'])) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        } else {
+            $tool = $_POST['tool'];
+            $iteration = (int) $_POST['iteration'];
+            $data = json_decode(stripslashes($_POST['json']), true);
+            try {
+                if (in_array($tool, ['input', 'checkbox', 'radio', 'textarea', 'title', 'comment', 'signs'], true)) {
+                    ob_start();
+                    include(CNRS_DATA_MANAGER_PATH . '/templates/includes/form-tools/modals/' . $tool . '.php');
+                    $json['data'] = ob_get_clean();
+                }
+            } catch (JsonException $e) {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        }
+        wp_send_json_success($json);
+        exit;
     }
 }

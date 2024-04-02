@@ -9,6 +9,7 @@ $toolsIcon = file_get_contents(CNRS_DATA_MANAGER_PATH . '/assets/icons/tools.svg
 $settingsIcon = file_get_contents(CNRS_DATA_MANAGER_PATH . '/assets/icons/settings.svg');
 $mapIcon = file_get_contents(CNRS_DATA_MANAGER_PATH . '/assets/icons/map.svg');
 $importIcon = file_get_contents(CNRS_DATA_MANAGER_PATH . '/assets/icons/import.svg');
+$formIcon = file_get_contents(CNRS_DATA_MANAGER_PATH . '/assets/icons/form.svg');
 
 define('CNRS_DATA_MANAGER_MAIN_ICON', $mainIcon);
 define('CNRS_DATA_MANAGER_DASHBOARD_ICON', $dashboardIcon);
@@ -16,12 +17,15 @@ define('CNRS_DATA_MANAGER_TOOLS_ICON', $toolsIcon);
 define('CNRS_DATA_MANAGER_SETTINGS_ICON', $settingsIcon);
 define('CNRS_DATA_MANAGER_MAP_ICON', $mapIcon);
 define('CNRS_DATA_MANAGER_IMPORT_ICON', $importIcon);
+define('CNRS_DATA_MANAGER_FORM_ICON', $formIcon);
 define('CNRS_DATA_MANAGER_ICON', 'data:image/svg+xml;base64,' . base64_encode(CNRS_DATA_MANAGER_MAIN_ICON));
 define('CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH', ABSPATH . '/wp-includes/cnrs-data-manager/templates');
 define('CNRS_DATA_MANAGER_DEPORTED_SVG_PATH', ABSPATH . '/wp-includes/cnrs-data-manager/svg');
 define('CNRS_DATA_MANAGER_LIMIT_OFFSET', 5);
 define('CNRS_DATA_MANAGER_IMPORT_TMP_PATH', CNRS_DATA_MANAGER_PATH . '/tmp');
 define('CNRS_DATA_MANAGER_PROJECTS_DISPLAY_NUMBER', 16);
+
+define('CNRS_DATA_MANAGER_MAINTENANCE_IP', '192.168.1.254');
 
 if (function_exists('plugin_dir_url')) {
 
