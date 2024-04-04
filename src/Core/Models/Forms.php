@@ -29,12 +29,21 @@ class Forms
         $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET form='{$form}'");
     }
 
-    public static function newFilledForm(array $data): void
+    public static function recordNewForm(string $newForm, string $originalForm, string $userEmail, string $uuid): void
     {
-        $original = json_decode(stripslashes($data['cnrs-dm-front-mission-form-original']), true);
-        unset($data['cnrs-dm-front-mission-form-original']);
-        echo '<pre>';
-        var_export($data);
-        echo '</pre>';
+        global $wpdb;
+        $exist = $wpdb->get_row("SELECT id FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
+        if ($exist === null) {
+            $wpdb->insert(
+                "{$wpdb->prefix}cnrs_data_manager_mission_forms",
+                array(
+                    'uuid' => $uuid,
+                    'email' => $userEmail,
+                    'original' => $originalForm,
+                    'form' => $newForm
+                ),
+                array('%s', '%s', '%s', '%s')
+            );
+        }
     }
 }

@@ -489,4 +489,87 @@ final class Manager
             'data' => $toolsConfig[$type]
         ], JSON_THROW_ON_ERROR);
     }
+
+    /**
+     * Create a new filled form based on the provided data
+     *
+     * @param array $data The form data to be processed
+     * @return string The JSON representation of the new filled form
+     */
+    public static function newFilledForm(array $data): string
+    {
+        $original = json_decode(stripslashes($data['cnrs-dm-front-mission-form-original']), true);
+        unset($data['cnrs-dm-front-mission-form-original']);
+        unset($data['cnrs-dm-front-mission-uuid']);
+        $recompose = [];
+        foreach ($data as $index => $element) {
+            $clean = str_replace('cnrs-dm-front-mission-form-element-', '', $index);
+            $row = [];
+            if (stripos($clean, 'input-') !== false) {
+                $row = ['index' => (int) str_replace('input-', '', $clean), 'type' => 'input', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'textarea-') !== false) {
+                $row = ['index' => (int) str_replace('textarea-', '', $clean), 'type' => 'textarea', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'checkbox-') !== false) {
+                if (stripos($clean, 'opt-comment') === false) {
+                    $htmlEntities = [];
+                    foreach ($element as $el) {
+                        $htmlEntities[] = htmlentities($el);
+                    }
+                    $row = ['index' => (int) str_replace('checkbox-', '', $clean), 'type' => 'checkbox', 'values' => $htmlEntities];
+                } else {
+                    $index = str_replace(['checkbox-', 'opt-comment-'], '', $clean);
+                    $splitIndex = explode('-', $index);
+                    $row = ['index' => (int) $splitIndex[0], 'type' => 'checkbox', 'option' => (int) $splitIndex[1], 'values' => htmlentities($element)];
+                }
+            } else if (stripos($clean, 'radio-') !== false) {
+                if (stripos($clean, 'opt-comment') === false) {
+                    $row = ['index' => (int) str_replace('radio-', '', $clean), 'type' => 'radio', 'values' => [htmlentities($element)]];
+                } else {
+                    $index = str_replace(['radio-', 'opt-comment-'], '', $clean);
+                    $splitIndex = explode('-', $index);
+                    $row = ['index' => (int) $splitIndex[0], 'type' => 'radio', 'option' => (int) $splitIndex[1], 'values' => htmlentities($element)];
+                }
+            } else if (stripos($clean, 'signs-') !== false) {
+                $index = str_replace(['signs-', 'pad-'], '', $clean);
+                $splitIndex = explode('-', $index);
+                $row = ['index' => (int) $splitIndex[0], 'type' => 'signs', 'pad' => (int) $splitIndex[1], 'values' => json_decode(stripslashes($element), true)];
+            }
+            $recompose[] = $row;
+        }
+        $jsonArray = self::prepareNewFormForDB($recompose, $original);
+        $original['elements'] = $jsonArray;
+        return json_encode($original);
+    }
+
+    /**
+     * Prepare new form data for database storage
+     *
+     * @param array $data The new form data
+     * @param array $original The original form data
+     * @return array The modified form data ready for database storage
+     */
+    private static function prepareNewFormForDB(array $data, array $original): array
+    {
+        $elements = $original['elements'];
+        foreach ($data as $row) {
+            $index = $row['index'];
+            $type = $row['type'];
+            $values = $row['values'];
+            if (in_array($type, ['input', 'textarea'], true)) {
+                $elements[$index]['data']['value'] = $values;
+            } else if (in_array($type, ['checkbox', 'radio'], true)) {
+                if (!isset($elements[$index]['data']['options'])) {
+                    $elements[$index]['data']['options'] = [];
+                }
+                if (!isset($row['option'])) {
+                    $elements[$index]['data']['values'] = $values;
+                } else {
+                    $elements[$index]['data']['options'][] = ['option' => $row['option'], 'value' => $values];
+                }
+            } else if ($type === 'signs') {
+                $elements[$index]['data']['values'][] = ['pad' => $row['pad'], 'data' => $values];
+            }
+        }
+        return $elements;
+    }
 }
