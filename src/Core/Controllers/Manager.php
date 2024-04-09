@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Singlethon class that manages the various controllers of the administration of wordpress
- *
- * @package   Duplicator
- * @copyright (c) 2021, Snapcreek LLC
- */
-
 namespace CnrsDataManager\Core\Controllers;
 
 use CnrsDataManager\Core\Models\Settings;

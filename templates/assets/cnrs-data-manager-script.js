@@ -11,7 +11,20 @@ const infoModals = document.querySelectorAll('.cnrs-dm-front-agent-info-wrapper'
 const dataWrapper = document.querySelectorAll('.cnrs-dm-front-agent-info-data-container');
 const parentContainers = document.querySelectorAll('.cnrs-dm-front-container');
 const signPadButtons = document.querySelectorAll('.cnrs-dm-front-sign-pad-button');
-const optionalInputs = document.querySelectorAll('.cnrs-dm-front-checkbox-label[data-option="option"]')
+const optionalInputs = document.querySelectorAll('.cnrs-dm-front-checkbox-label[data-option="option"]');
+const missionFormSubmit = document.querySelector('#cnrs-dm-front-mission-form-submit-button');
+const missionFormErrors = document.querySelector('#cnrs-dm-front-mission-form-errors');
+const missionFormLoginWrapper = document.querySelector('#cnrs-dm-front-mission-form-login-wrapper');
+const missionFormResetPwdLink = document.querySelector('#cnrs-dm-front-mission-form-reset-link');
+const missionFormRGoToLoginLink = document.querySelector('#cnrs-dm-front-mission-form-login-link');
+const loginForm = document.querySelector('.cnrs-dm-front-mission-form-login[data-action="login"]');
+const resetForm = document.querySelector('.cnrs-dm-front-mission-form-login[data-action="reset"]');
+const resetEmail = document.querySelector('input[type="email"][name="cnrs-dm-front-mission-form-reset-email"]');
+const loginEmail = document.querySelector('input[type="email"][name="cnrs-dm-front-mission-form-login-email"]');
+const resetEmailBtn = document.querySelector('#cnrs-dm-front-mission-form-submit-reset-btn');
+const loginEmailBtn = document.querySelector('#cnrs-dm-front-mission-form-submit-login-btn');
+const logoutBtn = document.querySelector('#cnrs-dm-front-mission-user-logout');
+let agentEmails = [];
 
 window.addEventListener('load', function(){
     isMobile();
@@ -30,7 +43,7 @@ function isJson(str) {
 }
 
 function prepareMissionForm() {
-    if (missionForm !== undefined) {
+    if (typeof missionForm !== "undefined") {
         for (let i = 0; i < optionalInputs.length; i++) {
             optionalInputs[i].querySelector('input').oninput = function () {
                 let textarea = this.parentElement.nextElementSibling;
@@ -168,6 +181,147 @@ function prepareMissionForm() {
                     document.querySelector('#cnrs-dm-front-sign-pad-wrapper').classList.add('display');
                 }, 50);
             }
+        }
+    }
+
+    if (missionFormSubmit) {
+        missionFormSubmit.onclick = function (e) {
+            e.preventDefault();
+            let errors = [];
+            const toControl = document.querySelectorAll('.cnrs-dm-front-mission-form-element[data-state="light"]');
+            for (let i = 0; i < toControl.length; i++) {
+                const container = toControl[i];
+                const type = container.dataset.type;
+                const messages = JSON.parse(missionFormErrors.dataset.messages);
+                if (type === 'input') {
+                    const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-input-"]');
+                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
+                    if (elmt.value.trim().length < 1) {
+                        errors.push('<b>' + label + '</b> ' + messages.simple);
+                    }
+                } else if (type === 'textarea') {
+                    const elmt = container.querySelector('textarea[name^="cnrs-dm-front-mission-form-element-textarea-"]');
+                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
+                    if (elmt.value.trim().length < 1) {
+                        errors.push('<b>' + label + '</b> ' + messages.simple);
+                    }
+                } else if (type === 'radio') {
+                    const radioInputs = container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-radio-"]');
+                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
+                    let radioChecked = [];
+                    for (let j = 0; j < radioInputs.length; j++) {
+                        if (radioInputs[j].checked === true) {
+                            radioChecked.push(j);
+                        }
+                    }
+                    if (radioChecked.length < 1) {
+                        errors.push('<b>' + label + '</b> ' + messages.radio);
+                    }
+                    const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
+                    for (let j = 0; j < optComments.length; j++) {
+                        if (optComments[j].value.trim().length < 1) {
+                            const opt = optComments[j].previousElementSibling.querySelector('.text').innerHTML;
+                            errors.push('<b>' + label + ' ' + opt + '</b> ' + messages.option);
+                        }
+                    }
+                } else if (type === 'checkbox') {
+                    const checkboxInputs = container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-checkbox-"]');
+                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
+                    let checkboxChecked = [];
+                    for (let j = 0; j < checkboxInputs.length; j++) {
+                        if (checkboxInputs[j].checked === true) {
+                            checkboxChecked.push(j);
+                        }
+                    }
+                    if (checkboxChecked.length < 1) {
+                        errors.push('<b>' + label + '</b> ' + messages.checkbox);
+                    }
+                    const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
+                    for (let j = 0; j < optComments.length; j++) {
+                        if (optComments[j].value.trim().length < 1) {
+                            const opt = optComments[j].previousElementSibling.querySelector('.checkbox__text-wrapper').innerHTML;
+                            errors.push('<b>' + label + ' ' + opt + '</b> ' + messages.option);
+                        }
+                    }
+                } else if (type === 'signs') {
+                    const inputs = container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-signs-"]');
+                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.error;
+                    for (let j = 0; j < inputs.length; j++) {
+                        if (isJson(inputs[j].value)) {
+                            const json = JSON.parse(inputs[j].value);
+                            if (json.sign === undefined) {
+                                errors.push('<b>' + label + ' ' + (j+1) + '</b> ' + messages.signs);
+                            }
+                        } else {
+                            errors.push('<b>' + label + ' ' + (j+1) + '</b> ' + messages.signs);
+                        }
+                    }
+                }
+            }
+            missionFormErrors.innerHTML = '';
+            if (errors.length > 0) {
+                let html = '';
+                for (let i = 0; i < errors.length; i++) {
+                    html += `<li>${errors[i]}</li>`;
+                }
+                missionFormErrors.insertAdjacentHTML('beforeend', html);
+            } else {
+                missionFormSubmit.closest('form').submit();
+            }
+        }
+    }
+
+    if (typeof xmlAgents !== "undefined") {
+        for (let i = 0; i < xmlAgents.length; i++) {
+            const agent = xmlAgents[i];
+            if (typeof agent.email_pro === "string" && agent.email_pro.length > 0) {
+                agentEmails.push(agent.email_pro);
+            }
+        }
+    }
+
+    if (missionFormLoginWrapper) {
+        missionFormResetPwdLink.onclick = function () {
+            loginForm.classList.add('hide');
+            resetForm.classList.remove('hide');
+            const resetLink = document.querySelector('.cnrs-dm-front-mission-form-confirm-reset');
+            if (resetLink) {
+                resetLink.remove();
+            }
+        }
+        missionFormRGoToLoginLink.onclick = function () {
+            loginForm.classList.remove('hide');
+            resetForm.classList.add('hide');
+        }
+    }
+
+    if (resetEmail) {
+        resetEmail.oninput = function() {
+            resetEmailBtn.disabled = !agentEmails.includes(this.value);
+            this.style.color = !agentEmails.includes(this.value) ? '#ff5c33' : 'inherit';
+
+            loginEmail.value = this.value;
+            loginEmailBtn.disabled = !agentEmails.includes(this.value);
+            loginEmail.style.color = !agentEmails.includes(this.value) ? '#ff5c33' : 'inherit';
+        }
+    }
+
+    if (loginEmail) {
+        loginEmail.oninput = function() {
+            loginEmailBtn.disabled = !agentEmails.includes(this.value);
+            this.style.color = !agentEmails.includes(this.value) ? '#ff5c33' : 'inherit';
+
+            resetEmail.value = this.value;
+            resetEmailBtn.disabled = !agentEmails.includes(this.value);
+            resetEmail.style.color = !agentEmails.includes(this.value) ? '#ff5c33' : 'inherit';
+        }
+    }
+
+    if (logoutBtn) {
+        logoutBtn.onclick = function() {
+            document.cookie = "wp-cnrs-dm=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+            const action = window.location.pathname;
+            window.location.href = action;
         }
     }
 }

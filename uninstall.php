@@ -45,11 +45,14 @@ class CnrsDataManagerUninstall // phpcs:ignore
             $wpdb->prefix . 'cnrs_data_manager_relations',
             $wpdb->prefix . 'cnrs_data_manager_settings',
             $wpdb->prefix . 'cnrs_data_manager_team_project',
+            $wpdb->prefix . 'cnrs_data_manager_agents_accounts',
+            $wpdb->prefix . 'cnrs_data_manager_mission_forms',
+            $wpdb->prefix . 'cnrs_data_manager_mission_form_settings',
         ];
+
         foreach ($tables as $table) {
             $wpdb->query("DROP TABLE IF EXISTS {$table}");
         }
-        $wpdb->query("DELETE FROM {$wpdb->prefix}posts WHERE post_name = 'mission-form'");
     }
 }
 

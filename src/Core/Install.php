@@ -41,9 +41,12 @@ class Install
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_relations");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_settings");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_team_project");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_agents_accounts");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_mission_forms");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
         // Create tables
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_map_markers (
-              id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
+              id int(10) UNSIGNED NOT NULL PRIMARY (id) AUTO_INCREMENT COMMENT 'Primary key',
               title varchar(255) NOT NULL COMMENT 'Marker title',
               lat decimal(8,6) NOT NULL COMMENT 'Marker latitude',
               lng decimal(9,6) NOT NULL COMMENT 'Marker longitude',
@@ -86,6 +89,27 @@ class Install
               display_order int(10) UNSIGNED DEFAULT NULL COMMENT 'Display order from 1 to 16. Not displayed if NULL'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Relations and display order between projects and teams'"
         );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_agents_accounts (
+              id bigint(20) UNSIGNED PRIMARY (id) NOT NULL AUTO_INCREMENT COMMENT 'Auto incremented primary key',
+              uuid varchar(34) NOT NULL UNIQUE (uuid),
+              email varchar(255) NOT NULL UNIQUE (email) COMMENT 'Agent email',
+              password varchar(255) NOT NULL COMMENT 'Agent password',
+              created_at datetime NOT NULL DEFAULT current_timestamp() COMMENT 'Creation timestamp'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Agents accounts table'"
+        );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_mission_forms (
+              id bigint(20) UNSIGNED NOT NULL PRIMARY (id) COMMENT 'Auto incremented key',
+              uuid varchar(36) NOT NULL UNIQUE (uuid) COMMENT 'Unique identifier for a filled out form',
+              email varchar(255) NOT NULL COMMENT 'Email from user who filled out the form',
+              original longtext NOT NULL COMMENT 'Original form json',
+              form longtext NOT NULL COMMENT 'Filled out form json',
+              created_at timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Form creation timestamp'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Filled out mission forms list'"
+        );
+        $wpdb->query("CREATE TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_mission_form_settings (
+              form longtext NOT NULL COMMENT 'Form in json string format'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='UMR Mission form settings'"
+        );
         // Populate tables
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_map_markers (title, lat, lng) VALUES
             ('New York', 40.700000, -74.100000),
@@ -98,17 +122,5 @@ class Install
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_settings (filename, teams_category, teams_view_selector, services_category, services_view_selector, platforms_category, platforms_view_selector, mode, default_latitude, default_longitude, category_template, silent_pagination, filter_modules) VALUES
             ('umr_5805', 1, 1, 1, 1, 1, 1, 'widget', 44.869222, 0.494797, 0, 0, 'per-page,sub-categories-list,by-year,search-field')"
         );
-
-        $post_type = 'page';
-        $post_title	= __('Mission form', 'cnrs-data-manager');
-        $post_content ='[cnrs-data-manager type="form"]';
-        $post_status = 'publish';
-        $post_author = 1;
-        $post_name = 'mission-form';
-
-        if (!get_page_by_path( $post_name, OBJECT, 'page')) {
-            $sql = $wpdb->prepare("INSERT INTO {$wpdb->prefix}posts (`post_type`, `post_title`, `post_content`, `post_status`, `post_author`, `post_name`) values (%s, %s, %s, %s, %d, %s)", $post_type, $post_title, $post_content, $post_status, $post_author, $post_name);
-            $wpdb->query($sql);
-        }
     }
 }

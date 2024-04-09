@@ -63,9 +63,15 @@ const wpContainer = document.querySelector('#wpcontent');
 const missionFormSubmit = document.querySelector('#cnrs-dm-mission-form-submit');
 const missionFormFinal = document.querySelector('#cnrs-dm-mission-form-final');
 const missionFormFinalInput = document.querySelector('input[name="cnrs-dm-mission-form"]');
+const missionFormPage = document.querySelector('#cnrs-data-manager-mission-form-page');
+const missionFormListContainer = document.querySelector('#cnrs-dm-mission-form-list-container');
+const missionListLoader = document.querySelector('#cnrs-dm-mission-form-loader-container');
+const missionFormSearch = document.querySelector('#cnrs-data-manager-mission-search');
+const missionFormTotal = document.querySelector('#cnrs-dm-mission-form-total span');
 let filenameTimeout;
 let xlsFile = null;
 let wpContainerWidth = 0;
+let agentsList = [];
 
 prepareListeners();
 setToolsListeners(true);
@@ -302,6 +308,20 @@ function prepareListeners() {
                 missionFormTabSeparators[j].classList.remove('active');
                 index = this.dataset.tab === missionFormTabContents[j].dataset.content ? j : index;
             }
+
+            let query = window.location.search;
+            let params = query.length > 0
+                ? query.replace('?', '').split('&')
+                : [];
+            for (let j = 0; j < params.length; j++) {
+                if (params[j].includes('tab=')) {
+                    params.splice(j, 1);
+                }
+            }
+            let cleanQuery = params.length > 0 ? '?' + params.join('&') : '';
+            cleanQuery += ['list', 'settings'].includes(this.dataset.tab) ? '&tab=' + this.dataset.tab : '';
+            window.history.replaceState({}, '', window.location.pathname + cleanQuery);
+
             missionFormTabs[index].classList.add('active');
             missionFormTabContents[index].classList.add('active');
             missionFormTabSeparators[index].classList.add('active');
@@ -364,6 +384,119 @@ function prepareListeners() {
             } else {
                 missionFormFinalInput.value = JSON.stringify(missionForm);
                 missionFormFinal.submit();
+            }
+        }
+    }
+
+    if (missionFormPage) {
+        const formData = new FormData();
+        const url = '/wp-admin/admin-ajax.php';
+        formData.append('action', 'get_agents_list');
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+        fetch(url, options)
+            .then(
+                response => response.json()
+            ).then(
+            success => retrieveAgents(success.data)
+        ).catch(
+            error => retrieveAgents({error: error, data: null})
+        );
+    }
+}
+
+function retrieveAgents(info) {
+    if (info.error === null) {
+        agentsList = info.data;
+        buildFormList();
+    } else {
+        console.log(info.error)
+    }
+}
+
+function buildFormList(page = 1, search = '', results = 10) {
+    missionListLoader.classList.add('show');
+    const formData = new FormData();
+    const url = '/wp-admin/admin-ajax.php';
+    formData.append('action', 'get_forms_list');
+    formData.append('agents', JSON.stringify(agentsList));
+    formData.append('page', page);
+    formData.append('search', search);
+    formData.append('results_per_page', results);
+    const options = {
+        method: 'POST',
+        body: formData,
+    };
+    fetch(url, options)
+        .then(
+            response => response.json()
+        ).then(
+        success => insertListInHTML(success.data)
+    ).catch(
+        error => insertListInHTML({error: error, data: null, html: ''})
+    );
+}
+
+function insertListInHTML(info) {
+    if (info.error === null) {
+        missionFormListContainer.innerHTML = '';
+        missionFormListContainer.insertAdjacentHTML('beforeend', info.html);
+        setListListener();
+        missionListLoader.classList.remove('show');
+        missionFormTotal.innerHTML = '(' + info.data.total + ')';
+    } else {
+        console.log(info.error);
+    }
+}
+
+function setListListener() {
+    const searchInput = document.querySelector('#cnrs-data-manager-mission-search');
+    const searchBtn = document.querySelector('#cnrs-data-manager-search-submit');
+    const nbOfResult1 = document.querySelector('#cnrs-data-manager-limit-1');
+    const nbOfResult2 = document.querySelector('#cnrs-data-manager-limit-2');
+    const currentPage = document.querySelector('#current-page-selector');
+    const paginators = document.querySelectorAll('.cnrs-dm-mission-form-pagination-btn');
+    if (nbOfResult1 && nbOfResult2) {
+        nbOfResult1.onchange = function () {nbOfResult2.value = this.value;}
+        nbOfResult2.onchange = function () {nbOfResult1.value = this.value;}
+    }
+    const apply = document.querySelectorAll('.cnrs-data-manager-limit-action');
+    for (let i = 0; i < apply.length; i++) {
+        apply[i].onclick = function () {
+            if (searchInput && nbOfResult1 && nbOfResult2) {
+                let search = searchInput.value;
+                let limit = nbOfResult1.value;
+                let current = currentPage ? currentPage.value : 1;
+                buildFormList(current, search, limit);
+            }
+        }
+    }
+    if (searchBtn) {
+        searchBtn.onclick = function () {
+            let search = searchInput.value;
+            let limit = nbOfResult1.value;
+            let current = currentPage ? currentPage.value : 1;
+            buildFormList(current, search, limit);
+        }
+    }
+    for (let i = 0; i < paginators.length; i++) {
+        paginators[i].onclick = function () {
+            let search = searchInput.value;
+            let limit = nbOfResult1.value;
+            let current = this.dataset.page;
+            buildFormList(current, search, limit);
+        }
+    }
+    const expandBtns = document.querySelectorAll('.toggle-row');
+    for (let i = 0; i < expandBtns.length; i++) {
+        expandBtns[i].onclick = function () {
+            const parent = this.closest('tr');
+            if (parent.classList.contains('is-expanded')) {
+                parent.classList.remove('is-expanded');
+            } else {
+                parent.classList.add('is-expanded');
             }
         }
     }

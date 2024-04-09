@@ -15,6 +15,7 @@ use CnrsDataManager\Core\Controllers\Ajax;
 use CnrsDataManager\Core\Controllers\HttpClient;
 use CnrsDataManager\Core\Models\Settings;
 use CnrsDataManager\Core\Models\Projects;
+use CnrsDataManager\Core\Models\Forms;
 
 class Bootstrap
 {
@@ -69,6 +70,7 @@ class Bootstrap
         } else {
             $currentThemeFolder = get_template_directory();
             define('CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER', $currentThemeFolder);
+            setUserConnexion();
         }
         cnrs_install_folders();
         addQueryVars();
@@ -246,7 +248,7 @@ class Bootstrap
                 ]
             ];
 
-            if (HttpClient::maintenance_mode()) {
+            if (HttpClient::maintenance_admin()) {
                 $menuComplete[] = [
                     'parent_slug'            => 'cnrs-data-manager',
                     'page_title'             => __('Mission form', 'cnrs-data-manager'),
