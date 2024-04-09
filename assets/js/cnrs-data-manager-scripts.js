@@ -51,12 +51,37 @@ const fileImportTeamSelector = document.querySelector('#cnrs-data-manager-projec
 const projectInputSearch = document.querySelector('#cnrs-data-manager-search-projects');
 const projectSearchButton = document.querySelector('#cnrs-data-manager-search-submit-projects');
 const projectExpander = document.querySelectorAll('.cnrs-dm-projects-expander');
+const missionFormTabs = document.querySelectorAll('.cnrs-dm-tabs-container');
+const missionFormTabContents = document.querySelectorAll('.cnrs-dm-tab-content');
+const missionFormTabSeparators = document.querySelectorAll('.cnrs-dm-tab-separator');
+const missionFormTools = document.querySelectorAll('.cnrs-dm-add-tool');
+const missionFormStructure = document.querySelector('#cnrs-dm-form-structure');
+const missionFormTitle = document.querySelector('textarea[name="cnrs-dm-form-title"]');
+const adminWrapper = document.querySelector('.cnrs-data-manager-page');
+const missionFormPreview = document.querySelector('#cnrs-dm-form-preview-container');
+const wpContainer = document.querySelector('#wpcontent');
+const missionFormSubmit = document.querySelector('#cnrs-dm-mission-form-submit');
+const missionFormFinal = document.querySelector('#cnrs-dm-mission-form-final');
+const missionFormFinalInput = document.querySelector('input[name="cnrs-dm-mission-form"]');
 let filenameTimeout;
 let xlsFile = null;
+let wpContainerWidth = 0;
 
 prepareListeners();
+setToolsListeners(true);
 
 function prepareListeners() {
+    if (wpContainer) {
+        new ResizeSensor(wpContainer, function(){
+            wpContainerWidth = wpContainer.scrollWidth;
+            let modalWrapper = document.querySelector('#cnrs-dm-form-modal-wrapper');
+            if (modalWrapper) {
+                modalWrapper.style.width = wpContainerWidth + 'px';
+                modalWrapper.style.left = (window.innerWidth - wpContainerWidth) + 'px';
+            }
+        });
+    }
+
     if (cnrs_data_manager_provider) {
         cnrs_data_manager_provider.addEventListener('change', function() {
             window.location.href = generalURL + '&cnrs-data-manager-provider=' + this.value;
@@ -267,6 +292,418 @@ function prepareListeners() {
             }
         }
     }
+
+    for (let i = 0; i < missionFormTabs.length; i++) {
+        missionFormTabs[i].onclick = function () {
+            let index = 0;
+            for (let j = 0; j < missionFormTabs.length; j++) {
+                missionFormTabs[j].classList.remove('active');
+                missionFormTabContents[j].classList.remove('active');
+                missionFormTabSeparators[j].classList.remove('active');
+                index = this.dataset.tab === missionFormTabContents[j].dataset.content ? j : index;
+            }
+            missionFormTabs[index].classList.add('active');
+            missionFormTabContents[index].classList.add('active');
+            missionFormTabSeparators[index].classList.add('active');
+        }
+    }
+
+    for (let i = 0; i < missionFormTools.length; i++) {
+        missionFormTools[i].onclick = function() {
+            const error = this.closest('#cnrs-dm-form-tools').dataset.error;
+            const formData = new FormData();
+            const url = '/wp-admin/admin-ajax.php';
+            formData.append('action', 'set_form_tool');
+            formData.append('tool', this.dataset.tool);
+            formData.append('iteration', document.querySelectorAll('.cnrs-dm-form-tool-render').length);
+            const options = {
+                method: 'POST',
+                body: formData,
+            };
+            fetch(url, options)
+                .then(
+                    response => response.json()
+                ).then(
+                success => addFormTool(success.data)
+            ).catch(
+                error => addFormTool({error: error, data: null, html: null, json: '[]'})
+            );
+        }
+    }
+
+    if (missionFormTitle) {
+        resizeTextAreaOnLoad();
+        missionFormTitle.oninput = function() {
+            missionForm.title = this.value;
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+            if (this.value.substr(0, this.selectionStart).split("\n").length > 1) {
+                this.style.marginBottom = 34 + 'px';
+            } else {
+                this.style.marginBottom = 0 + 'px';
+            }
+        }
+    }
+
+    if (missionFormSubmit) {
+        missionFormSubmit.onclick = function() {
+            let errors = document.querySelector('#cnrs-dm-mission-form-errors');
+            if (errors) {
+                errors.remove();
+            }
+            const isValid = validateMissionForm();
+            if (isValid.length > 0) {
+                let html = '<ul id="cnrs-dm-mission-form-errors">';
+                for (let i = 0; i < isValid.length; i++) {
+                    if (errorMessagesMissionForm[isValid[i]] !== undefined) {
+                        html += `<li>${errorMessagesMissionForm[isValid[i]]}</li>`;
+                    }
+                }
+                html += '</ul>';
+                document.querySelector('.cnrs-dm-tab-content[data-content="builder"]').insertAdjacentHTML('afterbegin', html);
+            } else {
+                missionFormFinalInput.value = JSON.stringify(missionForm);
+                missionFormFinal.submit();
+            }
+        }
+    }
+}
+
+function validateMissionForm() {
+    let errors = [];
+    if (missionForm.title.length < 1) {
+        errors.push('form-title');
+    }
+    for (let i = 0; i < missionForm.elements.length; i++) {
+        let element = missionForm.elements[i];
+        if (element.label.length < 1 && element.type !== 'comment') {
+            errors.push(element.type);
+        }
+        if (['checkbox', 'radio', 'signs'].includes(element.type) && (element.data.choices === null || element.data.choices.length === 0)) {
+            errors.push(element.type + '-choices');
+        }
+    }
+    return errors;
+}
+
+function resizeTextAreaOnLoad() {
+    missionFormTitle.style.height = 'auto';
+    missionFormTitle.style.height = missionFormTitle.scrollHeight + 'px';
+    if (missionFormTitle.value.substr(0, missionFormTitle.selectionStart).split("\n").length > 1) {
+        missionFormTitle.style.marginBottom = 34 + 'px';
+    } else {
+        missionFormTitle.style.marginBottom = 0 + 'px';
+    }
+}
+
+function addFormTool(info) {
+    if (info.error === null) {
+        missionFormStructure.insertAdjacentHTML('beforeend', info.data);
+        setToolsListeners();
+        if (info.html !== null) {
+            if (document.querySelector('#cnrs-dm-form-modal-wrapper')) {
+                document.querySelector('#cnrs-dm-form-modal-wrapper').remove();
+            }
+            adminWrapper.insertAdjacentHTML('beforeend', info.html);
+            let modalWrapper = document.querySelector('#cnrs-dm-form-modal-wrapper');
+            modalWrapper.style.width = wpContainerWidth + 'px';
+            modalWrapper.style.left = (window.innerWidth - wpContainerWidth) + 'px';
+            setTimeout(function () {
+                modalWrapper.classList.add('display');
+            }, 50);
+            const cancelBtn = document.querySelector('#cnrs-dm-form-button-cancel');
+            if (cancelBtn) {
+                cancelBtn.onclick = function () {
+                    closeModalWrapper();
+                }
+            }
+            const saveBtn = document.querySelector('#cnrs-dm-form-button-save');
+            if (saveBtn) {
+                saveBtn.onclick = function () {
+                    saveToolSettings();
+                }
+            }
+
+            const addChoices = document.querySelectorAll('.cnrs-dm-form-add-choice');
+            for (let i = 0; i < addChoices.length; i++) {
+                addChoices[i].onclick = function() {
+                    const container = document.querySelector('#cnrs-dm-form-modal-choices');
+                    const modal = document.querySelector('#cnrs-dm-form-modal-wrapper');
+                    if (container) {
+                        let html = `<label>
+                                <input type="text" spellcheck="false" name="cnrs-dm-form-modal-choice[]">
+                                <span class="cnrs-dm-form-remove-choice">-</span>
+                            </label>`;
+                        if (modal.dataset.comment !== undefined) {
+                            html += `<label class="cnrs-dm-form-modal-label cnrs-dm-form-modal-label-other">
+                                <input type="checkbox" name="cnrs-dm-other-option" value="other">
+                                <span>${modal.dataset.comment}</span>
+                            </label>`;
+                        }
+                        container.insertAdjacentHTML('beforeend', `<li class="cnrs-dm-form-modal-choice">${html}</li>`);
+                        const delBtns = document.querySelectorAll('.cnrs-dm-form-remove-choice');
+                        for (let j = 0; j < delBtns.length; j++) {
+                            delBtns[j].onclick = function () {
+                                this.closest('.cnrs-dm-form-modal-choice').remove();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        missionForm.elements.push(JSON.parse(info.json));
+        refreshFormPreview();
+    } else {
+        console.error(info.error);
+    }
+}
+
+function getToolModal(info) {
+    if (info.error === null) {
+        if (info.data !== null) {
+            if (document.querySelector('#cnrs-dm-form-modal-wrapper')) {
+                document.querySelector('#cnrs-dm-form-modal-wrapper').remove();
+            }
+            adminWrapper.insertAdjacentHTML('beforeend', info.data);
+            let modalWrapper = document.querySelector('#cnrs-dm-form-modal-wrapper');
+            modalWrapper.style.width = wpContainerWidth + 'px';
+            modalWrapper.style.left = (window.innerWidth - wpContainerWidth) + 'px';
+            setTimeout(function () {
+                modalWrapper.classList.add('display');
+            }, 50);
+            const cancelBtn = document.querySelector('#cnrs-dm-form-button-cancel');
+            if (cancelBtn) {
+                cancelBtn.onclick = function () {
+                    closeModalWrapper();
+                }
+            }
+            const saveBtn = document.querySelector('#cnrs-dm-form-button-save');
+            if (saveBtn) {
+                saveBtn.onclick = function () {
+                    saveToolSettings();
+                }
+            }
+
+            const addChoices = document.querySelectorAll('.cnrs-dm-form-add-choice');
+            for (let i = 0; i < addChoices.length; i++) {
+                addChoices[i].onclick = function() {
+                    const container = document.querySelector('#cnrs-dm-form-modal-choices');
+                    const modal = document.querySelector('#cnrs-dm-form-modal-wrapper');
+                    if (container) {
+                        let html = `<label>
+                                <input type="text" spellcheck="false" name="cnrs-dm-form-modal-choice[]">
+                                <span class="cnrs-dm-form-remove-choice">-</span>
+                            </label>`;
+                        if (modal.dataset.comment !== undefined) {
+                            html += `<label class="cnrs-dm-form-modal-label cnrs-dm-form-modal-label-other">
+                                <input type="checkbox" name="cnrs-dm-other-option" value="other">
+                                <span>${modal.dataset.comment}</span>
+                            </label>`;
+                        }
+                        container.insertAdjacentHTML('beforeend', `<li class="cnrs-dm-form-modal-choice">${html}</li>`);
+                        const delBtns = document.querySelectorAll('.cnrs-dm-form-remove-choice');
+                        for (let j = 0; j < delBtns.length; j++) {
+                            delBtns[j].onclick = function () {
+                                this.closest('.cnrs-dm-form-modal-choice').remove();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        console.error(info.error);
+    }
+}
+
+function saveToolSettings() {
+    const elmt = document.querySelector('#cnrs-dm-form-modal');
+    const element = {'type': '', 'label': '', 'data': {'value': null, 'values': null, 'choices': null, 'required': false}};
+    const iteration = document.querySelector('input[name="cnrs-dm-iteration"]').value;
+    let choicesList = [];
+
+    element.type = document.querySelector('input[name="cnrs-dm-type"]').value;
+    if (document.querySelector('input[name="cnrs-dm-label"]')) {
+        if (element.type === 'title') {
+            element.data.value = [document.querySelector('input[name="cnrs-dm-label"]').value];
+        }
+        element.label = document.querySelector('input[name="cnrs-dm-label"]').value;
+    }
+    if (document.querySelector('textarea[name="cnrs-dm-comment"]')) {
+        element.data.value = [document.querySelector('textarea[name="cnrs-dm-comment"]').value];
+    }
+    const choices = document.querySelectorAll('.cnrs-dm-form-modal-choice');
+    for (let i = 0; i < choices.length; i++) {
+        const input = choices[i].querySelector('input[type="text"]');
+        const needsComment = choices[i].querySelector('input[type="checkbox"]');
+        const appendix = needsComment !== null && needsComment.checked === true ? '-opt-comment' : '';
+        choicesList.push(input.value + appendix);
+    }
+    element.data.choices = choicesList.length > 0 ? choicesList : null;
+    const required = document.querySelector('input[name="cnrs-dm-required-option"]');
+    element.data.required = required ? required.checked : false;
+    missionForm.elements[iteration] = element;
+    refreshFormPreview();
+    closeModalWrapper();
+}
+
+function setToolsListeners(refresh = false) {
+    const editBtn = document.querySelectorAll('.cnrs-dm-tool-button[data-action="edit"]');
+    const deleteBtn = document.querySelectorAll('.cnrs-dm-tool-button[data-action="delete"]');
+    const tools = document.querySelectorAll('.cnrs-dm-form-tool-render');
+
+    for (let i = 0; i < editBtn.length; i++) {
+        const btn = editBtn[i];
+        btn.onclick = function() {
+            const tool = this.closest('.cnrs-dm-form-tool-render');
+            const index = parseInt(tool.dataset.index);
+            const error = document.querySelector('#cnrs-dm-form-tools').dataset.error;
+            const formData = new FormData();
+            const url = '/wp-admin/admin-ajax.php';
+            formData.append('action', 'get_form_tool');
+            formData.append('tool', this.closest('.cnrs-dm-form-tool-render').dataset.type);
+            formData.append('json', JSON.stringify(missionForm.elements[index]));
+            formData.append('iteration', index);
+            const options = {
+                method: 'POST',
+                body: formData,
+            };
+            fetch(url, options)
+                .then(
+                    response => response.json()
+                ).then(
+                success => getToolModal(success.data)
+            ).catch(
+                error => getToolModal({error: error, data: null})
+            );
+        }
+    }
+
+    for (let i = 0; i < deleteBtn.length; i++) {
+        const btn = deleteBtn[i];
+        btn.onclick = function() {
+            const tool = this.closest('.cnrs-dm-form-tool-render');
+            const index = parseInt(tool.dataset.index);
+            if (missionForm.elements[index]) {
+                missionForm.elements.splice(index, 1);
+            }
+            tool.remove();
+            resetFormIterations();
+            refreshFormPreview();
+        }
+    }
+
+    if (refresh === true && tools.length > 0) {
+        refreshFormPreview();
+    }
+}
+
+function resetFormIterations() {
+    const tools = document.querySelectorAll('.cnrs-dm-form-tool-render');
+    for (let i = 0; i < tools.length; i++) {
+        tools[i].dataset.index = i;
+    }
+}
+
+function closeModalWrapper() {
+    const modal = document.querySelector('#cnrs-dm-form-modal-wrapper');
+    modal.classList.remove('display');
+    setTimeout(function () {
+        modal.remove();
+    }, 250);
+}
+
+function refreshFormPreview() {
+    let html = '';
+    const addSomeChoices = missionFormPreview.dataset.choices;
+    const addSomePads = missionFormPreview.dataset.pads;
+    const signHere = missionFormPreview.dataset.sign;
+    for (let i = 0; i < missionForm.elements.length; i++) {
+        const element = missionForm.elements[i];
+        const required = element.data.required === true ? ' class="cnrs-dm-required"' : '';
+        html += '<div class="cnrs-dm-preview-elements">';
+        if (element.type === 'checkbox') {
+            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label}</span>`;
+            if (element.data.choices === null || element.data.choices.length === 0) {
+                html += `<i>${addSomeChoices}</i>`;
+            } else {
+                for (let j = 0; j < element.data.choices.length; j++) {
+                    let label = element.data.choices[j].replace('-opt-comment', '');
+                    html += '<label>';
+                    html += `<input type="checkbox">`;
+                    html += `<span>${label}</span>`;
+                    html += '</label>';
+                    if (label + '-opt-comment' === element.data.choices[j]) {
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                    }
+                }
+            }
+            html += `</div>`;
+        } else if (element.type === 'comment') {
+            html += `<pre class="cnrs-dm-form-preview-comment">${element.data.value[0] ?? ''}</pre>`;
+        } else if (element.type === 'input') {
+            html += `<label><span${required}>${element.label}</span>`;
+            html += `<span class="cnrs-dm-suspensions"></span>`;
+            html += `</label>`;
+        } else if (element.type === 'radio') {
+            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label}</span>`;
+            if (element.data.choices === null || element.data.choices.length === 0) {
+                html += `<i>${addSomeChoices}</i>`;
+            } else {
+                for (let j = 0; j < element.data.choices.length; j++) {
+                    let label = element.data.choices[j].replace('-opt-comment', '');
+                    html += '<label>';
+                    html += `<input type="radio" name="checkbox-${i}">`;
+                    html += `<span>${label}</span>`;
+                    html += '</label>';
+                    if (label + '-opt-comment' === element.data.choices[j]) {
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                        html += `<span class="cnrs-dm-suspensions"></span>`;
+                    }
+                }
+            }
+            html += `</div>`;
+        } else if (element.type === 'separator') {
+            html += '<hr/>';
+        } else if (element.type === 'textarea') {
+            html += `<label><span${required}>${element.label}</span>`;
+            html += `<span class="cnrs-dm-suspensions"></span>`;
+            html += `<span class="cnrs-dm-suspensions"></span>`;
+            html += `<span class="cnrs-dm-suspensions"></span>`;
+            html += `<span class="cnrs-dm-suspensions"></span>`;
+            html += `<span class="cnrs-dm-suspensions"></span>`;
+            html += `</label>`;
+        } else if (element.type === 'title') {
+            html += `<h4>${element.data.value[0] ?? ''}</h4>`;
+        } else if (element.type === 'signs') {
+            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label}</span>`;
+            if (element.data.choices === null || element.data.choices.length === 0) {
+                html += `<i>${addSomePads}</i>`;
+            } else {
+                html += '<div class="cnrs-dm-sign-wrapper">';
+                for (let j = 0; j < element.data.choices.length; j++) {
+                    let choice = element.data.choices[j].split(';');
+                    html += '<div class="cnrs-dm-sign-pad">';
+                    for (let k = 0; k < choice.length; k++) {
+                        html += `<span${k === 0 ? ' class="cnrs-dm-pad-first-line"' : ''}>${choice[k]}</span>`;
+                    }
+                    html += `<div class="cnrs-dm-sign-canvas"><p>${signHere}</p></div>`;
+                    html += '</div>';
+                }
+                html += '</div>';
+            }
+            html += '</div>';
+        }
+        html += '</div>';
+    }
+    missionFormPreview.innerHTML = html;
 }
 
 function handleXMLCheckResult(json) {

@@ -12,6 +12,7 @@ namespace CnrsDataManager\Core;
 use CnrsDataManager\Core\Install;
 use CnrsDataManager\Core\Controllers\Manager;
 use CnrsDataManager\Core\Controllers\Ajax;
+use CnrsDataManager\Core\Controllers\HttpClient;
 use CnrsDataManager\Core\Models\Settings;
 use CnrsDataManager\Core\Models\Projects;
 
@@ -31,7 +32,7 @@ class Bootstrap
 
         if (is_admin()) {
             if (isset($_GET['page']) 
-                && stripos($_GET['page'], 'data-manager') !== false
+                && in_array($_GET['page'], ['data-manager', 'data-manager-tools', 'data-manager-import'])
                 && !defined('CNRS_DATA_MANAGER_XML_DATA')
             ) {
                 define('CNRS_DATA_MANAGER_XML_DATA', Manager::defineArrayFromXML());
@@ -132,7 +133,9 @@ class Bootstrap
             filemtime(CNRS_DATA_MANAGER_PATH . '/assets/css/cnrs-data-manager-map.css')
         );
 
-        wp_enqueue_script('cnrs-data-manager-scripts', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-scripts.js', ['cnrs-data-manager-map-script'], CNRS_DATA_MANAGER_VERSION, true);
+        wp_enqueue_script('cnrs-data-manager-resize-sensor', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-resize-sensor.js', [], CNRS_DATA_MANAGER_VERSION, true);
+
+        wp_enqueue_script('cnrs-data-manager-scripts', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-scripts.js', ['cnrs-data-manager-map-script', 'cnrs-data-manager-resize-sensor'], CNRS_DATA_MANAGER_VERSION, true);
     }
 
     /**
@@ -242,6 +245,19 @@ class Bootstrap
                     }
                 ]
             ];
+
+            if (HttpClient::maintenance_mode()) {
+                $menuComplete[] = [
+                    'parent_slug'            => 'cnrs-data-manager',
+                    'page_title'             => __('Mission form', 'cnrs-data-manager'),
+                    'menu_title'             => __('Mission form', 'cnrs-data-manager'),
+                    'capability'             => 'manage_options',
+                    'menu_slug'              => 'data-manager-mission-form',
+                    'callback'               => function () {
+                        include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Form.php');
+                    }
+                ];
+            }
             $menu = array_merge($menuComplete, $menu);
         }
         return $menu;
