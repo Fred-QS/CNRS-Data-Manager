@@ -2,11 +2,13 @@
 
 namespace CnrsDataManager\Core\Controllers;
 
+use ErrorException;
 use JsonException;
 use ZipArchive;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use CnrsDataManager\Excel\IOFactory;
+use CnrsDataManager\Excel\RichText\RichText;
 use CnrsDataManager\Core\Models\Projects;
+use CnrsDataManager\Core\Models\Forms;
 use CnrsDataManager\Core\Controllers\Manager;
 
 class Ajax
@@ -15,7 +17,9 @@ class Ajax
         'check_xml_file' => 'inspectXLSFile',
         'import_xml_file' => 'importXLSFile',
         'set_form_tool' => 'setFormTool',
-        'get_form_tool' => 'getFormTool'
+        'get_form_tool' => 'getFormTool',
+        'get_agents_list' => 'getAgentsList',
+        'get_forms_list' => 'getFormsList'
     ];
 
     private static array $publicActions = [];
@@ -405,6 +409,11 @@ class Ajax
         exit;
     }
 
+    /**
+     * Retrieves the HTML content of a form tool based on the provided parameters and sends it as a JSON response.
+     *
+     * @return void
+     */
     public static function getFormTool(): void
     {
         $data = null;
@@ -422,6 +431,62 @@ class Ajax
                     $json['data'] = ob_get_clean();
                 }
             } catch (JsonException $e) {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Retrieves the list of agents from an XML file and sends it as a JSON response.
+     *
+     * @return void
+     */
+    public static function getAgentsList(): void
+    {
+        $json = ['error' => null, 'data' => []];
+        try {
+            $json['data'] = Manager::defineArrayFromXML()['agents'];
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    public static function getFormsList(): void
+    {
+        $json = ['error' => null, 'data' => ['total' => 0], 'html' => ''];
+        if (!isset($_POST['agents']) || !isset($_POST['page']) || !isset($_POST['search']) || !isset($_POST['results_per_page'])) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        } else {
+            try {
+                $agents = json_decode(stripslashes($_POST['agents']), true);
+                $current = ctype_digit((string) $_POST['page']) ? (int) $_POST['page'] : 1;
+                $search = trim(html_entity_decode($_POST['search']));
+                $limit = (int) $_POST['results_per_page'];
+                $count = Forms::getFormsCount();
+                $pages = 0;
+                $rows = [];
+                $previous = null;
+                $next = null;
+                if ($count > 0 && $limit > 0) {
+                    $pages = $count / $limit < 1 ? 1 : ceil($count / $limit);
+                    if ($current < 1) {
+                        $current = 1;
+                    } else if ($current > $pages) {
+                        $current = $pages;
+                    }
+                    $rows = Forms::getPaginatedFormsList($search, $limit, $current);
+                    $previous = $current > 1 ? $current - 1 : null;
+                    $next = $current < $pages ? $current + 1 : null;
+                }
+                ob_start();
+                include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/mission-form-list.php');
+                $json['html'] = ob_get_clean();
+                $json['data'] = ['total' => $count];
+            } catch (ErrorException $e) {
                 $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
             }
         }

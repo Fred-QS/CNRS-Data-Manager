@@ -169,4 +169,21 @@ class Agents
         }
         return false;
     }
+
+    /**
+     * Retrieves an agent by email from a given array of agents.
+     *
+     * @param string $email The email to search for.
+     * @param array $agents An array of agents.
+     * @return array The agent with the given email if found, otherwise an empty array.
+     */
+    public static function getAgentByEmail(string $email, array $agents): array
+    {
+        foreach ($agents as $agent) {
+            if ($agent['email_pro'] === $email) {
+                return $agent;
+            }
+        }
+        return [];
+    }
 }

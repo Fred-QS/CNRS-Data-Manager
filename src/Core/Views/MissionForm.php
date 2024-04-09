@@ -1,34 +1,24 @@
-<?php
-use CnrsDataManager\Core\Controllers\Manager;
-use CnrsDataManager\Core\Models\Forms;
+<?php if ($validated === false): ?>
 
-$cookieName = "w40S4s2sfdSfg02SgfsF";
-$cookieValue = "John Doe";
-
-if (isset($_COOKIE['w40S4s2sfdSfg02SgfsF'])) {
-
-    if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
-        $uuid = $_POST['cnrs-dm-front-mission-uuid'];
-        $jsonForm = Manager::newFilledForm($_POST);
-        Forms::recordNewForm($jsonForm, stripslashes($json), 'fred.geffray@gmail.com', $uuid);
-    }
-
-    $errors = [
-        'simple' => __('must not be empty', 'cnrs-data-manager'),
-        'checkbox' => __('must at least have one selection', 'cnrs-data-manager'),
-        'radio' => __('must have one selection', 'cnrs-data-manager'),
-        'signs' => __('must have been correctly filled out', 'cnrs-data-manager'),
-        'option' => __('comment must not be empty', 'cnrs-data-manager'),
-    ];
-    ?>
-
-    <div class="cnrs-dm-mission-form" data-shortcode="cnrs-data-manager-shortcode-<?php echo $shortCodesCounter ?>">
+    <div class="cnrs-dm-mission-form">
         <script>
             const missionForm = JSON.parse('<?php echo stripslashes($json) ?>');
         </script>
         <h2 id="cnrs-dm-front-mission-form-title"><?php echo $form['title'] ?></h2>
         <p class="cnrs-dm-front-mission-form-subtitles"><?php echo __('Please fill out the form', 'cnrs-data-manager') ?></p>
-        <form method="post" id="cnrs-dm-front-mission-form-wrapper">
+        <div id="cnrs-dm-front-mission-user-wrapper">
+            <div id="cnrs-dm-front-mission-user-avatar" style="background-image: url(<?php echo $agent['photo'] ?>)"></div>
+            <div id="cnrs-dm-front-mission-user-info">
+                <p><?php echo ucfirst($agent['prenom']) ?> <?php echo strtoupper($agent['nom']) ?></p>
+                <a href="mailto:<?php echo $agent['email_pro'] ?>"><?php echo $agent['email_pro'] ?></a>
+            </div>
+            <button type="button" id="cnrs-dm-front-mission-user-logout">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V256c0 17.7 14.3 32 32 32s32-14.3 32-32V32zM143.5 120.6c13.6-11.3 15.4-31.5 4.1-45.1s-31.5-15.4-45.1-4.1C49.7 115.4 16 181.8 16 256c0 132.5 107.5 240 240 240s240-107.5 240-240c0-74.2-33.8-140.6-86.6-184.6c-13.6-11.3-33.8-9.4-45.1 4.1s-9.4 33.8 4.1 45.1c38.9 32.3 63.5 81 63.5 135.4c0 97.2-78.8 176-176 176s-176-78.8-176-176c0-54.4 24.7-103.1 63.5-135.4z"/>
+                </svg>
+            </button>
+        </div>
+        <form method="post" id="cnrs-dm-front-mission-form-wrapper" action="<?php echo add_query_arg(NULL, NULL)  ?>">
             <input type="hidden" value='<?php echo stripslashes($json) ?>' name="cnrs-dm-front-mission-form-original">
             <input type="hidden" value="<?php echo wp_generate_uuid4() ?>" name="cnrs-dm-front-mission-uuid">
             <?php $index = 0; ?>
@@ -130,54 +120,14 @@ if (isset($_COOKIE['w40S4s2sfdSfg02SgfsF'])) {
         </form>
     </div>
 
-<?php } else {
-    $agents = json_encode(Manager::defineArrayFromXML()['agents']);
-?>
+<?php else: ?>
 
-    <div class="cnrs-dm-mission-form" id="identification-form" data-shortcode="cnrs-data-manager-shortcode-<?php echo $shortCodesCounter ?>">
-        <script>
-            const xmlAgents = JSON.parse(`<?php echo stripslashes($agents) ?>`);
-        </script>
-        <div id="cnrs-dm-front-mission-form-login-wrapper">
-            <form method="post" class="cnrs-dm-front-mission-form-login" data-action="login">
-                <h2><?php echo __('Connexion', 'cnrs-data-manager') ?></h2>
-                <?php if (isset($_POST['cnrs-dm-front-mission-form-login-action']) && $_POST['cnrs-dm-front-mission-form-login-action'] === 'reset'): ?>
-                    <p class="cnrs-dm-front-mission-form-confirm-reset"><?php echo __('An email has been sent to your mail box.', 'cnrs-data-manager') ?></p>
-                <?php endif; ?>
-                <input type="hidden" name="cnrs-dm-front-mission-form-login-action" value="login">
-                <div class="cnrs-dm-front-mission-form-login-container">
-                    <label class="cnrs-dm-front-mission-form-login-label">
-                        <span><?php echo __('Your email', 'cnrs-data-manager') ?></span>
-                        <input spellcheck="false" autocomplete="off" type="email" name="cnrs-dm-front-mission-form-login-email" required>
-                    </label>
-                    <label class="cnrs-dm-front-mission-form-login-label">
-                        <span><?php echo __('Your password', 'cnrs-data-manager') ?></span>
-                        <input spellcheck="false" autocomplete="off" type="email" name="cnrs-dm-front-mission-form-login-email" required>
-                    </label>
-                    <div class="cnrs-dm-front-mission-form-login-email-reset-container">
-                        <p id="cnrs-dm-front-mission-form-reset-link"><?php echo __('Reset password', 'cnrs-data-manager') ?></p>
-                    </div>
-                    <div class="cnrs-dm-front-mission-form-submit-login-container">
-                        <button type="submit" class="cnrs-dm-front-btn"><?php echo __('Login', 'cnrs-data-manager') ?></button>
-                    </div>
-                </div>
-            </form>
-            <form method="post" class="cnrs-dm-front-mission-form-login hide" data-action="reset" action="#identification-form">
-                <h2><?php echo __('Reset password', 'cnrs-data-manager') ?></h2>
-                <input type="hidden" name="cnrs-dm-front-mission-form-login-action" value="reset">
-                <div class="cnrs-dm-front-mission-form-login-container">
-                    <label class="cnrs-dm-front-mission-form-login-label">
-                        <span><?php echo __('Your email', 'cnrs-data-manager') ?></span>
-                        <input spellcheck="false" autocomplete="off" type="email" name="cnrs-dm-front-mission-form-reset-email" required>
-                    </label>
-                    <div class="cnrs-dm-front-mission-form-login-email-reset-container">
-                        <p id="cnrs-dm-front-mission-form-login-link"><?php echo __('Back to  login', 'cnrs-data-manager') ?></p>
-                    </div>
-                    <div class="cnrs-dm-front-mission-form-submit-login-container">
-                        <button type="submit" class="cnrs-dm-front-btn"><?php echo __('Reset password', 'cnrs-data-manager') ?></button>
-                    </div>
-                </div>
-            </form>
+    <div class="cnrs-dm-mission-form">
+        <h2 id="cnrs-dm-front-mission-form-title"><?php echo $form['title'] ?></h2>
+        <p class="cnrs-dm-front-mission-form-subtitles"><?php echo __('The form has been saved successfully', 'cnrs-data-manager') ?></p>
+        <div id="cnrs-dm-front-mission-form-submit-button-container">
+            <a href="<?php echo get_home_url(); ?>" id="cnrs-dm-front-mission-form-home-button" class="cnrs-dm-front-btn"><?php echo __('Back to home', 'cnrs-data-manager') ?></a>
         </div>
     </div>
-<?php } ?>
+
+<?php endif; ?>

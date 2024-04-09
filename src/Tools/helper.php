@@ -10,6 +10,10 @@ use CnrsDataManager\Core\Models\Projects;
 use CnrsDataManager\Core\Models\Forms;
 use CnrsDataManager\Core\Controllers\Manager;
 use CnrsDataManager\Core\Controllers\HttpClient;
+use CnrsDataManager\Core\Controllers\Emails;
+use CnrsDataManager\Core\Controllers\Controller;
+use CnrsDataManager\Core\Controllers\TemplateLoader;
+use CnrsDataManager\Core\Controllers\Page;
 
 $shortCodesCounter = 0;
 
@@ -94,6 +98,10 @@ if (!function_exists('cnrs_install_folders')) {
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-pagination-style.css'
             ],
             [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-email.css',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-email.css'
+            ],
+            [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-script.js',
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js'
             ],
@@ -116,6 +124,14 @@ if (!function_exists('cnrs_install_folders')) {
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-info.php',
                 'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-email-footer.php',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-email-footer.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-email-header.php',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-email-header.php'
             ],
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/svg/list.svg',
@@ -657,7 +673,9 @@ if (!function_exists('cnrsReadShortCode')) {
 
         } else if ($type === 'form') {
 
-            $shortCodesCounter++;
+            if (!HttpClient::maintenance_admin())  {
+                return '';
+            }
 
             wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
             wp_enqueue_script('cnrs-data-manager-pad-sign-script', 'https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js', [], null);
@@ -666,14 +684,40 @@ if (!function_exists('cnrsReadShortCode')) {
             $json = Forms::getCurrentForm();
             $form = json_decode($json, true);
 
-            if (HttpClient::maintenance_mode()) {
+            $user = cnrs_dm_connexion();
+            $xml = $user === null ? Manager::defineArrayFromXML()['agents'] : [];
+            $error = is_connexion_error($xml);
+            $agents = json_encode($xml);
+            $validated = false;
+
+            $errors = [
+                'simple' => __('must not be empty', 'cnrs-data-manager'),
+                'checkbox' => __('must at least have one selection', 'cnrs-data-manager'),
+                'radio' => __('must have one selection', 'cnrs-data-manager'),
+                'signs' => __('must have been correctly filled out', 'cnrs-data-manager'),
+                'option' => __('comment must not be empty', 'cnrs-data-manager'),
+            ];
+
+            if ($user !== null) {
+
+                if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
+                    $uuid = $_POST['cnrs-dm-front-mission-uuid'];
+                    $jsonForm = Manager::newFilledForm($_POST);
+                    Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid);
+                    $validated = true;
+                }
+
+                $agent = Agents::getAgentByEmail($user->email, Manager::defineArrayFromXML()['agents']);
 
                 ob_start();
                 include_once(dirname(__DIR__) . '/Core/Views/MissionForm.php');
                 return ob_get_clean();
 
             } else {
-                return '';
+
+                ob_start();
+                include_once(dirname(__DIR__) . '/Core/Views/Connexion.php');
+                return ob_get_clean();
             }
 
         } else if ($type === 'filters') {
@@ -942,6 +986,7 @@ if (!function_exists('addQueryVars')) {
             $qvars[] = 'cdm-year';
             $qvars[] = 'cdm-parent';
             $qvars[] = 'cdm-team';
+            $qvars[] = 'cdm-pdf';
             return $qvars;
         });
     }
@@ -1120,5 +1165,191 @@ if (!function_exists('updateProjectsRelations')) {
             }
             Projects::updateProjectsRelations($inserts);
         }
+    }
+}
+
+if (!function_exists('sendCNRSEmail')) {
+
+    /**
+     * Sends a CNRS email.
+     *
+     * @param string $to The recipient email address.
+     * @param string $subject The subject of the email.
+     * @param string $body The body of the email, in HTML format.
+     * @param array $cc (optional) An array of email addresses to be cc-ed.
+     * @param array $attachments (optional) An array of file attachments.
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    function sendCNRSEmail(
+        string $to,
+        string $subject,
+        string $body,
+        array $cc = [],
+        array $attachments = []
+    ): bool {
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+        foreach ($cc as $email) {
+            $headers[] = 'Cc: ' . $email;
+        }
+        $email = Settings::getDebugMode();
+        $sender = $email === null ? $to : $email;
+        return wp_mail($sender, $subject, $body, $headers, $attachments);
+    }
+}
+
+if (!function_exists('cnrs_dm_connexion')) {
+
+    /**
+     * Establishes a connection and retrieves the user object based on the given cookie value.
+     *
+     * @return object|null Returns the user object if a connection is established successfully, otherwise returns null.
+     */
+    function cnrs_dm_connexion(): object|null
+    {
+        $cookie = null;
+        if (defined('CNRS_DATA_MANAGER_FIRST_CONN')) {
+            $cookie = CNRS_DATA_MANAGER_FIRST_CONN;
+        } else if ($_COOKIE['wp-cnrs-dm'] !== null) {
+            $cookie = $_COOKIE['wp-cnrs-dm'];
+        }
+        return Forms::getUserByUuid($cookie);
+    }
+}
+
+if (!function_exists('is_connexion_error')) {
+
+    /**
+     * Check if there is a connection error in the provided XML data.
+     *
+     * @param array $xml The XML data to check.
+     * @return string|null Returns an error message if there is a connection error, null otherwise.
+     */
+    function is_connexion_error(array $xml = []): string|null
+    {
+        if (isset($_POST['cnrs-dm-front-mission-form-login-action'])
+            && $_POST['cnrs-dm-front-mission-form-login-action'] === 'login'
+            && isset($_POST['cnrs-dm-front-mission-form-login-email'])
+            && isset($_POST['cnrs-dm-front-mission-form-login-pwd'])
+            && (!filter_var($_POST['cnrs-dm-front-mission-form-login-email'], FILTER_VALIDATE_EMAIL)
+                || Forms::validatedUser($_POST['cnrs-dm-front-mission-form-login-email'], $_POST['cnrs-dm-front-mission-form-login-pwd']) === null)
+        ) {
+            return __('Your identifiers are not recognized.', 'cnrs-data-manager');
+        }
+
+        if (!empty($xml)
+            && isset($_POST['cnrs-dm-front-mission-form-login-action'])
+            && $_POST['cnrs-dm-front-mission-form-login-action'] === 'reset'
+            && isset($_POST['cnrs-dm-front-mission-form-reset-email'])
+        ) {
+            if (filter_var($_POST['cnrs-dm-front-mission-form-reset-email'], FILTER_VALIDATE_EMAIL)
+                && Emails::checkEmailValidity($_POST['cnrs-dm-front-mission-form-reset-email'], $xml)
+            ) {
+                $sent = Emails::sendResetEmail($_POST['cnrs-dm-front-mission-form-reset-email']);
+                if ($sent === false) {
+                    $error = __('An error has occurred while sending the email.', 'cnrs-data-manager');
+                }
+            } else {
+                $error = __('The email is not valid.', 'cnrs-data-manager');
+            }
+        }
+
+        return null;
+    }
+}
+
+if (!function_exists('setUserConnexion')) {
+
+    /**
+     * Set the user's connection if the provided login action is "login" and valid email and password are provided.
+     *
+     * @return void
+     */
+    function setUserConnexion(): void
+    {
+        if (isset($_POST['cnrs-dm-front-mission-form-login-action'])
+            && $_POST['cnrs-dm-front-mission-form-login-action'] === 'login'
+            && isset($_POST['cnrs-dm-front-mission-form-login-email'])
+            && isset($_POST['cnrs-dm-front-mission-form-login-pwd'])
+        ) {
+            $uuid = Forms::validatedUser($_POST['cnrs-dm-front-mission-form-login-email'], $_POST['cnrs-dm-front-mission-form-login-pwd']);
+            if (filter_var($_POST['cnrs-dm-front-mission-form-login-email'], FILTER_VALIDATE_EMAIL) && $uuid !== null) {
+                if (!defined('CNRS_DATA_MANAGER_FIRST_CONN')) {
+                    define('CNRS_DATA_MANAGER_FIRST_CONN', $uuid);
+                }
+                setcookie('wp-cnrs-dm', $uuid, time() + 86400);
+            }
+        } else if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
+            $userUuid = $_COOKIE['wp-cnrs-dm'];
+            Emails::sendConfirmationEmail($userUuid);
+            setcookie('wp-cnrs-dm', '', time() - 3600);
+        }
+    }
+}
+
+if (!function_exists('setMissionFormURL')) {
+
+    function setMissionFormURL()
+    {
+
+        $controller = new Controller(new TemplateLoader);
+        add_action( 'init', array( $controller, 'init' ) );
+        add_filter( 'do_parse_request', array( $controller, 'dispatch' ), PHP_INT_MAX, 2 );
+        add_action( 'loop_end', function( \WP_Query $query ) {
+            if (isset( $query->virtual_page ) && !empty($query->virtual_page)) {
+                $query->virtual_page = NULL;
+            }
+        } );
+        add_filter('the_permalink', function($plink) {
+            global $post, $wp_query;
+            if (
+                $wp_query->is_page && isset($wp_query->virtual_page)
+                && $wp_query->virtual_page instanceof Page
+                && isset($post->is_virtual) && $post->is_virtual
+            ) {
+                $plink = home_url($wp_query->virtual_page->getUrl());
+            }
+            return $plink;
+        });
+
+        add_action('cnrs_dm_virtual_pages', function($controller) {
+
+            $pages = [
+                [
+                    'uri' => 'cnrs-umr/mission-form',
+                    'title' => __('Mission form', 'cnrs-data-manager'),
+                    'template' => 'mission-form'
+                ],
+                [
+                    'uri' => 'cnrs-umr/mission-form-print',
+                    'title' => __('Mission form print', 'cnrs-data-manager'),
+                    'template' => 'mission-form-download'
+                ],
+                [
+                    'uri' => 'cnrs-umr/mission-form-download',
+                    'title' => __('Mission form download', 'cnrs-data-manager'),
+                    'template' => 'mission-form-download'
+                ]
+            ];
+
+            foreach ($pages as $page) {
+                $controller->addPage(new \CnrsDataManager\Core\Controllers\Page('/' . $page['uri']))
+                    ->setTitle($page['title'])
+                    ->setTemplate($page['template'] . '.php');
+            }
+        });
+    }
+}
+
+if (!function_exists('isActiveTab')) {
+
+    /**
+     * Check if the provided tab is the active tab.
+     *
+     * @param string|null $tab The tab to check. Defaults is null.
+     * @return bool Returns true if the provided tab is the active tab, false otherwise.
+     */
+    function isActiveTab(string|null $tab = null): bool
+    {
+        return $_GET['tab'] === $tab;
     }
 }

@@ -55,11 +55,11 @@ class HttpClient
     }
 
     /**
-     * Checks if the application is in maintenance mode.
+     * Checks if the current user's IP address is the maintenance admin IP.
      *
-     * @return bool Returns true if the application is in maintenance mode, false otherwise.
+     * @return bool Returns true if the current user's IP address is the maintenance admin IP, otherwise false.
      */
-    public static function maintenance_mode(): bool
+    public static function maintenance_admin(): bool
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $ip = $_SERVER['HTTP_CLIENT_IP'];

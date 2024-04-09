@@ -20,13 +20,23 @@
  */
 
 defined('ABSPATH') || exit;
-// CHECK PHP VERSION
+
+// Use custom plugin update logic
+require (__DIR__ . '/src/Libs/UpdateChecker/plugin-update-checker.php');
+\YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
+    'https://github.com/Fred-QS/CNRS-Data-Manager',
+    __FILE__,
+    'cnrs-data-manager'
+)->setBranch('main');
+
+// Check PHP version
 define('CNRS_DATA_MANAGER_PHP_MINIMUM_VERSION', '8.1.0');
 define('CNRS_DATA_MANAGER_PHP_SUGGESTED_VERSION', '8.2');
 require_once dirname(__FILE__) . "/src/Utils/CnrsDataManagerPhpVersionCheck.php";
 if (CnrsDataManagerPhpVersionCheck::check(CNRS_DATA_MANAGER_PHP_MINIMUM_VERSION, CNRS_DATA_MANAGER_PHP_SUGGESTED_VERSION) === false) {
     return;
 }
-$currentPluginBootFile = __FILE__;
 
+// Start plugin
+$currentPluginBootFile = __FILE__;
 require_once(__DIR__ . '/src/cnrs-main.php');
