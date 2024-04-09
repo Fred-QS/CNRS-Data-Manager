@@ -49,6 +49,7 @@ class CnrsDataManagerUninstall // phpcs:ignore
         foreach ($tables as $table) {
             $wpdb->query("DROP TABLE IF EXISTS {$table}");
         }
+        $wpdb->query("DELETE FROM {$wpdb->prefix}posts WHERE post_name = 'mission-form'");
     }
 }
 
