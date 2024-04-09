@@ -310,4 +310,20 @@ class Settings
         $parent_term_id = (int) $parent[0]['term_id'];
         return $wpdb->get_results( "SELECT {$wpdb->prefix}terms.slug, {$wpdb->prefix}terms.name FROM {$wpdb->prefix}term_taxonomy INNER JOIN {$wpdb->prefix}terms ON {$wpdb->prefix}term_taxonomy.term_id = {$wpdb->prefix}terms.term_id WHERE {$wpdb->prefix}term_taxonomy.parent = {$parent_term_id} ");
     }
+
+    /**
+     * Retrieves the debug mode and email from the database.
+     *
+     * Retrieves the value of the 'debug_email' field from the 'cnrs_data_manager_mission_form_settings' table
+     * in the WordPress database, based on the value of the 'debug_mode' field being 0 (disabled). If a matching
+     * setting is found, the debug email is returned; otherwise, null is returned.
+     *
+     * @return string|null Returns the debug email if debug mode is enabled, null otherwise.
+     */
+    public static function getDebugMode(): string|null
+    {
+        global $wpdb;
+        $settings = $wpdb->get_row("SELECT debug_email FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings WHERE debug_mode = 1");
+        return $settings?->debug_email;
+    }
 }

@@ -22,19 +22,19 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
     <?php endif; ?>
     <p><?php echo __('The <b>Tools</b> section allows you to assign entities from the XML file to those created in WordPress. The extension will then be able to find the agents belonging to each entity in order to be able to filter their affiliations in the public part of WordPress.', 'cnrs-data-manager') ?></p>
     <p><?php echo __('You can also decide to restore the initial state of the files provided by the extension listed below used for style, javascript and php template', 'cnrs-data-manager') ?>:</p>
-    <b><?php echo __('Styles templates') ?></b>
+    <b><?php echo __('Styles templates', 'cnrs-data-manager') ?></b>
     <ul class="cnrs-dm-files-list">
         <li><?php echo __('The <b>CSS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-style.css</i></b>', 'cnrs-data-manager') ?></li>
         <li><?php echo __('The <b>CSS</b> filters file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-filters-style.css</i></b>', 'cnrs-data-manager') ?></li>
         <li><?php echo __('The <b>CSS</b> pagination file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-pagination-style.css</i></b>', 'cnrs-data-manager') ?></li>
     </ul>
     <br>
-    <b><?php echo __('Scripts templates') ?></b>
+    <b><?php echo __('Scripts templates', 'cnrs-data-manager') ?></b>
     <ul class="cnrs-dm-files-list">
         <li><?php echo __('The <b>JS</b> file <b><i>/wp-includes/cnrs-data-manager/cnrs-data-manager-script.js</i></b>', 'cnrs-data-manager') ?></li>
     </ul>
     <br>
-    <b><?php echo __('Build templates') ?></b>
+    <b><?php echo __('Build templates', 'cnrs-data-manager') ?></b>
     <ul class="cnrs-dm-files-list">
         <li><?php echo __('The <b>PHP</b> template file for displaying agents in a list <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-inline.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?php echo __('The <b>PHP</b> template file for the agent card display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-card.php</i></b>', 'cnrs-data-manager') ?></li>
@@ -43,7 +43,13 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
         <li><?php echo __('The <b>PHP</b> template file for the agent modal display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-info.php</i></b>', 'cnrs-data-manager') ?></li>
     </ul>
     <br>
-    <b><?php echo __('Icons templates') ?></b>
+    <b><?php echo __('Email templates', 'cnrs-data-manager') ?></b>
+    <ul class="cnrs-dm-files-list">
+        <li><?php echo __('The <b>PHP</b> template file for email header <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-email-header.php</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?php echo __('The <b>PHP</b> template file for email footer <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-email-footer.php</i></b>', 'cnrs-data-manager') ?></li>
+    </ul>
+    <br>
+    <b><?php echo __('Icons templates', 'cnrs-data-manager') ?></b>
     <ul class="cnrs-dm-files-list">
         <li><?php echo __('The <b>SVG</b> file for the list view button <b><i>/wp-includes/cnrs-data-manager/svg/list.svg</i></b>', 'cnrs-data-manager') ?></li>
         <li><?php echo __('The <b>SVG</b> file for the grid view button <b><i>/wp-includes/cnrs-data-manager/svg/grid.svg</i></b>', 'cnrs-data-manager') ?></li>

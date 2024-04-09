@@ -84,7 +84,11 @@ html, body {
     direction: ltr;
 }
 
-.cnrs-dm-front-btn:hover {
+.cnrs-dm-front-btn:disabled {
+    opacity: 0.5;
+}
+
+.cnrs-dm-front-btn:not(:disabled):hover {
     border-radius: 0!important;
     letter-spacing: 1px!important;
     border: 2px solid transparent;
@@ -93,7 +97,7 @@ html, body {
     padding: .3em 2em 0 .7em;
 }
 
-.cnrs-dm-front-btn:hover::after {
+.cnrs-dm-front-btn:not(:disabled):hover::after {
     -webkit-transition: none!important;
     transition: none!important;
     opacity: 1;
@@ -1723,6 +1727,136 @@ h3.cnrs-dm-front-mission-form-element-label {
     max-width: 80%;
 }
 
+#cnrs-dm-front-mission-form-login-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cnrs-dm-mission-form {
+    width: 100%;
+    max-width: 1080px;
+}
+
+#cnrs-dm-mission-master-wrapper {
+    background-color: #EDEFF4;
+    padding: 4rem 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cnrs-dm-front-mission-form-login:not(.hide) {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 400px;
+    max-width: 100%;
+    margin-top: 2rem;
+}
+
+.cnrs-dm-front-mission-form-login.hide {
+    display: none;
+}
+
+.cnrs-dm-front-mission-form-login > h2 {
+    font-weight: bold;
+    opacity: 0.7;
+    padding: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.cnrs-dm-front-mission-form-login-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #f1f1f1;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 6px 6px 22px rgba(0, 0, 0, 0.15);
+}
+
+.cnrs-dm-front-mission-form-login-label {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 1em;
+    color: #93999b;
+}
+
+.cnrs-dm-front-mission-form-login-label > span {
+    font-weight: bold;
+    color: #6ab7e6;
+}
+
+.cnrs-dm-front-mission-form-login-label > input {
+    -webkit-appearance: none;
+    background-color: #fff;
+    width: 100%;
+    border-width: 0;
+    border-radius: 0;
+    color: #93999b;
+    font-family: 'Josefin Sans',Helvetica,Arial,Lucida,sans-serif;
+    font-size: 15px;
+    padding: 16px;
+}
+
+.cnrs-dm-front-mission-form-login-email-reset-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#cnrs-dm-front-mission-form-reset-link, #cnrs-dm-front-mission-form-login-link {
+    font-size: 12px;
+    cursor: pointer;
+    color: #6ab7e6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#cnrs-dm-front-mission-form-reset-link svg,
+#cnrs-dm-front-mission-form-login-link svg {
+    width: 12px;
+    height: 12px;
+    color: #6ab7e6;
+}
+
+#cnrs-dm-front-mission-form-reset-link svg {
+    margin-left: 3px;
+}
+
+#cnrs-dm-front-mission-form-login-link svg {
+    margin-right: 3px;
+}
+
+#cnrs-dm-front-mission-form-reset-link svg path,
+#cnrs-dm-front-mission-form-login-link svg path {
+    fill: currentColor;
+}
+
+.cnrs-dm-front-mission-form-confirm-reset {
+    color: #68C0B5;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.cnrs-dm-front-mission-form-error-reset {
+    color: #ff5c33;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
 /* Checkbox animated element */
 .cnrs-dm-front-checkbox-wrapper {
      --s-xsmall: 0.625em;
@@ -1926,4 +2060,91 @@ input[name^="cnrs-dm-front-mission-form-element-radio"]:focus+.design::after,
 input[name^="cnrs-dm-front-mission-form-element-radio"]:active+.design::after {
     opacity: .1;
     transform: scale(2.6);
+}
+
+#cnrs-dm-front-mission-user-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-top: 15px;
+}
+
+#cnrs-dm-front-mission-user-avatar {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    border-radius: 200px;
+    border: 4px solid #fff;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+}
+
+#cnrs-dm-front-mission-user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin: 0 15px;
+}
+
+#cnrs-dm-front-mission-user-info > p {
+    font-weight: bold;
+}
+
+#cnrs-dm-front-mission-user-info > a {
+    line-height: 1em;
+    font-size: 12px;
+    text-decoration: underline;
+    font-style: italic;
+}
+
+#cnrs-dm-front-mission-user-logout {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 200px;
+    cursor: pointer;
+    background-color: #fff;
+    border: 2px solid #6ab7e6;
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+    transition: all linear 0.15s;
+}
+
+#cnrs-dm-front-mission-user-logout:active {
+    background-color: #6ab7e6;
+    border: 2px solid #fff;
+}
+
+#cnrs-dm-front-mission-user-logout svg {
+    width: 20px;
+    height: 20px;
+    color: #6ab7e6;
+    transition: all linear 0.15s;
+}
+
+#cnrs-dm-front-mission-user-logout:active svg {
+    color: #fff;
+}
+
+#cnrs-dm-front-mission-user-logout svg path {
+    fill: currentColor;
+}
+
+@media only screen and (min-width: 768px) {
+
+    .cnrs-dm-front-mission-form-login > h2 {
+        font-size: 3rem;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+
+    .cnrs-dm-front-mission-form-login > h2 {
+        font-size: 2rem;
+    }
 }
