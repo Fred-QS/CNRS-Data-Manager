@@ -30,6 +30,8 @@ class Ajax
 
     private static array $optionals = ["INTITULE", "FINANCEUR", "LIEN_SITE", "IMAGE"];
 
+    private static array $formModules = ['input', 'checkbox', 'radio', 'textarea', 'title', 'comment', 'signs', 'number', 'date', 'time', 'datetime'];
+
     /**
      * Registers hooks for AJAX actions in WordPress.
      *
@@ -390,7 +392,7 @@ class Ajax
             $tool = $_POST['tool'];
             $iteration = (int) $_POST['iteration'];
             try {
-                if (in_array($tool, ['input', 'checkbox', 'radio', 'textarea', 'title', 'comment', 'separator', 'signs'], true)) {
+                if (in_array($tool, self::$formModules, true) || $tool === 'separator') {
                     $json['json'] = Manager::formToolsInit($tool);
                     ob_start();
                     include(CNRS_DATA_MANAGER_PATH . '/templates/includes/form-tools/tools/' . $tool . '.php');
@@ -425,7 +427,7 @@ class Ajax
             $iteration = (int) $_POST['iteration'];
             $data = json_decode(stripslashes($_POST['json']), true);
             try {
-                if (in_array($tool, ['input', 'checkbox', 'radio', 'textarea', 'title', 'comment', 'signs'], true)) {
+                if (in_array($tool, self::$formModules, true)) {
                     ob_start();
                     include(CNRS_DATA_MANAGER_PATH . '/templates/includes/form-tools/modals/' . $tool . '.php');
                     $json['data'] = ob_get_clean();

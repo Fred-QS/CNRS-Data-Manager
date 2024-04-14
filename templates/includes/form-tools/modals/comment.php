@@ -7,7 +7,7 @@
         <input type="hidden" name="cnrs-dm-type" value="comment">
         <label class="cnrs-dm-form-modal-label">
             <span><?php echo __('Your comment', 'cnrs-data-manager') ?></span>
-            <textarea spellcheck="false" name="cnrs-dm-comment"><?php echo $info['data']['value'][0] ?></textarea>
+            <textarea id="cnrs-dm-tinymce" class="cnrs-dm-tinymce" spellcheck="false" name="cnrs-dm-comment"><?php echo str_replace('<br/>', "\n", $info['data']['value'][0]) ?></textarea>
         </label>
         <div id="cnrs-dm-form-modal-buttons-wrapper">
             <input type="button" id="cnrs-dm-form-button-cancel" class="button" value="<?php echo __('Cancel', 'cnrs-data-manager') ?>">

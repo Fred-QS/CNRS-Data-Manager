@@ -143,18 +143,38 @@ class Forms
      *
      * @return int The number of forms.
      */
-    public static function getFormsCount()
+    public static function getFormsCount(): int
     {
         global $wpdb;
         $count = $wpdb->get_row("SELECT COUNT(*) as nb FROM {$wpdb->prefix}cnrs_data_manager_mission_forms");
         return $count->nb;
     }
 
+    /**
+     * Retrieves a paginated list of forms from the cnrs_data_manager_mission_forms table.
+     *
+     * @param string $search The search string to filter the forms by email.
+     * @param int $limit The maximum number of forms to retrieve per page.
+     * @param int $current The current page number.
+     * @return array Returns an array containing the forms matching the search criteria, sorted by created_at date in descending order.
+     */
     public static function getPaginatedFormsList(string $search, int $limit, int $current): array
     {
         global $wpdb;
         $where = strlen($search) > 0 ? "WHERE email LIKE '%{$search}%'" : '';
         $offset = ($current*$limit) - $limit;
         return $wpdb->get_results("SELECT email, created_at, uuid FROM {$wpdb->prefix}cnrs_data_manager_mission_forms {$where} ORDER BY created_at DESC LIMIT {$offset}, {$limit}", ARRAY_A);
+    }
+
+    /**
+     * Retrieves the form from the cnrs_data_manager_mission_forms table based on the provided UUID.
+     *
+     * @param string $uuid The UUID of the form.
+     * @return ?string The form if found, null otherwise.
+     */
+    public static function getFormsByUuid(string $uuid): ?object
+    {
+        global $wpdb;
+        return $wpdb->get_row("SELECT form, created_at FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
     }
 }
