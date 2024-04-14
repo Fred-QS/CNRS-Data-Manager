@@ -77,6 +77,10 @@ class Controller implements ControllerInterface {
         $wp_query->virtual_page   = $post instanceof \WP_Post && isset( $post->is_virtual )
             ? $this->matched
             : NULL;
+        add_filter( 'query_vars', function ($qvars) {
+            $qvars[] = 'cdm-pdf';
+            return $qvars;
+        } );
     }
 
     public function handleExit() {

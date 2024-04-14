@@ -696,6 +696,8 @@ if (!function_exists('cnrsReadShortCode')) {
                 'radio' => __('must have one selection', 'cnrs-data-manager'),
                 'signs' => __('must have been correctly filled out', 'cnrs-data-manager'),
                 'option' => __('comment must not be empty', 'cnrs-data-manager'),
+                'number' => __('must be numeric', 'cnrs-data-manager'),
+                'unsigned' => __('must be equal or greater than 0', 'cnrs-data-manager'),
             ];
 
             if ($user !== null) {
@@ -986,7 +988,6 @@ if (!function_exists('addQueryVars')) {
             $qvars[] = 'cdm-year';
             $qvars[] = 'cdm-parent';
             $qvars[] = 'cdm-team';
-            $qvars[] = 'cdm-pdf';
             return $qvars;
         });
     }

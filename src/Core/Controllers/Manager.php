@@ -458,6 +458,10 @@ final class Manager
     {
         $toolsLabels = [
             'input' => __('New input field', 'cnrs-data-manager'),
+            'number' => __('New numeric field', 'cnrs-data-manager'),
+            'date' => __('New date field', 'cnrs-data-manager'),
+            'time' => __('New time field', 'cnrs-data-manager'),
+            'datetime' => __('New date & time field', 'cnrs-data-manager'),
             'checkbox' => __('New multi choice field', 'cnrs-data-manager'),
             'comment' => __('New comment field', 'cnrs-data-manager'),
             'radio' => __('New single choice field', 'cnrs-data-manager'),
@@ -468,6 +472,10 @@ final class Manager
         ];
         $toolsConfig = [
             'input' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
+            'number' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
+            'date' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
+            'time' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
+            'datetime' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
             'checkbox' => ['value' => null, 'values' => [], 'choices' => [], 'required' => false],
             'comment' => ['value' => [__('My comment', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false],
             'radio' => ['value' => [], 'values' => null, 'choices' => [], 'required' => false],

@@ -63,6 +63,26 @@ $decodedForm = json_decode($form, true);
                         <span class="cnrs-dm-add-tool" data-tool="textarea">+</span>
                     </div>
                     <div class="cnrs-dm-form-tool">
+                        <h4><?php echo __('Numeric field', 'cnrs-data-manager') ?></h4>
+                        <small><?php echo __('Allow user to fill a numeric field', 'cnrs-data-manager') ?></small>
+                        <span class="cnrs-dm-add-tool" data-tool="number">+</span>
+                    </div>
+                    <div class="cnrs-dm-form-tool">
+                        <h4><?php echo __('Date & time field', 'cnrs-data-manager') ?></h4>
+                        <small><?php echo __('Allow user to fill a date & time field', 'cnrs-data-manager') ?></small>
+                        <span class="cnrs-dm-add-tool" data-tool="datetime">+</span>
+                    </div>
+                    <div class="cnrs-dm-form-tool">
+                        <h4><?php echo __('Date field', 'cnrs-data-manager') ?></h4>
+                        <small><?php echo __('Allow user to fill a date field', 'cnrs-data-manager') ?></small>
+                        <span class="cnrs-dm-add-tool" data-tool="date">+</span>
+                    </div>
+                    <div class="cnrs-dm-form-tool">
+                        <h4><?php echo __('Time field', 'cnrs-data-manager') ?></h4>
+                        <small><?php echo __('Allow user to fill a time field', 'cnrs-data-manager') ?></small>
+                        <span class="cnrs-dm-add-tool" data-tool="time">+</span>
+                    </div>
+                    <div class="cnrs-dm-form-tool">
                         <h4><?php echo __('Title field', 'cnrs-data-manager') ?></h4>
                         <small><?php echo __('Allow author to write a static title', 'cnrs-data-manager') ?></small>
                         <span class="cnrs-dm-add-tool" data-tool="title">+</span>
@@ -83,7 +103,7 @@ $decodedForm = json_decode($form, true);
                         <span class="cnrs-dm-add-tool" data-tool="signs">+</span>
                     </div>
                     <form method="post" id="cnrs-dm-mission-form-final">
-                        <input type="hidden" name="cnrs-dm-mission-form" value="<?php echo $form ?>">
+                        <input type="hidden" name="cnrs-dm-mission-form" value='<?php echo $form ?>'>
                         <input type="button" id="cnrs-dm-mission-form-submit" class="button button-primary" value="<?php echo __('Save', 'cnrs-data-manager') ?>">
                     </form>
                 </div>
@@ -173,8 +193,12 @@ $decodedForm = json_decode($form, true);
             'radio-choices': '<?php echo __("A least one choice is required for single choice bloc", "cnrs-data-manager") ?>',
             'signs-choices': '<?php echo __("A least one pad is required for signing pads bloc", "cnrs-data-manager") ?>',
             'input': '<?php echo __("The input field label is required", "cnrs-data-manager") ?>',
-            'textarea': '<?php echo __("The text field label is required", "cnrs-data-manager") ?>'
+            'textarea': '<?php echo __("The text field label is required", "cnrs-data-manager") ?>',
+            'number': '<?php echo __("The numeric field label is required", "cnrs-data-manager") ?>',
+            'datetime': '<?php echo __("The date & time field label is required", "cnrs-data-manager") ?>',
+            'date': '<?php echo __("The date field label is required", "cnrs-data-manager") ?>',
+            'time': '<?php echo __("The time field label is required", "cnrs-data-manager") ?>'
         };
-        let missionForm = JSON.parse('<?php echo stripslashes($form) ?>');
+        let missionForm = <?php echo $form ?>;
     </script>
 </div>

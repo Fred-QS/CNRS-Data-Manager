@@ -160,7 +160,7 @@ th.sortable p span, th.sorted p span {
 
 #cnrs-dm-filename-error-input {
     display: none;
-    color: firebrick;
+    color: #ff4d4d;
     font-style: italic;
     position: absolute;
     top: -20px;
@@ -173,9 +173,9 @@ th.sortable p span, th.sorted p span {
 }
 
 input[name="cnrs-dm-filename"].too-large, .cnrs-dm-error {
-    border-color: firebrick!important;
-    color: firebrick!important;
-    outline: 1px solid firebrick!important;
+    border-color: #ff4d4d!important;
+    color: #ff4d4d!important;
+    outline: 1px solid #ff4d4d!important;
 }
 
 .cnrs-dm-unit {
@@ -378,7 +378,7 @@ body[class*="data-manager-tools"] .form-table tr > * {
 }
 
 .button-danger {
-    background-color: firebrick!important;
+    background-color: #ff4d4d!important;
     border: none!important;
     color: #fff!important;
 }
@@ -595,7 +595,7 @@ label[for="cnrs-dm-filename"] {
 }
 
 #cnrs-dm-filename-bad path, #cnrs-dm-import-bad path {
-    fill: red;
+    fill: #ff4d4d;
 }
 
 #cnrs-dm-filename-good path, #cnrs-dm-import-good path {
@@ -770,8 +770,8 @@ label[for="cnrs-dm-filename"] {
 }
 
 .cnrs-dm-import-error-message {
-    color: red;
-    border: 1px solid red;
+    color: #ff4d4d;
+    border: 1px solid #ff4d4d;
 }
 
 .cnrs-dm-import-ok-message {
@@ -1102,7 +1102,7 @@ label[for="cnrs-data-manager-projects-team"] {
 }
 
 .cnrs-dm-form-tool-render:not(:first-child) {
-    margin-top: 10px;
+    margin-top: 34px;
 }
 
 .cnrs-dm-form-tool-label {
@@ -1127,26 +1127,37 @@ label[for="cnrs-data-manager-projects-team"] {
     align-items: center;
     position: absolute;
     width: 100%;
-    top: -5px;
+    top: -10px;
     right: 0;
 }
 
 .cnrs-dm-tool-button {
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     border-radius: 200px;
     margin-right: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    background-color: #2271b1;
     border: 2px solid #fff;
     transition: background-color linear 0.15s;
 }
 
-.cnrs-dm-tool-button:active, .cnrs-dm-form-add-choice:active {
+.cnrs-dm-tool-button[data-action="edit"] {
+    background-color: #2271b1;
+}
+
+.cnrs-dm-tool-button[data-action="delete"] {
+    background-color: #ff4d4d;
+}
+
+.cnrs-dm-tool-button[data-action="edit"]:active, .cnrs-dm-form-add-choice:active {
     background-color: dodgerblue;
+}
+
+.cnrs-dm-tool-button[data-action="delete"]:active {
+    background-color: #cc0000;
 }
 
 .cnrs-dm-tool-button svg {
@@ -1243,9 +1254,17 @@ label[for="cnrs-data-manager-projects-team"] {
 
 .cnrs-dm-preview-elements {
     display: block;
-    width: 100%;
+    width: calc(100% - 4px);
     margin-bottom: 20px;
     position: relative;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    padding: 2px;
+    transition: border linear 0.15s;
+}
+
+.cnrs-dm-preview-elements.locate {
+    border: 1px solid #135E96;
 }
 
 .cnrs-dm-preview-elements > label {
@@ -1254,15 +1273,32 @@ label[for="cnrs-data-manager-projects-team"] {
     justify-content: flex-start;
     align-items: flex-start;
     width: 100%;
+    position: relative;
+}
+
+.cnrs-dm-tooltip-icon {
+    background-color: #135E96;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px!important;
+    height: 16px!important;
+    border-radius: 40px;
+    margin-left: 4px;
+    color: #fff;
+    cursor: pointer!important;
 }
 
 .cnrs-dm-preview-elements > label * {
     width: 100%;
 }
 
-.cnrs-dm-preview-elements > label > span {
+.cnrs-dm-preview-elements > label > span, .cnrs-dm-form-preview-label > span {
     font-weight: bold;
     margin-bottom: 3px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .cnrs-dm-preview-elements > label input,
@@ -1425,10 +1461,15 @@ input[name="cnrs-dm-other-option"] {
 }
 
 .cnrs-dm-form-preview-comment {
-    font-style: italic;
     margin: 0;
     font-family: inherit;
     line-height: 1em;
+    display: ruby-text;
+    text-align: left;
+}
+
+.cnrs-dm-form-preview-comment p {
+    margin: 0;
 }
 
 .cnrs-dm-required {
@@ -1499,6 +1540,7 @@ input[name="cnrs-dm-other-option"] {
     opacity: 0.5;
     line-height: 1em;
     font-weight: bold;
+    text-align: center;
 }
 
 #cnrs-dm-mission-form-submit {
@@ -1519,6 +1561,151 @@ input[name="cnrs-dm-other-option"] {
 
 .cnrs-dm-tab-content > form > .cnrs-dm-tools-h2:first-of-type {
     margin: 0;
+}
+
+.cnrs-dm-filled {
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+    font-weight: normal!important;
+    font-size: 14px;
+    overflow: hidden;
+    position: relative;
+    width: max-content!important;
+    height: 18px;
+}
+
+.cnrs-dm-filled:not([data-type="number"]) {
+    padding: 3px 29px 3px 5px;
+}
+
+.cnrs-dm-filled[data-type="number"] {
+    padding: 3px 23px 3px 5px;
+}
+
+.cnrs-dm-filled span {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    background-color: #e1e1e1;
+}
+
+.cnrs-dm-filled span:not(.cnrs-dm-carets) {
+    width: 24px!important;
+}
+
+.cnrs-dm-carets {
+    width: 18px!important;
+}
+
+.cnrs-dm-filled span:not(.cnrs-dm-carets) svg {
+    width: 14px;
+    height: 14px;
+    color: #2271b1;
+}
+
+.cnrs-dm-filled .cnrs-dm-carets svg {
+    width: 10px;
+    height: 10px;
+    color: #3c3c3c;
+    position: relative;
+}
+
+.cnrs-dm-filled .cnrs-dm-carets svg:first-child {
+    top: 2px;
+}
+
+.cnrs-dm-filled .cnrs-dm-carets svg:last-child {
+    top: -2px;
+}
+
+.cnrs-dm-filled svg path {
+    fill: currentColor;
+}
+
+.cnrs-dm-form-details {
+    font-weight: normal!important;
+    font-style: italic;
+    font-size: 12px;
+    line-height: 1em;
+    opacity: 0.5;
+}
+
+.cnrs-dm-number-field {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.cnrs-dm-form-unit {
+    margin-left: 3px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.cnrs-dm-form-tool-render:not(:last-child) {
+    border-bottom-right-radius: 0;
+}
+
+.cnrs-dm-form-tool-render:not(:first-child) {
+    border-top-left-radius: 0;
+}
+
+.cnrs-dm-form-tool-render:last-child .cnrs-dm-mission-form-mover[data-action="down"],
+.cnrs-dm-form-tool-render:first-child .cnrs-dm-mission-form-mover[data-action="up"] {
+    display: none;
+}
+
+.cnrs-dm-mission-form-mover {
+    position: absolute;
+    z-index: 3;
+    width: 40px;
+    height: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.cnrs-dm-mission-form-mover[data-action="up"] {
+    bottom: 100%;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    left: -2px;
+}
+
+.cnrs-dm-mission-form-mover[data-action="down"] {
+    top: 100%;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    right: -2px;
+    box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cnrs-dm-mission-form-mover svg {
+    width:  14px;
+    height: 14px;
+    color: #c1c1c1;
+    position: relative;
+}
+
+.cnrs-dm-mission-form-mover[data-action="up"] svg {
+    top: 3px;
+}
+
+.cnrs-dm-mission-form-mover[data-action="down"] svg {
+    bottom: 3px;
+}
+
+.cnrs-dm-mission-form-mover svg path {
+    fill: currentColor;
 }
 
 /* The switch - the box around the slider */
@@ -1693,6 +1880,20 @@ input:checked + .cnrs-dm-slider:before {
 
 .cnrs-dm-mission-form-svg-link path, .cnrs-dm-mission-form-list-title svg path {
     fill: currentColor;
+}
+
+.cnrs-dm-form-modal-label-tooltip {
+    margin-top: 8px;
+}
+
+.cnrs-dm-form-modal-label-tooltip textarea {
+    resize: none;
+    width: 100%;
+    height: 100px;
+}
+
+.tox .tox-edit-area::before {
+    border-radius: 8px!important;
 }
 
 @media only screen and (min-width: 783px) {
