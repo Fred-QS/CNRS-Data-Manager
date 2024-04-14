@@ -45,7 +45,7 @@ html, body {
     border-style: solid;
     -webkit-transition-property: all!important;
     transition-property: all!important;
-    text-align: right;
+    text-align: center;
     transition: all 300ms ease 0ms;
     cursor: pointer;
 }
@@ -1455,7 +1455,86 @@ html, body {
     width: 100%;
 }
 
+.cnrs-dm-front-mission-form-element[data-type="comment"] {
+    display: ruby-text;
+}
+
+.cnrs-dm-front-tooltip-container.required .cnrs-dm-front-tooltip-btn {
+    right: -36px;
+}
+
+.cnrs-dm-front-tooltip-container:not(.required) .cnrs-dm-front-tooltip-btn {
+    right: -26px;
+}
+
+.cnrs-dm-front-tooltip-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.cnrs-dm-front-tooltip-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    z-index: 4;
+}
+
+.cnrs-dm-front-tooltip-btn.show-tooltip:after {
+    position: absolute;
+    z-index: 1;
+    top: calc(100% + 5px);
+    content: "";
+    width: 10px;
+    height: 10px;
+    transform-origin: 50% 50%;
+    transform: rotate(45deg);
+    background-color: #68C0B5;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
+    border-right: 2px solid #68C0B5;
+    border-bottom: 2px solid #68C0B5;
+}
+
+.cnrs-dm-front-tooltip-btn svg {
+    width: 100%;
+    height: 100%;
+    color: #68C0B5;
+}
+
+.cnrs-dm-front-tooltip-btn svg path {
+    fill: currentColor;
+}
+
+.cnrs-dm-front-tooltip-text:not(.show) {
+    display: none;
+}
+
+.cnrs-dm-front-tooltip-text.show {
+    display: block;
+    position: absolute;
+    top: calc(100% + 6px);
+    z-index: 3;
+    left: 0;
+    background-color: #68c0b5;
+    border-radius: 6px;
+    padding: 5px 10px;
+    width: max-content;
+    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.1);
+    color: #fff;
+    border: 2px solid #fff;
+}
+
 .cnrs-dm-front-mission-form-element input[type="text"],
+.cnrs-dm-front-mission-form-element input[type="number"],
+.cnrs-dm-front-mission-form-element input[type="date"],
+.cnrs-dm-front-mission-form-element input[type="time"],
+.cnrs-dm-front-mission-form-element input[type="datetime-local"],
 .cnrs-dm-front-sign-pad-modal-label input[type="text"] {
     -webkit-appearance: none;
     background-color: #fff;
@@ -1544,8 +1623,8 @@ h3.cnrs-dm-front-mission-form-element-label {
 
 .cnrs-dm-front-mission-form-element[data-type="comment"] p {
     width: 100%;
-    font-style: italic;
     opacity: 0.7;
+    padding: 0;
 }
 
 .cnrs-dm-front-mission-form-element[data-type="signs"] {
@@ -1577,12 +1656,19 @@ h3.cnrs-dm-front-mission-form-element-label {
     padding: 0;
     list-style: none;
     width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
 }
 
 #cnrs-dm-front-mission-form-errors li {
     color: #ff5c33;
     width: 100%;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #cnrs-dm-front-mission-form-errors li:first-child {
@@ -1855,6 +1941,22 @@ h3.cnrs-dm-front-mission-form-element-label {
     color: #ff5c33;
     margin-bottom: 10px;
     text-align: center;
+}
+
+.cnrs-dm-front-mission-form-element .is-unit {
+    flex-direction: row!important;
+    align-items: center!important;
+    justify-content: space-between!important;
+}
+
+.cnrs-dm-front-mission-form-unit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 0 0 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #68c0b5;
 }
 
 /* Checkbox animated element */

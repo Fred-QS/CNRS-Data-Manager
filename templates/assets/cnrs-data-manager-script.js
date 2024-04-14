@@ -24,6 +24,7 @@ const loginEmail = document.querySelector('input[type="email"][name="cnrs-dm-fro
 const resetEmailBtn = document.querySelector('#cnrs-dm-front-mission-form-submit-reset-btn');
 const loginEmailBtn = document.querySelector('#cnrs-dm-front-mission-form-submit-login-btn');
 const logoutBtn = document.querySelector('#cnrs-dm-front-mission-user-logout');
+const tooltipBtns = document.querySelectorAll('.cnrs-dm-front-tooltip-btn');
 let agentEmails = [];
 
 window.addEventListener('load', function(){
@@ -31,6 +32,16 @@ window.addEventListener('load', function(){
     displayContainers();
     dispatchWrapperListener();
     prepareMissionForm();
+    resizeTooltips();
+});
+
+window.addEventListener('resize', function () {
+    resizeTooltips();
+});
+
+window.addEventListener('click', function(e) {
+   const target = e.target;
+   closeMissionTooltips(target);
 });
 
 function isJson(str) {
@@ -93,7 +104,7 @@ function prepareMissionForm() {
                 const saveBtn = document.querySelector('.cnrs-dm-front-btn-simple[data-action="save"]');
                 let signatureOK = false;
                 const signaturePad = new SignaturePad(canvas, {
-                    penColor: "#68c0b5"
+                    penColor: "#000000"
                 });
                 if (values.sign !== undefined) {
                     signaturePad.fromDataURL(values.sign);
@@ -197,13 +208,29 @@ function prepareMissionForm() {
                     const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-input-"]');
                     const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
                     if (elmt.value.trim().length < 1) {
-                        errors.push('<b>' + label + '</b> ' + messages.simple);
+                        errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
+                    }
+                } else if (type === 'number') {
+                    const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-number-"]');
+                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
+                    if (elmt.value.trim().length < 1) {
+                        errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
+                    } else if (isNaN(elmt.value)) {
+                        errors.push('<b>' + label + '</b>&nbsp;' + messages.number);
+                    } else if (parseInt(elmt.value) < 0) {
+                        errors.push('<b>' + label + '</b>&nbsp;' + messages.unsigned);
+                    }
+                } else if (type === 'date' || type === 'time' || type === 'datetime') {
+                    const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-' + type + '-"]');
+                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
+                    if (elmt.value.trim().length < 1) {
+                        errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
                     }
                 } else if (type === 'textarea') {
                     const elmt = container.querySelector('textarea[name^="cnrs-dm-front-mission-form-element-textarea-"]');
                     const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
                     if (elmt.value.trim().length < 1) {
-                        errors.push('<b>' + label + '</b> ' + messages.simple);
+                        errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
                     }
                 } else if (type === 'radio') {
                     const radioInputs = container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-radio-"]');
@@ -215,13 +242,13 @@ function prepareMissionForm() {
                         }
                     }
                     if (radioChecked.length < 1) {
-                        errors.push('<b>' + label + '</b> ' + messages.radio);
+                        errors.push('<b>' + label + '</b>&nbsp;' + messages.radio);
                     }
                     const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
                     for (let j = 0; j < optComments.length; j++) {
                         if (optComments[j].value.trim().length < 1) {
                             const opt = optComments[j].previousElementSibling.querySelector('.text').innerHTML;
-                            errors.push('<b>' + label + ' ' + opt + '</b> ' + messages.option);
+                            errors.push('<b>' + label + ' ' + opt + '</b>&nbsp;' + messages.option);
                         }
                     }
                 } else if (type === 'checkbox') {
@@ -234,13 +261,13 @@ function prepareMissionForm() {
                         }
                     }
                     if (checkboxChecked.length < 1) {
-                        errors.push('<b>' + label + '</b> ' + messages.checkbox);
+                        errors.push('<b>' + label + '</b>&nbsp;' + messages.checkbox);
                     }
                     const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
                     for (let j = 0; j < optComments.length; j++) {
                         if (optComments[j].value.trim().length < 1) {
                             const opt = optComments[j].previousElementSibling.querySelector('.checkbox__text-wrapper').innerHTML;
-                            errors.push('<b>' + label + ' ' + opt + '</b> ' + messages.option);
+                            errors.push('<b>' + label + ' ' + opt + '</b>&nbsp;' + messages.option);
                         }
                     }
                 } else if (type === 'signs') {
@@ -250,10 +277,10 @@ function prepareMissionForm() {
                         if (isJson(inputs[j].value)) {
                             const json = JSON.parse(inputs[j].value);
                             if (json.sign === undefined) {
-                                errors.push('<b>' + label + ' ' + (j+1) + '</b> ' + messages.signs);
+                                errors.push('<b>' + label + ' ' + (j+1) + '</b>&nbsp;' + messages.signs);
                             }
                         } else {
-                            errors.push('<b>' + label + ' ' + (j+1) + '</b> ' + messages.signs);
+                            errors.push('<b>' + label + ' ' + (j+1) + '</b>&nbsp;' + messages.signs);
                         }
                     }
                 }
@@ -323,6 +350,51 @@ function prepareMissionForm() {
             const action = window.location.pathname;
             window.location.href = action;
         }
+    }
+
+    for (let i = 0; i < tooltipBtns.length; i++) {
+        tooltipBtns[i].onclick = function () {
+            const tooltipText = this.nextElementSibling;
+            if (tooltipText.classList.contains('show')) {
+                tooltipText.classList.remove('show');
+                this.classList.remove('show-tooltip');
+            } else {
+                for (let j = 0; j < tooltipBtns.length; j++) {
+                    const tooltipTextAll = tooltipBtns[j].nextElementSibling;
+                    tooltipTextAll.classList.remove('show');
+                    tooltipBtns[j].classList.remove('show-tooltip');
+                }
+                tooltipText.classList.add('show');
+                this.classList.add('show-tooltip');
+            }
+        }
+    }
+}
+
+function closeMissionTooltips(target) {
+    if (!target.classList.contains('cnrs-dm-front-tooltip-text')
+        && !target.closest('.cnrs-dm-front-tooltip-text')
+        && !target.classList.contains('cnrs-dm-front-tooltip-btn')
+        && !target.closest('.cnrs-dm-front-tooltip-btn')
+    ) {
+        for (let i = 0; i < tooltipBtns.length; i++) {
+            const tooltipTextAll = tooltipBtns[i].nextElementSibling;
+            tooltipTextAll.classList.remove('show');
+            tooltipBtns[i].classList.remove('show-tooltip');
+        }
+    }
+}
+
+function resizeTooltips() {
+
+    for (let i = 0; i < tooltipBtns.length; i++) {
+        const parent = tooltipBtns[i].closest('.cnrs-dm-front-mission-form-element');
+        const parentWidth = parent.offsetWidth;
+        const label = tooltipBtns[i].closest('.cnrs-dm-front-mission-form-element-label');
+        const labelWidth = label.scrollWidth + 16;
+        const text = tooltipBtns[i].nextElementSibling;
+        text.style.maxWidth = parentWidth + 'px';
+        text.style.minWidth = labelWidth + 'px';
     }
 }
 

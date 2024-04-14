@@ -9,6 +9,10 @@
             <span><?php echo __('Label', 'cnrs-data-manager') ?></span>
             <input spellcheck="false" type="text" name="cnrs-dm-label" value="<?php echo $info['label'] ?>">
         </label>
+        <label class="cnrs-dm-form-modal-label cnrs-dm-form-modal-label-tooltip">
+            <span><?php echo __('Tooltip', 'cnrs-data-manager') ?></span>
+            <textarea spellcheck="false" autocomplete="off" name="cnrs-dm-tooltip"><?php echo str_replace('<br/>', "\n", $info['data']['tooltip']) ?></textarea>
+        </label>
         <label class="cnrs-dm-form-modal-label cnrs-dm-form-modal-label-required">
             <input type="checkbox" name="cnrs-dm-required-option" value="required" <?php if ($info['data']['required'] === true): echo 'checked'; endif; ?>>
             <span><?php echo __('Required', 'cnrs-data-manager') ?></span>

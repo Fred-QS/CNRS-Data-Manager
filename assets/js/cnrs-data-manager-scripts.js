@@ -68,6 +68,19 @@ const missionFormListContainer = document.querySelector('#cnrs-dm-mission-form-l
 const missionListLoader = document.querySelector('#cnrs-dm-mission-form-loader-container');
 const missionFormSearch = document.querySelector('#cnrs-data-manager-mission-search');
 const missionFormTotal = document.querySelector('#cnrs-dm-mission-form-total span');
+
+const tinyMCEConfig = {
+    width: "100%",
+    height: 250,
+    resize: false,
+    plugins: ['anchor', 'lists'],
+    toolbar: 'undo redo | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | link image',
+    content_style: 'body { font-family:inherit,sans-serif; font-size:14px }',
+    statusbar: false,
+    forced_root_block: 'p',
+    newline_behavior: '',
+    newline_behavior: 'block'
+}
 let filenameTimeout;
 let xlsFile = null;
 let wpContainerWidth = 0;
@@ -643,6 +656,17 @@ function getToolModal(info) {
                     }
                 }
             }
+            const delBtns = document.querySelectorAll('.cnrs-dm-form-remove-choice');
+            for (let j = 0; j < delBtns.length; j++) {
+                delBtns[j].onclick = function () {
+                    this.closest('.cnrs-dm-form-modal-choice').remove();
+                }
+            }
+
+            let config = {...tinyMCEConfig};
+            config.selector = '#cnrs-dm-tinymce'
+            tinymce.remove();
+            tinymce.init(config);
         }
     } else {
         console.error(info.error);
@@ -651,7 +675,7 @@ function getToolModal(info) {
 
 function saveToolSettings() {
     const elmt = document.querySelector('#cnrs-dm-form-modal');
-    const element = {'type': '', 'label': '', 'data': {'value': null, 'values': null, 'choices': null, 'required': false}};
+    const element = {'type': '', 'label': '', 'data': {'value': null, 'values': null, 'choices': null, 'required': false, 'tooltip': ''}};
     const iteration = document.querySelector('input[name="cnrs-dm-iteration"]').value;
     let choicesList = [];
 
@@ -663,7 +687,7 @@ function saveToolSettings() {
         element.label = document.querySelector('input[name="cnrs-dm-label"]').value;
     }
     if (document.querySelector('textarea[name="cnrs-dm-comment"]')) {
-        element.data.value = [document.querySelector('textarea[name="cnrs-dm-comment"]').value];
+        element.data.value = [tinymce.get('cnrs-dm-tinymce').getContent().replaceAll("\n", '<br/>')];
     }
     const choices = document.querySelectorAll('.cnrs-dm-form-modal-choice');
     for (let i = 0; i < choices.length; i++) {
@@ -675,6 +699,10 @@ function saveToolSettings() {
     element.data.choices = choicesList.length > 0 ? choicesList : null;
     const required = document.querySelector('input[name="cnrs-dm-required-option"]');
     element.data.required = required ? required.checked : false;
+    const tooltip = document.querySelector('textarea[name="cnrs-dm-tooltip"]');
+    if (tooltip) {
+        element.data.tooltip = tooltip.value.replaceAll("\n", '<br/>');
+    }
     missionForm.elements[iteration] = element;
     refreshFormPreview();
     closeModalWrapper();
@@ -684,6 +712,7 @@ function setToolsListeners(refresh = false) {
     const editBtn = document.querySelectorAll('.cnrs-dm-tool-button[data-action="edit"]');
     const deleteBtn = document.querySelectorAll('.cnrs-dm-tool-button[data-action="delete"]');
     const tools = document.querySelectorAll('.cnrs-dm-form-tool-render');
+    const movers = document.querySelectorAll('.cnrs-dm-mission-form-mover');
 
     for (let i = 0; i < editBtn.length; i++) {
         const btn = editBtn[i];
@@ -726,9 +755,47 @@ function setToolsListeners(refresh = false) {
         }
     }
 
+    for (let i = 0; i < movers.length; i++) {
+        movers[i].onclick = function () {
+            const parent = this.closest('.cnrs-dm-form-tool-render');
+            let iteration = parseInt(parent.dataset.index);
+            const originalIteration = iteration;
+            const first = iteration === 0;
+            const last = iteration === tools.length - 1;
+            const elements = [...missionForm.elements];
+            const elmt = elements[originalIteration];
+            if (this.dataset.action === 'up' && first === false) {
+                iteration--;
+                missionFormStructure.insertBefore(parent, parent.previousElementSibling);
+            } else if (this.dataset.action === 'down' && last === false) {
+                iteration++;
+                insertAfter(parent, parent.nextElementSibling);
+            }
+            const renders = document.querySelectorAll('.cnrs-dm-form-tool-render');
+            for (let j = 0; j < renders.length; j++) {
+                renders[j].dataset.index = j;
+            }
+
+            elements.splice(originalIteration, 1);
+            let reorder = [];
+            for (let j = 0; j < elements.length; j++) {
+                if (j === iteration) {
+                    reorder.push(elmt);
+                }
+                reorder.push(elements[j]);
+            }
+            missionForm.elements = reorder;
+            refreshFormPreview();
+        }
+    }
+
     if (refresh === true && tools.length > 0) {
         refreshFormPreview();
     }
+}
+
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
 
 function resetFormIterations() {
@@ -748,15 +815,21 @@ function closeModalWrapper() {
 
 function refreshFormPreview() {
     let html = '';
+    const d = new Date;
     const addSomeChoices = missionFormPreview.dataset.choices;
     const addSomePads = missionFormPreview.dataset.pads;
     const signHere = missionFormPreview.dataset.sign;
     for (let i = 0; i < missionForm.elements.length; i++) {
         const element = missionForm.elements[i];
-        const required = element.data.required === true ? ' class="cnrs-dm-required"' : '';
+        const required = typeof element.data !== "undefined" && element.data.required === true
+            ? ' class="cnrs-dm-required"'
+            : '';
+        const tooltip = typeof element.data !== "undefined" && typeof element.data.tooltip !== "undefined" && element.data.tooltip.length > 0
+            ? `<span class="cnrs-dm-tooltip-icon" title="${element.data.tooltip.replaceAll('<br/>', ' ')}">?</span>`
+            : '';
         html += '<div class="cnrs-dm-preview-elements">';
         if (element.type === 'checkbox') {
-            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label}</span>`;
+            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label} ${tooltip}</span>`;
             if (element.data.choices === null || element.data.choices.length === 0) {
                 html += `<i>${addSomeChoices}</i>`;
             } else {
@@ -777,13 +850,54 @@ function refreshFormPreview() {
             }
             html += `</div>`;
         } else if (element.type === 'comment') {
-            html += `<pre class="cnrs-dm-form-preview-comment">${element.data.value[0] ?? ''}</pre>`;
+            html += `<div class="cnrs-dm-form-preview-comment">${element.data.value[0] ?? ''}</div>`;
         } else if (element.type === 'input') {
-            html += `<label><span${required}>${element.label}</span>`;
+            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `</label>`;
+        } else if (element.type === 'number') {
+            let split = element.label.split(';');
+            let label = split[0];
+            let unit = typeof split[1] !== "undefined" ? '<span class="cnrs-dm-form-unit">' +  split[1] + '</span>' : '';
+            html += `<label><span${required}>${label} ${tooltip}</span>`;
+            html += `<div class="cnrs-dm-number-field"><span class="cnrs-dm-filled" data-type="number">
+                ${Math.floor(Math.random() * 10)}
+                <span class="cnrs-dm-carets">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8H288c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z"/></svg>
+                </span>
+            </span>${unit}</div>`;
+            html += `</label>`;
+        } else if (element.type === 'date') {
+            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
+            html += `<span class="cnrs-dm-filled" data-type="date">
+                ${('0' + d.getDate()).slice(-2)}/${('0' + (d.getMonth() + 1)).slice(-2)}/${d.getFullYear()}
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>
+                </span>
+            </span>`;
+            html += `</label>`;
+        } else if (element.type === 'time') {
+            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
+            html += `<span class="cnrs-dm-filled" data-type="time">
+                ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>
+                </span>
+            </span>`;
+            html += `</label>`;
+        } else if (element.type === 'datetime') {
+            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
+            html += `<span class="cnrs-dm-filled" data-type="datetime">
+                ${('0' + d.getDate()).slice(-2)}/${('0' + (d.getMonth() + 1)).slice(-2)}/${d.getFullYear()}&nbsp;
+                ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm80 64c-8.8 0-16 7.2-16 16v96c0 8.8 7.2 16 16 16h96c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80z"/></svg>
+                </span>
+            </span>`;
+            html += `</label>`;
         } else if (element.type === 'radio') {
-            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label}</span>`;
+            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label} ${tooltip}</span>`;
             if (element.data.choices === null || element.data.choices.length === 0) {
                 html += `<i>${addSomeChoices}</i>`;
             } else {
@@ -806,7 +920,7 @@ function refreshFormPreview() {
         } else if (element.type === 'separator') {
             html += '<hr/>';
         } else if (element.type === 'textarea') {
-            html += `<label><span${required}>${element.label}</span>`;
+            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
@@ -837,6 +951,17 @@ function refreshFormPreview() {
         html += '</div>';
     }
     missionFormPreview.innerHTML = html;
+    
+    const tools = document.querySelectorAll('.cnrs-dm-form-tool-render');
+    const previewElements = document.querySelectorAll('.cnrs-dm-preview-elements');
+    for (let i = 0; i < tools.length; i++) {
+        tools[i].onmouseover = function () {
+            previewElements[i].classList.add('locate');
+        }
+        tools[i].onmouseleave = function () {
+            previewElements[i].classList.remove('locate');
+        }
+    }
 }
 
 function handleXMLCheckResult(json) {
