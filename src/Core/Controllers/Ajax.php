@@ -19,7 +19,8 @@ class Ajax
         'set_form_tool' => 'setFormTool',
         'get_form_tool' => 'getFormTool',
         'get_agents_list' => 'getAgentsList',
-        'get_forms_list' => 'getFormsList'
+        'get_forms_list' => 'getFormsList',
+        'get_new_manager' => 'getNewManager'
     ];
 
     private static array $publicActions = [];
@@ -488,6 +489,25 @@ class Ajax
                 include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/mission-form-list.php');
                 $json['html'] = ob_get_clean();
                 $json['data'] = ['total' => $count];
+            } catch (ErrorException $e) {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    public static function getNewManager()
+    {
+        $json = ['error' => null, 'data' => []];
+        if (!isset($_POST['iteration'])) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        } else {
+            try {
+                $iteration = (int) $_POST['iteration'];
+                ob_start();
+                include(CNRS_DATA_MANAGER_PATH . '/templates/includes/new-manager.php');
+                $json['data'] = ob_get_clean();
             } catch (ErrorException $e) {
                 $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
             }

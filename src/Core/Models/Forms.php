@@ -170,11 +170,81 @@ class Forms
      * Retrieves the form from the cnrs_data_manager_mission_forms table based on the provided UUID.
      *
      * @param string $uuid The UUID of the form.
-     * @return ?string The form if found, null otherwise.
+     * @return object|null The form if found, null otherwise.
      */
     public static function getFormsByUuid(string $uuid): ?object
     {
         global $wpdb;
         return $wpdb->get_row("SELECT form, created_at FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
+    }
+
+    /**
+     * Sets the conventions in the cnrs_data_manager_conventions table based on the provided data.
+     *
+     * @param array $data The data containing the conventions to set.
+     *        Each convention should be an array with the following keys:
+     *        - 'id' (string|int): The ID of the convention. If it starts with 'new', a new convention will be inserted.
+     *        - 'name' (string): The name of the convention.
+     *        - 'primary_email' (string): The primary email of the convention.
+     *        - 'secondary_email' (string): The secondary email of the convention.
+     *        - 'available' (bool): Whether the convention is available or not. True for available, false for not available.
+     * @return void
+     */
+    public static function setConventions(array $data): void
+    {
+        global $wpdb;
+        $exists = array_map(function ($row) {
+            return (int) $row['id'];
+        }, $wpdb->get_results("SELECT id FROM {$wpdb->prefix}cnrs_data_manager_conventions", ARRAY_A));
+        $updatedRows = [];
+        foreach ($data as $convention) {
+            if (is_array($convention)) {
+                if (str_starts_with($convention['id'], 'new')) {
+                    $wpdb->insert(
+                        "{$wpdb->prefix}cnrs_data_manager_conventions",
+                        array(
+                            'name' => $convention['name'],
+                            'primary_email' => $convention['primary_email'],
+                            'secondary_email' => $convention['secondary_email'],
+                            'available' => isset($convention['available']) ? 0 : 1
+                        ),
+                        array('%s', '%s', '%s', '%d')
+                    );
+                } else {
+                    $updatedRows[] = (int) $convention['id'];
+                    $wpdb->update(
+                        "{$wpdb->prefix}cnrs_data_manager_conventions",
+                        array(
+                            'name' => $convention['name'],
+                            'primary_email' => $convention['primary_email'],
+                            'secondary_email' => $convention['secondary_email'],
+                            'available' => isset($convention['available']) ? 0 : 1
+                        ),
+                        array('id' => $convention['id']),
+                        array('%s', '%s', '%s', '%d'),
+                        array('%d'),
+                    );
+                }
+            }
+        }
+        $toDelete = array_diff($exists, $updatedRows);
+        foreach ($toDelete as $id) {
+            $wpdb->delete(
+                "{$wpdb->prefix}cnrs_data_manager_conventions",
+                array('id' => $id),
+                array('%d')
+            );
+        }
+    }
+
+    /**
+     * Retrieves all conventions from the database.
+     *
+     * @return array An array containing all conventions as associative arrays.
+     */
+    public static function getConventions(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_conventions ORDER BY id DESC", ARRAY_A);
     }
 }

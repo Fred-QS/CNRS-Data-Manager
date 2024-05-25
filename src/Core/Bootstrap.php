@@ -12,7 +12,6 @@ namespace CnrsDataManager\Core;
 use CnrsDataManager\Core\Install;
 use CnrsDataManager\Core\Controllers\Manager;
 use CnrsDataManager\Core\Controllers\Ajax;
-use CnrsDataManager\Core\Controllers\HttpClient;
 use CnrsDataManager\Core\Models\Settings;
 use CnrsDataManager\Core\Models\Projects;
 use CnrsDataManager\Core\Models\Forms;
@@ -247,11 +246,8 @@ class Bootstrap
                     'callback'               => function () {
                         include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Import.php');
                     }
-                ]
-            ];
-
-            if (HttpClient::maintenance_admin()) {
-                $menuComplete[] = [
+                ],
+                [
                     'parent_slug'            => 'cnrs-data-manager',
                     'page_title'             => __('Mission form', 'cnrs-data-manager'),
                     'menu_title'             => __('Mission form', 'cnrs-data-manager'),
@@ -260,8 +256,9 @@ class Bootstrap
                     'callback'               => function () {
                         include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Form.php');
                     }
-                ];
-            }
+                ]
+            ];
+
             $menu = array_merge($menuComplete, $menu);
         }
         return $menu;

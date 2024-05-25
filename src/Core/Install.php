@@ -44,6 +44,7 @@ class Install
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_agents_accounts");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_mission_forms");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_conventions");
         // Create tables
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_map_markers (
               id int(10) UNSIGNED NOT NULL PRIMARY (id) AUTO_INCREMENT COMMENT 'Primary key',
@@ -103,12 +104,23 @@ class Install
               email varchar(255) NOT NULL COMMENT 'Email from user who filled out the form',
               original longtext NOT NULL COMMENT 'Original form json',
               form longtext NOT NULL COMMENT 'Filled out form json',
+              status ENUM(\"PENDING\",\"VALIDATED\") NOT NULL DEFAULT 'PENDING' COMMENT 'The form status once completed',
               created_at timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Form creation timestamp'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Filled out mission forms list'"
         );
         $wpdb->query("CREATE TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_mission_form_settings (
-              form longtext NOT NULL COMMENT 'Form in json string format'
+              form longtext NOT NULL COMMENT 'Form in json string format',
+              debug_mode tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Debug mode for emails logic',
+              debug_email varchar(255) DEFAULT NULL COMMENT 'Debug email address'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='UMR Mission form settings'"
+        );
+        $wpdb->query("CREATE TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_conventions (
+              id bigint(20) UNSIGNED NOT NULL COMMENT 'Primary key',
+              name varchar(150) NOT NULL COMMENT 'The convention name',
+              primary_email varchar(150) NOT NULL COMMENT 'Main manager email',
+              secondary_email varchar(150) NOT NULL COMMENT 'Fallback email if main manager not available',
+              available tinyint(4) NOT NULL COMMENT 'Availability from the main manager'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='UMR form conventions'"
         );
         // Populate tables
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_map_markers (title, lat, lng) VALUES
