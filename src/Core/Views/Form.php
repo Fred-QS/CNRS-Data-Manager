@@ -6,11 +6,19 @@ if (isset($_POST['cnrs-dm-mission-form']) && strlen($_POST['cnrs-dm-mission-form
     Forms::setCurrentForm($missionForm);
 }
 if (isset($_POST['cnrs-dm-mission-form-settings']) && strlen($_POST['cnrs-dm-mission-form-settings']) > 0) {
+    if ($_POST['cnrs-dm-manager'] === null) {
+        Forms::setConventions([]);
+    }
     Forms::setSettings($_POST);
+}
+if (!empty($_POST['cnrs-dm-manager'])) {
+    Forms::setConventions($_POST['cnrs-dm-manager']);
 }
 $form = Forms::getCurrentForm();
 $settings = Forms::getSettings();
+$managersList = Forms::getConventions();
 $decodedForm = json_decode($form, true);
+$formLink = get_site_url() . '/cnrs-umr/mission-form';
 ?>
 
 <div class="wrap cnrs-data-manager-page" id="cnrs-data-manager-mission-form-page">
@@ -20,6 +28,18 @@ $decodedForm = json_decode($form, true);
             <?php echo __('Mission form', 'cnrs-data-manager'); ?>
         </h1>
         <p id="cnrs-dm-first-text"><?php echo __('You will be able to design a template for the mission form. The <b>Builder</b> part will allow you to assemble and customize the elements of the form. You will find in <b>List</b> all the forms completed by the agents. And finally the <b>Settings</b> tab will give you access to the configuration of the process governing the life cycle of the form after its completion.', 'cnrs-data-manager') ?></p>
+        <?php if (empty($managersList)): ?>
+            <p class="cnrs-dm-warning-note"><?php echo __('<b>Warning !</b> As long as at least one manager has not been entered in the <b>Settings</b> tab, the form page will return a <b>404 error</b>.', 'cnrs-data-manager') ?></p>
+        <?php endif; ?>
+        <p id="cnrs-dm-form-link-to-form">
+            <?php echo __('Link to form', 'cnrs-data-manager') ?>:
+            <a href="<?php echo $formLink ?>" target="_blank"><?php echo $formLink ?></a>
+            <span class="cnrs-dm-tool-button" data-link="<?php echo $formLink ?>">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20">
+                    <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                </svg>
+            </span>
+        </p>
         <br/>
         <div id="cnrs-dm-tabs-container">
             <div class="cnrs-dm-tabs-container<?php echo isActiveTab() ? ' active' : '' ?>" data-tab="builder">
@@ -173,12 +193,44 @@ $decodedForm = json_decode($form, true);
                         </tr>
                         </tbody>
                     </table>
-                    <h3 class="cnrs-dm-tools-h2"><?php echo __('Workflow', 'cnrs-data-manager') ?></h3>
-                    <p><?php echo __('You can configure the flow and process of sending emails, as well as the steps to carry out to finalize the actions to be carried out in order to validate a form.', 'cnrs-data-manager') ?></p>
-                    <i>TODO</i>
-                    <table class="form-table" role="presentation">
-
-                    </table>
+                    <h3 class="cnrs-dm-tools-h2"><?php echo __('Managers', 'cnrs-data-manager') ?></h3>
+                    <p><?php echo __('You can add managers attached to conventions by naming the convention and then adding the email of the main manager as well as that of a secondary manager if the first is not available. The unavailability of the main manager is validated by checking the box next to their email address..', 'cnrs-data-manager') ?></p>
+                    <p id="cnrs-dm-add-manager">
+                        <?php echo __('Add a convention with its managers', 'cnrs-data-manager') ?>
+                        <span class="cnrs-dm-tool-button" data-action="add-manager">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20">
+                                <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                            </svg>
+                        </span>
+                    </p>
+                    <div id="cnrs-dm-managers-list">
+                        <?php foreach ($managersList as $manager): ?>
+                            <div class="cnrs-dm-manager-block">
+                                <input type="hidden" name="cnrs-dm-manager[<?php echo $manager['id'] ?>][id]" value="<?php echo $manager['id'] ?>">
+                                <span class="cnrs-dm-tool-button cnrs-dm-manager-delete-button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20">
+                                        <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"></path>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <label for="cnrs-dm-manager-convention-<?php echo $manager['id'] ?>"><?php echo __('Convention name', 'cnrs-data-manager') ?></label>
+                                    <input required type="text" spellcheck="false" id="cnrs-dm-manager-convention-<?php echo $manager['id'] ?>" name="cnrs-dm-manager[<?php echo $manager['id'] ?>][name]" value="<?php echo $manager['name'] ?>">
+                                </div>
+                                <div class="cnrs-dm-manager-wrapper-with-availability">
+                                    <label for="cnrs-dm-manager-primary-<?php echo $manager['id'] ?>"><?php echo __('Main email', 'cnrs-data-manager') ?></label>
+                                    <div>
+                                        <label for="cnrs-dm-manager-available-<?php echo $manager['id'] ?>"><?php echo __('Not available', 'cnrs-data-manager') ?></label>
+                                        <input type="checkbox" id="cnrs-dm-manager-available-<?php echo $manager['id'] ?>" name="cnrs-dm-manager[<?php echo $manager['id'] ?>][available]"<?php echo $manager['available'] === '0' ? ' checked' : '' ?>>
+                                    </div>
+                                    <input required type="email" spellcheck="false" id="cnrs-dm-manager-primary-<?php echo $manager['id'] ?>" name="cnrs-dm-manager[<?php echo $manager['id'] ?>][primary_email]" value="<?php echo $manager['primary_email'] ?>">
+                                </div>
+                                <div>
+                                    <label for="cnrs-dm-manager-secondary-<?php echo $manager['id'] ?>"><?php echo __('Fallback email', 'cnrs-data-manager') ?></label>
+                                    <input required type="email" spellcheck="false" id="cnrs-dm-manager-secondary-<?php echo $manager['id'] ?>" name="cnrs-dm-manager[<?php echo $manager['id'] ?>][secondary_email]" value="<?php echo $manager['secondary_email'] ?>">
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                     <input type="submit" id="cnrs-dm-mission-form-submit-settings" class="button button-primary" value="<?php echo __('Save', 'cnrs-data-manager') ?>">
                 </form>
             </div>
