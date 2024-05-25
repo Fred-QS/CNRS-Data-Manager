@@ -68,6 +68,10 @@ const missionFormListContainer = document.querySelector('#cnrs-dm-mission-form-l
 const missionListLoader = document.querySelector('#cnrs-dm-mission-form-loader-container');
 const missionFormSearch = document.querySelector('#cnrs-data-manager-mission-search');
 const missionFormTotal = document.querySelector('#cnrs-dm-mission-form-total span');
+const adminFormLinkCopy = document.querySelector('#cnrs-dm-form-link-to-form span');
+const deleteManagerButton = document.querySelectorAll('.cnrs-dm-manager-delete-button');
+const addManagerButton = document.querySelector('.cnrs-dm-tool-button[data-action="add-manager"]');
+const managerList = document.querySelector('#cnrs-dm-managers-list');
 
 const tinyMCEConfig = {
     width: "100%",
@@ -88,6 +92,7 @@ let agentsList = [];
 
 prepareListeners();
 setToolsListeners(true);
+deleteManagerButtonsAction();
 
 function prepareListeners() {
     if (wpContainer) {
@@ -417,6 +422,53 @@ function prepareListeners() {
         ).catch(
             error => retrieveAgents({error: error, data: null})
         );
+    }
+
+    if (adminFormLinkCopy) {
+        adminFormLinkCopy.addEventListener('click', function (){
+            navigator.clipboard.writeText(this.dataset.link);
+        });
+    }
+
+    if (addManagerButton) {
+        addManagerButton.addEventListener('click', function (){
+            const formData = new FormData();
+            const url = '/wp-admin/admin-ajax.php';
+            const iteration = document.querySelectorAll('.cnrs-dm-manager-block').length + 1;
+            formData.append('action', 'get_new_manager');
+            formData.append('iteration', iteration);
+            const options = {
+                method: 'POST',
+                body: formData,
+            };
+            fetch(url, options)
+                .then(
+                    response => response.json()
+                ).then(
+                success => addNewManager(success.data)
+            ).catch(
+                error => addNewManager({error: error, data: null})
+            );
+        });
+    }
+}
+
+function addNewManager(info) {
+    if (info.error === null) {
+        const html = info.data;
+        managerList.insertAdjacentHTML('afterbegin', html);
+        deleteManagerButtonsAction();
+    } else {
+        console.log(info.error)
+    }
+}
+
+function deleteManagerButtonsAction() {
+    const deleteBtns = document.querySelectorAll('.cnrs-dm-manager-delete-button');
+    for (let i = 0; i < deleteBtns.length; i++) {
+        deleteBtns[i].onclick = function () {
+            this.closest('.cnrs-dm-manager-block').remove();
+        }
     }
 }
 

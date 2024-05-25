@@ -48,6 +48,7 @@ class CnrsDataManagerUninstall // phpcs:ignore
             $wpdb->prefix . 'cnrs_data_manager_agents_accounts',
             $wpdb->prefix . 'cnrs_data_manager_mission_forms',
             $wpdb->prefix . 'cnrs_data_manager_mission_form_settings',
+            $wpdb->prefix . 'cnrs_data_manager_conventions',
         ];
 
         foreach ($tables as $table) {
