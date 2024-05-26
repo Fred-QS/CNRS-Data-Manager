@@ -1,4 +1,8 @@
-<?php if ($validated === false): ?>
+<?php
+
+use CnrsDataManager\Core\Controllers\Emails;
+
+if ($validated === false): ?>
 
     <div class="cnrs-dm-mission-form">
         <script>
@@ -21,6 +25,24 @@
         <form method="post" id="cnrs-dm-front-mission-form-wrapper" action="<?php echo add_query_arg(NULL, NULL)  ?>">
             <input type="hidden" value='<?php echo $json ?>' name="cnrs-dm-front-mission-form-original">
             <input type="hidden" value="<?php echo wp_generate_uuid4() ?>" name="cnrs-dm-front-mission-uuid">
+            <?php if (count($conventions) > 1): ?>
+                <div class="cnrs-dm-front-mission-form-element cnrs-dm-front-radio-references" data-type="radio-convention" data-state="light">
+                        <span class="cnrs-dm-front-mission-form-element-label required">
+                            <?php echo __('Choose a convention', 'cnrs-data-manager') ?>
+                        </span>
+                    <?php $conventionIndex = 0; ?>
+                    <?php foreach ($conventions as $convention): ?>
+                        <label>
+                            <input<?php if ($conventionIndex === 0): echo ' checked'; endif; ?> value="<?php echo $convention['id'] ?>" type="radio" name="cnrs-dm-front-convention">
+                            <span class="design"></span>
+                            <span class="text"><?php echo $convention['name'] ?></span>
+                        </label>
+                        <?php $conventionIndex++; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <input type="hidden" value="<?php echo $conventions[0]['id'] ?>" name="cnrs-dm-front-convention">
+            <?php endif; ?>
             <?php $index = 0; ?>
             <?php foreach ($form['elements'] as $element): ?>
                 <?php $data = $element['data'] ?>

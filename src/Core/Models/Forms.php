@@ -29,7 +29,7 @@ class Forms
         $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET form='{$form}'");
     }
 
-    public static function recordNewForm(string $newForm, string $originalForm, string $userEmail, string $uuid): void
+    public static function recordNewForm(string $newForm, string $originalForm, string $userEmail, string $uuid): ?string
     {
         global $wpdb;
         $exist = $wpdb->get_row("SELECT id FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
@@ -41,11 +41,28 @@ class Forms
                     'email' => $userEmail,
                     'original' => $originalForm,
                     'form' => $newForm,
+                    'status' => 'PENDING',
                     'created_at' => date("Y-m-d H:i:s")
                 ),
                 array('%s', '%s', '%s', '%s', '%s')
             );
+            $form_id = $wpdb->insert_id;
+            $revision_uuid = wp_generate_uuid4();
+            $wpdb->insert(
+                "{$wpdb->prefix}cnrs_data_manager_revisions",
+                array(
+                    'active' => 1,
+                    'uuid' => $revision_uuid,
+                    'form_id' => $form_id,
+                    'sender' => 'AGENT',
+                    'created_at' => date("Y-m-d H:i:s")
+                ),
+                array('%d', '%s', '%d', '%s', '%s')
+            );
+            return $revision_uuid;
         }
+
+        return null;
     }
 
     public static function updatePassword(string $email, string $pwd): void
@@ -163,7 +180,7 @@ class Forms
         global $wpdb;
         $where = strlen($search) > 0 ? "WHERE email LIKE '%{$search}%'" : '';
         $offset = ($current*$limit) - $limit;
-        return $wpdb->get_results("SELECT email, created_at, uuid FROM {$wpdb->prefix}cnrs_data_manager_mission_forms {$where} ORDER BY created_at DESC LIMIT {$offset}, {$limit}", ARRAY_A);
+        return $wpdb->get_results("SELECT id, email, created_at, uuid, status FROM {$wpdb->prefix}cnrs_data_manager_mission_forms {$where} ORDER BY created_at DESC LIMIT {$offset}, {$limit}", ARRAY_A);
     }
 
     /**
@@ -246,5 +263,50 @@ class Forms
     {
         global $wpdb;
         return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_conventions ORDER BY id DESC", ARRAY_A);
+    }
+
+    /**
+     * Retrieves a specific convention from the database based on its ID.
+     *
+     * @param int $id The ID of the convention to retrieve.
+     * @return array An associative array containing the details of the convention.
+     */
+    public static function getConvention(int $id): array
+    {
+        global $wpdb;
+        return $wpdb->get_row("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_conventions WHERE id = {$id}", ARRAY_A);
+    }
+
+    /**
+     * Checks if a revision exists in the database.
+     *
+     * @return bool Returns true if the revision exists; otherwise, returns false.
+     */
+    public static function revisionExists(): bool
+    {
+        if (isset($_GET['r'])) {
+            global $wpdb;
+            $exist = $wpdb->get_row("SELECT id FROM {$wpdb->prefix}cnrs_data_manager_revisions WHERE uuid = '{$_GET['r']}' AND active = 1");
+            return $exist !== null;
+        }
+        return false;
+    }
+
+    /**
+     * Retrieves the revision details from the database.
+     *
+     * @return ?object An object containing the revision details, or null if no revision found.
+     */
+    public static function getRevision(): ?object
+    {
+        global $wpdb;
+        return $wpdb->get_row("SELECT {$wpdb->prefix}cnrs_data_manager_revisions.*, {$wpdb->prefix}cnrs_data_manager_mission_forms.uuid as form_uuid, {$wpdb->prefix}cnrs_data_manager_mission_forms.email as agent_email, {$wpdb->prefix}cnrs_data_manager_mission_forms.form FROM {$wpdb->prefix}cnrs_data_manager_revisions INNER JOIN {$wpdb->prefix}cnrs_data_manager_mission_forms ON {$wpdb->prefix}cnrs_data_manager_mission_forms.id = {$wpdb->prefix}cnrs_data_manager_revisions.form_id WHERE {$wpdb->prefix}cnrs_data_manager_revisions.uuid = '{$_GET['r']}' AND {$wpdb->prefix}cnrs_data_manager_revisions.active = 1");
+    }
+
+    public static function getRevisionsCountByFormId(int $formId): int
+    {
+        global $wpdb;
+        $qr = $wpdb->get_row("SELECT COUNT(*) as nb FROM {$wpdb->prefix}cnrs_data_manager_revisions WHERE form_id = {$formId}");
+        return (int) $qr->nb;
     }
 }

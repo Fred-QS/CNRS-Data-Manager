@@ -40,8 +40,8 @@ window.addEventListener('resize', function () {
 });
 
 window.addEventListener('click', function(e) {
-   const target = e.target;
-   closeMissionTooltips(target);
+    const target = e.target;
+    closeMissionTooltips(target);
 });
 
 function isJson(str) {
@@ -232,8 +232,10 @@ function prepareMissionForm() {
                     if (elmt.value.trim().length < 1) {
                         errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
                     }
-                } else if (type === 'radio') {
-                    const radioInputs = container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-radio-"]');
+                } else if (type === 'radio' || type === 'radio-convention') {
+                    const radioInputs = type === 'radio'
+                        ? container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-radio-"]')
+                        : container.querySelectorAll('input[name="cnrs-dm-front-convention"]');
                     const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
                     let radioChecked = [];
                     for (let j = 0; j < radioInputs.length; j++) {

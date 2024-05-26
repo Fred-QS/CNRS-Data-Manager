@@ -528,6 +528,17 @@ if (!function_exists('isCNRSDataManagerToolsSelected')) {
     }
 }
 
+if (!function_exists('getManagerEmailFromForm')) {
+
+    function getManagerEmailFromForm(string $json): string
+    {
+        $convention = json_decode($json, true)['convention'];
+        return $convention['available'] === '1'
+            ? $convention['primary_email']
+            : $convention['secondary_email'];
+    }
+}
+
 if (!function_exists('cnrsReadShortCode')) {
 
     /**
@@ -556,7 +567,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -673,6 +684,16 @@ if (!function_exists('cnrsReadShortCode')) {
 
         } else if ($type === 'form') {
 
+            $conventions = Forms::getConventions();
+
+            if (empty($conventions)) {
+                global $wp_query;
+                $wp_query->set_404();
+                status_header(404);
+                get_template_part(404);
+                exit();
+            }
+
             wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
             wp_enqueue_script('cnrs-data-manager-pad-sign-script', 'https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js', [], null);
             wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', ['cnrs-data-manager-pad-sign-script'], null);
@@ -700,8 +721,13 @@ if (!function_exists('cnrsReadShortCode')) {
 
                 if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
                     $uuid = $_POST['cnrs-dm-front-mission-uuid'];
-                    $jsonForm = Manager::newFilledForm($_POST);
-                    Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid);
+                    $jsonForm = Manager::newFilledForm($_POST, $uuid);
+                    $revision_uuid = Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid);
+                    if ($revision_uuid !== null) {
+                        $managerEmail = getManagerEmailFromForm($jsonForm);
+                        Emails::sendToManager($managerEmail, $revision_uuid);
+                    }
+                    Emails::sendConfirmationEmail($user->email);
                     $validated = true;
                 }
 
@@ -768,6 +794,45 @@ if (!function_exists('cnrsReadShortCode')) {
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Projects.php');
             return ob_get_clean();
+
+        } else if (in_array($type, ['revision-manager', 'revision-agent'], true)) {
+
+            if (!Forms::revisionExists()) {
+                global $wp_query;
+                $wp_query->set_404();
+                status_header(404);
+                get_template_part(404);
+                exit();
+            }
+            
+            $data = Forms::getRevision();
+            $json = $data->form;
+            unset($data->form);
+            $form = json_decode($json, true);
+
+            $agent = Agents::getAgentByEmail($data->agent_email, Manager::defineArrayFromXML()['agents']);
+
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-pad-sign-script', 'https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', ['cnrs-data-manager-pad-sign-script'], null);
+
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/RevisionForm.php');
+            return ob_get_clean();
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('extractOptionComment')) {
+
+    function extractOptionComment(int $index, array $options): string
+    {
+        foreach ($options as $option) {
+            if ($option['option'] === $index) {
+                return $option['value'];
+            }
         }
         return '';
     }
@@ -1275,9 +1340,8 @@ if (!function_exists('setUserConnexion')) {
                 }
                 setcookie('wp-cnrs-dm', $uuid, time() + 86400);
             }
-        } else if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
-            $userUuid = $_COOKIE['wp-cnrs-dm'];
-            Emails::sendConfirmationEmail($userUuid);
+        }
+        if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
             setcookie('wp-cnrs-dm', '', time() - 3600);
         }
     }
@@ -1325,6 +1389,16 @@ if (!function_exists('setMissionFormURL')) {
                     'uri' => 'cnrs-umr/mission-form-download',
                     'title' => __('Mission form download', 'cnrs-data-manager'),
                     'template' => 'mission-form-download'
+                ],
+                [
+                    'uri' => 'cnrs-umr/mission-form-revision/manager',
+                    'title' => __('Mission form revision by manager', 'cnrs-data-manager'),
+                    'template' => 'mission-form'
+                ],
+                [
+                    'uri' => 'cnrs-umr/mission-form-revision/agent',
+                    'title' => __('Mission form revision by agent', 'cnrs-data-manager'),
+                    'template' => 'mission-form'
                 ]
             ];
 

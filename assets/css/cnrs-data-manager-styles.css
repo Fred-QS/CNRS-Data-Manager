@@ -1995,6 +1995,31 @@ input:checked + .cnrs-dm-slider:before {
     opacity: 0.7;
 }
 
+.cnrs-dm-status-icon {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.cnrs-dm-status-icon-pending svg {
+    color: orange;
+    margin-right: 5px;
+}
+
+.cnrs-dm-status-icon-validated svg {
+    color: green;
+}
+
+.cnrs-dm-status-icon svg path {
+    fill: currentColor;
+}
+
+.cnrs-dm-status-icon small {
+    opacity: 0.7;
+    font-style: italic;
+    line-height: 1em;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;

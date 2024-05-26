@@ -53,13 +53,16 @@ class Emails
         return false;
     }
 
-    public static function sendConfirmationEmail(string $uuid): bool
+    /**
+     * Sends a confirmation email to the specified email address.
+     *
+     * @param string $email The email address to send the confirmation email to.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendConfirmationEmail(string $email): bool
     {
         try {
-            $user = Forms::getUserByUuid($uuid);
-            if ($user === null) {
-                return false;
-            }
             $subject = __('Confirmation', 'cnrs-data-manager');
             $template = 'confirmation';
 
@@ -67,7 +70,28 @@ class Emails
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            return sendCNRSEmail($user->email, $subject, $body);
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    public static function sendToManager(string $email, string $uuid): bool
+    {
+        try {
+            $subject = __('Mission form revision', 'cnrs-data-manager');
+            $template = 'revision';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
 
         } catch (\ErrorException $e) {
             return false;
