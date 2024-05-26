@@ -111,7 +111,9 @@ class Install
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_mission_form_settings (
               form longtext NOT NULL COMMENT 'Form in json string format',
               debug_mode tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Debug mode for emails logic',
-              debug_email varchar(255) DEFAULT NULL COMMENT 'Debug email address'
+              debug_email varchar(255) DEFAULT NULL COMMENT 'Debug email address',
+              admin_email VARCHAR(150) NOT NULL COMMENT 'Administrator email for form validation',
+              days_limit INT UNSIGNED NOT NULL DEFAULT 5 COMMENT 'Number of days for form submission deadline'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='UMR Mission form settings'"
         );
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_conventions (

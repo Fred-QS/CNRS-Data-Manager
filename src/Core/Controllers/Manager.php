@@ -472,18 +472,18 @@ final class Manager
             'signs' => __('Signing pads', 'cnrs-data-manager'),
         ];
         $toolsConfig = [
-            'input' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'number' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'date' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'time' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'datetime' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'checkbox' => ['value' => null, 'values' => [], 'choices' => [], 'required' => false],
-            'comment' => ['value' => [__('My comment', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false],
-            'radio' => ['value' => [], 'values' => null, 'choices' => [], 'required' => false],
-            'separator' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'textarea' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'title' => ['value' => [__('My title', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false],
-            'signs' => ['value' => [__('My signing pads', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false]
+            'input' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'number' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'date' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'time' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'datetime' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'checkbox' => ['value' => null, 'values' => [], 'choices' => [], 'required' => false, 'isReference' => false],
+            'comment' => ['value' => [__('My comment', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'radio' => ['value' => [], 'values' => null, 'choices' => [], 'required' => false, 'isReference' => false],
+            'separator' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'textarea' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'title' => ['value' => [__('My title', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'signs' => ['value' => [__('My signing pads', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false]
         ];
         return json_encode([
             'type' => $type,

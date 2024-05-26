@@ -5,6 +5,10 @@
         </svg>
     </span>
     <p class="cnrs-dm-form-tool-label"><?php echo __('Date field', 'cnrs-data-manager') ?></p>
+    <div class="cnrs-dm-form-tool-is-reference-wrapper">
+        <input<?php echo isset($json) && $json['data']['isReference'] === true ? ' checked' : '' ?> type="radio" name="cnrs-dm-form-tool-is-reference-input" id="cnrs-dm-form-tool-is-reference-input-<?php echo $iteration ?>">
+        <label for="cnrs-dm-form-tool-is-reference-input-<?php echo $iteration ?>"><?php echo __('Mission start reference', 'cnrs-data-manager') ?></label>
+    </div>
     <div class="cnrs-dm-tool-buttons-wrapper">
         <span class="cnrs-dm-tool-button" data-action="edit">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20">

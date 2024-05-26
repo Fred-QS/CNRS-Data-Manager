@@ -1453,8 +1453,16 @@ input[name="cnrs-dm-other-option"] {
     margin: 0 0 20px;
     text-align: center;
     width: 100%;
-    display: inline;
     color: #2271b1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+#cnrs-dm-form-modal h3 .cnrs-dm-preview-reference-wrapper {
+    width: 16px!important;
+    height: 16px;
 }
 
 #cnrs-dm-form-preview-container {
@@ -2018,6 +2026,40 @@ input:checked + .cnrs-dm-slider:before {
     opacity: 0.7;
     font-style: italic;
     line-height: 1em;
+}
+
+.cnrs-dm-form-tool-is-reference-wrapper {
+    padding: 0 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.cnrs-dm-form-tool-is-reference-wrapper label {
+    line-height: 1em;
+    font-style: italic;
+    color: #2271b1;
+    opacity: 0.7;
+    padding-bottom: 4px;
+    cursor: pointer;
+}
+
+.cnrs-dm-preview-reference-wrapper {
+    width: 12px!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 12px;
+    margin-left: 5px;
+}
+
+.cnrs-dm-preview-reference-wrapper svg {
+    color: gold;
+}
+
+.cnrs-dm-preview-reference-wrapper svg path {
+    fill: currentColor;
 }
 
 @media only screen and (min-width: 783px) {

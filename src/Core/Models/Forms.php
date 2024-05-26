@@ -135,7 +135,7 @@ class Forms
     public static function getSettings(): object
     {
         global $wpdb;
-        return $wpdb->get_row("SELECT debug_mode, debug_email FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        return $wpdb->get_row("SELECT debug_mode, debug_email, admin_email, days_limit FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
     }
 
     /**
@@ -152,7 +152,9 @@ class Forms
         global $wpdb;
         $mode = isset($data['cnrs-dm-debug-mode']) && $data['cnrs-dm-debug-mode'] === 'on' ? 1 : 0;
         $email = $data['cnrs-dm-debug-email'];
-        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET debug_mode = {$mode}, debug_email = '{$email}'");
+        $admin = $data['cnrs-dm-admin-email'];
+        $days = $data['cnrs-dm-days-limit'];
+        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET debug_mode = {$mode}, debug_email = '{$email}', admin_email = '{$admin}', days_limit = {$days}");
     }
 
     /**
@@ -303,10 +305,28 @@ class Forms
         return $wpdb->get_row("SELECT {$wpdb->prefix}cnrs_data_manager_revisions.*, {$wpdb->prefix}cnrs_data_manager_mission_forms.uuid as form_uuid, {$wpdb->prefix}cnrs_data_manager_mission_forms.email as agent_email, {$wpdb->prefix}cnrs_data_manager_mission_forms.form FROM {$wpdb->prefix}cnrs_data_manager_revisions INNER JOIN {$wpdb->prefix}cnrs_data_manager_mission_forms ON {$wpdb->prefix}cnrs_data_manager_mission_forms.id = {$wpdb->prefix}cnrs_data_manager_revisions.form_id WHERE {$wpdb->prefix}cnrs_data_manager_revisions.uuid = '{$_GET['r']}' AND {$wpdb->prefix}cnrs_data_manager_revisions.active = 1");
     }
 
+    /**
+     * Retrieves the number of revisions for a given form ID from the database.
+     *
+     * @param int $formId The ID of the form.
+     * @return int The number of revisions for the given form ID.
+     */
     public static function getRevisionsCountByFormId(int $formId): int
     {
         global $wpdb;
         $qr = $wpdb->get_row("SELECT COUNT(*) as nb FROM {$wpdb->prefix}cnrs_data_manager_revisions WHERE form_id = {$formId}");
         return (int) $qr->nb;
+    }
+
+    /**
+     * Sets the admin email for the mission form settings in the database.
+     *
+     * @param string $email The email address of the admin.
+     * @return void
+     */
+    public static function setAdminEmail(string $email): void
+    {
+        global $wpdb;
+        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET admin_email='{$email}', days_limit=5");
     }
 }
