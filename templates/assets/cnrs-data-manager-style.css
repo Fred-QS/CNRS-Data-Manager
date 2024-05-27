@@ -2249,6 +2249,13 @@ input[name="cnrs-dm-front-convention"]:active+.design::after {
     fill: currentColor;
 }
 
+#cnrs-dm-front-reference-alert.show {
+    color: #ff5c33;
+    margin-top: 5px;
+    text-align: center;
+    width: 100%;
+}
+
 @media only screen and (min-width: 768px) {
 
     .cnrs-dm-front-mission-form-login > h2 {

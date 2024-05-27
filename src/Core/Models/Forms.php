@@ -29,7 +29,7 @@ class Forms
         $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET form='{$form}'");
     }
 
-    public static function recordNewForm(string $newForm, string $originalForm, string $userEmail, string $uuid): ?string
+    public static function recordNewForm(string $newForm, string $originalForm, string $userEmail, string $uuid, bool $isValidated): ?string
     {
         global $wpdb;
         $exist = $wpdb->get_row("SELECT id FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
@@ -48,17 +48,19 @@ class Forms
             );
             $form_id = $wpdb->insert_id;
             $revision_uuid = wp_generate_uuid4();
-            $wpdb->insert(
-                "{$wpdb->prefix}cnrs_data_manager_revisions",
-                array(
-                    'active' => 1,
-                    'uuid' => $revision_uuid,
-                    'form_id' => $form_id,
-                    'sender' => 'AGENT',
-                    'created_at' => date("Y-m-d H:i:s")
-                ),
-                array('%d', '%s', '%d', '%s', '%s')
-            );
+            if ($isValidated === true) {
+                $wpdb->insert(
+                    "{$wpdb->prefix}cnrs_data_manager_revisions",
+                    array(
+                        'active' => 1,
+                        'uuid' => $revision_uuid,
+                        'form_id' => $form_id,
+                        'sender' => 'AGENT',
+                        'created_at' => date("Y-m-d H:i:s")
+                    ),
+                    array('%d', '%s', '%d', '%s', '%s')
+                );
+            }
             return $revision_uuid;
         }
 
@@ -374,7 +376,8 @@ class Forms
             ),
             array('%d', '%s', '%d', '%s', '%s')
         );
-        $form = $wpdb->get_row("SELECT email FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE id={$id}");
-        return ['email' => $form->email, 'uuid' => $uuid];
+        $form = $wpdb->get_row("SELECT form FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE id={$id}");
+        $email = getManagerEmailFromForm($form->form);
+        return ['email' => $email, 'uuid' => $uuid];
     }
 }

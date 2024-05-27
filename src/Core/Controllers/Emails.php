@@ -131,4 +131,23 @@ class Emails
             return false;
         }
     }
+
+    public static function sendToAdmin(string $email): bool
+    {
+        try {
+            $subject = __('Deadline exceeded form', 'cnrs-data-manager');
+            $template = 'exceed';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
 }

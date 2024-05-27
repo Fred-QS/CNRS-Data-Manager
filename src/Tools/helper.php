@@ -17,6 +17,168 @@ use CnrsDataManager\Core\Controllers\Page;
 
 $shortCodesCounter = 0;
 
+$dumpStyle = '<style>
+    .dumper-container::-webkit-scrollbar {
+        width: 16px;
+        height: 16px;
+    }
+
+    .dumper-container::-webkit-scrollbar-track {
+        background-color: transparent;
+        border-radius: 100px;
+    }
+
+    .dumper-container::-webkit-scrollbar-thumb {
+        background-color: gold;
+        border-radius: 100px;
+        background-clip: padding-box;
+        border: 5px solid transparent;
+        -webkit-border-radius: 100px;
+        -webkit-box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.05), inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+        -webkit-transition: all linear 0.2s;
+    }
+
+    .dumper-container::-webkit-scrollbar-button {
+        width: 0;
+        height: 0;
+        display: none;
+    }
+
+    .dumper-container::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
+    .dumper-container {
+        width: max-content; 
+        overflow-x: auto; 
+        max-width: calc(100% - 20px); 
+        background-color: #3c3c3c; 
+        box-sizing: border-box; 
+        padding: 10px 10px 0; 
+        line-height: 1.3em; 
+        margin: 10px;
+    }
+    .dumper-details {
+        font-size: 11px; 
+        color: violet; 
+        line-height: 1.2em; 
+        padding: 0;
+    }
+    .dumper-pre {
+        color: #f1f1f1;
+        font-size: 12px;
+        padding: 5px 10px 10px 0;
+        width: max-content;
+        box-sizing: border-box;
+    }
+</style>';
+
+if (!function_exists('dump')) {
+
+    /**
+     * Dump the provided variables for debugging purposes.
+     *
+     * @param mixed ...$vars The variables to be dumped.
+     * @return void
+     */
+    function dump(mixed ...$vars): void
+    {
+        global $dumpStyle;
+        echo $dumpStyle;
+        echo '<div class="dumper-container">';
+        ob_start();
+        foreach ($vars as $key => $var) {
+            echo '<p class="dumper-details"><b>File:</b> /' . str_replace(ABSPATH, '', debug_backtrace()[0]['file']) . '</p>';
+            echo '<p class="dumper-details"><b>Line:</b> ' . str_replace(ABSPATH, '', debug_backtrace()[0]['line']) . '</p>';
+            echo '<pre class="dumper-pre">';
+            var_dump($var);
+            echo '</pre>';
+        }
+        $content = ob_get_clean();
+        echo parseDumper($content);
+        echo '</div>';
+    }
+}
+
+if (!function_exists('dd')) {
+
+    /**
+     * Dump and die function for debugging purposes.
+     *
+     * @param mixed ...$vars The variables to be dumped.
+     * @return void
+     */
+    function dd(mixed ...$vars): void
+    {
+        global $dumpStyle;
+        echo $dumpStyle;
+        echo '<div class="dumper-container">';
+        ob_start();
+        foreach ($vars as $key => $var) {
+            echo '<p class="dumper-details"><b>File:</b> /' . str_replace(ABSPATH, '', debug_backtrace()[0]['file']) . '</p>';
+            echo '<p class="dumper-details"><b>Line:</b> ' . str_replace(ABSPATH, '', debug_backtrace()[0]['line']) . '</p>';
+            echo '<pre class="dumper-pre">';
+            var_dump($var);
+            echo '</pre>';
+        }
+        $content = ob_get_clean();
+        echo parseDumper($content);
+        echo '</div>';
+        die();
+    }
+}
+
+if (!function_exists('parseDumper')) {
+
+    /**
+     * Parse the dumper content to highlight specific elements with colors.
+     *
+     * @param string $content The content to parse.
+     * @return string The parsed content with highlighted elements.
+     */
+    function parseDumper(string $content): string
+    {
+        $content = str_replace(
+            [
+                "=>\n",
+                "{",
+                "}",
+                "string",
+                "array",
+                "object",
+                "int",
+                "[\"",
+                "\"]"
+            ],
+            [
+                " <span style='color: dodgerblue'>=></span>",
+                "<span style='color: gold'>{</span>",
+                "<span style='color: gold'>}</span>",
+                "<span style='color: limegreen'>String</span>",
+                "<span style='color: limegreen'>Array</span>",
+                "<span style='color: limegreen'>Object</span>",
+                "<span style='color: limegreen'>Int</span>",
+                "\"",
+                "\""
+            ],
+            $content
+        );
+        $content = preg_replace_callback(
+            '|[^"](.*)[^"]|',
+            function ($matches) {
+                return '<span style="color: greenyellow">' . $matches[0] . '</span>';
+            },
+            $content
+        );
+        return preg_replace_callback(
+            '|[(](.*)[)]|',
+            function ($matches) {
+                return '<span style="color: #fff;">' . $matches[0] . '</span>';
+            },
+            $content
+        );
+    }
+}
+
 if (!function_exists('rrmdir')) {
     /**
      * Recursively removes a directory and its contents.
@@ -539,6 +701,32 @@ if (!function_exists('getManagerEmailFromForm')) {
     }
 }
 
+if (!function_exists('isValidatedForm')) {
+
+    function isValidatedForm(string $json, int $days_limit): bool
+    {
+        $elements = json_decode($json, true)['elements'];
+        foreach ($elements as $element) {
+            if ($element['type'] === 'date' && $element['data']['isReference'] === true) {
+                $missionDate = $element['data']['value'][0] ?? null;
+                if ($missionDate !== null) {
+                    $limitDate = date("Y-m-d");
+                    while ($days_limit > 0) {
+                        $limitDate = date('Y-m-d', strtotime($limitDate. ' + 1 days'));
+                        if (date('D', strtotime($limitDate)) !== 'Sat' && date('D', strtotime($limitDate)) !== 'Sun') {
+                            $days_limit--;
+                        }
+                    }
+                    $missionTimeStamp = strtotime($missionDate);
+                    $limitTimeStamp = strtotime($limitDate);
+                    return $missionTimeStamp > $limitTimeStamp;
+                }
+            }
+        }
+        return true;
+    }
+}
+
 if (!function_exists('cnrsReadShortCode')) {
 
     /**
@@ -717,13 +905,19 @@ if (!function_exists('cnrsReadShortCode')) {
                 'unsigned' => __('must be equal or greater than 0', 'cnrs-data-manager'),
             ];
 
+            $days_limit = Settings::getDaysLimit();
+
             if ($user !== null) {
 
                 if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
                     $uuid = $_POST['cnrs-dm-front-mission-uuid'];
                     $jsonForm = Manager::newFilledForm($_POST, $uuid);
-                    $revision_uuid = Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid);
-                    if ($revision_uuid !== null) {
+                    $validated = isValidatedForm($jsonForm, $days_limit);
+                    $revision_uuid = Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid, $validated);
+                    if ($validated === false) {
+                        $adminEmail = Settings::getAdminEmail();
+                        Emails::sendToAdmin($adminEmail);
+                    } else {
                         $managerEmail = getManagerEmailFromForm($jsonForm);
                         Emails::sendToManager($managerEmail, $revision_uuid);
                     }

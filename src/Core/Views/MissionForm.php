@@ -7,6 +7,8 @@ if ($validated === false): ?>
     <div class="cnrs-dm-mission-form">
         <script>
             const missionForm = <?php echo $json ?>;
+            const daysLimit = <?php echo $days_limit ?>;
+            const daysLimitAlert = "<?php echo sprintf(__('<b>Warning !</b> The mission start date is less <b>than %d days</b>. Your request will be rejected if deemed not urgent.', 'cnrs-data-manager'), $days_limit) ?>";
         </script>
         <h2 id="cnrs-dm-front-mission-form-title"><?php echo $form['title'] ?></h2>
         <p class="cnrs-dm-front-mission-form-subtitles"><?php echo __('Please fill out the form', 'cnrs-data-manager') ?></p>
@@ -164,7 +166,10 @@ if ($validated === false): ?>
                             <?php endif; ?>
                         </span>
                         <label>
-                            <input<?php echo $data['required'] === true ? ' required' : '' ?> type="date" name="cnrs-dm-front-mission-form-element-<?php echo $element['type']; ?>-<?php echo $index; ?>">
+                            <input<?php echo $data['required'] === true ? ' required' : '' ?> type="date" name="cnrs-dm-front-mission-form-element-<?php echo $element['type']; ?>-<?php echo $index; ?>"<?php echo $data['isReference'] === true ? ' id="cnrs-dm-front-reference-input"' : '' ?>>
+                            <?php if ($data['isReference'] === true): ?>
+                                <span id="cnrs-dm-front-reference-alert"></span>
+                            <?php endif; ?>
                         </label>
                     </div>
                 <?php elseif ($element['type'] === 'time'): ?>

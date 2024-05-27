@@ -1,4 +1,5 @@
 <?php
+
 use CnrsDataManager\Core\Models\Forms;
 
 if (isset($_POST['cnrs-dm-admin-email-init']) && strlen($_POST['cnrs-dm-admin-email-init']) > 0) {
@@ -17,11 +18,13 @@ if (isset($_POST['cnrs-dm-mission-form-settings']) && strlen($_POST['cnrs-dm-mis
 if (!empty($_POST['cnrs-dm-manager'])) {
     Forms::setConventions($_POST['cnrs-dm-manager']);
 }
+
 $form = Forms::getCurrentForm();
 $settings = Forms::getSettings();
 $managersList = Forms::getConventions();
 $decodedForm = json_decode($form, true);
 $formLink = get_site_url() . '/cnrs-umr/mission-form';
+
 ?>
 
 <div class="wrap cnrs-data-manager-page" id="cnrs-data-manager-mission-form-page">

@@ -25,6 +25,8 @@ const resetEmailBtn = document.querySelector('#cnrs-dm-front-mission-form-submit
 const loginEmailBtn = document.querySelector('#cnrs-dm-front-mission-form-submit-login-btn');
 const logoutBtn = document.querySelector('#cnrs-dm-front-mission-user-logout');
 const tooltipBtns = document.querySelectorAll('.cnrs-dm-front-tooltip-btn');
+const referneceDateInput = document.querySelector('#cnrs-dm-front-reference-input');
+const referenceDateAlert = document.querySelector('#cnrs-dm-front-reference-alert');
 let agentEmails = [];
 
 window.addEventListener('load', function(){
@@ -192,6 +194,27 @@ function prepareMissionForm() {
                     document.querySelector('#cnrs-dm-front-sign-pad-wrapper').classList.add('display');
                 }, 50);
             }
+        }
+
+        if (referneceDateInput && referenceDateAlert && daysLimit && daysLimitAlert) {
+            referneceDateInput.addEventListener('input', function (event) {
+                let count = daysLimit;
+                const mission = new Date(this.value);
+                let limit = new Date();
+                while (count > 0) {
+                    limit.setDate(limit.getDate() + 1);
+                    if (limit.getDay() !== 0 && limit.getDay() !== 6) {
+                        count--;
+                    }
+                }
+                if (!isNaN(new Date(limit)) && mission < limit) {
+                    referenceDateAlert.innerHTML = daysLimitAlert;
+                    referenceDateAlert.classList.add('show');
+                } else {
+                    referenceDateAlert.innerHTML = '';
+                    referenceDateAlert.classList.remove('show');
+                }
+            });
         }
     }
 
