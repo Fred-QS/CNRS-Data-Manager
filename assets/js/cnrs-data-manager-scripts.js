@@ -525,6 +525,8 @@ function setListListener() {
     const nbOfResult2 = document.querySelector('#cnrs-data-manager-limit-2');
     const currentPage = document.querySelector('#current-page-selector');
     const paginators = document.querySelectorAll('.cnrs-dm-mission-form-pagination-btn');
+    const actions = document.querySelectorAll('.cnrs-dm-actions-triggers');
+
     if (nbOfResult1 && nbOfResult2) {
         nbOfResult1.onchange = function () {nbOfResult2.value = this.value;}
         nbOfResult2.onchange = function () {nbOfResult1.value = this.value;}
@@ -550,10 +552,12 @@ function setListListener() {
     }
     for (let i = 0; i < paginators.length; i++) {
         paginators[i].onclick = function () {
-            let search = searchInput.value;
-            let limit = nbOfResult1.value;
-            let current = this.dataset.page;
-            buildFormList(current, search, limit);
+            if (searchInput) {
+                let search = searchInput.value;
+                let limit = nbOfResult1.value;
+                let current = this.dataset.page;
+                buildFormList(current, search, limit);
+            }
         }
     }
     const expandBtns = document.querySelectorAll('.toggle-row');
@@ -566,6 +570,39 @@ function setListListener() {
                 parent.classList.add('is-expanded');
             }
         }
+    }
+
+    for (let i = 0; i < actions.length; i++) {
+        if (!actions[i].classList.contains('disabled')) {
+            actions[i].onclick = function () {
+                missionListLoader.classList.add('show');
+                const formData = new FormData();
+                const url = '/wp-admin/admin-ajax.php';
+                formData.append('action', 'form_list_action');
+                formData.append('trigger', this.dataset.action);
+                formData.append('form_id', this.dataset.form);
+                const options = {
+                    method: 'POST',
+                    body: formData,
+                };
+                fetch(url, options)
+                    .then(
+                        response => response.json()
+                    ).then(
+                    success => refreshListTab(success.data)
+                ).catch(
+                    error => refreshListTab({error: error, data: null})
+                );
+            }
+        }
+    }
+}
+
+function refreshListTab(info) {
+    if (info.error === null) {
+        window.location.reload(true);
+    } else {
+        console.warn(info.error);
     }
 }
 

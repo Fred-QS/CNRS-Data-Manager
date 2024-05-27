@@ -9,6 +9,7 @@ use CnrsDataManager\Excel\IOFactory;
 use CnrsDataManager\Excel\RichText\RichText;
 use CnrsDataManager\Core\Models\Projects;
 use CnrsDataManager\Core\Models\Forms;
+use CnrsDataManager\Core\Controllers\Emails;
 use CnrsDataManager\Core\Controllers\Manager;
 
 class Ajax
@@ -20,7 +21,8 @@ class Ajax
         'get_form_tool' => 'getFormTool',
         'get_agents_list' => 'getAgentsList',
         'get_forms_list' => 'getFormsList',
-        'get_new_manager' => 'getNewManager'
+        'get_new_manager' => 'getNewManager',
+        'form_list_action' => 'formListAction'
     ];
 
     private static array $publicActions = [];
@@ -458,6 +460,11 @@ class Ajax
         exit;
     }
 
+    /**
+     * Retrieves the list of forms and sends it as a JSON response.
+     *
+     * @return void
+     */
     public static function getFormsList(): void
     {
         $json = ['error' => null, 'data' => ['total' => 0], 'html' => ''];
@@ -497,7 +504,12 @@ class Ajax
         exit;
     }
 
-    public static function getNewManager()
+    /**
+     * Retrieves the HTML content for the new manager form and sends it as a JSON response.
+     *
+     * @return void
+     */
+    public static function getNewManager(): void
     {
         $json = ['error' => null, 'data' => []];
         if (!isset($_POST['iteration'])) {
@@ -508,6 +520,37 @@ class Ajax
                 ob_start();
                 include(CNRS_DATA_MANAGER_PATH . '/templates/includes/new-manager.php');
                 $json['data'] = ob_get_clean();
+            } catch (ErrorException $e) {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Updates the status of a form based on the trigger and form ID provided in the $_POST data,
+     * and sends the updated status as a JSON response.
+     *
+     * @return void
+     */
+    public static function formListAction(): void
+    {
+        $json = ['error' => null, 'data' => 'ko'];
+        if (!isset($_POST['trigger']) || !isset($_POST['form_id'])) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        } else {
+            $state = true;
+            try {
+                if ($_POST['trigger'] === 'abandon') {
+                    $email = Forms::setAbandonForm((int) $_POST['form_id']);
+                    $state = Emails::sendAbandonForm($email);
+                } else if ($_POST['trigger'] === 'validate') {
+                    $data = Forms::setPendingForm((int) $_POST['form_id']);
+                    $state = Emails::sendToManager($data['email'], $data['uuid']);
+                }
+                $json['data'] = $state === true ? 'ok' : 'ko';
+                $json['error'] = $state === false ? __('An error as occurred.', 'cnrs-data-manager') : null;
             } catch (ErrorException $e) {
                 $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
             }

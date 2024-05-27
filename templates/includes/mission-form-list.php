@@ -8,7 +8,8 @@ $head = [
     __('Created at', 'cnrs-data-manager'),
     __('Status', 'cnrs-data-manager'),
     __('Revisions', 'cnrs-data-manager'),
-    __('Form', 'cnrs-data-manager')
+    __('Form', 'cnrs-data-manager'),
+    __('Actions', 'cnrs-data-manager')
 ];
 
 ?>
@@ -129,6 +130,18 @@ $head = [
                                 <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
                             </svg>
                         </span>
+                    <?php elseif ($item['status'] === 'EXCEPTION'): ?>
+                        <span aria-hidden="true" class="cnrs-dm-status-icon cnrs-dm-status-icon-exception">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20">
+                                <path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zM305 305c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47z"/>
+                            </svg>
+                        </span>
+                    <?php elseif ($item['status'] === 'CANCELED'): ?>
+                        <span aria-hidden="true" class="cnrs-dm-status-icon cnrs-dm-status-icon-canceled">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20">
+                                <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z"/>
+                            </svg>
+                        </span>
                     <?php endif; ?>
                 </td>
                 <td data-colname="<?php echo $head[3] ?>">
@@ -137,7 +150,7 @@ $head = [
                 </td>
                 <td data-colname="<?php echo $head[4] ?>">
                     <span class="screen-reader-text"><?php echo __('No description', 'cnrs-data-manager') ?></span>
-                    <span class="cnrs-dm-mission-form-list-title" aria-hidden="true">
+                    <span class="cnrs-dm-mission-form-list-title" aria-hidden="true" title="<?php echo __('Mission form', 'cnrs-data-manager') ?>-<?php echo str_replace(['-', ' ', ':'], '', $item['created_at']) ?>">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                             <path d="M64 464l48 0 0 48-48 0c-35.3 0-64-28.7-64-64L0 64C0 28.7 28.7 0 64 0L229.5 0c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3L384 304l-48 0 0-144-80 0c-17.7 0-32-14.3-32-32l0-80L64 48c-8.8 0-16 7.2-16 16l0 384c0 8.8 7.2 16 16 16zM176 352l32 0c30.9 0 56 25.1 56 56s-25.1 56-56 56l-16 0 0 32c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48 0-80c0-8.8 7.2-16 16-16zm32 80c13.3 0 24-10.7 24-24s-10.7-24-24-24l-16 0 0 48 16 0zm96-80l32 0c26.5 0 48 21.5 48 48l0 64c0 26.5-21.5 48-48 48l-32 0c-8.8 0-16-7.2-16-16l0-128c0-8.8 7.2-16 16-16zm32 128c8.8 0 16-7.2 16-16l0-64c0-8.8-7.2-16-16-16l-16 0 0 96 16 0zm80-112c0-8.8 7.2-16 16-16l48 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 32 32 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32 0 0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-64 0-64z"/>
                         </svg>
@@ -155,6 +168,15 @@ $head = [
                             </svg>
                         </a>
                     </div>
+                </td>
+                <td data-colname="<?php echo $head[5] ?>">
+                    <span class="screen-reader-text"><?php echo __('No description', 'cnrs-data-manager') ?></span>
+                    <span class="cnrs-dm-actions-triggers button<?php echo !in_array($item['status'], ['VALIDATED', 'CANCELED'], true) ? ' button-danger' : ' disabled' ?>" data-form="<?php echo $item['id'] ?>" data-action="abandon">
+                        <?php echo __('Abandon', 'cnrs-data-manager') ?>
+                    </span>
+                    <span class="cnrs-dm-actions-triggers button<?php echo $item['status'] === 'EXCEPTION' ? ' button-primary' : ' disabled' ?>" data-form="<?php echo $item['id'] ?>" data-action="validate">
+                        <?php echo __('Validate', 'cnrs-data-manager') ?>
+                    </span>
                 </td>
             </tr>
             <?php $level++; ?>

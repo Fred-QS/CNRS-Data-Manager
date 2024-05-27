@@ -4,7 +4,6 @@ use CnrsDataManager\Core\Models\Forms;
 if (isset($_POST['cnrs-dm-admin-email-init']) && strlen($_POST['cnrs-dm-admin-email-init']) > 0) {
     Forms::setAdminEmail($_POST['cnrs-dm-admin-email-init']);
 }
-
 if (isset($_POST['cnrs-dm-mission-form']) && strlen($_POST['cnrs-dm-mission-form']) > 0) {
     $missionForm = $_POST['cnrs-dm-mission-form'];
     Forms::setCurrentForm($missionForm);

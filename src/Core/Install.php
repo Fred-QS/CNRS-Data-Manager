@@ -104,7 +104,7 @@ class Install
               email varchar(255) NOT NULL COMMENT 'Email from user who filled out the form',
               original longtext NOT NULL COMMENT 'Original form json',
               form longtext NOT NULL COMMENT 'Filled out form json',
-              status ENUM(\"PENDING\",\"VALIDATED\") NOT NULL DEFAULT 'PENDING' COMMENT 'The form status once completed',
+              status ENUM('PENDING','VALIDATED','EXCEPTION','CANCELED') NOT NULL DEFAULT 'PENDING' COMMENT 'The form status once completed',
               created_at timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Form creation timestamp'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Filled out mission forms list'"
         );

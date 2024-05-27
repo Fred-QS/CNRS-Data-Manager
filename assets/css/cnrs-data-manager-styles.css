@@ -1864,10 +1864,12 @@ input:checked + .cnrs-dm-slider:before {
 }
 
 .cnrs-dm-mission-form-list-title {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    display: block;
     color: #b32d2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 .cnrs-dm-mission-form-list-title svg {
@@ -2009,6 +2011,10 @@ input:checked + .cnrs-dm-slider:before {
     align-items: center;
 }
 
+.cnrs-dm-status-icon-exception {
+    margin-bottom: 10px;
+}
+
 .cnrs-dm-status-icon-pending svg {
     color: orange;
     margin-right: 5px;
@@ -2016,6 +2022,14 @@ input:checked + .cnrs-dm-slider:before {
 
 .cnrs-dm-status-icon-validated svg {
     color: green;
+}
+
+.cnrs-dm-status-icon-exception svg {
+    color: #b32d2e;
+}
+
+.cnrs-dm-status-icon-canceled svg {
+    color: #b32d2e;
 }
 
 .cnrs-dm-status-icon svg path {
@@ -2026,6 +2040,22 @@ input:checked + .cnrs-dm-slider:before {
     opacity: 0.7;
     font-style: italic;
     line-height: 1em;
+}
+
+.cnrs-dm-exception-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.cnrs-dm-actions-triggers {
+    width: 100%;
+    text-align: center;
+}
+
+.cnrs-dm-actions-triggers:not(:nth-child(2)) {
+    margin-top: 5px;
 }
 
 .cnrs-dm-form-tool-is-reference-wrapper {

@@ -329,4 +329,52 @@ class Forms
         global $wpdb;
         $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET admin_email='{$email}', days_limit=5");
     }
+
+    /**
+     * Sets the status of a form to 'CANCELED' in the mission forms table and deactivates all revisions related to the form.
+     *
+     * @param int $id The ID of the form to be abandoned.
+     * @return string The email associated with the abandoned form.
+     */
+    public static function setAbandonForm(int $id): string
+    {
+        global $wpdb;
+        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_forms SET status='CANCELED' WHERE id={$id}");
+        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_revisions SET active=0 WHERE form_id={$id}");
+        $form = $wpdb->get_row("SELECT email FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE id={$id}");
+        return $form->email;
+    }
+
+    /**
+     * Sets the status of a mission form to 'PENDING' and retrieves the email of the form based on its ID.
+     *
+     * @param int $id The ID of the mission form.
+     *
+     * @return array An array containing the email and uuid associated with the mission form.
+     */
+    public static function setPendingForm(int $id): array
+    {
+        global $wpdb;
+        $wpdb->update(
+            "{$wpdb->prefix}cnrs_data_manager_mission_forms",
+            array('status' => 'PENDING'),
+            array('id' => $id),
+            array('%s'),
+            array('%d'),
+        );
+        $uuid = wp_generate_uuid4();
+        $wpdb->insert(
+            "{$wpdb->prefix}cnrs_data_manager_revisions",
+            array(
+                'active' => 1,
+                'uuid' => $uuid,
+                'form_id' => $id,
+                'sender' => 'AGENT',
+                'created_at' => date("Y-m-d H:i:s")
+            ),
+            array('%d', '%s', '%d', '%s', '%s')
+        );
+        $form = $wpdb->get_row("SELECT email FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE id={$id}");
+        return ['email' => $form->email, 'uuid' => $uuid];
+    }
 }

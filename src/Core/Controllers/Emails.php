@@ -79,11 +79,45 @@ class Emails
         }
     }
 
+    /**
+     * Sends a mission form revision email to the specified email address.
+     *
+     * @param string $email The email address to send the mission form revision email to.
+     * @param string $uuid The unique identifier of the mission form.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
     public static function sendToManager(string $email, string $uuid): bool
     {
         try {
             $subject = __('Mission form revision', 'cnrs-data-manager');
             $template = 'revision';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sends an abandoned form notification email.
+     *
+     * @param string $email The email address to send the notification to.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendAbandonForm(string $email): bool
+    {
+        try {
+            $subject = __('Abandoned form', 'cnrs-data-manager');
+            $template = 'canceled';
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
