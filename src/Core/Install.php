@@ -113,6 +113,7 @@ class Install
               debug_mode tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Debug mode for emails logic',
               debug_email varchar(255) DEFAULT NULL COMMENT 'Debug email address',
               admin_email VARCHAR(150) NOT NULL COMMENT 'Administrator email for form validation',
+              generic_email VARCHAR(150) NOT NULL COMMENT 'Generic email for validated form',
               days_limit INT UNSIGNED NOT NULL DEFAULT 5 COMMENT 'Number of days for form submission deadline'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='UMR Mission form settings'"
         );
@@ -128,6 +129,8 @@ class Install
               id bigint(20) UNSIGNED PRIMARY (id) NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
               active tinyint(1) NOT NULL DEFAULT 1 COMMENT 'Active if is current revision',
               uuid varchar(36) NOT NULL UNIQUE (uuid) COMMENT 'Unique revision identifier',
+              manager_name varchar(150) DEFAULT NULL COMMENT 'Manager firstname and lastname',
+              manager_email varchar(150) DEFAULT NULL COMMENT 'Email from the manager who has checked the form validity',
               form_id bigint(20) UNSIGNED NOT NULL COMMENT 'Relation to filled form',
               sender enum('AGENT','MANAGER') NOT NULL DEFAULT 'AGENT' COMMENT 'Origin from email',
               observations longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'Observations list',

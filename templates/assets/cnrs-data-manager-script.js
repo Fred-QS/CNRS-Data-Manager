@@ -27,6 +27,7 @@ const logoutBtn = document.querySelector('#cnrs-dm-front-mission-user-logout');
 const tooltipBtns = document.querySelectorAll('.cnrs-dm-front-tooltip-btn');
 const referneceDateInput = document.querySelector('#cnrs-dm-front-reference-input');
 const referenceDateAlert = document.querySelector('#cnrs-dm-front-reference-alert');
+const observationButtons = document.querySelectorAll('.cnrs-dm-front-revision-observation');
 let agentEmails = [];
 
 window.addEventListener('load', function(){
@@ -391,6 +392,28 @@ function prepareMissionForm() {
                 }
                 tooltipText.classList.add('show');
                 this.classList.add('show-tooltip');
+            }
+        }
+    }
+
+    for (let i = 0; i < observationButtons.length; i++) {
+        observationButtons[i].onclick = function () {
+            const parent = this.closest('.cnrs-dm-front-revision-observation-wrapper');
+            const index = parseInt(parent.dataset.index);
+            if (observationButtons[i].classList.contains('add')) {
+                this.classList.remove('add');
+                this.classList.add('remove');
+                this.innerHTML = this.dataset.remove;
+                const textarea = `<div>
+                    <input type="hidden" name="cnrs-dm-front-observation[${index}][index]" value="${index}">
+                    <textarea class="cnrs-dm-front-observation-textarea" name="cnrs-dm-front-observation[${index}][observation]" required spellcheck="false" autocomplete="off"></textarea>
+                </div>`;
+                parent.insertAdjacentHTML('afterbegin', textarea);
+            } else if (observationButtons[i].classList.contains('remove')) {
+                this.classList.remove('remove');
+                this.classList.add('add');
+                this.innerHTML = this.dataset.add;
+                parent.querySelector('textarea').remove();
             }
         }
     }

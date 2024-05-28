@@ -15,14 +15,19 @@ html, body {
 }
 
 /* Button styles */
-.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-white) {
+.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-white):not(.cnrs-dm-front-revision-observation) {
     color: #ffffff!important;
     background-color: #6ab7e6;
 }
 
-.cnrs-dm-front-btn-white {
+.cnrs-dm-front-btn-white, .cnrs-dm-front-revision-observation.add {
     color: #6ab7e6!important;
     background-color: #fff;
+}
+
+.cnrs-dm-front-revision-observation.remove {
+    color: #ffffff!important;
+    background-color: #ff5c33;
 }
 
 .cnrs-dm-front-btn {
@@ -50,7 +55,7 @@ html, body {
     cursor: pointer;
 }
 
-.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save)::after {
+.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save):not(.cnrs-dm-front-revision-observation)::after {
     content: "\35";
     font-size: 1.6em;
     margin-left: -1em;
@@ -61,6 +66,20 @@ html, body {
     font-size: 1.4em;
     margin-left: -1em;
     padding-left: 8px;
+}
+
+.cnrs-dm-front-revision-observation::after {
+    font-size: 1.4em;
+    margin-left: -1em;
+    padding-left: 8px;
+}
+
+.cnrs-dm-front-revision-observation.add::after {
+    content: "\e050";
+}
+
+.cnrs-dm-front-revision-observation.remove::after {
+    content: "\e04f";
 }
 
 .cnrs-dm-front-btn::after {
@@ -1531,6 +1550,7 @@ html, body {
 }
 
 .cnrs-dm-front-mission-form-element input[type="text"],
+.cnrs-dm-front-mission-form-element input[type="email"],
 .cnrs-dm-front-mission-form-element input[type="number"],
 .cnrs-dm-front-mission-form-element input[type="date"],
 .cnrs-dm-front-mission-form-element input[type="time"],
@@ -2176,7 +2196,7 @@ input[name="cnrs-dm-front-convention"]:active+.design::after {
     transform: scale(2.6);
 }
 
-#cnrs-dm-front-mission-user-wrapper {
+#cnrs-dm-front-mission-user-wrapper, #cnrs-dm-front-mission-manager-wrapper {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -2184,7 +2204,16 @@ input[name="cnrs-dm-front-convention"]:active+.design::after {
     margin-top: 15px;
 }
 
-#cnrs-dm-front-mission-user-avatar {
+#cnrs-dm-front-mission-manager-wrapper {
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+#cnrs-dm-front-mission-manager-wrapper h3 {
+    width: 100%;
+}
+
+#cnrs-dm-front-mission-user-avatar, #cnrs-dm-front-mission-manager-avatar {
     width: 50px;
     height: 50px;
     display: flex;
@@ -2196,7 +2225,11 @@ input[name="cnrs-dm-front-convention"]:active+.design::after {
     box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
 }
 
-#cnrs-dm-front-mission-user-info {
+#cnrs-dm-front-mission-manager-avatar {
+    background-image: url("/wp-content/plugins/cnrs-data-manager/assets/media/default_avatar.png");
+}
+
+#cnrs-dm-front-mission-user-info, #cnrs-dm-front-mission-manager-info {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -2204,11 +2237,11 @@ input[name="cnrs-dm-front-convention"]:active+.design::after {
     margin: 0 15px;
 }
 
-#cnrs-dm-front-mission-user-info > p {
+#cnrs-dm-front-mission-user-info > p, #cnrs-dm-front-mission-manager-info > p {
     font-weight: bold;
 }
 
-#cnrs-dm-front-mission-user-info > a {
+#cnrs-dm-front-mission-user-info > a, #cnrs-dm-front-mission-manager-info > a {
     line-height: 1em;
     font-size: 12px;
     text-decoration: underline;
@@ -2254,6 +2287,21 @@ input[name="cnrs-dm-front-convention"]:active+.design::after {
     margin-top: 5px;
     text-align: center;
     width: 100%;
+}
+
+.cnrs-dm-front-revision-observation-wrapper {
+    margin-top: 30px;
+    width: 100%;
+}
+
+.cnrs-dm-front-revision-observation-wrapper textarea {
+    margin-bottom: 10px;
+    border: 1px solid #ff5c33;
+    color: #ff5c33;
+}
+
+#cnrs-dm-front-mission-observation-guide {
+    margin-top: 30px;
 }
 
 @media only screen and (min-width: 768px) {

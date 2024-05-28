@@ -727,6 +727,22 @@ if (!function_exists('isValidatedForm')) {
     }
 }
 
+if (!function_exists('incrementRevisionForm')) {
+
+    /**
+     * Increment the revision number of a form.
+     *
+     * @param string $json The JSON string representation of the form.
+     * @return string The updated JSON string representation of the form with the revision number incremented.
+     */
+    function incrementRevisionForm(string $json): string
+    {
+        $form = json_decode($json, true);
+        $form['revisions'] = $form['revisions'] + 1;
+        return json_encode($form);
+    }
+}
+
 if (!function_exists('cnrsReadShortCode')) {
 
     /**
@@ -998,17 +1014,57 @@ if (!function_exists('cnrsReadShortCode')) {
                 get_template_part(404);
                 exit();
             }
-            
+
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-pad-sign-script', 'https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', ['cnrs-data-manager-pad-sign-script'], null);
+
             $data = Forms::getRevision();
+            $validated = false;
+
+            if ($type === 'revision-manager'
+                && isset($_POST['cnrs-dm-front-manager-revision'])
+                && $_POST['cnrs-dm-front-manager-revision'] === 'ok')
+            {
+                $data->form = incrementRevisionForm($data->form);
+
+                if (isset($_POST['cnrs-dm-front-observation'])) {
+                    $posts = [];
+                    foreach ($_POST['cnrs-dm-front-observation'] as $post) {
+                        $posts[] = ['index' => (int) $post['index'], 'observation' => $post['observation']];
+                    }
+                    $uuid = wp_generate_uuid4();
+                    $data->uuid = $uuid;
+                    $data->sender = 'MANAGER';
+                    $data->manager_name = $_POST['cnrs-dm-front-revision-manager-name'];
+                    $data->manager_email = $_POST['cnrs-dm-front-revision-manager-email'];
+                    $data->observations = json_encode($posts);
+                    $data->created_at = date("y-m-d H:i:s");
+                    Forms::recordObservation($data);
+                    Emails::sendRevisionToAgent($data->agent_email, $uuid);
+
+                } else {
+
+                    Forms::recordObservation($data, true);
+                    Emails::sendValidatedForm($data->agent_email, $data->form_uuid);
+                    $genericEmail = Settings::getGenericEmail();
+                    Emails::sendValidatedForm($genericEmail, $data->form_uuid, true);
+                }
+                $validated = true;
+
+            } else if ($type === 'revision-agent'
+                && isset($_POST['cnrs-dm-front-agent-revision'])
+                && $_POST['cnrs-dm-front-agent-revision'] === 'ok')
+            {
+
+                $validated = true;
+            }
+
             $json = $data->form;
             unset($data->form);
             $form = json_decode($json, true);
 
             $agent = Agents::getAgentByEmail($data->agent_email, Manager::defineArrayFromXML()['agents']);
-
-            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
-            wp_enqueue_script('cnrs-data-manager-pad-sign-script', 'https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js', [], null);
-            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', ['cnrs-data-manager-pad-sign-script'], null);
 
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/RevisionForm.php');

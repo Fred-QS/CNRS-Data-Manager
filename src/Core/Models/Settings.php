@@ -339,10 +339,30 @@ class Settings
         return $settings !== null ? (int) $settings->days_limit : 5;
     }
 
+    /**
+     * Returns the admin email from the database settings table.
+     *
+     * @return string The admin email. If no settings found, an empty string is returned.
+     */
     public static function getAdminEmail(): string
     {
         global $wpdb;
         $settings = $wpdb->get_row("SELECT admin_email FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
         return $settings->admin_email;
+    }
+
+    /**
+     * Retrieves the generic email from the database.
+     *
+     * This method fetches the generic email from the "cnrs_data_manager_mission_form_settings" table in the database.
+     *
+     * @return string The generic email retrieved from the database.
+     * @global wpdb $wpdb The global WordPress database access object.
+     */
+    public static function getGenericEmail(): string
+    {
+        global $wpdb;
+        $settings = $wpdb->get_row("SELECT generic_email FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        return $settings->generic_email;
     }
 }

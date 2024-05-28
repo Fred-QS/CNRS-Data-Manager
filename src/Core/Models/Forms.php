@@ -29,7 +29,13 @@ class Forms
         $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET form='{$form}'");
     }
 
-    public static function recordNewForm(string $newForm, string $originalForm, string $userEmail, string $uuid, bool $isValidated): ?string
+    public static function recordNewForm(
+        string $newForm,
+        string $originalForm,
+        string $userEmail,
+        string $uuid,
+        bool $isValidated
+    ): ?string
     {
         global $wpdb;
         $exist = $wpdb->get_row("SELECT id FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
@@ -137,7 +143,7 @@ class Forms
     public static function getSettings(): object
     {
         global $wpdb;
-        return $wpdb->get_row("SELECT debug_mode, debug_email, admin_email, days_limit FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        return $wpdb->get_row("SELECT debug_mode, debug_email, admin_email, generic_email, days_limit FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
     }
 
     /**
@@ -155,8 +161,9 @@ class Forms
         $mode = isset($data['cnrs-dm-debug-mode']) && $data['cnrs-dm-debug-mode'] === 'on' ? 1 : 0;
         $email = $data['cnrs-dm-debug-email'];
         $admin = $data['cnrs-dm-admin-email'];
+        $generic = $data['cnrs-dm-generic-email'];
         $days = $data['cnrs-dm-days-limit'];
-        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET debug_mode = {$mode}, debug_email = '{$email}', admin_email = '{$admin}', days_limit = {$days}");
+        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET debug_mode = {$mode}, debug_email = '{$email}', admin_email = '{$admin}', generic_email = '{$generic}', days_limit = {$days}");
     }
 
     /**
@@ -379,5 +386,74 @@ class Forms
         $form = $wpdb->get_row("SELECT form FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE id={$id}");
         $email = getManagerEmailFromForm($form->form);
         return ['email' => $email, 'uuid' => $uuid];
+    }
+
+    /**
+     * Records an observation in the database.
+     *
+     * @param object $data The data containing the observation details.
+     *                     The object should have the following properties:
+     *                     - id: The ID of the observation to update.
+     *                     - uuid: The UUID corresponding to the observation.
+     *                     - form_id: The form ID associated with the observation.
+     *                     - sender: The sender of the observation.
+     *                     - observations: The observation details.
+     *                     - created_at: The creation date of the observation.
+     *
+     * @return void
+     */
+    public static function recordObservation(object $data, bool $isValid = false): void
+    {
+        global $wpdb;
+        $wpdb->update(
+            "{$wpdb->prefix}cnrs_data_manager_revisions",
+            array('active' => 0),
+            array('id' => $data->id),
+            array('%d'),
+            array('%d')
+        );
+        if ($isValid === false) {
+            $wpdb->insert(
+                "{$wpdb->prefix}cnrs_data_manager_revisions",
+                array(
+                    'active' => 1,
+                    'uuid' => $data->uuid,
+                    'manager_name' => $data->manager_name,
+                    'manager_email' => $data->manager_email,
+                    'form_id' => $data->form_id,
+                    'sender' => $data->sender,
+                    'observations' => $data->observations,
+                    'created_at' => $data->created_at
+                ),
+                array('%d', '%s', '%s', '%s', '%d', '%s', '%s', '%s')
+            );
+            $wpdb->update(
+                "{$wpdb->prefix}cnrs_data_manager_mission_forms",
+                array('form' => $data->form),
+                array('id' => $data->form_id),
+                array('%s'),
+                array('%d')
+            );
+        } else {
+            $wpdb->update(
+                "{$wpdb->prefix}cnrs_data_manager_mission_forms",
+                array('status' => 'VALIDATED', 'form' => $data->form),
+                array('id' => $data->form_id),
+                array('%s', '%s'),
+                array('%d')
+            );
+        }
+    }
+
+    /**
+     * Retrieves the revision managers associated with a specific form from the database.
+     *
+     * @param int $formId The ID of the form to retrieve the revision managers for.
+     * @return array An array containing revision managers as associative arrays with 'name' and 'email' keys.
+     */
+    public static function getRevisionManagers(int $formId): array
+    {
+        global $wpdb;
+        return $wpdb->get_results("SELECT manager_name as name, manager_email as email FROM {$wpdb->prefix}cnrs_data_manager_revisions WHERE form_id={$formId} AND manager_name IS NOT NULL AND manager_email IS NOT NULL", ARRAY_A);
     }
 }

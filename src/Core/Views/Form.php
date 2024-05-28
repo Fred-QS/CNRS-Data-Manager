@@ -235,6 +235,16 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                             </tr>
                             <tr>
                                 <th scope="row">
+                                    <label for="cnrs-dm-generic-email"><?php echo __('Generic email', 'cnrs-data-manager') ?></label>
+                                </th>
+                                <td>
+                                    <p>
+                                        <input required name="cnrs-dm-generic-email" autocomplete="off" spellcheck="false" type="email" id="cnrs-dm-generic-email" value="<?php echo $settings->generic_email ?>" class="regular-text">
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
                                     <label for="cnrs-dm-days-limit"><?php echo __('Limit in days for a request', 'cnrs-data-manager') ?></label>
                                 </th>
                                 <td>

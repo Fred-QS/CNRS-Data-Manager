@@ -132,11 +132,71 @@ class Emails
         }
     }
 
+    /**
+     * Sends a notification email to the admin indicating that the deadline for a form has been exceeded.
+     *
+     * @param string $email The email address of the admin to send the notification to.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
     public static function sendToAdmin(string $email): bool
     {
         try {
             $subject = __('Deadline exceeded form', 'cnrs-data-manager');
             $template = 'exceed';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sends a mission form revision notification email to the agent.
+     *
+     * @param string $email The email address to send the notification to.
+     * @param string $uuid The UUID of the mission form revision.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendRevisionToAgent(string $email, string $uuid): bool
+    {
+        try {
+            $subject = __('Mission form revision', 'cnrs-data-manager');
+            $template = 'edit';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sends a validated mission form notification email.
+     *
+     * @param string $email The email address to send the notification to.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendValidatedForm(string $email, string $uuid, bool $forAll = false): bool
+    {
+        try {
+            $subject = __('Validated mission form', 'cnrs-data-manager');
+            $template = $forAll === false ? 'validate' : 'validate-for-all';
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');

@@ -2092,6 +2092,50 @@ input:checked + .cnrs-dm-slider:before {
     fill: currentColor;
 }
 
+.cnrs-dm-revision-details {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+
+.cnrs-dm-revision-details svg {
+    color: #2271b1;
+    cursor: pointer;
+}
+
+.cnrs-dm-revision-details svg path {
+    fill: currentColor;
+}
+
+.cnrs-dm-revision-details ol {
+    position: absolute;
+    top: calc(100% - 10px);
+    left: -20px;
+    z-index: 2;
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 5px 10px 0 20px;
+    color: #2271b1;
+    border-radius: 6px;
+    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.2);
+    transition: all linear 0.2s
+}
+
+.cnrs-dm-revision-details:hover ol {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cnrs-dm-revision-details:hover ol li a {
+    text-decoration: underline;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;
