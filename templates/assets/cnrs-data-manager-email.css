@@ -147,12 +147,20 @@ body {
     font-weight: bold;
     width: max-content;
     font-size: 20px;
+    text-decoration: none;
 }
 
 #cnrs-dm-email-body-wrapper-reset-pwd > p,
-#cnrs-dm-email-body-wrapper-confirmation > p {
+#cnrs-dm-email-body-wrapper-confirmation > p,
+#cnrs-dm-email-body-wrapper-revision > p ,
+#cnrs-dm-email-body-wrapper-canceled > p ,
+#cnrs-dm-email-body-wrapper-exceed > p {
     text-align: left;
     margin: 0;
+}
+
+#cnrs-dm-email-body-wrapper-revision #cnrs-dm-email-p2 {
+    margin-bottom: 30px;
 }
 
 @media only screen and (min-width: 651px) {

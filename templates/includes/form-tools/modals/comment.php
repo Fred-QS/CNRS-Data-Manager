@@ -5,6 +5,7 @@
         <h3><?php echo __('Comment field settings', 'cnrs-data-manager') ?></h3>
         <input type="hidden" name="cnrs-dm-iteration" value="<?php echo $iteration ?>">
         <input type="hidden" name="cnrs-dm-type" value="comment">
+        <input type="hidden" name="cnrs-dm-isReference" value="<?php echo $info['data']['isReference'] === true ? 1 : 0 ?>">
         <label class="cnrs-dm-form-modal-label">
             <span><?php echo __('Your comment', 'cnrs-data-manager') ?></span>
             <textarea id="cnrs-dm-tinymce" class="cnrs-dm-tinymce" spellcheck="false" name="cnrs-dm-comment"><?php echo str_replace('<br/>', "\n", $info['data']['value'][0]) ?></textarea>

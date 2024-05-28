@@ -3,6 +3,7 @@
 namespace CnrsDataManager\Core\Controllers;
 
 use CnrsDataManager\Core\Models\Settings;
+use CnrsDataManager\Core\Models\Forms;
 use Error;
 use Exception;
 use JsonException;
@@ -471,18 +472,18 @@ final class Manager
             'signs' => __('Signing pads', 'cnrs-data-manager'),
         ];
         $toolsConfig = [
-            'input' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'number' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'date' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'time' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'datetime' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'checkbox' => ['value' => null, 'values' => [], 'choices' => [], 'required' => false],
-            'comment' => ['value' => [__('My comment', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false],
-            'radio' => ['value' => [], 'values' => null, 'choices' => [], 'required' => false],
-            'separator' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'textarea' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false],
-            'title' => ['value' => [__('My title', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false],
-            'signs' => ['value' => [__('My signing pads', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false]
+            'input' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'number' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'date' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'time' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'datetime' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'checkbox' => ['value' => null, 'values' => [], 'choices' => [], 'required' => false, 'isReference' => false],
+            'comment' => ['value' => [__('My comment', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'radio' => ['value' => [], 'values' => null, 'choices' => [], 'required' => false, 'isReference' => false],
+            'separator' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'textarea' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'title' => ['value' => [__('My title', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
+            'signs' => ['value' => [__('My signing pads', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false]
         ];
         return json_encode([
             'type' => $type,
@@ -492,12 +493,13 @@ final class Manager
     }
 
     /**
-     * Create a new filled form based on the provided data
+     * Create a new filled form as a JSON string
      *
-     * @param array $data The form data to be processed
-     * @return string The JSON representation of the new filled form
+     * @param array $data The form data
+     * @param string $uuid The form UUID
+     * @return string The JSON representation of the filled form
      */
-    public static function newFilledForm(array $data): string
+    public static function newFilledForm(array $data, string $uuid): string
     {
         $original = json_decode(stripslashes($data['cnrs-dm-front-mission-form-original']), true);
         unset($data['cnrs-dm-front-mission-form-original']);
@@ -508,6 +510,14 @@ final class Manager
             $row = [];
             if (stripos($clean, 'input-') !== false) {
                 $row = ['index' => (int) str_replace('input-', '', $clean), 'type' => 'input', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'datetime-') !== false) {
+                $row = ['index' => (int) str_replace('datetime-', '', $clean), 'type' => 'datetime', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'time-') !== false && stripos($clean, 'datetime-') === false) {
+                $row = ['index' => (int) str_replace('time-', '', $clean), 'type' => 'time', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'date-') !== false) {
+                $row = ['index' => (int) str_replace('date-', '', $clean), 'type' => 'date', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'number-') !== false) {
+                $row = ['index' => (int) str_replace('number-', '', $clean), 'type' => 'number', 'values' => [htmlentities($element)]];
             } else if (stripos($clean, 'textarea-') !== false) {
                 $row = ['index' => (int) str_replace('textarea-', '', $clean), 'type' => 'textarea', 'values' => [htmlentities($element)]];
             } else if (stripos($clean, 'checkbox-') !== false) {
@@ -539,7 +549,69 @@ final class Manager
         }
         $jsonArray = self::prepareNewFormForDB($recompose, $original);
         $original['elements'] = $jsonArray;
+        $original['convention'] = Forms::getConvention((int) $data['cnrs-dm-front-convention']);
+        $original['revisions'] = 0;
+        $original['uuid'] = $uuid;
         return json_encode($original);
+    }
+
+    /**
+     * Update the form based on the provided POST data and JSON form definition
+     *
+     * @param array $post The POST data
+     * @param string $json The JSON form definition
+     * @return string The updated JSON form
+     */
+    public static function updateForm(array $post, string $json): string
+    {
+        $form = json_decode($json, true);
+        $recompose = [];
+        unset($post['cnrs-dm-front-agent-revision']);
+        foreach ($post as $index => $element) {
+            $clean = str_replace('cnrs-dm-front-mission-form-element-', '', $index);
+            $row = [];
+            if (stripos($clean, 'input-') !== false) {
+                $row = ['index' => (int) str_replace('input-', '', $clean), 'type' => 'input', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'datetime-') !== false) {
+                $row = ['index' => (int) str_replace('datetime-', '', $clean), 'type' => 'datetime', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'time-') !== false && stripos($clean, 'datetime-') === false) {
+                $row = ['index' => (int) str_replace('time-', '', $clean), 'type' => 'time', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'date-') !== false) {
+                $row = ['index' => (int) str_replace('date-', '', $clean), 'type' => 'date', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'number-') !== false) {
+                $row = ['index' => (int) str_replace('number-', '', $clean), 'type' => 'number', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'textarea-') !== false) {
+                $row = ['index' => (int) str_replace('textarea-', '', $clean), 'type' => 'textarea', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'checkbox-') !== false) {
+                if (stripos($clean, 'opt-comment') === false) {
+                    $htmlEntities = [];
+                    foreach ($element as $el) {
+                        $htmlEntities[] = htmlentities($el);
+                    }
+                    $row = ['index' => (int) str_replace('checkbox-', '', $clean), 'type' => 'checkbox', 'values' => $htmlEntities];
+                } else {
+                    $index = str_replace(['checkbox-', 'opt-comment-'], '', $clean);
+                    $splitIndex = explode('-', $index);
+                    $row = ['index' => (int) $splitIndex[0], 'type' => 'checkbox', 'option' => (int) $splitIndex[1], 'values' => htmlentities($element)];
+                }
+            } else if (stripos($clean, 'radio-') !== false) {
+                if (stripos($clean, 'opt-comment') === false) {
+                    $row = ['index' => (int) str_replace('radio-', '', $clean), 'type' => 'radio', 'values' => [htmlentities($element)]];
+                } else {
+                    $index = str_replace(['radio-', 'opt-comment-'], '', $clean);
+                    $splitIndex = explode('-', $index);
+                    $row = ['index' => (int) $splitIndex[0], 'type' => 'radio', 'option' => (int) $splitIndex[1], 'values' => htmlentities($element)];
+                }
+            } else if (stripos($clean, 'signs-') !== false) {
+                $index = str_replace(['signs-', 'pad-'], '', $clean);
+                $splitIndex = explode('-', $index);
+                $row = ['index' => (int) $splitIndex[0], 'type' => 'signs', 'pad' => (int) $splitIndex[1], 'values' => json_decode(stripslashes($element), true)];
+            }
+            $recompose[] = $row;
+        }
+        $jsonArray = self::prepareNewFormForDB($recompose, $form);
+        $form['elements'] = $jsonArray;
+        return json_encode($form);
     }
 
     /**
@@ -556,7 +628,7 @@ final class Manager
             $index = $row['index'];
             $type = $row['type'];
             $values = $row['values'];
-            if (in_array($type, ['input', 'textarea'], true)) {
+            if (in_array($type, ['input', 'textarea', 'time', 'date', 'datetime', 'number'], true)) {
                 $elements[$index]['data']['value'] = $values;
             } else if (in_array($type, ['checkbox', 'radio'], true)) {
                 if (!isset($elements[$index]['data']['options'])) {

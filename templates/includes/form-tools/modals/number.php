@@ -5,6 +5,7 @@
         <h3><?php echo __('Numeric field settings', 'cnrs-data-manager') ?></h3>
         <input type="hidden" name="cnrs-dm-iteration" value="<?php echo $iteration ?>">
         <input type="hidden" name="cnrs-dm-type" value="number">
+        <input type="hidden" name="cnrs-dm-isReference" value="<?php echo $info['data']['isReference'] === true ? 1 : 0 ?>">
         <label class="cnrs-dm-form-modal-label">
             <span><?php echo __('Label', 'cnrs-data-manager') ?></span>
             <span class="cnrs-dm-form-details"><?php echo __('You can display a unit by separating the label with ";" of the unit in the field below.', 'cnrs-data-manager') ?></span>

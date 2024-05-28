@@ -53,13 +53,16 @@ class Emails
         return false;
     }
 
-    public static function sendConfirmationEmail(string $uuid): bool
+    /**
+     * Sends a confirmation email to the specified email address.
+     *
+     * @param string $email The email address to send the confirmation email to.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendConfirmationEmail(string $email): bool
     {
         try {
-            $user = Forms::getUserByUuid($uuid);
-            if ($user === null) {
-                return false;
-            }
             $subject = __('Confirmation', 'cnrs-data-manager');
             $template = 'confirmation';
 
@@ -67,7 +70,141 @@ class Emails
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            return sendCNRSEmail($user->email, $subject, $body);
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sends a mission form revision email to the specified email address.
+     *
+     * @param string $email The email address to send the mission form revision email to.
+     * @param string $uuid The unique identifier of the mission form.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendToManager(string $email, string $uuid): bool
+    {
+        try {
+            $subject = __('Mission form revision', 'cnrs-data-manager');
+            $template = 'revision';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sends an abandoned form notification email.
+     *
+     * @param string $email The email address to send the notification to.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendAbandonForm(string $email): bool
+    {
+        try {
+            $subject = __('Abandoned form', 'cnrs-data-manager');
+            $template = 'canceled';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sends a notification email to the admin indicating that the deadline for a form has been exceeded.
+     *
+     * @param string $email The email address of the admin to send the notification to.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendToAdmin(string $email): bool
+    {
+        try {
+            $subject = __('Deadline exceeded form', 'cnrs-data-manager');
+            $template = 'exceed';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sends a mission form revision notification email to the agent.
+     *
+     * @param string $email The email address to send the notification to.
+     * @param string $uuid The UUID of the mission form revision.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendRevisionToAgent(string $email, string $uuid): bool
+    {
+        try {
+            $subject = __('Mission form revision', 'cnrs-data-manager');
+            $template = 'edit';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sends a validated mission form notification email.
+     *
+     * @param string $email The email address to send the notification to.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendValidatedForm(string $email, string $uuid, bool $forAll = false): bool
+    {
+        try {
+            $subject = __('Validated mission form', 'cnrs-data-manager');
+            $template = $forAll === false ? 'validate' : 'validate-for-all';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
 
         } catch (\ErrorException $e) {
             return false;
