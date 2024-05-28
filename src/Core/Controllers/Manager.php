@@ -556,6 +556,65 @@ final class Manager
     }
 
     /**
+     * Update the form based on the provided POST data and JSON form definition
+     *
+     * @param array $post The POST data
+     * @param string $json The JSON form definition
+     * @return string The updated JSON form
+     */
+    public static function updateForm(array $post, string $json): string
+    {
+        $form = json_decode($json, true);
+        $recompose = [];
+        unset($post['cnrs-dm-front-agent-revision']);
+        foreach ($post as $index => $element) {
+            $clean = str_replace('cnrs-dm-front-mission-form-element-', '', $index);
+            $row = [];
+            if (stripos($clean, 'input-') !== false) {
+                $row = ['index' => (int) str_replace('input-', '', $clean), 'type' => 'input', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'datetime-') !== false) {
+                $row = ['index' => (int) str_replace('datetime-', '', $clean), 'type' => 'datetime', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'time-') !== false && stripos($clean, 'datetime-') === false) {
+                $row = ['index' => (int) str_replace('time-', '', $clean), 'type' => 'time', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'date-') !== false) {
+                $row = ['index' => (int) str_replace('date-', '', $clean), 'type' => 'date', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'number-') !== false) {
+                $row = ['index' => (int) str_replace('number-', '', $clean), 'type' => 'number', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'textarea-') !== false) {
+                $row = ['index' => (int) str_replace('textarea-', '', $clean), 'type' => 'textarea', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'checkbox-') !== false) {
+                if (stripos($clean, 'opt-comment') === false) {
+                    $htmlEntities = [];
+                    foreach ($element as $el) {
+                        $htmlEntities[] = htmlentities($el);
+                    }
+                    $row = ['index' => (int) str_replace('checkbox-', '', $clean), 'type' => 'checkbox', 'values' => $htmlEntities];
+                } else {
+                    $index = str_replace(['checkbox-', 'opt-comment-'], '', $clean);
+                    $splitIndex = explode('-', $index);
+                    $row = ['index' => (int) $splitIndex[0], 'type' => 'checkbox', 'option' => (int) $splitIndex[1], 'values' => htmlentities($element)];
+                }
+            } else if (stripos($clean, 'radio-') !== false) {
+                if (stripos($clean, 'opt-comment') === false) {
+                    $row = ['index' => (int) str_replace('radio-', '', $clean), 'type' => 'radio', 'values' => [htmlentities($element)]];
+                } else {
+                    $index = str_replace(['radio-', 'opt-comment-'], '', $clean);
+                    $splitIndex = explode('-', $index);
+                    $row = ['index' => (int) $splitIndex[0], 'type' => 'radio', 'option' => (int) $splitIndex[1], 'values' => htmlentities($element)];
+                }
+            } else if (stripos($clean, 'signs-') !== false) {
+                $index = str_replace(['signs-', 'pad-'], '', $clean);
+                $splitIndex = explode('-', $index);
+                $row = ['index' => (int) $splitIndex[0], 'type' => 'signs', 'pad' => (int) $splitIndex[1], 'values' => json_decode(stripslashes($element), true)];
+            }
+            $recompose[] = $row;
+        }
+        $jsonArray = self::prepareNewFormForDB($recompose, $form);
+        $form['elements'] = $jsonArray;
+        return json_encode($form);
+    }
+
+    /**
      * Prepare new form data for database storage
      *
      * @param array $data The new form data

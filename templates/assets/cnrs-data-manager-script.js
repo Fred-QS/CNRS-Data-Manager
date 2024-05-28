@@ -43,8 +43,8 @@ window.addEventListener('resize', function () {
 });
 
 window.addEventListener('click', function(e) {
-    const target = e.target;
-    closeMissionTooltips(target);
+   const target = e.target;
+   closeMissionTooltips(target);
 });
 
 function isJson(str) {
@@ -231,29 +231,31 @@ function prepareMissionForm() {
                 if (type === 'input') {
                     const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-input-"]');
                     const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    if (elmt.value.trim().length < 1) {
+                    if (elmt && elmt.readOnly === false && elmt.value.trim().length < 1) {
                         errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
                     }
                 } else if (type === 'number') {
                     const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-number-"]');
                     const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    if (elmt.value.trim().length < 1) {
-                        errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
-                    } else if (isNaN(elmt.value)) {
-                        errors.push('<b>' + label + '</b>&nbsp;' + messages.number);
-                    } else if (parseInt(elmt.value) < 0) {
-                        errors.push('<b>' + label + '</b>&nbsp;' + messages.unsigned);
+                    if (elmt && elmt.readOnly === false) {
+                        if (elmt.value.trim().length < 1) {
+                            errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
+                        } else if (isNaN(elmt.value)) {
+                            errors.push('<b>' + label + '</b>&nbsp;' + messages.number);
+                        } else if (parseInt(elmt.value) < 0) {
+                            errors.push('<b>' + label + '</b>&nbsp;' + messages.unsigned);
+                        }
                     }
                 } else if (type === 'date' || type === 'time' || type === 'datetime') {
                     const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-' + type + '-"]');
                     const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    if (elmt.value.trim().length < 1) {
+                    if (elmt && elmt.readOnly === false && elmt.value.trim().length < 1) {
                         errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
                     }
                 } else if (type === 'textarea') {
                     const elmt = container.querySelector('textarea[name^="cnrs-dm-front-mission-form-element-textarea-"]');
                     const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    if (elmt.value.trim().length < 1) {
+                    if (elmt && elmt.readOnly === false && elmt.value.trim().length < 1) {
                         errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
                     }
                 } else if (type === 'radio' || type === 'radio-convention') {
@@ -267,12 +269,12 @@ function prepareMissionForm() {
                             radioChecked.push(j);
                         }
                     }
-                    if (radioChecked.length < 1) {
+                    if (radioChecked.length < 1 && radioInputs.length > 0) {
                         errors.push('<b>' + label + '</b>&nbsp;' + messages.radio);
                     }
                     const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
                     for (let j = 0; j < optComments.length; j++) {
-                        if (optComments[j].value.trim().length < 1) {
+                        if (optComments[j].value.trim().length < 1 && optComments[j].readOnly === false) {
                             const opt = optComments[j].previousElementSibling.querySelector('.text').innerHTML;
                             errors.push('<b>' + label + ' ' + opt + '</b>&nbsp;' + messages.option);
                         }
@@ -286,12 +288,12 @@ function prepareMissionForm() {
                             checkboxChecked.push(j);
                         }
                     }
-                    if (checkboxChecked.length < 1) {
+                    if (checkboxChecked.length < 1 && checkboxChecked.length) {
                         errors.push('<b>' + label + '</b>&nbsp;' + messages.checkbox);
                     }
                     const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
                     for (let j = 0; j < optComments.length; j++) {
-                        if (optComments[j].value.trim().length < 1) {
+                        if (optComments[j].value.trim().length < 1 && optComments[j].readOnly === false) {
                             const opt = optComments[j].previousElementSibling.querySelector('.checkbox__text-wrapper').innerHTML;
                             errors.push('<b>' + label + ' ' + opt + '</b>&nbsp;' + messages.option);
                         }
@@ -319,6 +321,7 @@ function prepareMissionForm() {
                 }
                 missionFormErrors.insertAdjacentHTML('beforeend', html);
             } else {
+                console.log(missionFormSubmit.closest('form'))
                 missionFormSubmit.closest('form').submit();
             }
         }

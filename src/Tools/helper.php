@@ -15,6 +15,16 @@ use CnrsDataManager\Core\Controllers\Controller;
 use CnrsDataManager\Core\Controllers\TemplateLoader;
 use CnrsDataManager\Core\Controllers\Page;
 
+$errors = [
+    'simple' => __('must not be empty', 'cnrs-data-manager'),
+    'checkbox' => __('must at least have one selection', 'cnrs-data-manager'),
+    'radio' => __('must have one selection', 'cnrs-data-manager'),
+    'signs' => __('must have been correctly filled out', 'cnrs-data-manager'),
+    'option' => __('comment must not be empty', 'cnrs-data-manager'),
+    'number' => __('must be numeric', 'cnrs-data-manager'),
+    'unsigned' => __('must be equal or greater than 0', 'cnrs-data-manager'),
+];
+
 $shortCodesCounter = 0;
 
 $dumpStyle = '<style>
@@ -911,15 +921,7 @@ if (!function_exists('cnrsReadShortCode')) {
             $agents = json_encode($xml);
             $validated = false;
 
-            $errors = [
-                'simple' => __('must not be empty', 'cnrs-data-manager'),
-                'checkbox' => __('must at least have one selection', 'cnrs-data-manager'),
-                'radio' => __('must have one selection', 'cnrs-data-manager'),
-                'signs' => __('must have been correctly filled out', 'cnrs-data-manager'),
-                'option' => __('comment must not be empty', 'cnrs-data-manager'),
-                'number' => __('must be numeric', 'cnrs-data-manager'),
-                'unsigned' => __('must be equal or greater than 0', 'cnrs-data-manager'),
-            ];
+            global $errors;
 
             $days_limit = Settings::getDaysLimit();
 
@@ -1020,26 +1022,30 @@ if (!function_exists('cnrsReadShortCode')) {
             wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', ['cnrs-data-manager-pad-sign-script'], null);
 
             $data = Forms::getRevision();
+            $observations = $data->observations !== null ? json_decode($data->observations, true) : [];
             $validated = false;
+
+            global $errors;
+            $days_limit = Settings::getDaysLimit();
 
             if ($type === 'revision-manager'
                 && isset($_POST['cnrs-dm-front-manager-revision'])
                 && $_POST['cnrs-dm-front-manager-revision'] === 'ok')
             {
                 $data->form = incrementRevisionForm($data->form);
+                $uuid = wp_generate_uuid4();
+                $data->uuid = $uuid;
+                $data->sender = 'MANAGER';
+                $data->manager_name = $_POST['cnrs-dm-front-revision-manager-name'];
+                $data->manager_email = $_POST['cnrs-dm-front-revision-manager-email'];
+                $data->created_at = date("y-m-d H:i:s");
 
                 if (isset($_POST['cnrs-dm-front-observation'])) {
                     $posts = [];
                     foreach ($_POST['cnrs-dm-front-observation'] as $post) {
                         $posts[] = ['index' => (int) $post['index'], 'observation' => $post['observation']];
                     }
-                    $uuid = wp_generate_uuid4();
-                    $data->uuid = $uuid;
-                    $data->sender = 'MANAGER';
-                    $data->manager_name = $_POST['cnrs-dm-front-revision-manager-name'];
-                    $data->manager_email = $_POST['cnrs-dm-front-revision-manager-email'];
                     $data->observations = json_encode($posts);
-                    $data->created_at = date("y-m-d H:i:s");
                     Forms::recordObservation($data);
                     Emails::sendRevisionToAgent($data->agent_email, $uuid);
 
@@ -1056,7 +1062,16 @@ if (!function_exists('cnrsReadShortCode')) {
                 && isset($_POST['cnrs-dm-front-agent-revision'])
                 && $_POST['cnrs-dm-front-agent-revision'] === 'ok')
             {
-
+                $uuid = wp_generate_uuid4();
+                $data->form = incrementRevisionForm($data->form);
+                $data->uuid = $uuid;
+                $data->sender = 'AGENT';
+                $data->created_at = date("y-m-d H:i:s");
+                $data->form = Manager::updateForm($_POST, $data->form);
+                $managerEmail = getManagerEmailFromForm($data->form);
+                Forms::updateForm($data);
+                Emails::sendToManager($managerEmail, $uuid);
+                Emails::sendConfirmationEmail($data->agent_email);
                 $validated = true;
             }
 
@@ -1072,6 +1087,26 @@ if (!function_exists('cnrsReadShortCode')) {
         }
 
         return '';
+    }
+}
+
+if (!function_exists('hasObservation')) {
+
+    /**
+     * Check if an observation with the provided index exists in the given array of observations.
+     *
+     * @param array $observations The array of observations to search.
+     * @param int $index The index of the observation to look for.
+     * @return string|null Returns the observation if found, null otherwise.
+     */
+    function hasObservation(array $observations, int $index): ?string
+    {
+        foreach ($observations as $observation) {
+            if ($observation['index'] === $index) {
+                return $observation['observation'];
+            }
+        }
+        return null;
     }
 }
 

@@ -399,7 +399,7 @@ class Forms
      *                     - sender: The sender of the observation.
      *                     - observations: The observation details.
      *                     - created_at: The creation date of the observation.
-     *
+     * @param bool $isValid
      * @return void
      */
     public static function recordObservation(object $data, bool $isValid = false): void
@@ -435,6 +435,19 @@ class Forms
                 array('%d')
             );
         } else {
+            $wpdb->insert(
+                "{$wpdb->prefix}cnrs_data_manager_revisions",
+                array(
+                    'active' => 0,
+                    'uuid' => $data->uuid,
+                    'manager_name' => $data->manager_name,
+                    'manager_email' => $data->manager_email,
+                    'form_id' => $data->form_id,
+                    'sender' => $data->sender,
+                    'created_at' => $data->created_at
+                ),
+                array('%d', '%s', '%s', '%s', '%d', '%s', '%s')
+            );
             $wpdb->update(
                 "{$wpdb->prefix}cnrs_data_manager_mission_forms",
                 array('status' => 'VALIDATED', 'form' => $data->form),
@@ -455,5 +468,35 @@ class Forms
     {
         global $wpdb;
         return $wpdb->get_results("SELECT manager_name as name, manager_email as email FROM {$wpdb->prefix}cnrs_data_manager_revisions WHERE form_id={$formId} AND manager_name IS NOT NULL AND manager_email IS NOT NULL", ARRAY_A);
+    }
+    
+    public static function updateForm(object $data): void
+    {
+        global $wpdb;
+        $wpdb->update(
+            "{$wpdb->prefix}cnrs_data_manager_revisions",
+            array('active' => 0),
+            array('id' => $data->id),
+            array('%d'),
+            array('%d')
+        );
+        $wpdb->insert(
+            "{$wpdb->prefix}cnrs_data_manager_revisions",
+            array(
+                'active' => 1,
+                'uuid' => $data->uuid,
+                'form_id' => $data->form_id,
+                'sender' => $data->sender,
+                'created_at' => $data->created_at
+            ),
+            array('%d', '%s', '%d', '%s', '%s')
+        );
+        $wpdb->update(
+            "{$wpdb->prefix}cnrs_data_manager_mission_forms",
+            array('form' => $data->form),
+            array('id' => $data->form_id),
+            array('%s'),
+            array('%d')
+        );
     }
 }
