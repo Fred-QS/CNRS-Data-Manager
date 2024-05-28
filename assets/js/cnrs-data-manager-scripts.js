@@ -545,7 +545,7 @@ function setListListener() {
     if (searchBtn) {
         searchBtn.onclick = function () {
             let search = searchInput.value;
-            let limit = nbOfResult1.value;
+            let limit = nbOfResult1 ? nbOfResult1.value : 10;
             let current = currentPage ? currentPage.value : 1;
             buildFormList(current, search, limit);
         }
@@ -793,6 +793,10 @@ function saveToolSettings() {
     const tooltip = document.querySelector('textarea[name="cnrs-dm-tooltip"]');
     if (tooltip) {
         element.data.tooltip = tooltip.value.replaceAll("\n", '<br/>');
+    }
+    const isReference = document.querySelector('input[name="cnrs-dm-isReference"]')
+    if (isReference) {
+        element.data.isReference = isReference.value === '1';
     }
     missionForm.elements[iteration] = element;
     refreshFormPreview();

@@ -41,14 +41,14 @@ class Forms
                     'email' => $userEmail,
                     'original' => $originalForm,
                     'form' => $newForm,
-                    'status' => 'PENDING',
+                    'status' => $isValidated === true ? 'PENDING' : 'EXCEPTION',
                     'created_at' => date("Y-m-d H:i:s")
                 ),
                 array('%s', '%s', '%s', '%s', '%s')
             );
-            $form_id = $wpdb->insert_id;
-            $revision_uuid = wp_generate_uuid4();
             if ($isValidated === true) {
+                $form_id = $wpdb->insert_id;
+                $revision_uuid = wp_generate_uuid4();
                 $wpdb->insert(
                     "{$wpdb->prefix}cnrs_data_manager_revisions",
                     array(

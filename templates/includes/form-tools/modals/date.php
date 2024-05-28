@@ -14,6 +14,7 @@
         </h3>
         <input type="hidden" name="cnrs-dm-iteration" value="<?php echo $iteration ?>">
         <input type="hidden" name="cnrs-dm-type" value="date">
+        <input type="hidden" name="cnrs-dm-isReference" value="<?php echo $info['data']['isReference'] === true ? 1 : 0 ?>">
         <label class="cnrs-dm-form-modal-label">
             <span><?php echo __('Label', 'cnrs-data-manager') ?></span>
             <input spellcheck="false" type="text" name="cnrs-dm-label" value="<?php echo $info['label'] ?>">
