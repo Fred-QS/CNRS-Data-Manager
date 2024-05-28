@@ -1453,8 +1453,16 @@ input[name="cnrs-dm-other-option"] {
     margin: 0 0 20px;
     text-align: center;
     width: 100%;
-    display: inline;
     color: #2271b1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+#cnrs-dm-form-modal h3 .cnrs-dm-preview-reference-wrapper {
+    width: 16px!important;
+    height: 16px;
 }
 
 #cnrs-dm-form-preview-container {
@@ -1856,10 +1864,12 @@ input:checked + .cnrs-dm-slider:before {
 }
 
 .cnrs-dm-mission-form-list-title {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    display: block;
     color: #b32d2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 .cnrs-dm-mission-form-list-title svg {
@@ -1993,6 +2003,137 @@ input:checked + .cnrs-dm-slider:before {
     font-style: italic;
     margin-bottom: 3px;
     opacity: 0.7;
+}
+
+.cnrs-dm-status-icon {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.cnrs-dm-status-icon-exception {
+    margin-bottom: 10px;
+}
+
+.cnrs-dm-status-icon-pending svg {
+    color: orange;
+    margin-right: 5px;
+}
+
+.cnrs-dm-status-icon-validated svg {
+    color: green;
+}
+
+.cnrs-dm-status-icon-exception svg {
+    color: #b32d2e;
+}
+
+.cnrs-dm-status-icon-canceled svg {
+    color: #b32d2e;
+}
+
+.cnrs-dm-status-icon svg path {
+    fill: currentColor;
+}
+
+.cnrs-dm-status-icon small {
+    opacity: 0.7;
+    font-style: italic;
+    line-height: 1em;
+}
+
+.cnrs-dm-exception-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.cnrs-dm-actions-triggers {
+    width: 100%;
+    text-align: center;
+}
+
+.cnrs-dm-actions-triggers:not(:nth-child(2)) {
+    margin-top: 5px;
+}
+
+.cnrs-dm-form-tool-is-reference-wrapper {
+    padding: 0 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.cnrs-dm-form-tool-is-reference-wrapper label {
+    line-height: 1em;
+    font-style: italic;
+    color: #2271b1;
+    opacity: 0.7;
+    padding-bottom: 4px;
+    cursor: pointer;
+}
+
+.cnrs-dm-preview-reference-wrapper {
+    width: 12px!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 12px;
+    margin-left: 5px;
+}
+
+.cnrs-dm-preview-reference-wrapper svg {
+    color: gold;
+}
+
+.cnrs-dm-preview-reference-wrapper svg path {
+    fill: currentColor;
+}
+
+.cnrs-dm-revision-details {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+}
+
+.cnrs-dm-revision-details svg {
+    color: #2271b1;
+    cursor: pointer;
+}
+
+.cnrs-dm-revision-details svg path {
+    fill: currentColor;
+}
+
+.cnrs-dm-revision-details ol {
+    position: absolute;
+    top: calc(100% - 10px);
+    left: -20px;
+    z-index: 2;
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 5px 10px 0 20px;
+    color: #2271b1;
+    border-radius: 6px;
+    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.2);
+    transition: all linear 0.2s
+}
+
+.cnrs-dm-revision-details:hover ol {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cnrs-dm-revision-details:hover ol li a {
+    text-decoration: underline;
 }
 
 @media only screen and (min-width: 783px) {

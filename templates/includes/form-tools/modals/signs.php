@@ -5,6 +5,7 @@
         <h3><?php echo __('Signing pads settings', 'cnrs-data-manager') ?></h3>
         <input type="hidden" name="cnrs-dm-iteration" value="<?php echo $iteration ?>">
         <input type="hidden" name="cnrs-dm-type" value="signs">
+        <input type="hidden" name="cnrs-dm-isReference" value="<?php echo $info['data']['isReference'] === true ? 1 : 0 ?>">
         <input type="hidden" name="cnrs-dm-label" value="<?php echo $info['label'] ?>">
         <p><?php echo __('Add pads', 'cnrs-data-manager') ?><span class="cnrs-dm-form-add-choice">+</span></p>
         <small><?php echo __('Use ";" as separator for multiline label', 'cnrs-data-manager') ?></small>

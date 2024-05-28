@@ -482,26 +482,28 @@ function retrieveAgents(info) {
 }
 
 function buildFormList(page = 1, search = '', results = 10) {
-    missionListLoader.classList.add('show');
-    const formData = new FormData();
-    const url = '/wp-admin/admin-ajax.php';
-    formData.append('action', 'get_forms_list');
-    formData.append('agents', JSON.stringify(agentsList));
-    formData.append('page', page);
-    formData.append('search', search);
-    formData.append('results_per_page', results);
-    const options = {
-        method: 'POST',
-        body: formData,
-    };
-    fetch(url, options)
-        .then(
-            response => response.json()
-        ).then(
-        success => insertListInHTML(success.data)
-    ).catch(
-        error => insertListInHTML({error: error, data: null, html: ''})
-    );
+    if (missionListLoader) {
+        missionListLoader.classList.add('show');
+        const formData = new FormData();
+        const url = '/wp-admin/admin-ajax.php';
+        formData.append('action', 'get_forms_list');
+        formData.append('agents', JSON.stringify(agentsList));
+        formData.append('page', page);
+        formData.append('search', search);
+        formData.append('results_per_page', results);
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+        fetch(url, options)
+            .then(
+                response => response.json()
+            ).then(
+            success => insertListInHTML(success.data)
+        ).catch(
+            error => insertListInHTML({error: error, data: null, html: ''})
+        );
+    }
 }
 
 function insertListInHTML(info) {
@@ -523,6 +525,8 @@ function setListListener() {
     const nbOfResult2 = document.querySelector('#cnrs-data-manager-limit-2');
     const currentPage = document.querySelector('#current-page-selector');
     const paginators = document.querySelectorAll('.cnrs-dm-mission-form-pagination-btn');
+    const actions = document.querySelectorAll('.cnrs-dm-actions-triggers');
+
     if (nbOfResult1 && nbOfResult2) {
         nbOfResult1.onchange = function () {nbOfResult2.value = this.value;}
         nbOfResult2.onchange = function () {nbOfResult1.value = this.value;}
@@ -541,17 +545,19 @@ function setListListener() {
     if (searchBtn) {
         searchBtn.onclick = function () {
             let search = searchInput.value;
-            let limit = nbOfResult1.value;
+            let limit = nbOfResult1 ? nbOfResult1.value : 10;
             let current = currentPage ? currentPage.value : 1;
             buildFormList(current, search, limit);
         }
     }
     for (let i = 0; i < paginators.length; i++) {
         paginators[i].onclick = function () {
-            let search = searchInput.value;
-            let limit = nbOfResult1.value;
-            let current = this.dataset.page;
-            buildFormList(current, search, limit);
+            if (searchInput) {
+                let search = searchInput.value;
+                let limit = nbOfResult1.value;
+                let current = this.dataset.page;
+                buildFormList(current, search, limit);
+            }
         }
     }
     const expandBtns = document.querySelectorAll('.toggle-row');
@@ -564,6 +570,39 @@ function setListListener() {
                 parent.classList.add('is-expanded');
             }
         }
+    }
+
+    for (let i = 0; i < actions.length; i++) {
+        if (!actions[i].classList.contains('disabled')) {
+            actions[i].onclick = function () {
+                missionListLoader.classList.add('show');
+                const formData = new FormData();
+                const url = '/wp-admin/admin-ajax.php';
+                formData.append('action', 'form_list_action');
+                formData.append('trigger', this.dataset.action);
+                formData.append('form_id', this.dataset.form);
+                const options = {
+                    method: 'POST',
+                    body: formData,
+                };
+                fetch(url, options)
+                    .then(
+                        response => response.json()
+                    ).then(
+                    success => refreshListTab(success.data)
+                ).catch(
+                    error => refreshListTab({error: error, data: null})
+                );
+            }
+        }
+    }
+}
+
+function refreshListTab(info) {
+    if (info.error === null) {
+        window.location.reload(true);
+    } else {
+        console.warn(info.error);
     }
 }
 
@@ -727,7 +766,7 @@ function getToolModal(info) {
 
 function saveToolSettings() {
     const elmt = document.querySelector('#cnrs-dm-form-modal');
-    const element = {'type': '', 'label': '', 'data': {'value': null, 'values': null, 'choices': null, 'required': false, 'tooltip': ''}};
+    const element = {'type': '', 'label': '', 'data': {'value': null, 'values': null, 'choices': null, 'required': false, 'tooltip': '', 'isReference': false}};
     const iteration = document.querySelector('input[name="cnrs-dm-iteration"]').value;
     let choicesList = [];
 
@@ -755,6 +794,10 @@ function saveToolSettings() {
     if (tooltip) {
         element.data.tooltip = tooltip.value.replaceAll("\n", '<br/>');
     }
+    const isReference = document.querySelector('input[name="cnrs-dm-isReference"]')
+    if (isReference) {
+        element.data.isReference = isReference.value === '1';
+    }
     missionForm.elements[iteration] = element;
     refreshFormPreview();
     closeModalWrapper();
@@ -765,6 +808,7 @@ function setToolsListeners(refresh = false) {
     const deleteBtn = document.querySelectorAll('.cnrs-dm-tool-button[data-action="delete"]');
     const tools = document.querySelectorAll('.cnrs-dm-form-tool-render');
     const movers = document.querySelectorAll('.cnrs-dm-mission-form-mover');
+    const isReference = document.querySelectorAll('input[name="cnrs-dm-form-tool-is-reference-input"]');
 
     for (let i = 0; i < editBtn.length; i++) {
         const btn = editBtn[i];
@@ -841,6 +885,21 @@ function setToolsListeners(refresh = false) {
         }
     }
 
+    for (let i = 0; i < isReference.length; i++) {
+        isReference[i].oninput = function () {
+            if (this.checked === true) {
+                const iteration = parseInt(this.closest('.cnrs-dm-form-tool-render').dataset.index);
+                const elements = [...missionForm.elements];
+                for (let j = 0; j < elements.length; j++) {
+                    elements[j].data.isReference = false;
+                }
+                missionForm.elements = elements;
+                missionForm.elements[iteration].data.isReference = true;
+                refreshFormPreview();
+            }
+        }
+    }
+
     if (refresh === true && tools.length > 0) {
         refreshFormPreview();
     }
@@ -860,6 +919,10 @@ function resetFormIterations() {
 function closeModalWrapper() {
     const modal = document.querySelector('#cnrs-dm-form-modal-wrapper');
     modal.classList.remove('display');
+    let config = {...tinyMCEConfig};
+    config.selector = '#cnrs-dm-tinymce'
+    tinymce.remove();
+    tinymce.init(config);
     setTimeout(function () {
         modal.remove();
     }, 250);
@@ -921,7 +984,13 @@ function refreshFormPreview() {
             </span>${unit}</div>`;
             html += `</label>`;
         } else if (element.type === 'date') {
-            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
+            html += `<label><span${required}>${element.label} ${tooltip}`;
+            if (element.data.isReference === true) {
+                html += `<span class="cnrs-dm-preview-reference-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="12" height="12"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+                </span>`;
+            }
+            html += `</span>`;
             html += `<span class="cnrs-dm-filled" data-type="date">
                 ${('0' + d.getDate()).slice(-2)}/${('0' + (d.getMonth() + 1)).slice(-2)}/${d.getFullYear()}
                 <span>

@@ -15,7 +15,179 @@ use CnrsDataManager\Core\Controllers\Controller;
 use CnrsDataManager\Core\Controllers\TemplateLoader;
 use CnrsDataManager\Core\Controllers\Page;
 
+$errors = [
+    'simple' => __('must not be empty', 'cnrs-data-manager'),
+    'checkbox' => __('must at least have one selection', 'cnrs-data-manager'),
+    'radio' => __('must have one selection', 'cnrs-data-manager'),
+    'signs' => __('must have been correctly filled out', 'cnrs-data-manager'),
+    'option' => __('comment must not be empty', 'cnrs-data-manager'),
+    'number' => __('must be numeric', 'cnrs-data-manager'),
+    'unsigned' => __('must be equal or greater than 0', 'cnrs-data-manager'),
+];
+
 $shortCodesCounter = 0;
+
+$dumpStyle = '<style>
+    .dumper-container::-webkit-scrollbar {
+        width: 16px;
+        height: 16px;
+    }
+
+    .dumper-container::-webkit-scrollbar-track {
+        background-color: transparent;
+        border-radius: 100px;
+    }
+
+    .dumper-container::-webkit-scrollbar-thumb {
+        background-color: gold;
+        border-radius: 100px;
+        background-clip: padding-box;
+        border: 5px solid transparent;
+        -webkit-border-radius: 100px;
+        -webkit-box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.05), inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+        -webkit-transition: all linear 0.2s;
+    }
+
+    .dumper-container::-webkit-scrollbar-button {
+        width: 0;
+        height: 0;
+        display: none;
+    }
+
+    .dumper-container::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
+    .dumper-container {
+        width: max-content; 
+        overflow-x: auto; 
+        max-width: calc(100% - 20px); 
+        background-color: #3c3c3c; 
+        box-sizing: border-box; 
+        padding: 10px 10px 0; 
+        line-height: 1.3em; 
+        margin: 10px;
+    }
+    .dumper-details {
+        font-size: 11px; 
+        color: violet; 
+        line-height: 1.2em; 
+        padding: 0;
+    }
+    .dumper-pre {
+        color: #f1f1f1;
+        font-size: 12px;
+        padding: 5px 10px 10px 0;
+        width: max-content;
+        box-sizing: border-box;
+    }
+</style>';
+
+if (!function_exists('dump')) {
+
+    /**
+     * Dump the provided variables for debugging purposes.
+     *
+     * @param mixed ...$vars The variables to be dumped.
+     * @return void
+     */
+    function dump(mixed ...$vars): void
+    {
+        global $dumpStyle;
+        echo $dumpStyle;
+        echo '<div class="dumper-container">';
+        ob_start();
+        foreach ($vars as $key => $var) {
+            echo '<p class="dumper-details"><b>File:</b> /' . str_replace(ABSPATH, '', debug_backtrace()[0]['file']) . '</p>';
+            echo '<p class="dumper-details"><b>Line:</b> ' . str_replace(ABSPATH, '', debug_backtrace()[0]['line']) . '</p>';
+            echo '<pre class="dumper-pre">';
+            var_dump($var);
+            echo '</pre>';
+        }
+        $content = ob_get_clean();
+        echo parseDumper($content);
+        echo '</div>';
+    }
+}
+
+if (!function_exists('dd')) {
+
+    /**
+     * Dump and die function for debugging purposes.
+     *
+     * @param mixed ...$vars The variables to be dumped.
+     * @return void
+     */
+    function dd(mixed ...$vars): void
+    {
+        global $dumpStyle;
+        echo $dumpStyle;
+        echo '<div class="dumper-container">';
+        ob_start();
+        foreach ($vars as $key => $var) {
+            echo '<p class="dumper-details"><b>File:</b> /' . str_replace(ABSPATH, '', debug_backtrace()[0]['file']) . '</p>';
+            echo '<p class="dumper-details"><b>Line:</b> ' . str_replace(ABSPATH, '', debug_backtrace()[0]['line']) . '</p>';
+            echo '<pre class="dumper-pre">';
+            var_dump($var);
+            echo '</pre>';
+        }
+        $content = ob_get_clean();
+        echo parseDumper($content);
+        echo '</div>';
+        die();
+    }
+}
+
+if (!function_exists('parseDumper')) {
+
+    /**
+     * Parse the dumper content to highlight specific elements with colors.
+     *
+     * @param string $content The content to parse.
+     * @return string The parsed content with highlighted elements.
+     */
+    function parseDumper(string $content): string
+    {
+        $content = str_replace(
+            [
+                "=>\n",
+                "{",
+                "}",
+                "string",
+                "array",
+                "object",
+                "int",
+                "[\"",
+                "\"]"
+            ],
+            [
+                " <span style='color: dodgerblue'>=></span>",
+                "<span style='color: gold'>{</span>",
+                "<span style='color: gold'>}</span>",
+                "<span style='color: limegreen'>String</span>",
+                "<span style='color: limegreen'>Array</span>",
+                "<span style='color: limegreen'>Object</span>",
+                "<span style='color: limegreen'>Int</span>",
+                "\"",
+                "\""
+            ],
+            $content
+        );
+        $content = preg_replace_callback(
+            '|[^"](.*)[^"]|',
+            function ($matches) {
+                return '<span style="color: greenyellow">' . $matches[0] . '</span>';
+            },
+            $content
+        );
+        return preg_replace_callback(
+            '|[(](.*)[)]|',
+            function ($matches) {
+                return '<span style="color: #fff;">' . $matches[0] . '</span>';
+            },
+            $content
+        );
+    }
+}
 
 if (!function_exists('rrmdir')) {
     /**
@@ -528,6 +700,59 @@ if (!function_exists('isCNRSDataManagerToolsSelected')) {
     }
 }
 
+if (!function_exists('getManagerEmailFromForm')) {
+
+    function getManagerEmailFromForm(string $json): string
+    {
+        $convention = json_decode($json, true)['convention'];
+        return $convention['available'] === '1'
+            ? $convention['primary_email']
+            : $convention['secondary_email'];
+    }
+}
+
+if (!function_exists('isValidatedForm')) {
+
+    function isValidatedForm(string $json, int $days_limit): bool
+    {
+        $elements = json_decode($json, true)['elements'];
+        foreach ($elements as $element) {
+            if ($element['type'] === 'date' && $element['data']['isReference'] === true) {
+                $missionDate = $element['data']['value'][0] ?? null;
+                if ($missionDate !== null) {
+                    $limitDate = date("Y-m-d");
+                    while ($days_limit > 0) {
+                        $limitDate = date('Y-m-d', strtotime($limitDate. ' + 1 days'));
+                        if (date('D', strtotime($limitDate)) !== 'Sat' && date('D', strtotime($limitDate)) !== 'Sun') {
+                            $days_limit--;
+                        }
+                    }
+                    $missionTimeStamp = strtotime($missionDate);
+                    $limitTimeStamp = strtotime($limitDate);
+                    return $missionTimeStamp > $limitTimeStamp;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+if (!function_exists('incrementRevisionForm')) {
+
+    /**
+     * Increment the revision number of a form.
+     *
+     * @param string $json The JSON string representation of the form.
+     * @return string The updated JSON string representation of the form with the revision number incremented.
+     */
+    function incrementRevisionForm(string $json): string
+    {
+        $form = json_decode($json, true);
+        $form['revisions'] = $form['revisions'] + 1;
+        return json_encode($form);
+    }
+}
+
 if (!function_exists('cnrsReadShortCode')) {
 
     /**
@@ -556,7 +781,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -673,6 +898,16 @@ if (!function_exists('cnrsReadShortCode')) {
 
         } else if ($type === 'form') {
 
+            $conventions = Forms::getConventions();
+
+            if (empty($conventions)) {
+                global $wp_query;
+                $wp_query->set_404();
+                status_header(404);
+                get_template_part(404);
+                exit();
+            }
+
             wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
             wp_enqueue_script('cnrs-data-manager-pad-sign-script', 'https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js', [], null);
             wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', ['cnrs-data-manager-pad-sign-script'], null);
@@ -686,22 +921,25 @@ if (!function_exists('cnrsReadShortCode')) {
             $agents = json_encode($xml);
             $validated = false;
 
-            $errors = [
-                'simple' => __('must not be empty', 'cnrs-data-manager'),
-                'checkbox' => __('must at least have one selection', 'cnrs-data-manager'),
-                'radio' => __('must have one selection', 'cnrs-data-manager'),
-                'signs' => __('must have been correctly filled out', 'cnrs-data-manager'),
-                'option' => __('comment must not be empty', 'cnrs-data-manager'),
-                'number' => __('must be numeric', 'cnrs-data-manager'),
-                'unsigned' => __('must be equal or greater than 0', 'cnrs-data-manager'),
-            ];
+            global $errors;
+
+            $days_limit = Settings::getDaysLimit();
 
             if ($user !== null) {
 
                 if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
                     $uuid = $_POST['cnrs-dm-front-mission-uuid'];
-                    $jsonForm = Manager::newFilledForm($_POST);
-                    Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid);
+                    $jsonForm = Manager::newFilledForm($_POST, $uuid);
+                    $validated = isValidatedForm($jsonForm, $days_limit);
+                    $revision_uuid = Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid, $validated);
+                    if ($validated === false) {
+                        $adminEmail = Settings::getAdminEmail();
+                        Emails::sendToAdmin($adminEmail);
+                    } else {
+                        $managerEmail = getManagerEmailFromForm($jsonForm);
+                        Emails::sendToManager($managerEmail, $revision_uuid);
+                    }
+                    Emails::sendConfirmationEmail($user->email);
                     $validated = true;
                 }
 
@@ -768,6 +1006,118 @@ if (!function_exists('cnrsReadShortCode')) {
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Projects.php');
             return ob_get_clean();
+
+        } else if (in_array($type, ['revision-manager', 'revision-agent'], true)) {
+
+            if (!Forms::revisionExists()) {
+                global $wp_query;
+                $wp_query->set_404();
+                status_header(404);
+                get_template_part(404);
+                exit();
+            }
+
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-pad-sign-script', 'https://cdn.jsdelivr.net/npm/signature_pad@4.2.0/dist/signature_pad.umd.min.js', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', ['cnrs-data-manager-pad-sign-script'], null);
+
+            $data = Forms::getRevision();
+            $observations = $data->observations !== null ? json_decode($data->observations, true) : [];
+            $validated = false;
+
+            global $errors;
+            $days_limit = Settings::getDaysLimit();
+
+            if ($type === 'revision-manager'
+                && isset($_POST['cnrs-dm-front-manager-revision'])
+                && $_POST['cnrs-dm-front-manager-revision'] === 'ok')
+            {
+                $data->form = incrementRevisionForm($data->form);
+                $uuid = wp_generate_uuid4();
+                $data->uuid = $uuid;
+                $data->sender = 'MANAGER';
+                $data->manager_name = $_POST['cnrs-dm-front-revision-manager-name'];
+                $data->manager_email = $_POST['cnrs-dm-front-revision-manager-email'];
+                $data->created_at = date("y-m-d H:i:s");
+
+                if (isset($_POST['cnrs-dm-front-observation'])) {
+                    $posts = [];
+                    foreach ($_POST['cnrs-dm-front-observation'] as $post) {
+                        $posts[] = ['index' => (int) $post['index'], 'observation' => $post['observation']];
+                    }
+                    $data->observations = json_encode($posts);
+                    Forms::recordObservation($data);
+                    Emails::sendRevisionToAgent($data->agent_email, $uuid);
+
+                } else {
+
+                    Forms::recordObservation($data, true);
+                    Emails::sendValidatedForm($data->agent_email, $data->form_uuid);
+                    $genericEmail = Settings::getGenericEmail();
+                    Emails::sendValidatedForm($genericEmail, $data->form_uuid, true);
+                }
+                $validated = true;
+
+            } else if ($type === 'revision-agent'
+                && isset($_POST['cnrs-dm-front-agent-revision'])
+                && $_POST['cnrs-dm-front-agent-revision'] === 'ok')
+            {
+                $uuid = wp_generate_uuid4();
+                $data->form = incrementRevisionForm($data->form);
+                $data->uuid = $uuid;
+                $data->sender = 'AGENT';
+                $data->created_at = date("y-m-d H:i:s");
+                $data->form = Manager::updateForm($_POST, $data->form);
+                $managerEmail = getManagerEmailFromForm($data->form);
+                Forms::updateForm($data);
+                Emails::sendToManager($managerEmail, $uuid);
+                Emails::sendConfirmationEmail($data->agent_email);
+                $validated = true;
+            }
+
+            $json = $data->form;
+            unset($data->form);
+            $form = json_decode($json, true);
+
+            $agent = Agents::getAgentByEmail($data->agent_email, Manager::defineArrayFromXML()['agents']);
+
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/RevisionForm.php');
+            return ob_get_clean();
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('hasObservation')) {
+
+    /**
+     * Check if an observation with the provided index exists in the given array of observations.
+     *
+     * @param array $observations The array of observations to search.
+     * @param int $index The index of the observation to look for.
+     * @return string|null Returns the observation if found, null otherwise.
+     */
+    function hasObservation(array $observations, int $index): ?string
+    {
+        foreach ($observations as $observation) {
+            if ($observation['index'] === $index) {
+                return $observation['observation'];
+            }
+        }
+        return null;
+    }
+}
+
+if (!function_exists('extractOptionComment')) {
+
+    function extractOptionComment(int $index, array $options): string
+    {
+        foreach ($options as $option) {
+            if ($option['option'] === $index) {
+                return $option['value'];
+            }
         }
         return '';
     }
@@ -1275,9 +1625,8 @@ if (!function_exists('setUserConnexion')) {
                 }
                 setcookie('wp-cnrs-dm', $uuid, time() + 86400);
             }
-        } else if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
-            $userUuid = $_COOKIE['wp-cnrs-dm'];
-            Emails::sendConfirmationEmail($userUuid);
+        }
+        if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
             setcookie('wp-cnrs-dm', '', time() - 3600);
         }
     }
@@ -1325,6 +1674,16 @@ if (!function_exists('setMissionFormURL')) {
                     'uri' => 'cnrs-umr/mission-form-download',
                     'title' => __('Mission form download', 'cnrs-data-manager'),
                     'template' => 'mission-form-download'
+                ],
+                [
+                    'uri' => 'cnrs-umr/mission-form-revision/manager',
+                    'title' => __('Mission form revision by manager', 'cnrs-data-manager'),
+                    'template' => 'mission-form'
+                ],
+                [
+                    'uri' => 'cnrs-umr/mission-form-revision/agent',
+                    'title' => __('Mission form revision by agent', 'cnrs-data-manager'),
+                    'template' => 'mission-form'
                 ]
             ];
 
