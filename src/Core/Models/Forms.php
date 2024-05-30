@@ -2,6 +2,9 @@
 
 namespace CnrsDataManager\Core\Models;
 
+use CnrsDataManager\Core\Models\Agents;
+use CnrsDataManager\Core\Controllers\Manager;
+
 class Forms
 {
     /**
@@ -143,7 +146,7 @@ class Forms
     public static function getSettings(): object
     {
         global $wpdb;
-        return $wpdb->get_row("SELECT debug_mode, debug_email, admin_email, generic_email, days_limit FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        return $wpdb->get_row("SELECT debug_mode, debug_email, admin_email, generic_email, generic_active, days_limit FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
     }
 
     /**
@@ -162,8 +165,9 @@ class Forms
         $email = $data['cnrs-dm-debug-email'];
         $admin = $data['cnrs-dm-admin-email'];
         $generic = $data['cnrs-dm-generic-email'];
+        $genericActive = isset($data['cnrs-dm-generic-active']) && $data['cnrs-dm-generic-active'] === 'on' ? 1 : 0;
         $days = $data['cnrs-dm-days-limit'];
-        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET debug_mode = {$mode}, debug_email = '{$email}', admin_email = '{$admin}', generic_email = '{$generic}', days_limit = {$days}");
+        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET debug_mode = {$mode}, debug_email = '{$email}', admin_email = '{$admin}', generic_email = '{$generic}', generic_active = {$genericActive}, days_limit = {$days}");
     }
 
     /**
@@ -203,7 +207,21 @@ class Forms
     public static function getFormsByUuid(string $uuid): ?object
     {
         global $wpdb;
-        return $wpdb->get_row("SELECT form, created_at FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
+        $form = $wpdb->get_row("SELECT id, form, email FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
+        if ($form !== null) {
+            $revision = $wpdb->get_row("SELECT manager_name, manager_email, created_at as validated_at FROM {$wpdb->prefix}cnrs_data_manager_revisions WHERE form_id = {$form->id} ORDER BY id DESC");
+            $agents = Manager::defineArrayFromXML()['agents'];
+            $agent = Agents::getAgentByEmail($form->email, $agents);
+            $form->agent_name = ucwords(strtolower($agent['prenom'])) . ' ' . strtoupper($agent['nom']);
+            $form->agent_email = $agent['email_pro'];
+            $form->agent_avatar = setAvatarForPDF($agent['photo']);
+            unset($form->email);
+            $form->manager_name = $revision->manager_name;
+            $form->manager_email = $revision->manager_email;
+            $form->manager_avatar = setAvatarForPDF();
+            $form->validated_at = $revision->validated_at;
+        }
+        return $form;
     }
 
     /**

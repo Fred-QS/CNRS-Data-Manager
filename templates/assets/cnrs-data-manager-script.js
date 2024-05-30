@@ -28,6 +28,8 @@ const tooltipBtns = document.querySelectorAll('.cnrs-dm-front-tooltip-btn');
 const referneceDateInput = document.querySelector('#cnrs-dm-front-reference-input');
 const referenceDateAlert = document.querySelector('#cnrs-dm-front-reference-alert');
 const observationButtons = document.querySelectorAll('.cnrs-dm-front-revision-observation');
+const revisionSubmitButton = document.querySelector('#cnrs-dm-front-revision-form-submit-button');
+const missionFormDiv = document.querySelector('.cnrs-dm-mission-form');
 let agentEmails = [];
 
 window.addEventListener('load', function(){
@@ -43,8 +45,8 @@ window.addEventListener('resize', function () {
 });
 
 window.addEventListener('click', function(e) {
-   const target = e.target;
-   closeMissionTooltips(target);
+    const target = e.target;
+    closeMissionTooltips(target);
 });
 
 function isJson(str) {
@@ -321,8 +323,8 @@ function prepareMissionForm() {
                 }
                 missionFormErrors.insertAdjacentHTML('beforeend', html);
             } else {
-                console.log(missionFormSubmit.closest('form'))
                 missionFormSubmit.closest('form').submit();
+                displayLoader();
             }
         }
     }
@@ -420,6 +422,16 @@ function prepareMissionForm() {
             }
         }
     }
+
+    if (revisionSubmitButton) {
+        revisionSubmitButton.closest('form').onsubmit = function () {
+            displayLoader();
+        }
+    }
+}
+
+function displayLoader() {
+    missionFormDiv.insertAdjacentHTML('beforeend', '<div id="cnrs-dm-front-loader-wrapper"><span id="cnrs-dm-front-loader"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="40" height="40"><path d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.9zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z"/></svg></span></div>');
 }
 
 function closeMissionTooltips(target) {

@@ -962,6 +962,7 @@ if (!function_exists('cnrsReadShortCode')) {
             wp_enqueue_style('cnrs-data-manager-filters-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-filters-style.css', [], null);
 
             $filters = Settings::getFilters();
+
             $filterType = get_queried_object()->name;
             if ($filterType !== 'project') {
                 $parentCatSlug = get_queried_object()->slug;
@@ -1002,6 +1003,7 @@ if (!function_exists('cnrsReadShortCode')) {
             $post = get_queried_object();
             $id = $post->ID;
             $projects = Projects::getProjectsForTeam($id);
+
 
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Projects.php');
@@ -1054,7 +1056,9 @@ if (!function_exists('cnrsReadShortCode')) {
                     Forms::recordObservation($data, true);
                     Emails::sendValidatedForm($data->agent_email, $data->form_uuid);
                     $genericEmail = Settings::getGenericEmail();
-                    Emails::sendValidatedForm($genericEmail, $data->form_uuid, true);
+                    if ($genericEmail !== null) {
+                        Emails::sendValidatedForm($genericEmail, $data->form_uuid, true);
+                    }
                 }
                 $validated = true;
 
@@ -1349,7 +1353,7 @@ if (!function_exists('getTeams')) {
      */
     function getTeams(bool $onlyNames = false): array
     {
-        $xmlTeams = CNRS_DATA_MANAGER_XML_DATA['teams'];
+        $xmlTeams = Manager::defineArrayFromXML()['teams'];
         $teams = Tools::getTeams();
         $result = [];
         foreach ($xmlTeams as $xmlTeam) {
@@ -1707,5 +1711,86 @@ if (!function_exists('isActiveTab')) {
     function isActiveTab(string|null $tab = null): bool
     {
         return $_GET['tab'] === $tab;
+    }
+}
+
+if (!function_exists('setAvatarForPDF')) {
+
+    /**
+     * Set the avatar image for a PDF document.
+     *
+     * @param string|null $avatar The avatar image to set. If null, the default avatar image will be used.
+     * @return string The avatar image in the format 'data:image/png;base64,base64_encoded_data'.
+     */
+    function setAvatarForPDF(string $avatar = null): string
+    {
+        if (str_starts_with($avatar, 'data:image/')) {
+            return $avatar;
+        }
+
+        $defaultAvatarPath = CNRS_DATA_MANAGER_PATH . '/assets/media/default_avatar.png';
+        $data = file_get_contents($defaultAvatarPath);
+        return 'data:image/png;base64,' . base64_encode($data);
+    }
+}
+
+if (!function_exists('formatDateForPDF')) {
+
+    /**
+     * Format a date for PDF generation.
+     *
+     * @param string $date The input date to format.
+     * @param string $type The type of formatting to apply. Defaults to 'full'.
+     * @return string The formatted date.
+     */
+    function formatDateForPDF(string $date, string $type = 'datetime'): string
+    {
+        if (!in_array($type, ['time', 'datetime', 'date'], true)) {
+            return $date;
+        }
+
+        return match ($type) {
+            'time' => date("H\hi", strtotime($date)),
+            'date' => date("d/m/Y", strtotime($date)),
+            default => sprintf(date("d/m/Y \%\s H\hi", strtotime($date)), __('at', 'cnrs-data-manager'))
+        };
+    }
+}
+
+if (!function_exists('isCheckedPDF')) {
+
+    /**
+     * Check if a choice is in the array of choices.
+     *
+     * @param string $choice The choice to check.
+     * @param array $choices The array of choices to search in.
+     * @return bool Returns true if the choice is found in the array, false otherwise.
+     */
+    function isCheckedPDF(string $choice, array $choices): bool
+    {
+        if (in_array($choice, $choices, true)) {
+            return true;
+        }
+        return false;
+    }
+}
+
+if (!function_exists('hasChoiceComment')) {
+
+    /**
+     * Check if the given index has a corresponding comment in the options array.
+     *
+     * @param int $index The index to check.
+     * @param array $options The options array to search in.
+     * @return string|null Returns the corresponding comment if found, null otherwise.
+     */
+    function hasChoiceComment(int $index, array $options): ?string
+    {
+        foreach ($options as $option) {
+            if ($option['option'] === $index && strlen($option['value']) > 0) {
+                return $option['value'];
+            }
+        }
+        return null;
     }
 }

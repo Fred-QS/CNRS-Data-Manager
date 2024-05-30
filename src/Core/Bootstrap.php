@@ -57,7 +57,9 @@ class Bootstrap
     {
         if (is_admin()) {
 
-            add_action('admin_init', array(__CLASS__, 'adminInit'));
+            if (isset($_GET['page']) && stripos($_GET['page'], 'data-manager') !== false) {
+                add_action('admin_init', array(__CLASS__, 'adminInit'));
+            }
             add_action('admin_menu', array(__CLASS__, 'menuInit'));
             add_filter('admin_body_class', array(__CLASS__, 'addBodyClass'));
             add_filter('plugin_action_links', array(__CLASS__, 'manageLink'), 10, 2);

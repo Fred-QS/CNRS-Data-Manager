@@ -245,6 +245,17 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                             </tr>
                             <tr>
                                 <th scope="row">
+                                    <label for="cnrs-dm-generic-active"><?php echo __('Allow form validation generic confirmation', 'cnrs-data-manager') ?></label>
+                                </th>
+                                <td>
+                                    <p class="cnrs-dm-switch">
+                                        <input type="checkbox"<?php echo (int) $settings->generic_active === 1 ? ' checked' : '' ?> name="cnrs-dm-generic-active" id="cnrs-dm-generic-active">
+                                        <span class="cnrs-dm-slider"></span>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
                                     <label for="cnrs-dm-days-limit"><?php echo __('Limit in days for a request', 'cnrs-data-manager') ?></label>
                                 </th>
                                 <td>

@@ -356,13 +356,13 @@ class Settings
      *
      * This method fetches the generic email from the "cnrs_data_manager_mission_form_settings" table in the database.
      *
-     * @return string The generic email retrieved from the database.
+     * @return string|null The generic email retrieved from the database.
      * @global wpdb $wpdb The global WordPress database access object.
      */
-    public static function getGenericEmail(): string
+    public static function getGenericEmail(): ?string
     {
         global $wpdb;
-        $settings = $wpdb->get_row("SELECT generic_email FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
-        return $settings->generic_email;
+        $settings = $wpdb->get_row("SELECT generic_email, generic_active FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        return $settings->generic_active === '1' ? $settings->generic_email : null;
     }
 }

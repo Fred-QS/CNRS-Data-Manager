@@ -2132,6 +2132,10 @@ input:checked + .cnrs-dm-slider:before {
     visibility: visible;
 }
 
+.cnrs-dm-revision-details:hover ol li {
+    width: max-content;
+}
+
 .cnrs-dm-revision-details:hover ol li a {
     text-decoration: underline;
 }
