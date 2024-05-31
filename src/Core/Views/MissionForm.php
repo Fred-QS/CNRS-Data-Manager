@@ -8,7 +8,12 @@ if ($validated === false): ?>
         <script>
             const missionForm = <?php echo $json ?>;
             const daysLimit = <?php echo $days_limit ?>;
+            const monthLimit = <?php echo $month_limit ?>;
             const daysLimitAlert = "<?php echo sprintf(__('<b>Warning !</b> The mission start date is less <b>than %d days</b>. Your request will be rejected if deemed not urgent.', 'cnrs-data-manager'), $days_limit) ?>";
+            const monthLimitAlert = "<?php echo sprintf(__('<b>Warning !</b> The mission start date is less <b>than %d days</b>. Your request will be rejected if deemed not urgent.', 'cnrs-data-manager'), $month_limit) ?>";
+            let isInternational = null;
+            const foreignMessage = '<?php echo __('Foreign mission', 'cnrs-data-manager') ?>';
+            const franceMessage = '<?php echo __('Mission in France', 'cnrs-data-manager') ?>';
         </script>
         <h2 id="cnrs-dm-front-mission-form-title"><?php echo $form['title'] ?></h2>
         <p class="cnrs-dm-front-mission-form-subtitles"><?php echo __('Please fill out the form', 'cnrs-data-manager') ?></p>
@@ -24,7 +29,13 @@ if ($validated === false): ?>
                 </svg>
             </button>
         </div>
-        <form method="post" id="cnrs-dm-front-mission-form-wrapper" action="<?php echo add_query_arg(NULL, NULL)  ?>">
+        <div id="cnrs-dm-front-mission-dest-button-container">
+            <button type="button" class="cnrs-dm-front-btn cnrs-dm-front-btn-choose-dest" data-choice="0"><?php echo __('Mission in France', 'cnrs-data-manager') ?></button>
+            <button type="button" class="cnrs-dm-front-btn cnrs-dm-front-btn-choose-dest" data-choice="1"><?php echo __('Foreign mission', 'cnrs-data-manager') ?></button>
+        </div>
+        <form method="post" id="cnrs-dm-front-mission-form-wrapper" class="cnrs-dm-front-mission-form-wrapper-init" action="<?php echo add_query_arg(NULL, NULL)  ?>">
+            <p id="cnrs-dm-front-mission-intl"></p>
+            <input type="hidden" value="0" name="cnrs-dm-front-mission-intl">
             <input type="hidden" value='<?php echo $json ?>' name="cnrs-dm-front-mission-form-original">
             <input type="hidden" value="<?php echo wp_generate_uuid4() ?>" name="cnrs-dm-front-mission-uuid">
             <?php if (count($conventions) > 1): ?>
@@ -45,6 +56,8 @@ if ($validated === false): ?>
             <?php else: ?>
                 <input type="hidden" value="<?php echo $conventions[0]['id'] ?>" name="cnrs-dm-front-convention">
             <?php endif; ?>
+            <hr>
+            <br>
             <?php $index = 0; ?>
             <?php foreach ($form['elements'] as $element): ?>
                 <?php $data = $element['data'] ?>

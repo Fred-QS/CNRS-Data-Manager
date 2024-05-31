@@ -35,6 +35,9 @@
     </tr>
     <tr><td colspan="2"></td></tr>
     <tr><td colspan="2"></td></tr>
+    <tr>
+        <td colspan="2"><span style="font-family: <?php echo $boldFont1; ?>, sans-serif; font-size: 20px; color: #68C0B5;"><?php echo $form['international'] === true ? __('Foreign mission', 'cnrs-data-manager') : __('Mission in France', 'cnrs-data-manager') ?></span></td>
+    </tr>
     <?php foreach ($form['elements'] as $element): ?>
         <tr><td colspan="2"></td></tr>
         <?php if ($element['type'] === 'input'): ?>

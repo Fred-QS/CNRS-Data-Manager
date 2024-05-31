@@ -340,15 +340,34 @@ class Settings
     }
 
     /**
-     * Returns the admin email from the database settings table.
+     * Retrieves the month limit from the database.
      *
-     * @return string The admin email. If no settings found, an empty string is returned.
+     * This method fetches the month limit from the "cnrs_data_manager_mission_form_settings" table in the database.
+     * If the month limit is not found in the database, a default value of 20 will be returned.
+     *
+     * @return int The month limit retrieved from the database, or the default value if not found.
+     * @global wpdb $wpdb The global WordPress database access object.
      */
-    public static function getAdminEmail(): string
+    public static function getMonthLimit(): int
     {
         global $wpdb;
-        $settings = $wpdb->get_row("SELECT admin_email FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
-        return $settings->admin_email;
+        $settings = $wpdb->get_row("SELECT month_limit FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        return $settings !== null ? (int) $settings->month_limit : 20;
+    }
+
+    /**
+     * Retrieves the admin emails from the database.
+     *
+     * This method fetches the admin emails from the "cnrs_data_manager_mission_form_settings" table in the database.
+     *
+     * @return array The admin emails retrieved from the database as an associative array.
+     * @global wpdb $wpdb The global WordPress database access object.
+     */
+    public static function getAdminEmails(): array
+    {
+        global $wpdb;
+        $settings = $wpdb->get_row("SELECT admin_emails FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        return json_decode($settings->admin_emails, true);
     }
 
     /**

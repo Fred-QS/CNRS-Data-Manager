@@ -146,7 +146,9 @@ class Forms
     public static function getSettings(): object
     {
         global $wpdb;
-        return $wpdb->get_row("SELECT debug_mode, debug_email, admin_email, generic_email, generic_active, days_limit FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        $settings = $wpdb->get_row("SELECT debug_mode, debug_email, admin_emails, generic_email, generic_active, days_limit, month_limit FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
+        $settings->admin_emails = $settings->admin_emails !== null ? json_decode($settings->admin_emails, true) : [];
+        return $settings;
     }
 
     /**
@@ -163,11 +165,12 @@ class Forms
         global $wpdb;
         $mode = isset($data['cnrs-dm-debug-mode']) && $data['cnrs-dm-debug-mode'] === 'on' ? 1 : 0;
         $email = $data['cnrs-dm-debug-email'];
-        $admin = $data['cnrs-dm-admin-email'];
+        $admin = json_encode($data['cnrs-dm-admin-email']);
         $generic = $data['cnrs-dm-generic-email'];
         $genericActive = isset($data['cnrs-dm-generic-active']) && $data['cnrs-dm-generic-active'] === 'on' ? 1 : 0;
         $days = $data['cnrs-dm-days-limit'];
-        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET debug_mode = {$mode}, debug_email = '{$email}', admin_email = '{$admin}', generic_email = '{$generic}', generic_active = {$genericActive}, days_limit = {$days}");
+        $month = $data['cnrs-dm-month-limit'];
+        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET debug_mode = {$mode}, debug_email = '{$email}', admin_emails = '{$admin}', generic_email = '{$generic}', generic_active = {$genericActive}, days_limit = {$days}, month_limit = {$month}");
     }
 
     /**
@@ -354,7 +357,8 @@ class Forms
     public static function setAdminEmail(string $email): void
     {
         global $wpdb;
-        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET admin_email='{$email}', days_limit=5");
+        $emails = json_encode([$email]);
+        $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_mission_form_settings SET admin_emails='{$emails}', days_limit=5, month_limit=20");
     }
 
     /**

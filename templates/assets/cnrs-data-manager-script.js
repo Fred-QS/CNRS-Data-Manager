@@ -30,6 +30,11 @@ const referenceDateAlert = document.querySelector('#cnrs-dm-front-reference-aler
 const observationButtons = document.querySelectorAll('.cnrs-dm-front-revision-observation');
 const revisionSubmitButton = document.querySelector('#cnrs-dm-front-revision-form-submit-button');
 const missionFormDiv = document.querySelector('.cnrs-dm-mission-form');
+const chooseDestWrapper = document.querySelector('#cnrs-dm-front-mission-dest-button-container');
+const chooseDestMissionBtns = document.querySelectorAll('.cnrs-dm-front-btn-choose-dest');
+const intlParagraph = document.querySelector('#cnrs-dm-front-mission-intl');
+const missionHTMLForm = document.querySelector('#cnrs-dm-front-mission-form-wrapper');
+const desInput = document.querySelector('input[name="cnrs-dm-front-mission-intl"]');
 let agentEmails = [];
 
 window.addEventListener('load', function(){
@@ -199,23 +204,25 @@ function prepareMissionForm() {
             }
         }
 
-        if (referneceDateInput && referenceDateAlert && daysLimit && daysLimitAlert) {
+        if (referneceDateInput && referenceDateAlert && daysLimit && daysLimitAlert && monthLimit && monthLimitAlert) {
             referneceDateInput.addEventListener('input', function (event) {
-                let count = daysLimit;
-                const mission = new Date(this.value);
-                let limit = new Date();
-                while (count > 0) {
-                    limit.setDate(limit.getDate() + 1);
-                    if (limit.getDay() !== 0 && limit.getDay() !== 6) {
-                        count--;
+                if (isInternational !== null) {
+                    let count = isInternational === true ? monthLimit : daysLimit;
+                    const mission = new Date(this.value);
+                    let limit = new Date();
+                    while (count > 0) {
+                        limit.setDate(limit.getDate() + 1);
+                        if (limit.getDay() !== 0 && limit.getDay() !== 6) {
+                            count--;
+                        }
                     }
-                }
-                if (!isNaN(new Date(limit)) && mission < limit) {
-                    referenceDateAlert.innerHTML = daysLimitAlert;
-                    referenceDateAlert.classList.add('show');
-                } else {
-                    referenceDateAlert.innerHTML = '';
-                    referenceDateAlert.classList.remove('show');
+                    if (!isNaN(new Date(limit)) && mission < limit) {
+                        referenceDateAlert.innerHTML = isInternational === true ? monthLimitAlert : daysLimitAlert;
+                        referenceDateAlert.classList.add('show');
+                    } else {
+                        referenceDateAlert.innerHTML = '';
+                        referenceDateAlert.classList.remove('show');
+                    }
                 }
             });
         }
@@ -426,6 +433,17 @@ function prepareMissionForm() {
     if (revisionSubmitButton) {
         revisionSubmitButton.closest('form').onsubmit = function () {
             displayLoader();
+        }
+    }
+
+    for (let i = 0; i < chooseDestMissionBtns.length; i++) {
+        chooseDestMissionBtns[i].onclick = function () {
+            const action = parseInt(this.dataset.choice);
+            intlParagraph.innerHTML = action === 1 ? foreignMessage : franceMessage;
+            desInput.value = action;
+            isInternational = action === 1;
+            chooseDestWrapper.remove();
+            missionHTMLForm.classList.remove('cnrs-dm-front-mission-form-wrapper-init');
         }
     }
 }

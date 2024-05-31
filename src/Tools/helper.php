@@ -713,7 +713,7 @@ if (!function_exists('getManagerEmailFromForm')) {
 
 if (!function_exists('isValidatedForm')) {
 
-    function isValidatedForm(string $json, int $days_limit): bool
+    function isValidatedForm(string $json, int $defined_limit): bool
     {
         $elements = json_decode($json, true)['elements'];
         foreach ($elements as $element) {
@@ -721,10 +721,10 @@ if (!function_exists('isValidatedForm')) {
                 $missionDate = $element['data']['value'][0] ?? null;
                 if ($missionDate !== null) {
                     $limitDate = date("Y-m-d");
-                    while ($days_limit > 0) {
+                    while ($defined_limit > 0) {
                         $limitDate = date('Y-m-d', strtotime($limitDate. ' + 1 days'));
                         if (date('D', strtotime($limitDate)) !== 'Sat' && date('D', strtotime($limitDate)) !== 'Sun') {
-                            $days_limit--;
+                            $defined_limit--;
                         }
                     }
                     $missionTimeStamp = strtotime($missionDate);
@@ -924,17 +924,19 @@ if (!function_exists('cnrsReadShortCode')) {
             global $errors;
 
             $days_limit = Settings::getDaysLimit();
+            $month_limit = Settings::getMonthLimit();
 
             if ($user !== null) {
 
                 if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
                     $uuid = $_POST['cnrs-dm-front-mission-uuid'];
                     $jsonForm = Manager::newFilledForm($_POST, $uuid);
-                    $validated = isValidatedForm($jsonForm, $days_limit);
+                    $definedLimit = (int) $_POST['cnrs-dm-front-mission-intl'] === 1 ? $month_limit : $days_limit;
+                    $validated = isValidatedForm($jsonForm, $definedLimit);
                     $revision_uuid = Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid, $validated);
                     if ($validated === false) {
-                        $adminEmail = Settings::getAdminEmail();
-                        Emails::sendToAdmin($adminEmail);
+                        $adminEmails = Settings::getAdminEmails();
+                        Emails::sendToAdmins($adminEmails);
                     } else {
                         $managerEmail = getManagerEmailFromForm($jsonForm);
                         Emails::sendToManager($managerEmail, $revision_uuid);
@@ -1029,6 +1031,7 @@ if (!function_exists('cnrsReadShortCode')) {
 
             global $errors;
             $days_limit = Settings::getDaysLimit();
+            $month_limit = Settings::getMonthLimit();
 
             if ($type === 'revision-manager'
                 && isset($_POST['cnrs-dm-front-manager-revision'])

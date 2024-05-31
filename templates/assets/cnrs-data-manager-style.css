@@ -1437,8 +1437,11 @@ html, body {
     background-color: transparent;
 }
 
-#cnrs-dm-front-mission-form-wrapper {
+#cnrs-dm-front-mission-form-wrapper:not(.cnrs-dm-front-mission-form-wrapper-init) {
     display: block;
+}
+
+#cnrs-dm-front-mission-form-wrapper {
     width: 100%;
     margin-top: 4rem;
 }
@@ -2373,6 +2376,28 @@ pre.cnrs-dm-front-observation-textarea {
     fill: currentColor;
 }
 
+.cnrs-dm-front-mission-form-wrapper-init {
+    display: none;
+}
+
+#cnrs-dm-front-mission-dest-button-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin-top: 60px;
+}
+
+#cnrs-dm-front-mission-intl {
+    font-family: Josefin Sans, sans-serif;
+    font-size: 20px;
+    margin-bottom: 40px;
+    background-color: #68C0B5;
+    width: max-content;
+    padding: 10px 20px 5px;
+    color: #fff;
+}
+
 @media only screen and (min-width: 768px) {
 
     .cnrs-dm-front-mission-form-login > h2 {
@@ -2384,5 +2409,18 @@ pre.cnrs-dm-front-observation-textarea {
 
     .cnrs-dm-front-mission-form-login > h2 {
         font-size: 2rem;
+    }
+
+    #cnrs-dm-front-mission-dest-button-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin-top: 60px;
+    }
+
+    #cnrs-dm-front-mission-dest-button-container > button:last-child {
+        margin-top: 30px;
     }
 }
