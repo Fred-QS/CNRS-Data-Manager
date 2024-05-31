@@ -4,7 +4,10 @@
         <script>
             const missionForm = <?php echo $json ?>;
             const daysLimit = <?php echo $days_limit ?>;
+            const monthLimit = <?php echo $month_limit ?>;
             const daysLimitAlert = "<?php echo sprintf(__('<b>Warning !</b> The mission start date is less <b>than %d days</b>. Your request will be rejected if deemed not urgent.', 'cnrs-data-manager'), $days_limit) ?>";
+            const monthLimitAlert = "<?php echo sprintf(__('<b>Warning !</b> The mission start date is less <b>than %d days</b>. Your request will be rejected if deemed not urgent.', 'cnrs-data-manager'), $month_limit) ?>";
+            const isInternational = missionForm.international;
         </script>
         <h2 id="cnrs-dm-front-mission-form-title">
             <?php if ($form['revisions'] < 1): echo __('Form check', 'cnrs-data-manager'); else: echo __('Revision n°', 'cnrs-data-manager') . $form['revisions']; endif; ?>
@@ -31,6 +34,7 @@
             <p id="cnrs-dm-front-mission-observation-guide"><?php echo sprintf(__('Please check the form.<br><b>"%s"</b> buttons are located under each type of field so that you can display a text field and then enter an observation.<br>Once the form has been revised, click on <b>"%s"</b> to return the form to the agent if observations have been made, or to validation if the form has no observations.', 'cnrs-data-manager'), __('Add an observation', 'cnrs-data-manager'), __('Save', 'cnrs-data-manager')) ?></p>
         <?php endif; ?>
         <form method="post" id="cnrs-dm-front-mission-form-wrapper" action="<?php echo add_query_arg(NULL, NULL)  ?>">
+            <p id="cnrs-dm-front-mission-intl"><?php echo $form['international'] === true ? __('Foreign mission', 'cnrs-data-manager') : __('Mission in France', 'cnrs-data-manager') ?></p>
 
             <?php if ($type === 'revision-manager'): ?>
 

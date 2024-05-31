@@ -1159,11 +1159,13 @@ label[for="cnrs-data-manager-projects-team"] {
 
 .cnrs-dm-tool-button[data-action="edit"],
 .cnrs-dm-tool-button[data-link],
-.cnrs-dm-tool-button[data-action="add-manager"] {
+.cnrs-dm-tool-button[data-action="add-manager"],
+.cnrs-dm-tool-button[data-action="add-email"] {
     background-color: #2271b1;
 }
 
 .cnrs-dm-tool-button[data-action="delete"],
+.cnrs-dm-tool-button[data-action="remove-email"],
 .cnrs-dm-manager-delete-button {
     background-color: #ff4d4d;
 }
@@ -1171,11 +1173,13 @@ label[for="cnrs-data-manager-projects-team"] {
 .cnrs-dm-tool-button[data-action="edit"]:active,
 .cnrs-dm-tool-button[data-link]:active,
 .cnrs-dm-form-add-choice:active,
-.cnrs-dm-tool-button[data-action="add-manager"]:active {
+.cnrs-dm-tool-button[data-action="add-manager"]:active,
+.cnrs-dm-tool-button[data-action="add-email"]:active {
     background-color: dodgerblue;
 }
 
 .cnrs-dm-tool-button[data-action="delete"]:active,
+.cnrs-dm-tool-button[data-action="remove-email"]:active,
 .cnrs-dm-manager-delete-button:active {
     background-color: #cc0000;
 }
@@ -1188,6 +1192,34 @@ label[for="cnrs-data-manager-projects-team"] {
 
 .cnrs-dm-tool-button svg path {
     fill: currentColor;
+}
+
+.cnrs-dm-row-label {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.cnrs-dm-remove-admin-emails-button {
+    margin-left: 10px;
+    margin-right: 0;
+}
+
+.cnrs-dm-admin-email-with-trash {
+    margin-top: 5px!important;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+label[for="cnrs-dm-admin-email-0"] {
+    width: 100%;
+}
+
+#cnrs-dm-admin-emails-button {
+    margin-right: 0;
+    margin-left: 10px;
 }
 
 #cnrs-dm-form-preview {
@@ -2132,6 +2164,10 @@ input:checked + .cnrs-dm-slider:before {
     visibility: visible;
 }
 
+.cnrs-dm-revision-details:hover ol li {
+    width: max-content;
+}
+
 .cnrs-dm-revision-details:hover ol li a {
     text-decoration: underline;
 }
@@ -2521,6 +2557,10 @@ input:checked + .cnrs-dm-slider:before {
 
     #cnrs-dm-form-modal-choices::-webkit-scrollbar {
         display: none;
+    }
+
+    .cnrs-dm-admin-email-with-trash input {
+        width: calc(100% - 30px)!important;
     }
 }
 

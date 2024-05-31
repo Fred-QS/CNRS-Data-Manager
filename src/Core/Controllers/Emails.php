@@ -135,21 +135,22 @@ class Emails
     /**
      * Sends a notification email to the admin indicating that the deadline for a form has been exceeded.
      *
-     * @param string $email The email address of the admin to send the notification to.
-     *
+     * @param array $emails
      * @return bool Returns true if the email was sent successfully, false otherwise.
      */
-    public static function sendToAdmin(string $email): bool
+    public static function sendToAdmins(array $emails): bool
     {
         try {
             $subject = __('Deadline exceeded form', 'cnrs-data-manager');
             $template = 'exceed';
+            $email = $emails[0];
+            array_shift($emails);
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            sendCNRSEmail($email, $subject, $body);
+            sendCNRSEmail($email, $subject, $body, $emails);
 
             return true;
 

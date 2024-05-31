@@ -1437,8 +1437,11 @@ html, body {
     background-color: transparent;
 }
 
-#cnrs-dm-front-mission-form-wrapper {
+#cnrs-dm-front-mission-form-wrapper:not(.cnrs-dm-front-mission-form-wrapper-init) {
     display: block;
+}
+
+#cnrs-dm-front-mission-form-wrapper {
     width: 100%;
     margin-top: 4rem;
 }
@@ -1845,6 +1848,7 @@ h3.cnrs-dm-front-mission-form-element-label {
 .cnrs-dm-mission-form {
     width: 100%;
     max-width: 1080px;
+    position: relative;
 }
 
 #cnrs-dm-mission-master-wrapper {
@@ -1987,13 +1991,20 @@ h3.cnrs-dm-front-mission-form-element-label {
     --s-xsmall: 0.625em;
     --s-small: 1.2em;
     --border-width: 1px;
-    --c-primary: #68C0B5;
     --c-primary-20-percent-opacity: rgba(106, 183, 230, 0.2);
     --c-primary-10-percent-opacity: rgba(106, 183, 230, 0.1);
     --t-base: 0.4s;
     --t-fast: 0.2s;
     --e-in: ease-in;
     --e-out: cubic-bezier(.11,.29,.18,.98);
+}
+
+.cnrs-dm-front-checkbox-wrapper:not(.cnrs-dm-front-revision-obs) {
+    --c-primary: #68C0B5;
+}
+
+.cnrs-dm-front-revision-obs.cnrs-dm-front-checkbox-wrapper {
+    --c-primary: #ff5c33;
 }
 
 .cnrs-dm-front-checkbox-wrapper .visuallyHidden {
@@ -2104,9 +2115,14 @@ h3.cnrs-dm-front-mission-form-element-label {
 }
 
 /* Radio button animated element */
-.cnrs-dm-front-radio-references {
+.cnrs-dm-front-radio-references:not(.cnrs-dm-front-revision-obs) {
     --primary: rgb(106, 183, 230);
     --other: #68C0B5;
+}
+
+.cnrs-dm-front-radio-references.cnrs-dm-front-revision-obs {
+    --primary: rgb(230, 46, 0);
+    --other: #ff5c33;
 }
 
 input[name^="cnrs-dm-front-mission-form-element-radio"],
@@ -2339,6 +2355,49 @@ pre.cnrs-dm-front-observation-textarea {
     opacity: 0.3;
 }
 
+#cnrs-dm-front-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    transform-origin: 50% 50%;
+    transform: rotate(0);
+    animation: rotateLoader ease-in-out 1.2s infinite;
+}
+
+#cnrs-dm-front-loader svg {
+    width: 100%;
+    height: 100%;
+    color: #6ab7e6;
+}
+
+#cnrs-dm-front-loader svg path {
+    fill: currentColor;
+}
+
+.cnrs-dm-front-mission-form-wrapper-init {
+    display: none;
+}
+
+#cnrs-dm-front-mission-dest-button-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin-top: 60px;
+}
+
+#cnrs-dm-front-mission-intl {
+    font-family: Josefin Sans, sans-serif;
+    font-size: 20px;
+    margin-bottom: 40px;
+    background-color: #68C0B5;
+    width: max-content;
+    padding: 10px 20px 5px;
+    color: #fff;
+}
+
 @media only screen and (min-width: 768px) {
 
     .cnrs-dm-front-mission-form-login > h2 {
@@ -2350,5 +2409,18 @@ pre.cnrs-dm-front-observation-textarea {
 
     .cnrs-dm-front-mission-form-login > h2 {
         font-size: 2rem;
+    }
+
+    #cnrs-dm-front-mission-dest-button-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin-top: 60px;
+    }
+
+    #cnrs-dm-front-mission-dest-button-container > button:last-child {
+        margin-top: 30px;
     }
 }

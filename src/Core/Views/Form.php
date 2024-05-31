@@ -37,7 +37,7 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
         <?php if (empty($managersList)): ?>
             <p class="cnrs-dm-warning-note"><?php echo __('<b>Warning !</b> As long as at least one manager has not been entered in the <b>Settings</b> tab, the form page will return a <b>404 error</b>.', 'cnrs-data-manager') ?></p>
         <?php endif; ?>
-        <?php if ($settings->admin_email === null): ?>
+        <?php if (empty($settings->admin_emails)): ?>
             <hr/>
             <p id="cnrs-dm-first-text"><?php echo __('You must provide an <b>administrator email</b> in order to be able to use the form builder in the event that a form needs to be <b>approved by an administrator</b> regarding a too short <b>form submission deadline</b>.', 'cnrs-data-manager') ?></p>
             <form method="post">
@@ -49,7 +49,7 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                         </th>
                         <td>
                             <p>
-                                <input required name="cnrs-dm-admin-email-init" autocomplete="off" spellcheck="false" type="email" id="cnrs-dm-admin-email-init" value="<?php echo $settings->admin_email ?>" class="regular-text">
+                                <input required name="cnrs-dm-admin-email-init" autocomplete="off" spellcheck="false" type="email" id="cnrs-dm-admin-email-init" class="regular-text">
                             </p>
                         </td>
                     </tr>
@@ -220,17 +220,32 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                             </tr>
                             </tbody>
                         </table>
-                        <h3 class="cnrs-dm-tools-h2"><?php echo __('Rules', 'cnrs-data-manager') ?></h3>
+                        <h3 class="cnrs-dm-tools-h2"><?php echo __('Administration', 'cnrs-data-manager') ?></h3>
                         <table class="form-table" role="presentation">
                             <tbody>
                             <tr>
                                 <th scope="row">
-                                    <label for="cnrs-dm-admin-email"><?php echo __('Administrator email', 'cnrs-data-manager') ?></label>
+                                    <label class="cnrs-dm-row-label">
+                                        <?php echo __('Administrators emails', 'cnrs-data-manager') ?>
+                                        <span id="cnrs-dm-admin-emails-button" class="cnrs-dm-tool-button" data-action="add-email">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20">
+                                                <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/>
+                                            </svg>
+                                        </span>
+                                    </label>
                                 </th>
-                                <td>
-                                    <p>
-                                        <input required name="cnrs-dm-admin-email" autocomplete="off" spellcheck="false" type="email" id="cnrs-dm-admin-email" value="<?php echo $settings->admin_email ?>" class="regular-text">
-                                    </p>
+                                <td id="cnrs-dm-admin-emails-wrapper">
+                                    <?php foreach ($settings->admin_emails as $key => $email): ?>
+                                        <label for="cnrs-dm-admin-email-<?php echo $key ?>"<?php echo $key > 0 ? ' class="cnrs-dm-admin-email-with-trash"' : '' ?>>
+                                            <input<?php echo $key === 0 ? ' required' : '' ?> name="cnrs-dm-admin-email[]" autocomplete="off" spellcheck="false" type="email" id="cnrs-dm-admin-email-<?php echo $key ?>" value="<?php echo $email ?>" class="regular-text">
+                                            <?php if ($key > 0): ?>
+                                                <span class="cnrs-dm-remove-admin-emails-button cnrs-dm-tool-button" data-action="remove-email">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20"><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/>
+                                                    </svg>
+                                                </span>
+                                            <?php endif; ?>
+                                        </label>
+                                    <?php endforeach; ?>
                                 </td>
                             </tr>
                             <tr>
@@ -245,11 +260,32 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                             </tr>
                             <tr>
                                 <th scope="row">
-                                    <label for="cnrs-dm-days-limit"><?php echo __('Limit in days for a request', 'cnrs-data-manager') ?></label>
+                                    <label for="cnrs-dm-generic-active"><?php echo __('Allow form validation generic confirmation', 'cnrs-data-manager') ?></label>
+                                </th>
+                                <td>
+                                    <p class="cnrs-dm-switch">
+                                        <input type="checkbox"<?php echo (int) $settings->generic_active === 1 ? ' checked' : '' ?> name="cnrs-dm-generic-active" id="cnrs-dm-generic-active">
+                                        <span class="cnrs-dm-slider"></span>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <label for="cnrs-dm-days-limit"><?php echo __('Limit in days for a request in France', 'cnrs-data-manager') ?></label>
                                 </th>
                                 <td>
                                     <p>
                                         <input required name="cnrs-dm-days-limit" autocomplete="off" spellcheck="false" type="number" id="cnrs-dm-days-limit" value="<?php echo $settings->days_limit ?>" min="0" step="1" class="regular-text">
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <label for="cnrs-dm-month-limit"><?php echo __('Limit in days for a request outside France', 'cnrs-data-manager') ?></label>
+                                </th>
+                                <td>
+                                    <p>
+                                        <input required name="cnrs-dm-month-limit" autocomplete="off" spellcheck="false" type="number" id="cnrs-dm-month-limit" value="<?php echo $settings->month_limit ?>" min="0" step="1" class="regular-text">
                                     </p>
                                 </td>
                             </tr>
