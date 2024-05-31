@@ -502,8 +502,10 @@ final class Manager
     public static function newFilledForm(array $data, string $uuid): string
     {
         $original = json_decode(stripslashes($data['cnrs-dm-front-mission-form-original']), true);
+        $international = (int) $_POST['cnrs-dm-front-mission-intl'] === 1;
         unset($data['cnrs-dm-front-mission-form-original']);
         unset($data['cnrs-dm-front-mission-uuid']);
+        unset($data['cnrs-dm-front-mission-intl']);
         $recompose = [];
         foreach ($data as $index => $element) {
             $clean = str_replace('cnrs-dm-front-mission-form-element-', '', $index);
@@ -552,6 +554,7 @@ final class Manager
         $original['convention'] = Forms::getConvention((int) $data['cnrs-dm-front-convention']);
         $original['revisions'] = 0;
         $original['uuid'] = $uuid;
+        $original['international'] = $international;
         return json_encode($original);
     }
 

@@ -72,6 +72,8 @@ const adminFormLinkCopy = document.querySelector('#cnrs-dm-form-link-to-form spa
 const deleteManagerButton = document.querySelectorAll('.cnrs-dm-manager-delete-button');
 const addManagerButton = document.querySelector('.cnrs-dm-tool-button[data-action="add-manager"]');
 const managerList = document.querySelector('#cnrs-dm-managers-list');
+const addAdminEmailButton = document.querySelector('#cnrs-dm-admin-emails-button');
+const adminEmailsWrapper = document.querySelector('#cnrs-dm-admin-emails-wrapper');
 
 const tinyMCEConfig = {
     width: "100%",
@@ -450,6 +452,25 @@ function prepareListeners() {
                 error => addNewManager({error: error, data: null})
             );
         });
+    }
+
+    if (addAdminEmailButton) {
+        addAdminEmailButton.onclick = function (){
+            const fieldsLength = document.querySelector('#cnrs-dm-admin-emails-wrapper').children.length;
+            const newInput = `<label for="cnrs-dm-admin-email-${fieldsLength}" class="cnrs-dm-admin-email-with-trash"><input name="cnrs-dm-admin-email[]" autocomplete="off" spellcheck="false" type="email" id="cnrs-dm-admin-email-${fieldsLength}" class="regular-text"><span class="cnrs-dm-remove-admin-emails-button cnrs-dm-tool-button" data-action="remove-email"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20"><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0H284.2c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64S14.3 32 32 32h96l7.2-14.3zM32 128H416V448c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16V432c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg></span></label>`;
+            adminEmailsWrapper.insertAdjacentHTML('beforeend', newInput);
+            removeAdminEmailListeners();
+        }
+    }
+    removeAdminEmailListeners();
+}
+
+function removeAdminEmailListeners() {
+    const btns = document.querySelectorAll('.cnrs-dm-remove-admin-emails-button');
+    for (let i = 0; i < btns.length; i++) {
+        btns[i].onclick = function (){
+            this.closest('label').remove();
+        };
     }
 }
 
