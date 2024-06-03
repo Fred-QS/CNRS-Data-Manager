@@ -12,8 +12,8 @@ if ($validated === false): ?>
             const daysLimitAlert = "<?php echo sprintf(__('<b>Warning !</b> The mission start date is less <b>than %d days</b>. Your request will be rejected if deemed not urgent.', 'cnrs-data-manager'), $days_limit) ?>";
             const monthLimitAlert = "<?php echo sprintf(__('<b>Warning !</b> The mission start date is less <b>than %d days</b>. Your request will be rejected if deemed not urgent.', 'cnrs-data-manager'), $month_limit) ?>";
             let isInternational = null;
-            const foreignMessage = '<?php echo __('Foreign mission', 'cnrs-data-manager') ?>';
-            const franceMessage = '<?php echo __('Mission in France', 'cnrs-data-manager') ?>';
+            const foreignMessage = "<?php echo __('Foreign mission', 'cnrs-data-manager') ?>";
+            const franceMessage = "<?php echo __('Mission in France', 'cnrs-data-manager') ?>";
         </script>
         <h2 id="cnrs-dm-front-mission-form-title"><?php echo $form['title'] ?></h2>
         <p class="cnrs-dm-front-mission-form-subtitles"><?php echo __('Please fill out the form', 'cnrs-data-manager') ?></p>

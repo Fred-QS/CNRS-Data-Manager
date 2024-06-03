@@ -502,7 +502,7 @@ function retrieveAgents(info) {
     }
 }
 
-function buildFormList(page = 1, search = '', results = 10) {
+function buildFormList(page = 1, search = '', results = 10, status = 'ALL') {
     if (missionListLoader) {
         missionListLoader.classList.add('show');
         const formData = new FormData();
@@ -512,6 +512,7 @@ function buildFormList(page = 1, search = '', results = 10) {
         formData.append('page', page);
         formData.append('search', search);
         formData.append('results_per_page', results);
+        formData.append('status_filter', status);
         const options = {
             method: 'POST',
             body: formData,
@@ -544,6 +545,8 @@ function setListListener() {
     const searchBtn = document.querySelector('#cnrs-data-manager-search-submit');
     const nbOfResult1 = document.querySelector('#cnrs-data-manager-limit-1');
     const nbOfResult2 = document.querySelector('#cnrs-data-manager-limit-2');
+    const statusResult1 = document.querySelector('#cnrs-data-manager-status-1');
+    const statusResult2 = document.querySelector('#cnrs-data-manager-status-2');
     const currentPage = document.querySelector('#current-page-selector');
     const paginators = document.querySelectorAll('.cnrs-dm-mission-form-pagination-btn');
     const actions = document.querySelectorAll('.cnrs-dm-actions-triggers');
@@ -552,14 +555,21 @@ function setListListener() {
         nbOfResult1.onchange = function () {nbOfResult2.value = this.value;}
         nbOfResult2.onchange = function () {nbOfResult1.value = this.value;}
     }
+
+    if (statusResult1 && statusResult2) {
+        statusResult1.onchange = function () {statusResult2.value = this.value;}
+        statusResult2.onchange = function () {statusResult1.value = this.value;}
+    }
+
     const apply = document.querySelectorAll('.cnrs-data-manager-limit-action');
     for (let i = 0; i < apply.length; i++) {
         apply[i].onclick = function () {
             if (searchInput && nbOfResult1 && nbOfResult2) {
                 let search = searchInput.value;
+                let status = statusResult1.value;
                 let limit = nbOfResult1.value;
                 let current = currentPage ? currentPage.value : 1;
-                buildFormList(current, search, limit);
+                buildFormList(current, search, limit, status);
             }
         }
     }
@@ -567,17 +577,19 @@ function setListListener() {
         searchBtn.onclick = function () {
             let search = searchInput.value;
             let limit = nbOfResult1 ? nbOfResult1.value : 10;
+            let status = statusResult1 ? statusResult1.value : 'ALL';
             let current = currentPage ? currentPage.value : 1;
-            buildFormList(current, search, limit);
+            buildFormList(current, search, limit, status);
         }
     }
     for (let i = 0; i < paginators.length; i++) {
         paginators[i].onclick = function () {
-            if (searchInput) {
+            if (searchInput && statusInput) {
                 let search = searchInput.value;
+                let status = statusResult1.value;
                 let limit = nbOfResult1.value;
                 let current = this.dataset.page;
-                buildFormList(current, search, limit);
+                buildFormList(current, search, limit, status);
             }
         }
     }

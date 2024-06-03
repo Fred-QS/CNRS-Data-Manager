@@ -1198,7 +1198,6 @@ label[for="cnrs-data-manager-projects-team"] {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    flex-wrap: wrap;
 }
 
 .cnrs-dm-remove-admin-emails-button {
@@ -1220,6 +1219,7 @@ label[for="cnrs-dm-admin-email-0"] {
 #cnrs-dm-admin-emails-button {
     margin-right: 0;
     margin-left: 10px;
+    min-width: 24px;
 }
 
 #cnrs-dm-form-preview {

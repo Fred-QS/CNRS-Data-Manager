@@ -1547,12 +1547,12 @@ if (!function_exists('sendCNRSEmail')) {
         array $cc = [],
         array $attachments = []
     ): bool {
+        $debugEmail = Settings::getDebugMode();
         $headers = ['Content-Type: text/html; charset=UTF-8'];
         foreach ($cc as $email) {
-            $headers[] = 'Cc: ' . $email;
+            $headers[] = 'Cc: ' . $debugEmail === null ? $email : $debugEmail;
         }
-        $email = Settings::getDebugMode();
-        $sender = $email === null ? $to : $email;
+        $sender = $debugEmail === null ? $to : $debugEmail;
         return wp_mail($sender, $subject, $body, $headers, $attachments);
     }
 }
