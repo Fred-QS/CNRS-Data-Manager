@@ -28,6 +28,7 @@ class Bootstrap
     public static function init(): void
     {
         add_action('init', array(__CLASS__, 'hookWpInit'));
+        add_action( 'cnrs_data_manager_cron_hook', array(__CLASS__, 'cnrs_data_manager_cron_hook') );
         Projects::cleanGhostProjects();
 
         if (is_admin()) {
@@ -43,6 +44,18 @@ class Bootstrap
         }
 
         add_shortcode( 'cnrs-data-manager', 'cnrsReadShortCode' );
+        if (!wp_next_scheduled('cnrs_data_manager_cron_hook')) {
+            wp_schedule_event(strtotime(date("Y-m-d ") . "23:59:59"), 'daily', 'cnrs_data_manager_cron_hook');
+        }
+    }
+    
+    public static function cnrs_data_manager_cron_hook(): void
+    {
+        $array = Manager::defineArrayFromXML(true);
+        $jsonPath = CNRS_DATA_MANAGER_PATH . '/tmp/data.json';
+        $file = fopen($jsonPath, "w+");
+        fwrite($file, json_encode($array, JSON_PRETTY_PRINT));
+        fclose($file);
     }
 
     /**
