@@ -1507,12 +1507,18 @@ if (!function_exists('updateProjectsRelations')) {
 
                     $teams = $_POST['cnrs-data-manager-project-teams-' . $projectID];
                     $orders = $_POST['cnrs-data-manager-project-order-' . $projectID];
+                    $reorders = [];
+                    foreach ($orders as $order) {
+                        if ($order !== '0') {
+                            $reorders[] = $order;
+                        }
+                    }
 
                     for ($i = 0; $i < count($teams); $i++) {
                         $inserts[] = [
                             'team_id' => (int) $teams[$i],
                             'project_id' => (int) $projectID,
-                            'display_order' => $orders[$i] === '0' ? null : (int) $orders[$i]
+                            'display_order' => (int) $reorders[$i]
                         ];
                     }
                 }
