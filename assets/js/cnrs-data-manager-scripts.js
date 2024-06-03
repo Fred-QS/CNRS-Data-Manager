@@ -74,6 +74,7 @@ const addManagerButton = document.querySelector('.cnrs-dm-tool-button[data-actio
 const managerList = document.querySelector('#cnrs-dm-managers-list');
 const addAdminEmailButton = document.querySelector('#cnrs-dm-admin-emails-button');
 const adminEmailsWrapper = document.querySelector('#cnrs-dm-admin-emails-wrapper');
+const docLinks = document.querySelectorAll('.cnrs-dm-documentation-container a');
 
 const tinyMCEConfig = {
     width: "100%",
@@ -462,6 +463,23 @@ function prepareListeners() {
             removeAdminEmailListeners();
         }
     }
+
+    if (docLinks.length > 0) {
+        document.querySelector('html').style.scrollBehavior = 'smooth';
+    }
+
+    for (let i = 0; i < docLinks.length; i++) {
+        if (docLinks[i].innerHTML.startsWith('&gt; ') || docLinks[i].innerHTML.startsWith('&lt; ')) {
+            const parent = docLinks[i].closest('ul');
+            if (parent) {
+                if (parent.previousElementSibling && parent.previousElementSibling.tagName === 'HR') {
+                    parent.previousElementSibling.remove();
+                }
+                parent.remove();
+            }
+        }
+    }
+
     removeAdminEmailListeners();
 }
 

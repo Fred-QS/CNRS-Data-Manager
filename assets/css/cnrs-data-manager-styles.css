@@ -2172,6 +2172,41 @@ input:checked + .cnrs-dm-slider:before {
     text-decoration: underline;
 }
 
+#cnrs-data-manager-documentation-wrapper img {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+    border: 1px solid #fff;
+}
+
+#cnrs-data-manager-documentation-wrapper h1 {
+    font-size: 38px;
+    font-weight: bold;
+    color: #69C0B5;
+}
+
+#cnrs-data-manager-documentation-wrapper h1 span {
+    color: #3c3c3c;
+}
+
+#cnrs-data-manager-documentation-wrapper {
+    scroll-behavior: smooth;
+}
+
+.cnrs-dm-documentation-container:first-of-type > h3 {
+    color: #2271b1;
+}
+
+.cnrs-dm-documentation-container:not(:first-of-type) > h1 {
+    margin-top: 50px;
+}
+
+.cnrs-dm-documentation-container > hr:last-of-type,
+.cnrs-dm-documentation-container > hr:last-of-type + ul {
+    display: none;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;

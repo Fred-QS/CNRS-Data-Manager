@@ -353,3 +353,4 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
         let missionForm = <?php echo $form ?>;
     </script>
 </div>
+<?php include_once CNRS_DATA_MANAGER_PATH . '/assets/icons/cnrs.svg';
