@@ -29,6 +29,14 @@ $head = [
                 <option <?php echo $limit === 20 ? 'selected' : '' ?> value="20"><?php echo __('20 items per page', 'cnrs-data-manager') ?></option>
                 <option <?php echo $limit === 50 ? 'selected' : '' ?> value="50"><?php echo __('50 items per page', 'cnrs-data-manager') ?></option>
             </select>
+            <label for="cnrs-data-manager-status-1" class="screen-reader-text"><?php echo __('Select status.', 'cnrs-data-manager') ?></label>
+            <select id="cnrs-data-manager-status-1">
+                <option <?php echo $status === 'ALL' ? 'selected' : '' ?> value="ALL"><?php echo __('All', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'PENDING' ? 'selected' : '' ?> value="PENDING"><?php echo __('Pending', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'EXCEPTION' ? 'selected' : '' ?> value="EXCEPTION"><?php echo __('Delayed', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'CANCELED' ? 'selected' : '' ?> value="CANCELED"><?php echo __('Abandoned', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'VALIDATED' ? 'selected' : '' ?> value="VALIDATED"><?php echo __('Validated', 'cnrs-data-manager') ?></option>
+            </select>
             <input type="button" class="button action cnrs-data-manager-limit-action" value="<?php echo __('Apply', 'cnrs-data-manager') ?>">
         </div>
         <div class="tablenav-pages<?php echo $pages < 2 ? ' one-page' : '' ?>">
@@ -220,6 +228,14 @@ $head = [
                 <option <?php echo $limit === 10 ? 'selected' : '' ?> value="10"><?php echo __('10 items per page', 'cnrs-data-manager') ?></option>
                 <option <?php echo $limit === 20 ? 'selected' : '' ?> value="20"><?php echo __('20 items per page', 'cnrs-data-manager') ?></option>
                 <option <?php echo $limit === 50 ? 'selected' : '' ?> value="50"><?php echo __('50 items per page', 'cnrs-data-manager') ?></option>
+            </select>
+            <label for="cnrs-data-manager-status-2" class="screen-reader-text"><?php echo __('Select status.', 'cnrs-data-manager') ?></label>
+            <select id="cnrs-data-manager-status-2">
+                <option <?php echo $status === 'All' ? 'selected' : '' ?> value="All"><?php echo __('All', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'PENDING' ? 'selected' : '' ?> value="PENDING"><?php echo __('Pending', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'EXCEPTION' ? 'selected' : '' ?> value="EXCEPTION"><?php echo __('Delayed', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'CANCELED' ? 'selected' : '' ?> value="CANCELED"><?php echo __('Abandoned', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'VALIDATED' ? 'selected' : '' ?> value="VALIDATED"><?php echo __('Validated', 'cnrs-data-manager') ?></option>
             </select>
             <input type="button" class="button action cnrs-data-manager-limit-action" value="<?php echo __('Apply') ?>">
         </div>

@@ -16,23 +16,25 @@
                 <a href="mailto:<?php echo $data->agent_email ?>" style="font-family: <?php echo $italicFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB; font-style: italic;"><?php echo $data->agent_email ?></a></span>
         </td>
     </tr>
-    <tr><td colspan="2"></td></tr>
-    <tr><td colspan="2"></td></tr>
-    <tr>
-        <td colspan="2">
-            <span style="font-family: <?php echo $boldFont1; ?>, sans-serif; font-size: 20px; color: #A9AAAD; width: 100%"><?php echo __('Manager who validated the form', 'cnrs-data-manager') ?></span>
-        </td>
-    </tr>
-    <tr><td colspan="2"></td></tr>
-    <tr>
-        <td style="width: 1.5cm">
-            &nbsp;<img src="<?php echo $data->manager_avatar ?>" style="width: 45px; height: 45px;" alt="<?php echo $data->agent_name ?>">
-        </td>
-        <td style="width: 17.5cm">
-            <span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 14px; color: #6A6666;"><?php echo $data->manager_name ?><br>
-                <a href="mailto:<?php echo $data->manager_email ?>" style="font-family: <?php echo $italicFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB; font-style: italic;"><?php echo $data->manager_email ?></a></span>
-        </td>
-    </tr>
+    <?php if ($data->manager_email !== null): ?>
+        <tr><td colspan="2"></td></tr>
+        <tr><td colspan="2"></td></tr>
+        <tr>
+            <td colspan="2">
+                <span style="font-family: <?php echo $boldFont1; ?>, sans-serif; font-size: 20px; color: #A9AAAD; width: 100%"><?php echo __('Manager who validated the form', 'cnrs-data-manager') ?></span>
+            </td>
+        </tr>
+        <tr><td colspan="2"></td></tr>
+        <tr>
+            <td style="width: 1.5cm">
+                &nbsp;<img src="<?php echo $data->manager_avatar ?>" style="width: 45px; height: 45px;" alt="<?php echo $data->manager_name ?>">
+            </td>
+            <td style="width: 17.5cm">
+                <span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 14px; color: #6A6666;"><?php echo $data->manager_name ?><br>
+                    <a href="mailto:<?php echo $data->manager_email ?>" style="font-family: <?php echo $italicFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB; font-style: italic;"><?php echo $data->manager_email ?></a></span>
+            </td>
+        </tr>
+    <?php endif; ?>
     <tr><td colspan="2"></td></tr>
     <tr><td colspan="2"></td></tr>
     <tr>

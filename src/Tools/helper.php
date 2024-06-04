@@ -14,6 +14,7 @@ use CnrsDataManager\Core\Controllers\Emails;
 use CnrsDataManager\Core\Controllers\Controller;
 use CnrsDataManager\Core\Controllers\TemplateLoader;
 use CnrsDataManager\Core\Controllers\Page;
+use CnrsDataManager\Libs\MarkDown\ParseDown;
 
 $errors = [
     'simple' => __('must not be empty', 'cnrs-data-manager'),
@@ -1547,12 +1548,12 @@ if (!function_exists('sendCNRSEmail')) {
         array $cc = [],
         array $attachments = []
     ): bool {
+        $debugEmail = Settings::getDebugMode();
         $headers = ['Content-Type: text/html; charset=UTF-8'];
         foreach ($cc as $email) {
-            $headers[] = 'Cc: ' . $email;
+            $headers[] = 'Cc: ' . $debugEmail === null ? $email : $debugEmail;
         }
-        $email = Settings::getDebugMode();
-        $sender = $email === null ? $to : $email;
+        $sender = $debugEmail === null ? $to : $debugEmail;
         return wp_mail($sender, $subject, $body, $headers, $attachments);
     }
 }
@@ -1801,5 +1802,56 @@ if (!function_exists('hasChoiceComment')) {
             }
         }
         return null;
+    }
+}
+
+if (!function_exists('getDoc')) {
+
+    /**
+     * Get the documentation pages.
+     *
+     * @return array Returns an array of documentation pages.
+     */
+    function getDoc(): array
+    {
+        $docLanguage = str_starts_with(get_locale(), 'fr_') ? 'FR' : 'EN';
+        $path = CNRS_DATA_MANAGER_PATH . '/documentation/' . $docLanguage;
+        $doc = scandir($path);
+        $pages = [];
+        $url = get_site_url() . '/wp-content/plugins/cnrs-data-manager/documentation/attachments';
+        foreach ($doc as $page) {
+            if (str_ends_with($page, '.md')) {
+                $content = file_get_contents($path . '/' . $page);
+                $content = str_replace(
+                    ['](/documentation/attachments', '?raw=true', '](/documentation/' . $docLanguage . '/'],
+                    ['](' . $url, '', '](#'],
+                    $content
+                );
+                $parseDown = new ParseDown();
+                $t = str_replace('.md', '', $page);
+                $t = explode(' - ', $t)[1];
+                $html = str_replace(
+                    ['%20', '.md'],
+                    [' ', ''],
+                    $parseDown->text($content)
+                );
+                $indexes = [];
+                for ($i = 0; $i < 100; $i++) {
+                    $indexes[] = substr('0' . $i, -2) . ' - ';
+                }
+                $html = str_replace($indexes, '', $html);
+                $html = preg_replace_callback('/#(.*?)\"/s', function($matches) {
+                    return '#' . sanitize_title($matches[1]) . '"';
+                }, $html);
+                $html = preg_replace_callback([
+                    '/<a href="#sommaire(.*?)\/a>/s',
+                    '/<a href="#summary(.*?)\/a>/s'
+                ], function() {
+                    return '';
+                }, $html);
+                $pages[$t] = $html;
+            }
+        }
+        return $pages;
     }
 }

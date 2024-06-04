@@ -6,17 +6,25 @@
 
 ### I. [Installation](/documentation/FR/02%20-%20Installation.md)
  - Toute l'installation détaillée ainsi que le démarrage de l'extension.
+
 ### II. [Paramètres](/documentation/FR/03%20-%20Paramètres.md)
  - Préparation de tous les paramètres nécessaire au bon fonctionnement de l'extension.
+
 ### III. [Général](/documentation/FR/04%20-%20Général.md)
  - L'onglet **Général** qui propose une vue globale des informations reçue par l'API Soap.
+
 ### IV. [Outils](/documentation/FR/05%20-%20Outils.md)
- - L'onglet **Outils** qui récapitule la liste des templates et l'assignation des entités reçues aux articles de WordPress
+ - L'onglet **Outils** qui récapitule la liste des templates et l'assignation des entités reçues aux articles de WordPress.
+
 ### V. [Carte 3D](/documentation/FR/06%20-%20Carte%203D.md)
  - L'onglet **Carte 3D** permet de paramétrer la carte interactive.
+
 ### VI. [Importation](/documentation/FR/07%20-%20Importation.md)
  - L'onglet **Importation** pour l'import en masse de projets.
-### VII. [Désinstallation](/documentation/FR/08%20-%20Désinstallation.md)
- - Tout ce qu'implique la désinstallation de l'extension.
 
+### VII. [Formulaire de mission](/documentation/FR/08%20-%20Formulaire%20de%20mission.md)
+ - L'onglet **Formulaire de mission** pour la création et le suivi du formulaire.
+
+### VIII. [Désinstallation](/documentation/FR/09%20-%20Désinstallation.md)
+ - Tout ce qu'implique la désinstallation de l'extension.
 
