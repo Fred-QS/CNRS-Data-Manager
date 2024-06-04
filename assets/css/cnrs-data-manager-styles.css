@@ -2173,20 +2173,27 @@ input:checked + .cnrs-dm-slider:before {
 }
 
 #cnrs-data-manager-documentation-wrapper img {
-    max-width: 100%;
     border-radius: 10px;
-    box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.1);
-    margin: 10px 0;
-    border: 1px solid #fff;
+    margin: auto;
+    display: flex;
+    align-self: center;
 }
 
-#cnrs-data-manager-documentation-wrapper h1 {
+.cnrs-dm-documentation-container:first-of-type img {
+    width: 100%;
+}
+
+.cnrs-dm-documentation-container-not-summary img {
+    cursor: pointer;
+}
+
+.cnrs-dm-documentation-container h1 {
     font-size: 38px;
     font-weight: bold;
     color: #69C0B5;
 }
 
-#cnrs-data-manager-documentation-wrapper h1 span {
+.cnrs-dm-documentation-container h1 span {
     color: #3c3c3c;
 }
 
@@ -2200,11 +2207,115 @@ input:checked + .cnrs-dm-slider:before {
 
 .cnrs-dm-documentation-container:not(:first-of-type) > h1 {
     margin-top: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .cnrs-dm-documentation-container > hr:last-of-type,
 .cnrs-dm-documentation-container > hr:last-of-type + ul {
     display: none;
+}
+
+#cnrs-dm-zoom-image-container {
+    position: fixed;
+    z-index: 99999999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+#cnrs-dm-zoom-image-container-close {
+    position: absolute;
+    z-index: 2;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#cnrs-dm-zoom-image-container-close svg {
+    color: #fff;
+    width: 100%;
+    height: 100%;
+}
+
+#cnrs-dm-zoom-image {
+    max-width: 90%;
+    max-height: calc(100% - 70px);
+    box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    border: 1px solid #fff;
+}
+
+.cnrs-dm-image-container {
+    position: relative;
+    width: max-content;
+    display: flex;
+    margin: 10px auto;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.cnrs-dm-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #fff;
+    border-radius: 10px;
+    opacity: 0;
+    cursor: pointer;
+    transition: all linear 0.15s;
+}
+
+.cnrs-dm-image-overlay:hover {
+    opacity: 1;
+}
+
+.cnrs-dm-image-overlay svg {
+    color: #2271b1;
+}
+
+.cnrs-dm-doc-title-link {
+    background-color: #2271b1;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    border-radius: 200px;
+    border: 2px solid #fff;
+    cursor: pointer;
+    box-shadow: 6px 6px 18px rgba(0, 0, 0, 0.2);
+    transition: all linear 0.15s;
+}
+
+.cnrs-dm-doc-title-link:active {
+    background-color: dodgerblue;
+}
+
+.cnrs-dm-doc-title-link svg {
+    color: #fff;
+    width: 16px;
+    height: 16px;
 }
 
 @media only screen and (min-width: 783px) {
@@ -2376,6 +2487,37 @@ input:checked + .cnrs-dm-slider:before {
 
     #cnrs-dm-form-modal-choices::-webkit-scrollbar-corner {
         background-color: transparent;
+    }
+
+    .cnrs-dm-documentation-container-not-summary img {
+        max-width: 400px;
+    }
+
+    #cnrs-dm-doc-back-to-top {
+        position: fixed;
+        z-index: 99999;
+        bottom: 100px;
+        right: -60px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #69c0b5;
+        border-top-left-radius: 8px;
+        cursor: pointer;
+        border-bottom-left-radius: 8px;
+        border: 2px solid #fff;
+        box-shadow: -6px 6px 16px rgba(0, 0, 0, 0.2);
+        transition: right ease-in-out 0.3s;
+    }
+
+    #cnrs-dm-doc-back-to-top.show {
+        right: 0;
+    }
+
+    #cnrs-dm-doc-back-to-top svg {
+        color: #fff;
     }
 }
 
@@ -2596,6 +2738,14 @@ input:checked + .cnrs-dm-slider:before {
 
     .cnrs-dm-admin-email-with-trash input {
         width: calc(100% - 30px)!important;
+    }
+
+    .cnrs-dm-documentation-container-not-summary img {
+        max-width: 100%;
+    }
+
+    #cnrs-dm-doc-back-to-top {
+        display: none;
     }
 }
 

@@ -74,7 +74,11 @@ const addManagerButton = document.querySelector('.cnrs-dm-tool-button[data-actio
 const managerList = document.querySelector('#cnrs-dm-managers-list');
 const addAdminEmailButton = document.querySelector('#cnrs-dm-admin-emails-button');
 const adminEmailsWrapper = document.querySelector('#cnrs-dm-admin-emails-wrapper');
+const docWrapper = document.querySelector('#cnrs-data-manager-documentation-wrapper');
 const docLinks = document.querySelectorAll('.cnrs-dm-documentation-container a');
+const docImages = document.querySelectorAll('.cnrs-dm-documentation-container-not-summary img');
+const docTitles = document.querySelectorAll('.cnrs-dm-documentation-container-not-summary h1');
+const backToTopDoc = document.querySelector('#cnrs-dm-doc-back-to-top');
 
 const tinyMCEConfig = {
     width: "100%",
@@ -476,6 +480,50 @@ function prepareListeners() {
                     parent.previousElementSibling.remove();
                 }
                 parent.remove();
+            }
+        }
+    }
+
+    for (let i = 0; i < docImages.length; i++) {
+        docImages[i].outerHTML = `<span class="cnrs-dm-image-container">${docImages[i].outerHTML}<span class="cnrs-dm-image-overlay"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20"><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg></span></span>`;
+        document.querySelectorAll('.cnrs-dm-image-overlay')[i].onclick = function (){
+            const src = docImages[i].src;
+            const html = `<div id="cnrs-dm-zoom-image-container">
+                <span id="cnrs-dm-zoom-image-container-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20"><path fill="currentColor" d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z"/></svg>
+                </span>
+                <img src="${src}" alt="zoom" id="cnrs-dm-zoom-image">
+            </div>`;
+            document.body.insertAdjacentHTML('beforeend', html);
+            document.querySelector('#cnrs-dm-zoom-image-container-close').onclick = function (){
+                document.querySelector('#cnrs-dm-zoom-image-container').remove();
+            }
+        }
+    }
+
+    const copyMessage = docWrapper.dataset.copy
+    for (let i = 0; i < docTitles.length; i++) {
+        docTitles[i].insertAdjacentHTML('beforeend', `<span title="${copyMessage}" class="cnrs-dm-doc-title-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="20" height="20"><path fill="currentColor" d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg></span>`);
+    }
+
+    const links = document.querySelectorAll('.cnrs-dm-doc-title-link');
+    for (let i = 0; i < links.length; i++) {
+        links[i].onclick = function (){
+            const location = window.location;
+            const url = `${location.protocol}//${location.host}${location.pathname}${location.search}#${this.parentElement.id}`;
+            navigator.clipboard.writeText(url);
+        }
+    }
+
+    if (backToTopDoc) {
+        backToTopDoc.onclick = function (){
+            window.scrollTo(0, 0);
+        }
+        window.onscroll = function (){
+            if (window.pageYOffset > window.innerHeight) {
+                backToTopDoc.classList.add('show');
+            } else {
+                backToTopDoc.classList.remove('show');
             }
         }
     }
