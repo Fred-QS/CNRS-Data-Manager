@@ -29,4 +29,4 @@ L'extension créera alors tous les projets dans votre WordPress et ses projets s
 
 - [< Carte 3D](/documentation/FR/06%20-%20Carte%203D.md)
 
-- [> Désinstallation](/documentation/FR/08%20-%20Désinstallation.md)
+- [> Formulaire de mission](/documentation/FR/08%20-%20Formulaire%20de%20mission.md)

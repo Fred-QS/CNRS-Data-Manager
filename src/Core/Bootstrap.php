@@ -218,6 +218,16 @@ class Bootstrap
                 'callback'               => function () {
                     include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Settings.php');
                 }
+            ],
+            [
+                'parent_slug'            => 'cnrs-data-manager',
+                'page_title'             => __('Documentation', 'cnrs-data-manager'),
+                'menu_title'             => __('Documentation', 'cnrs-data-manager'),
+                'capability'             => 'manage_options',
+                'menu_slug'              => 'data-manager-documentation',
+                'callback'               => function () {
+                    include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Documentation.php');
+                }
             ]
         ];
         if ($filename !== null) {
