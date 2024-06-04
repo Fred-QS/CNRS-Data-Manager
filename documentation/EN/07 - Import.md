@@ -27,4 +27,4 @@ The extension will then create all the projects in your WordPress and its projec
 
 - [< 3D Map](/documentation/EN/06%20-%203D%20Map.md)
 
-- [> Uninstallation](/documentation/EN/08%20-%20Uninstallation.md)
+- [> Mission form](/documentation/EN/08%20-%20Mission%20form.md)

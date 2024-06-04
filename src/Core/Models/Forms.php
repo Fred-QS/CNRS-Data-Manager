@@ -176,12 +176,23 @@ class Forms
     /**
      * Retrieves the count of forms from the cnrs_data_manager_mission_forms table.
      *
+     * @param string $search The search string to filter the forms by email.
+     * @param int $limit The maximum number of forms to retrieve per page.
+     * @param int $current The current page number.
+     * @param string $status The forms' status.
      * @return int The number of forms.
      */
-    public static function getFormsCount(): int
+    public static function getFormsCount(string $search, int $limit, int $current, string $status): int
     {
         global $wpdb;
-        $count = $wpdb->get_row("SELECT COUNT(*) as nb FROM {$wpdb->prefix}cnrs_data_manager_mission_forms");
+        $where = strlen($search) > 0 ? "WHERE email LIKE '%{$search}%'" : '';
+        if (strlen($where) > 0) {
+            $where = $status !== 'ALL' ? "{$where} AND status='{$status}'" : $where;
+        } else {
+            $where = $status !== 'ALL' ? "WHERE status='{$status}'" : '';
+        }
+        $offset = ($current*$limit) - $limit;
+        $count = $wpdb->get_row("SELECT COUNT(*) as nb FROM {$wpdb->prefix}cnrs_data_manager_mission_forms {$where}");
         return $count->nb;
     }
 
@@ -191,12 +202,18 @@ class Forms
      * @param string $search The search string to filter the forms by email.
      * @param int $limit The maximum number of forms to retrieve per page.
      * @param int $current The current page number.
+     * @param string $status The forms' status.
      * @return array Returns an array containing the forms matching the search criteria, sorted by created_at date in descending order.
      */
-    public static function getPaginatedFormsList(string $search, int $limit, int $current): array
+    public static function getPaginatedFormsList(string $search, int $limit, int $current, string $status): array
     {
         global $wpdb;
         $where = strlen($search) > 0 ? "WHERE email LIKE '%{$search}%'" : '';
+        if (strlen($where) > 0) {
+            $where = $status !== 'ALL' ? "{$where} AND status='{$status}'" : $where;
+        } else {
+            $where = $status !== 'ALL' ? "WHERE status='{$status}'" : '';
+        }
         $offset = ($current*$limit) - $limit;
         return $wpdb->get_results("SELECT id, email, created_at, uuid, status FROM {$wpdb->prefix}cnrs_data_manager_mission_forms {$where} ORDER BY created_at DESC LIMIT {$offset}, {$limit}", ARRAY_A);
     }
