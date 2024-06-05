@@ -23,6 +23,23 @@ final class Manager
     private static string $xmlPath = '';
 
     /**
+     * Get the original toggle data
+     *
+     * @return array An associative array containing the toggle data
+     */
+    public static function getOriginalToggle(): array
+    {
+        return [[
+            'id' => '013589e2-9014-4d5a-adc5-6e4b1e63eb89',
+            'label' => __('Fees', 'cnrs-data-manager'),
+            'values' => [
+                __('With fees', 'cnrs-data-manager'),
+                __('No charge', 'cnrs-data-manager')
+            ]
+        ]];
+    }
+
+    /**
      * Return current menu levels
      *
      * @return string[]
@@ -459,7 +476,7 @@ final class Manager
     /**
      * @throws JsonException
      */
-    public static function formToolsInit(string $type): string
+    public static function formToolsInit(string $type, ?string $toggleUuid = null): string
     {
         $toolsLabels = [
             'input' => __('New input field', 'cnrs-data-manager'),
@@ -474,20 +491,22 @@ final class Manager
             'textarea' => __('New text field', 'cnrs-data-manager'),
             'title' => __('New title field', 'cnrs-data-manager'),
             'signs' => __('Signing pads', 'cnrs-data-manager'),
+            'toggle' => __('New toggle set', 'cnrs-data-manager'),
         ];
         $toolsConfig = [
-            'input' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
-            'number' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
-            'date' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
-            'time' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
-            'datetime' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
-            'checkbox' => ['value' => null, 'values' => [], 'choices' => [], 'required' => false, 'isReference' => false],
-            'comment' => ['value' => [__('My comment', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
-            'radio' => ['value' => [], 'values' => null, 'choices' => [], 'required' => false, 'isReference' => false],
-            'separator' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
-            'textarea' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
-            'title' => ['value' => [__('My title', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false],
-            'signs' => ['value' => [__('My signing pads', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false]
+            'input' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'number' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'date' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'time' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'datetime' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'checkbox' => ['value' => null, 'values' => [], 'choices' => [], 'required' => false, 'isReference' => false, 'toggles' => []],
+            'comment' => ['value' => [__('My comment', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'radio' => ['value' => [], 'values' => null, 'choices' => [], 'required' => false, 'isReference' => false, 'toggles' => []],
+            'separator' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'textarea' => ['value' => null, 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'title' => ['value' => [__('My title', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'signs' => ['value' => [__('My signing pads', 'cnrs-data-manager')], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []],
+            'toggle' => ['value' => [$toggleUuid], 'values' => null, 'choices' => null, 'required' => false, 'isReference' => false, 'toggles' => []]
         ];
         return json_encode([
             'type' => $type,

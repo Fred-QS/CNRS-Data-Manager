@@ -105,6 +105,9 @@ class Install
               original longtext NOT NULL COMMENT 'Original form json',
               form longtext NOT NULL COMMENT 'Filled out form json',
               status ENUM('PENDING','VALIDATED','EXCEPTION','CANCELED') NOT NULL DEFAULT 'PENDING' COMMENT 'The form status once completed',
+              funder_email varchar(150) DEFAULT NULL COMMENT 'Email from funding service referent',
+              mission_start_at DATE NOT NULL COMMENT 'Mission start date',
+              has_fees tinyint(1) NOT NULL DEFAULT 0 COMMENT 'If mission has fees',
               created_at timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Form creation timestamp'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Filled out mission forms list'"
         );

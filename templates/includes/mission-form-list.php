@@ -6,6 +6,7 @@ use CnrsDataManager\Core\Models\Forms;
 $head = [
     __('Identity', 'cnrs-data-manager'),
     __('Created at', 'cnrs-data-manager'),
+    __('Mission start', 'cnrs-data-manager'),
     __('Status', 'cnrs-data-manager'),
     __('Revisions', 'cnrs-data-manager'),
     __('Form', 'cnrs-data-manager'),
@@ -125,6 +126,10 @@ $head = [
                 </td>
                 <td data-colname="<?php echo $head[2] ?>">
                     <span class="screen-reader-text"><?php echo __('No description', 'cnrs-data-manager') ?></span>
+                    <span aria-hidden="true"><?php echo wp_date('j F Y', strtotime($item['mission_start_at'])); ?></span>
+                </td>
+                <td data-colname="<?php echo $head[3] ?>">
+                    <span class="screen-reader-text"><?php echo __('No description', 'cnrs-data-manager') ?></span>
                     <?php if ($item['status'] === 'PENDING'): ?>
                         <span aria-hidden="true" class="cnrs-dm-status-icon cnrs-dm-status-icon-pending">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16" height="16">
@@ -152,7 +157,7 @@ $head = [
                         </span>
                     <?php endif; ?>
                 </td>
-                <td data-colname="<?php echo $head[3] ?>">
+                <td data-colname="<?php echo $head[4] ?>">
                     <span class="screen-reader-text"><?php echo __('No description', 'cnrs-data-manager') ?></span>
                     <span aria-hidden="true" class="cnrs-dm-revision-details">
                         <?php echo Forms::getRevisionsCountByFormId($item['id']); ?>
@@ -172,7 +177,7 @@ $head = [
                         <?php endif; ?>
                     </span>
                 </td>
-                <td data-colname="<?php echo $head[4] ?>">
+                <td data-colname="<?php echo $head[5] ?>">
                     <span class="screen-reader-text"><?php echo __('No description', 'cnrs-data-manager') ?></span>
                     <span class="cnrs-dm-mission-form-list-title" aria-hidden="true" title="<?php echo __('Mission form', 'cnrs-data-manager') ?>-<?php echo str_replace(['-', ' ', ':'], '', $item['created_at']) ?>">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -193,7 +198,7 @@ $head = [
                         </a>
                     </div>
                 </td>
-                <td data-colname="<?php echo $head[5] ?>">
+                <td data-colname="<?php echo $head[6] ?>">
                     <span class="screen-reader-text"><?php echo __('No description', 'cnrs-data-manager') ?></span>
                     <span class="cnrs-dm-actions-triggers button<?php echo !in_array($item['status'], ['VALIDATED', 'CANCELED'], true) ? ' button-danger' : ' disabled' ?>" data-form="<?php echo $item['id'] ?>" data-action="abandon">
                         <?php echo __('Abandon', 'cnrs-data-manager') ?>

@@ -782,7 +782,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -931,13 +931,17 @@ if (!function_exists('cnrsReadShortCode')) {
 
                 if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
                     $uuid = $_POST['cnrs-dm-front-mission-uuid'];
+                    $hasFees = $_POST['cnrs-dm-front-mission-has-fees'];
+                    $funderEmail = $_POST['cnrs-dm-front-mission-funder-email'] ?? null;
                     $jsonForm = Manager::newFilledForm($_POST, $uuid);
                     $definedLimit = (int) $_POST['cnrs-dm-front-mission-intl'] === 1 ? $month_limit : $days_limit;
                     $validated = isValidatedForm($jsonForm, $definedLimit);
-                    $revision_uuid = Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid, $validated);
+                    $revision_uuid = Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid, $validated, $hasFees, $funderEmail);
                     if ($validated === false) {
                         $adminEmails = Settings::getAdminEmails();
                         Emails::sendToAdmins($adminEmails);
+                    }else if ((int) $hasFees === 1 && $funderEmail !== null) {
+                        Emails::sendToFunder($funderEmail, $revision_uuid);
                     } else {
                         $managerEmail = getManagerEmailFromForm($jsonForm);
                         Emails::sendToManager($managerEmail, $revision_uuid);
@@ -1012,7 +1016,7 @@ if (!function_exists('cnrsReadShortCode')) {
             include_once(dirname(__DIR__) . '/Core/Views/Projects.php');
             return ob_get_clean();
 
-        } else if (in_array($type, ['revision-manager', 'revision-agent'], true)) {
+        } else if (in_array($type, ['revision-manager', 'revision-agent', 'revision-funder'], true)) {
 
             if (!Forms::revisionExists()) {
                 global $wp_query;
@@ -1081,6 +1085,9 @@ if (!function_exists('cnrsReadShortCode')) {
                 Emails::sendToManager($managerEmail, $uuid);
                 Emails::sendConfirmationEmail($data->agent_email);
                 $validated = true;
+
+            } else if ($type === 'revision-funder') {
+
             }
 
             $json = $data->form;
@@ -1698,6 +1705,11 @@ if (!function_exists('setMissionFormURL')) {
                     'uri' => 'cnrs-umr/mission-form-revision/agent',
                     'title' => __('Mission form revision by agent', 'cnrs-data-manager'),
                     'template' => 'mission-form'
+                ],
+                [
+                    'uri' => 'cnrs-umr/mission-form-revision/funder',
+                    'title' => __('Mission form revision by funder', 'cnrs-data-manager'),
+                    'template' => 'mission-form'
                 ]
             ];
 
@@ -1853,5 +1865,26 @@ if (!function_exists('getDoc')) {
             }
         }
         return $pages;
+    }
+}
+
+if (!function_exists('getFormReferenceDate')) {
+
+    /**
+     * Retrieve the reference date from a given JSON string.
+     *
+     * @param string $json The JSON string containing the form data.
+     * @return string Returns the reference date if found in the form data, or the current date if not found.
+     */
+    function getFormReferenceDate(string $json): string
+    {
+        $form = json_decode($json, true);
+        foreach ($form['elements'] as $element) {
+            if ($element['data']['isReference'] === true) {
+                return $element['data']['value'][0];
+            }
+        }
+
+        return date("Y-m-d");
     }
 }

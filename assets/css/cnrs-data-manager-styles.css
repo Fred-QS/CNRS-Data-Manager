@@ -1097,7 +1097,8 @@ label[for="cnrs-data-manager-projects-team"] {
     background-color: dodgerblue;
 }
 
-.cnrs-dm-form-tool-render {
+.cnrs-dm-form-tool-render,
+.cnrs-dm-form-tool-render-mandatory  {
     border: 2px solid #fff;
     width: calc(100% - 4px);
     border-radius: 6px;
@@ -1107,8 +1108,29 @@ label[for="cnrs-data-manager-projects-team"] {
     padding-bottom: 10px;
 }
 
+.cnrs-dm-form-tool-render[data-type="toggle"],
+.cnrs-dm-form-tool-render-mandatory {
+    background-color: gold;
+}
+
+.cnrs-dm-form-tool-render[data-type="signs"] {
+    background-color: #5d5d5d;
+}
+
 .cnrs-dm-form-tool-render:not(:first-child) {
     margin-top: 34px;
+}
+
+.cnrs-dm-form-tool-render[data-type="toggle"] .cnrs-dm-form-tool-label,
+.cnrs-dm-form-tool-render-mandatory  .cnrs-dm-form-tool-label,
+.cnrs-dm-form-tool-render[data-type="toggle"] i,
+.cnrs-dm-form-tool-render-mandatory  i {
+    color: #000;
+}
+
+.cnrs-dm-form-tool-render[data-type="signs"] .cnrs-dm-form-tool-label,
+.cnrs-dm-form-tool-render[data-type="signs"] i {
+    color: #fff;
 }
 
 .cnrs-dm-form-tool-label {
@@ -1122,6 +1144,11 @@ label[for="cnrs-data-manager-projects-team"] {
 
 .cnrs-dm-form-tool-render i {
     color: #2271b1;
+}
+
+
+.cnrs-dm-form-tool-render i,
+.cnrs-dm-form-tool-render-mandatory i {
     opacity: 0.7;
     padding: 0 10px;
     width: calc(100% - 98px);
@@ -1164,6 +1191,10 @@ label[for="cnrs-data-manager-projects-team"] {
     background-color: #2271b1;
 }
 
+.cnrs-dm-tool-button[data-action="toggles"] {
+    background-color: gold;
+}
+
 .cnrs-dm-tool-button[data-action="delete"],
 .cnrs-dm-tool-button[data-action="remove-email"],
 .cnrs-dm-manager-delete-button {
@@ -1176,6 +1207,10 @@ label[for="cnrs-data-manager-projects-team"] {
 .cnrs-dm-tool-button[data-action="add-manager"]:active,
 .cnrs-dm-tool-button[data-action="add-email"]:active {
     background-color: dodgerblue;
+}
+
+.cnrs-dm-tool-button[data-action="toggles"]:active {
+    background-color: goldenrod;
 }
 
 .cnrs-dm-tool-button[data-action="delete"]:active,
@@ -1295,12 +1330,12 @@ label[for="cnrs-dm-admin-email-0"] {
     align-items: flex-start;
 }
 
-#cnrs-dm-form-modal > label > span {
+#cnrs-dm-form-modal > label > span, .cnrs-dm-form-modal-label-toggle > span {
     font-weight: bold;
     margin-bottom: 3px;
 }
 
-#cnrs-dm-form-modal > label > input {
+#cnrs-dm-form-modal > label > input, .cnrs-dm-form-modal-label-toggle > input {
     width: 100%;
 }
 
@@ -1313,6 +1348,25 @@ label[for="cnrs-dm-admin-email-0"] {
     border-radius: 4px;
     padding: 2px;
     transition: border linear 0.15s;
+}
+
+.cnrs-dm-preview-elements.hidden:after {
+    content: attr(data-hidden);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    font-style: italic;
+    font-weight: bold;
+    top: -1px;
+    left: -1px;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: #fff;
+    border-radius: 4px;
+    color: #2271b1;
+    border: 2px groove #2271b1;
 }
 
 .cnrs-dm-preview-elements.locate {
@@ -1717,9 +1771,19 @@ input[name="cnrs-dm-other-option"] {
 }
 
 .cnrs-dm-form-tool-render:last-child .cnrs-dm-mission-form-mover[data-action="down"],
-.cnrs-dm-form-tool-render:first-child .cnrs-dm-mission-form-mover[data-action="up"] {
+.cnrs-dm-form-tool-render:first-child .cnrs-dm-mission-form-mover[data-action="up"],
+.cnrs-dm-form-tool-render-mandatory + .cnrs-dm-form-tool-render .cnrs-dm-mission-form-mover[data-action="up"] {
     display: none;
 }
+
+.cnrs-dm-form-tool-render-mandatory {
+    margin-bottom: 20px;
+}
+
+.cnrs-dm-form-tool-render-mandatory + .cnrs-dm-form-tool-render {
+    margin-top: 0;
+}
+
 
 .cnrs-dm-mission-form-mover {
     position: absolute;
@@ -2318,6 +2382,71 @@ input:checked + .cnrs-dm-slider:before {
     height: 16px;
 }
 
+.cnrs-dm-form-modal-label-toggles-container {
+    width: calc(100% - 22px)!important;
+    padding: 5px 10px 10px;
+    margin: 10px 0 0;
+    border: 1px solid #2271b1;
+    border-radius: 6px;
+}
+
+.cnrs-dm-form-modal-label-toggle {
+    width: 100%;
+}
+
+.cnrs-dm-form-modal-label-toggle:last-of-type {
+    margin-top: 5px;
+}
+
+.cnrs-dm-form-modal-label-toggle > .required {
+    position: relative;
+    color: inherit;
+    display: flex;
+    width: max-content;
+}
+
+.cnrs-dm-form-modal-label-toggle > .required:after {
+    content: "";
+    background-color: #b32d2e;
+    border-radius: 100px;
+    width: 6px;
+    height: 6px;
+    right: -10px;
+    top: 2px;
+    z-index: 2;
+    display: flex;
+    position: absolute;
+}
+
+.cnrs-dm-toggle-setting-container {
+    max-height: 30vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.2) inset;
+    border-radius: 6px;
+    padding: 10px 0 10px 10px;
+    width: calc(100% - 10px)!important;
+    margin-top: 10px;
+}
+
+.cnrs-dm-toggle-setting {
+    width: 100%;
+}
+
+.cnrs-dm-toggle-setting:nth-child(odd) {
+    background-color: #f1f1f1;
+}
+
+.cnrs-dm-toggle-setting > span {
+    font-weight: bold;
+    color: #2271b1;
+}
+
+.cnrs-dm-toggle-setting > ul {
+    margin-top: 5px;
+    padding-right: 10px;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;
@@ -2459,17 +2588,20 @@ input:checked + .cnrs-dm-slider:before {
         width: calc(50% - 140px);
     }
 
-    #cnrs-dm-form-modal-choices::-webkit-scrollbar {
+    #cnrs-dm-form-modal-choices::-webkit-scrollbar,
+    .cnrs-dm-toggle-setting-container::-webkit-scrollbar {
         width: 16px;
         height: 16px;
     }
 
-    #cnrs-dm-form-modal-choices::-webkit-scrollbar-track {
+    #cnrs-dm-form-modal-choices::-webkit-scrollbar-track,
+    .cnrs-dm-toggle-setting-container::-webkit-scrollbar-track {
         background-color: transparent;
         border-radius: 100px;
     }
 
-    #cnrs-dm-form-modal-choices::-webkit-scrollbar-thumb {
+    #cnrs-dm-form-modal-choices::-webkit-scrollbar-thumb,
+    .cnrs-dm-toggle-setting-container::-webkit-scrollbar-thumb {
         background-color: #2271b1;
         border-radius: 100px;
         background-clip: padding-box;
@@ -2479,13 +2611,15 @@ input:checked + .cnrs-dm-slider:before {
         -webkit-transition: all linear 0.2s;
     }
 
-    #cnrs-dm-form-modal-choices::-webkit-scrollbar-button {
+    #cnrs-dm-form-modal-choices::-webkit-scrollbar-button,
+    .cnrs-dm-toggle-setting-container::-webkit-scrollbar-button {
         width: 0;
         height: 0;
         display: none;
     }
 
-    #cnrs-dm-form-modal-choices::-webkit-scrollbar-corner {
+    #cnrs-dm-form-modal-choices::-webkit-scrollbar-corner,
+    .cnrs-dm-toggle-setting-container::-webkit-scrollbar-corner {
         background-color: transparent;
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 use CnrsDataManager\Core\Models\Forms;
+use CnrsDataManager\Core\Controllers\Manager;
 
 if (isset($_POST['cnrs-dm-admin-email-init']) && strlen($_POST['cnrs-dm-admin-email-init']) > 0) {
     Forms::setAdminEmail($_POST['cnrs-dm-admin-email-init']);
@@ -90,6 +91,11 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                 <div class="cnrs-dm-tab-content<?php echo isActiveTab() ? ' active' : '' ?>" data-content="builder">
                     <div id="cnrs-dm-form-tools" data-error="<?php echo __('An error as occurred.', 'cnrs-data-manager') ?>">
                         <div class="cnrs-dm-form-tool">
+                            <h4><?php echo __('Conditional toggle', 'cnrs-data-manager') ?></h4>
+                            <small><?php echo __('Allows you to condition the display of fields', 'cnrs-data-manager') ?></small>
+                            <span class="cnrs-dm-add-tool" data-tool="toggle">+</span>
+                        </div>
+                        <div class="cnrs-dm-form-tool">
                             <h4><?php echo __('Input field', 'cnrs-data-manager') ?></h4>
                             <small><?php echo __('Allow user to fill one line field', 'cnrs-data-manager') ?></small>
                             <span class="cnrs-dm-add-tool" data-tool="input">+</span>
@@ -155,6 +161,12 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                         </form>
                     </div>
                     <div id="cnrs-dm-form-structure">
+                        <?php foreach (Manager::getOriginalToggle() as $tog): ?>
+                            <div class="cnrs-dm-form-tool-render-mandatory">
+                                <p class="cnrs-dm-form-tool-label"><?php echo $tog['label'] ?></p>
+                                <i><?php echo implode(' / ', $tog['values']) ?></i>
+                            </div>
+                        <?php endforeach; ?>
                         <?php $iteration = 0;
                         foreach ($decodedForm['elements'] as $json):
                             ob_start();
@@ -167,7 +179,7 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                         <label>
                             <textarea spellcheck="false" name="cnrs-dm-form-title" placeholder="<?php echo __('Enter a title', 'cnrs-data-manager') ?>"><?php echo $decodedForm['title'] ?></textarea>
                         </label>
-                        <div id="cnrs-dm-form-preview-container" data-choices="<?php echo __('Add some choices.', 'cnrs-data-manager') ?>" data-pads="<?php echo __('Add some signing pads.', 'cnrs-data-manager') ?>" data-sign="<?php echo __('Sign<br/>here', 'cnrs-data-manager') ?>"></div>
+                        <div id="cnrs-dm-form-preview-container" data-choices="<?php echo __('Add some choices.', 'cnrs-data-manager') ?>" data-pads="<?php echo __('Add some signing pads.', 'cnrs-data-manager') ?>" data-sign="<?php echo __('Sign<br/>here', 'cnrs-data-manager') ?>" data-toggles="<?php echo __('Add toggles.', 'cnrs-data-manager') ?>" data-funderlabel="<?php echo __('Credit manager email', 'cnrs-data-manager') ?>" data-hidden="<?php echo __('Hidden by "%s" toggle', 'cnrs-data-manager') ?>"></div>
                     </div>
                 </div>
                 <div class="cnrs-dm-tab-content<?php echo isActiveTab('list') ? ' active' : '' ?>" data-content="list">
@@ -336,6 +348,7 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
         <?php endif; ?>
     </div>
     <script>
+        const originalToggles = <?php echo json_encode(Manager::getOriginalToggle()) ?>;
         const errorMessagesMissionForm = {
             'form-title': '<?php echo __("The form title is required", "cnrs-data-manager") ?>',
             'checkbox': '<?php echo __("The multi choice label is required", "cnrs-data-manager") ?>',
@@ -348,7 +361,8 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
             'number': '<?php echo __("The numeric field label is required", "cnrs-data-manager") ?>',
             'datetime': '<?php echo __("The date & time field label is required", "cnrs-data-manager") ?>',
             'date': '<?php echo __("The date field label is required", "cnrs-data-manager") ?>',
-            'time': '<?php echo __("The time field label is required", "cnrs-data-manager") ?>'
+            'time': '<?php echo __("The time field label is required", "cnrs-data-manager") ?>',
+            'toggle': '<?php echo __("The toggle fields and label are required", "cnrs-data-manager") ?>'
         };
         let missionForm = <?php echo $form ?>;
     </script>

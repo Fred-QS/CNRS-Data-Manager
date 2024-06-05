@@ -37,7 +37,9 @@ class Forms
         string $originalForm,
         string $userEmail,
         string $uuid,
-        bool $isValidated
+        bool $isValidated,
+        bool $hasFees,
+        ?string $funderEmail
     ): ?string
     {
         global $wpdb;
@@ -51,9 +53,12 @@ class Forms
                     'original' => $originalForm,
                     'form' => $newForm,
                     'status' => $isValidated === true ? 'PENDING' : 'EXCEPTION',
+                    'funder_email' => $funderEmail,
+                    'mission_start_at' => getFormReferenceDate($newForm),
+                    'has_fees' => (int) $hasFees,
                     'created_at' => date("Y-m-d H:i:s")
                 ),
-                array('%s', '%s', '%s', '%s', '%s')
+                array('%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s')
             );
             if ($isValidated === true) {
                 $form_id = $wpdb->insert_id;
@@ -203,9 +208,10 @@ class Forms
      * @param int $limit The maximum number of forms to retrieve per page.
      * @param int $current The current page number.
      * @param string $status The forms' status.
+     * @param string $orderBy Filter by Mission start at date (ASC/DESC).
      * @return array Returns an array containing the forms matching the search criteria, sorted by created_at date in descending order.
      */
-    public static function getPaginatedFormsList(string $search, int $limit, int $current, string $status): array
+    public static function getPaginatedFormsList(string $search, int $limit, int $current, string $status, string $orderBy = 'DESC'): array
     {
         global $wpdb;
         $where = strlen($search) > 0 ? "WHERE email LIKE '%{$search}%'" : '';
@@ -215,7 +221,7 @@ class Forms
             $where = $status !== 'ALL' ? "WHERE status='{$status}'" : '';
         }
         $offset = ($current*$limit) - $limit;
-        return $wpdb->get_results("SELECT id, email, created_at, uuid, status FROM {$wpdb->prefix}cnrs_data_manager_mission_forms {$where} ORDER BY created_at DESC LIMIT {$offset}, {$limit}", ARRAY_A);
+        return $wpdb->get_results("SELECT id, email, created_at, mission_start_at, uuid, status FROM {$wpdb->prefix}cnrs_data_manager_mission_forms {$where} ORDER BY mission_start_at {$orderBy} LIMIT {$offset}, {$limit}", ARRAY_A);
     }
 
     /**
