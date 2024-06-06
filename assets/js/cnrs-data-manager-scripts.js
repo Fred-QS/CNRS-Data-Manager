@@ -96,6 +96,7 @@ let filenameTimeout;
 let xlsFile = null;
 let wpContainerWidth = 0;
 let agentsList = [];
+let togglesState = null;
 
 if (typeof originalToggles !== "undefined") {
     setNewToggles();
@@ -539,6 +540,48 @@ function prepareListeners() {
     }
 
     removeAdminEmailListeners();
+    setTogglesStates();
+}
+
+function setTogglesStates(toggle = null) {
+
+    if (toggle === null) {
+
+        if (togglesState === null) {
+            togglesState = {};
+            for (let i = 0; i < originalToggles.length; i++) {
+                togglesState[originalToggles[i].id] = {
+                    label: originalToggles[i].label,
+                    option1: {value: originalToggles[i].values[0], active: true},
+                    option2: {value: originalToggles[i].values[1], active: false},
+                }
+            }
+        }
+
+        for (let i = 0; i < missionForm.elements.length; i++) {
+            if (missionForm.elements[i].type === 'toggle') {
+                const uuid = missionForm.elements[i].data.value[0]
+                togglesState[missionForm.elements[i].data.value[0]] = {
+                    label: missionForm.elements[i].label,
+                    option1: {value: missionForm.elements[i].data.values[0], active: true},
+                    option2: {value: missionForm.elements[i].data.values[1], active: false},
+                };
+            }
+        }
+
+    } else {
+
+        if (typeof togglesState[toggle.uuid] !== "undefined") {
+
+            if (togglesState[toggle.uuid].option1.value === toggle.value) {
+                togglesState[toggle.uuid].option1.active = true;
+                togglesState[toggle.uuid].option2.active = false;
+            } else if (togglesState[toggle.uuid].option2.value === toggle.value) {
+                togglesState[toggle.uuid].option1.active = false;
+                togglesState[toggle.uuid].option2.active = true;
+            }
+        }
+    }
 }
 
 function removeAdminEmailListeners() {
@@ -949,6 +992,7 @@ function saveTogglesSettings() {
         const option2Value = togglesSettings[i].querySelector('input[id="cnrs-dm-toggle-option2-' + uuid + '"]').checked;
         missionForm.elements[iteration].data.toggles[uuid].option1.active = option1Value;
         missionForm.elements[iteration].data.toggles[uuid].option2.active = option2Value;
+        setTogglesStates();
         refreshFormPreview();
         closeModalWrapper();
     }
@@ -1001,6 +1045,7 @@ function saveToolSettings() {
     if (newToggle === true) {
         setNewToggles();
     }
+    setTogglesStates();
     refreshFormPreview();
     closeModalWrapper();
 }
@@ -1117,6 +1162,9 @@ function setToolsListeners(refresh = false) {
                             && typeof missionForm.elements[j].data.toggles[uuid] !== 'undefined'
                         ) {
                             delete missionForm.elements[j].data.toggles[uuid];
+                            if (typeof togglesState[uuid] !== 'undefined') {
+                                delete togglesState[uuid];
+                            }
                         }
                     }
                 }
@@ -1233,6 +1281,26 @@ function closeModalWrapper() {
     }, 250);
 }
 
+function isHiddenByToggleAction(toggles) {
+
+    if (toggles !== null) {
+        for (const toggleUuid in toggles) {
+            const label = toggles[toggleUuid].label;
+            const option1 = toggles[toggleUuid].option1;
+            const option2 = toggles[toggleUuid].option2;
+            if (typeof togglesState[toggleUuid] !== "undefined") {
+                if (option1.active === false && togglesState[toggleUuid].option1.active === true) {
+                    return {hide: togglesState[toggleUuid].option1.active, toggleName: label};
+                }
+                if (option2.active === false && togglesState[toggleUuid].option2.active === true) {
+                    return {hide: togglesState[toggleUuid].option2.active, toggleName: label};
+                }
+            }
+        }
+    }
+    return {hide: false, toggleName: '%s'};
+}
+
 function refreshFormPreview() {
     let html = '';
     const d = new Date;
@@ -1241,28 +1309,31 @@ function refreshFormPreview() {
     const addSomePads = missionFormPreview.dataset.pads;
     const signHere = missionFormPreview.dataset.sign;
     const funderLabel = missionFormPreview.dataset.funderlabel;
-    const hiddenMessage = missionFormPreview.dataset.hidden;
+    let hiddenMessage = missionFormPreview.dataset.hidden;
     for (let i = 0; i < originalToggles.length; i++) {
         html += '<div class="cnrs-dm-preview-elements" data-hidden="' + hiddenMessage + '">';
         html += `<div class="cnrs-dm-form-preview-label" data-uuid="${originalToggles[i].id}"><span class="cnrs-dm-required">${originalToggles[i].label}</span>`;
         for (let j = 0; j < originalToggles[i].values.length; j++) {
             let label = originalToggles[i].values[j];
             html += '<label>';
-            html += `<input type="radio" name="toggle-${i}"${j === 0 ? ' checked' : ''}>`;
+            html += `<input type="radio" name="toggle-${i}"${togglesState[originalToggles[i].id]['option' + (j+1)].active === true ? ' checked' : ''}>`;
             html += `<span>${label}</span>`;
             html += '</label>';
         }
         html += `</div>`;
         html += `</div>`;
         if (i === 0) {
-            html += '<div class="cnrs-dm-preview-elements from-mandatory" data-hidden="' + hiddenMessage + '">';
+            let t = {};
+            t[originalToggles[i].id] = {label: originalToggles[i].label, option1: {value: originalToggles[i].values[0], active: true}, option2: {value: originalToggles[i].values[1], active: false}};
+            let hidden = isHiddenByToggleAction(t);
+            hiddenMessage = hiddenMessage.replace('%s', hidden.toggleName);
+            html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + ' from-mandatory" data-hidden="' + hiddenMessage + '">';
             html += `<label><span class="cnrs-dm-required">${funderLabel}</span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `</label>`;
             html += `</div>`;
         }
     }
-    let signs = [];
     for (let i = 0; i < missionForm.elements.length; i++) {
         const element = missionForm.elements[i];
         const required = typeof element.data !== "undefined" && element.data.required === true
@@ -1271,7 +1342,9 @@ function refreshFormPreview() {
         const tooltip = typeof element.data !== "undefined" && typeof element.data.tooltip !== "undefined" && element.data.tooltip.length > 0
             ? `<span class="cnrs-dm-tooltip-icon" title="${element.data.tooltip.replaceAll('<br/>', ' ')}">?</span>`
             : '';
-        html += '<div class="cnrs-dm-preview-elements" data-hidden="' + hiddenMessage + '">';
+        let hidden = isHiddenByToggleAction(element.data.toggles);
+        hiddenMessage = hiddenMessage.replace('%s', hidden.toggleName);
+        html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + '" data-hidden="' + hiddenMessage + '">';
         if (element.type === 'checkbox') {
             html += `<div class="cnrs-dm-form-preview-label">`;
             html += element.label.trim().length > 0 ? `<span${required}>${element.label} ${tooltip}</span>` : '';
@@ -1376,7 +1449,7 @@ function refreshFormPreview() {
                 for (let j = 0; j < element.data.values.length; j++) {
                     let label = element.data.values[j];
                     html += '<label>';
-                    html += `<input type="radio" name="toggle-${i}"${j === 0 ? ' checked' : ''}>`;
+                    html += `<input type="radio" name="toggle-${i}"${togglesState[element.data.value[0]]['option' + (j+1)].active === true ? ' checked' : ''}>`;
                     html += `<span>${label}</span>`;
                     html += '</label>';
                 }
@@ -1430,27 +1503,18 @@ function refreshFormPreview() {
             }
         }
     }
-    setTogglesLogic();
+    setTogglesListeners();
 }
 
-function setTogglesLogic() {
-    const toggles = document.querySelectorAll('.cnrs-dm-form-preview-label[data-uuid]');
+function setTogglesListeners() {
+    const toggles = document.querySelectorAll('.cnrs-dm-form-preview-label[data-uuid] input');
     for (let i = 0; i < toggles.length; i++) {
-        const inputs = toggles[i].getElementsByTagName('input');
-        if (inputs[0]) {
-            inputs[0].oninput = function () {
-                const uuid = toggles[i].dataset.uuid;
-                const value = this.nextElementSibling.innerHTML;
-                console.log(uuid, value)
-            };
-        }
-        if (inputs[1]) {
-            inputs[1].oninput = function () {
-                const uuid = toggles[i].dataset.uuid;
-                const value = this.nextElementSibling.innerHTML;
-                console.log(uuid, value)
-            };
-        }
+        toggles[i].oninput = function () {
+            const uuid = this.closest('.cnrs-dm-form-preview-label[data-uuid]').dataset.uuid;
+            const value = this.nextElementSibling.innerHTML;
+            setTogglesStates({uuid, value})
+            refreshFormPreview();
+        };
     }
 }
 
@@ -1933,5 +1997,17 @@ function initSettingsShortCodeFilters() {
                 }
             });
         }
+    }
+}
+
+function isJson(str) {
+    if (str === null || typeof str === "undefined") {
+        return false;
+    }
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (e) {
+        return false;
     }
 }
