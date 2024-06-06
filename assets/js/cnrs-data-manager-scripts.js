@@ -1174,7 +1174,6 @@ function setToolsListeners(refresh = false) {
             for (let j = 0; j < renders.length; j++) {
                 renders[j].dataset.index = j;
             }
-
             elements.splice(originalIteration, 1);
             let reorder = [];
             for (let j = 0; j < elements.length; j++) {
@@ -1182,6 +1181,9 @@ function setToolsListeners(refresh = false) {
                     reorder.push(elmt);
                 }
                 reorder.push(elements[j]);
+            }
+            if (iteration === elements.length) {
+                reorder.push(elmt);
             }
             missionForm.elements = reorder;
             refreshFormPreview();
@@ -1418,10 +1420,36 @@ function refreshFormPreview() {
     const mandatoryBlocs = document.querySelectorAll('.cnrs-dm-form-tool-render-mandatory').length;
     for (let i = 0; i < tools.length; i++) {
         tools[i].onmouseover = function () {
-            previewElements[i + mandatoryBlocs].classList.add('locate');
+            if (previewElements[i + mandatoryBlocs]) {
+                previewElements[i + mandatoryBlocs].classList.add('locate');
+            }
         }
         tools[i].onmouseleave = function () {
-            previewElements[i + mandatoryBlocs].classList.remove('locate');
+            if (previewElements[i + mandatoryBlocs]) {
+                previewElements[i + mandatoryBlocs].classList.remove('locate');
+            }
+        }
+    }
+    setTogglesLogic();
+}
+
+function setTogglesLogic() {
+    const toggles = document.querySelectorAll('.cnrs-dm-form-preview-label[data-uuid]');
+    for (let i = 0; i < toggles.length; i++) {
+        const inputs = toggles[i].getElementsByTagName('input');
+        if (inputs[0]) {
+            inputs[0].oninput = function () {
+                const uuid = toggles[i].dataset.uuid;
+                const value = this.nextElementSibling.innerHTML;
+                console.log(uuid, value)
+            };
+        }
+        if (inputs[1]) {
+            inputs[1].oninput = function () {
+                const uuid = toggles[i].dataset.uuid;
+                const value = this.nextElementSibling.innerHTML;
+                console.log(uuid, value)
+            };
         }
     }
 }

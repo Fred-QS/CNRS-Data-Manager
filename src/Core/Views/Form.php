@@ -179,7 +179,7 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                         <label>
                             <textarea spellcheck="false" name="cnrs-dm-form-title" placeholder="<?php echo __('Enter a title', 'cnrs-data-manager') ?>"><?php echo $decodedForm['title'] ?></textarea>
                         </label>
-                        <div id="cnrs-dm-form-preview-container" data-choices="<?php echo __('Add some choices.', 'cnrs-data-manager') ?>" data-pads="<?php echo __('Add some signing pads.', 'cnrs-data-manager') ?>" data-sign="<?php echo __('Sign<br/>here', 'cnrs-data-manager') ?>" data-toggles="<?php echo __('Add toggles.', 'cnrs-data-manager') ?>" data-funderlabel="<?php echo __('Credit manager email', 'cnrs-data-manager') ?>" data-hidden="<?php echo __('Hidden by "%s" toggle', 'cnrs-data-manager') ?>"></div>
+                        <div id="cnrs-dm-form-preview-container" data-choices="<?php echo __('Add some choices.', 'cnrs-data-manager') ?>" data-pads="<?php echo __('Add some signing pads.', 'cnrs-data-manager') ?>" data-sign="<?php echo __('Sign<br/>here', 'cnrs-data-manager') ?>" data-toggles="<?php echo __('Add toggles.', 'cnrs-data-manager') ?>" data-funderlabel="<?php echo __('Credit manager email', 'cnrs-data-manager') ?>" data-hidden="<?php echo __('Hidden by %s toggle', 'cnrs-data-manager') ?>"></div>
                     </div>
                 </div>
                 <div class="cnrs-dm-tab-content<?php echo isActiveTab('list') ? ' active' : '' ?>" data-content="list">
