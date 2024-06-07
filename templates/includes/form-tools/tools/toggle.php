@@ -1,10 +1,11 @@
-<div class="cnrs-dm-form-tool-render" data-type="time" data-index="<?php echo $iteration ?>">
+<div class="cnrs-dm-form-tool-render" data-type="toggle" data-index="<?php echo $iteration ?>">
     <span class="cnrs-dm-mission-form-mover" data-action="up">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
             <path d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"/>
         </svg>
     </span>
-    <p class="cnrs-dm-form-tool-label"><?php echo __('Time field', 'cnrs-data-manager') ?></p>
+    <p class="cnrs-dm-form-tool-label"><?php echo __('Conditional toggle', 'cnrs-data-manager') ?></p>
+    <i><?php echo __('Condition some fields.', 'cnrs-data-manager') ?></i>
     <div class="cnrs-dm-tool-buttons-wrapper">
         <span class="cnrs-dm-tool-button" data-action="toggles">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="20" height="20">

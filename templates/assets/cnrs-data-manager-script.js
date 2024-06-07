@@ -35,6 +35,10 @@ const chooseDestMissionBtns = document.querySelectorAll('.cnrs-dm-front-btn-choo
 const intlParagraph = document.querySelector('#cnrs-dm-front-mission-intl');
 const missionHTMLForm = document.querySelector('#cnrs-dm-front-mission-form-wrapper');
 const desInput = document.querySelector('input[name="cnrs-dm-front-mission-intl"]');
+const hiddenConventionInput = document.querySelector('#cnrs-dm-front-convention-id');
+const textConventionInput = document.querySelector('#cnrs-dm-front-convention-text');
+const conventionList = document.querySelector('#cnrs-dm-front-conventions-list');
+const conventionsLi = document.querySelectorAll('.cnrs-dm-front-convention');
 let agentEmails = [];
 
 window.addEventListener('load', function(){
@@ -50,8 +54,8 @@ window.addEventListener('resize', function () {
 });
 
 window.addEventListener('click', function(e) {
-    const target = e.target;
-    closeMissionTooltips(target);
+   const target = e.target;
+   closeMissionTooltips(target);
 });
 
 function isJson(str) {
@@ -234,90 +238,123 @@ function prepareMissionForm() {
             let errors = [];
             const toControl = document.querySelectorAll('.cnrs-dm-front-mission-form-element[data-state="light"]');
             for (let i = 0; i < toControl.length; i++) {
-                const container = toControl[i];
-                const type = container.dataset.type;
-                const messages = JSON.parse(missionFormErrors.dataset.messages);
-                if (type === 'input') {
-                    const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-input-"]');
-                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    if (elmt && elmt.readOnly === false && elmt.value.trim().length < 1) {
-                        errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
-                    }
-                } else if (type === 'number') {
-                    const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-number-"]');
-                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    if (elmt && elmt.readOnly === false) {
-                        if (elmt.value.trim().length < 1) {
-                            errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
-                        } else if (isNaN(elmt.value)) {
-                            errors.push('<b>' + label + '</b>&nbsp;' + messages.number);
-                        } else if (parseInt(elmt.value) < 0) {
-                            errors.push('<b>' + label + '</b>&nbsp;' + messages.unsigned);
+                if (!toControl[i].classList.contains('hidden-by-toggle')) {
+                    const container = toControl[i];
+                    const type = container.dataset.type;
+                    const messages = JSON.parse(missionFormErrors.dataset.messages);
+                    if (type === 'input') {
+                        const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-input-"]');
+                        const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.label;
+                        if (elmt && elmt.readOnly === false && elmt.value.trim().length < 1) {
+                            if (label.trim().length < 1) {
+                                errors.push(messages.noLabel);
+                            } else {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
+                            }
                         }
-                    }
-                } else if (type === 'date' || type === 'time' || type === 'datetime') {
-                    const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-' + type + '-"]');
-                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    if (elmt && elmt.readOnly === false && elmt.value.trim().length < 1) {
-                        errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
-                    }
-                } else if (type === 'textarea') {
-                    const elmt = container.querySelector('textarea[name^="cnrs-dm-front-mission-form-element-textarea-"]');
-                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    if (elmt && elmt.readOnly === false && elmt.value.trim().length < 1) {
-                        errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
-                    }
-                } else if (type === 'radio' || type === 'radio-convention') {
-                    const radioInputs = type === 'radio'
-                        ? container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-radio-"]')
-                        : container.querySelectorAll('input[name="cnrs-dm-front-convention"]');
-                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    let radioChecked = [];
-                    for (let j = 0; j < radioInputs.length; j++) {
-                        if (radioInputs[j].checked === true) {
-                            radioChecked.push(j);
+                    } else if (type === 'number') {
+                        const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-number-"]');
+                        const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.label;
+                        if (elmt && elmt.readOnly === false) {
+                            if (elmt.value.trim().length < 1) {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
+                            } else if (isNaN(elmt.value)) {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.number);
+                            } else if (parseInt(elmt.value) < 0) {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.unsigned);
+                            }
                         }
-                    }
-                    if (radioChecked.length < 1 && radioInputs.length > 0) {
-                        errors.push('<b>' + label + '</b>&nbsp;' + messages.radio);
-                    }
-                    const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
-                    for (let j = 0; j < optComments.length; j++) {
-                        if (optComments[j].value.trim().length < 1 && optComments[j].readOnly === false) {
-                            const opt = optComments[j].previousElementSibling.querySelector('.text').innerHTML;
-                            errors.push('<b>' + label + ' ' + opt + '</b>&nbsp;' + messages.option);
+                    } else if (type === 'date' || type === 'time' || type === 'datetime') {
+                        const elmt = container.querySelector('input[name^="cnrs-dm-front-mission-form-element-' + type + '-"]');
+                        const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.label;
+                        if (elmt && elmt.readOnly === false && elmt.value.trim().length < 1) {
+                            if (label.trim().length < 1) {
+                                errors.push(messages.noLabel);
+                            } else {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
+                            }
                         }
-                    }
-                } else if (type === 'checkbox') {
-                    const checkboxInputs = container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-checkbox-"]');
-                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').innerHTML;
-                    let checkboxChecked = [];
-                    for (let j = 0; j < checkboxInputs.length; j++) {
-                        if (checkboxInputs[j].checked === true) {
-                            checkboxChecked.push(j);
+                    } else if (type === 'textarea') {
+                        const elmt = container.querySelector('textarea[name^="cnrs-dm-front-mission-form-element-textarea-"]');
+                        const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.label;
+                        if (elmt && elmt.readOnly === false && elmt.value.trim().length < 1) {
+                            if (label.trim().length < 1) {
+                                errors.push(messages.noLabel);
+                            } else {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
+                            }
                         }
-                    }
-                    if (checkboxChecked.length < 1 && checkboxChecked.length) {
-                        errors.push('<b>' + label + '</b>&nbsp;' + messages.checkbox);
-                    }
-                    const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
-                    for (let j = 0; j < optComments.length; j++) {
-                        if (optComments[j].value.trim().length < 1 && optComments[j].readOnly === false) {
-                            const opt = optComments[j].previousElementSibling.querySelector('.checkbox__text-wrapper').innerHTML;
-                            errors.push('<b>' + label + ' ' + opt + '</b>&nbsp;' + messages.option);
+                    } else if (type === 'radio') {
+                        const radioInputs = type === 'radio'
+                            ? container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-radio-"]')
+                            : container.querySelectorAll('input[name="cnrs-dm-front-convention"]');
+                        const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.label;
+                        let radioChecked = [];
+                        for (let j = 0; j < radioInputs.length; j++) {
+                            if (radioInputs[j].checked === true) {
+                                radioChecked.push(j);
+                            }
                         }
-                    }
-                } else if (type === 'signs') {
-                    const inputs = container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-signs-"]');
-                    const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.error;
-                    for (let j = 0; j < inputs.length; j++) {
-                        if (isJson(inputs[j].value)) {
-                            const json = JSON.parse(inputs[j].value);
-                            if (json.sign === undefined) {
+                        if (radioChecked.length < 1 && radioInputs.length > 0) {
+                            if (label.trim().length < 1) {
+                                errors.push(messages.noLabel);
+                            } else {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.radio);
+                            }
+                        }
+                        const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
+                        for (let j = 0; j < optComments.length; j++) {
+                            if (optComments[j].value.trim().length < 1 && optComments[j].readOnly === false) {
+                                const opt = optComments[j].previousElementSibling.querySelector('.text').dataset.label;
+                                errors.push('<b>' + label + ' ' + opt + '</b>&nbsp;' + messages.option);
+                            }
+                        }
+                    } else if (type === 'checkbox') {
+                        const checkboxInputs = container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-checkbox-"]');
+                        const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.label;
+                        let checkboxChecked = [];
+                        for (let j = 0; j < checkboxInputs.length; j++) {
+                            if (checkboxInputs[j].checked === true) {
+                                checkboxChecked.push(j);
+                            }
+                        }
+                        if (checkboxChecked.length < 1 && checkboxInputs.length > 0) {
+                            if (label.trim().length < 1) {
+                                errors.push(messages.noLabel);
+                            } else {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.checkbox);
+                            }
+                        }
+                        const optComments = container.querySelectorAll('.cnrs-dm-front-mission-form-opt-comment:required');
+                        for (let j = 0; j < optComments.length; j++) {
+                            if (optComments[j].value.trim().length < 1 && optComments[j].readOnly === false) {
+                                const opt = optComments[j].previousElementSibling.querySelector('.checkbox__text-wrapper').dataset.label;
+                                errors.push('<b>' + label + ' ' + opt + '</b>&nbsp;' + messages.option);
+                            }
+                        }
+                    } else if (type === 'signs') {
+                        const inputs = container.querySelectorAll('input[name^="cnrs-dm-front-mission-form-element-signs-"]');
+                        const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.error;
+                        for (let j = 0; j < inputs.length; j++) {
+                            if (isJson(inputs[j].value)) {
+                                const json = JSON.parse(inputs[j].value);
+                                if (json.sign === undefined) {
+                                    errors.push('<b>' + label + ' ' + (j+1) + '</b>&nbsp;' + messages.signs);
+                                }
+                            } else {
                                 errors.push('<b>' + label + ' ' + (j+1) + '</b>&nbsp;' + messages.signs);
                             }
-                        } else {
-                            errors.push('<b>' + label + ' ' + (j+1) + '</b>&nbsp;' + messages.signs);
+                        }
+                    } else if (type === 'radio-convention') {
+                        const label = container.querySelector('.cnrs-dm-front-mission-form-element-label').dataset.label;
+                        if (hiddenConventionInput && hiddenConventionInput.readOnly === false) {
+                            if (hiddenConventionInput.value.trim().length < 1) {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.simple);
+                            } else if (isNaN(hiddenConventionInput.value)) {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.number);
+                            } else if (parseInt(hiddenConventionInput.value) < 0) {
+                                errors.push('<b>' + label + '</b>&nbsp;' + messages.unsigned);
+                            }
                         }
                     }
                 }
@@ -444,8 +481,176 @@ function prepareMissionForm() {
             isInternational = action === 1;
             chooseDestWrapper.remove();
             missionHTMLForm.classList.remove('cnrs-dm-front-mission-form-wrapper-init');
+            resizeTooltips();
         }
     }
+
+    if (typeof togglesObject !== "undefined") {
+        checkAllInputsToggles();
+        const containers = document.querySelectorAll('.cnrs-dm-front-mission-form-element[data-type="radio-toggle"]');
+        for (let i = 0; i < containers.length; i++) {
+            const inputs = containers[i].querySelectorAll('input[type="radio"]');
+            for (let j = 0; j < inputs.length; j++) {
+                inputs[j].oninput = function () {
+                    toggleInputCheckedAction(this, inputs);
+                }
+            }
+        }
+    }
+
+    if (hiddenConventionInput && textConventionInput) {
+        textConventionInput.oninput = function () {
+            const value = this.value;
+            conventionError();
+            if (value.length > 0) {
+                for (let i = 0; i < conventionsLi.length; i++) {
+                    if (conventionsLi[i].innerHTML.trim().toLowerCase().includes(value.toLowerCase())) {
+                        conventionList.classList.add('display');
+                        conventionsLi[i].style.display = 'list-item';
+                    }
+                }
+            } else {
+                conventionError();
+            }
+        };
+        for (let i = 0; i < conventionsLi.length; i++) {
+            conventionsLi[i].onclick = function () {
+                for (let j = 0; j < conventionsLi.length; j++) {
+                    conventionsLi[j].classList.remove('selected');
+                }
+                this.classList.add('selected');
+                textConventionInput.value = conventionsLi[i].innerHTML.trim();
+                hiddenConventionInput.value = conventionsLi[i].dataset.id;
+                conventionList.classList.remove('display');
+                textConventionInput.classList.remove('error');
+            };
+        }
+    }
+}
+
+function conventionError() {
+    hiddenConventionInput.removeAttribute('value');
+    textConventionInput.classList.add('error');
+    conventionList.classList.remove('display');
+    for (let i = 0; i < conventionsLi.length; i++) {
+        conventionsLi[i].style.display = 'none';
+    }
+}
+
+function checkAllInputsToggles() {
+    const containers = document.querySelectorAll('.cnrs-dm-front-mission-form-element[data-type="radio-toggle"]');
+    for (let i = 0; i < containers.length; i++) {
+        const inputs = containers[i].querySelectorAll('input[type="radio"]');
+        for (let j = 0; j < inputs.length; j++) {
+            if (inputs[j].checked === true) {
+                toggleInputCheckedAction(inputs[j], inputs);
+            }
+        }
+    }
+}
+
+function toggleInputCheckedAction(input, allInputs) {
+    const uuid = input.dataset.uuid;
+    const sibling = input.closest('.cnrs-dm-front-mission-form-element').nextElementSibling;
+    if (sibling && sibling.querySelector('[name="cnrs-dm-front-funder-email"]')) {
+        if (parseInt(input.value) === 1) {
+            displayToggledElementsHTML([{html: sibling, toggles: {}, uuid: null}], [{html: null, toggles: {}, uuid: null}]);
+        } else {
+            displayToggledElementsHTML([{html: null, toggles: {}, uuid: null}], [{html: sibling, toggles: {}, uuid: null}]);
+        }
+    }
+    displayToggledElementsLogic({
+        id: uuid,
+        option1: {
+            value: allInputs[0].parentElement.querySelector('span.text').innerHTML,
+            active: allInputs[0].checked
+        },
+        option2: {
+            value: allInputs[1].parentElement.querySelector('span.text').innerHTML,
+            active: allInputs[1].checked
+        },
+    });
+}
+
+function displayToggledElementsLogic(triggerToggle) {
+
+    let elementsToDisplay = [];
+    let elementsToHide = [];
+    if (missionForm) {
+        for (let i = 0; i < missionForm.elements.length; i++) {
+            const element = missionForm.elements[i];
+            const toggles = element.data.toggles;
+            if (toggles !== null) {
+                for (const toggleUuid in toggles) {
+                    const option1 = toggles[toggleUuid].option1;
+                    const option2 = toggles[toggleUuid].option2;
+                    if (triggerToggle.id === toggleUuid) {
+                        const els = document.querySelectorAll('#cnrs-dm-front-dynamic-elements-wrapper .cnrs-dm-front-mission-form-element');
+                        if (option1.active === false && triggerToggle.option1.active === true) {
+                            elementsToHide.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                        }
+                        if (option2.active === false && triggerToggle.option2.active === true) {
+                            elementsToHide.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                        }
+                        if (option1.active === true && triggerToggle.option1.active === true) {
+                            elementsToDisplay.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                        }
+                        if (option2.active === true && triggerToggle.option2.active === true) {
+                            elementsToDisplay.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                        }
+                    }
+                }
+            }
+        }
+    }
+    displayToggledElementsHTML(elementsToDisplay, elementsToHide)
+}
+
+function displayToggledElementsHTML(elementsToDisplay, elementsToHide) {
+    for (let i = 0; i < elementsToDisplay.length; i++) {
+        const element = elementsToDisplay[i].html;
+        if (element !== null) {
+            if (hasNoDisabledToggle(elementsToDisplay[i].toggles, elementsToDisplay[i].uuid) === true) {
+                element.classList.remove('hidden-by-toggle');
+                const inputs = element.querySelectorAll('[name]');
+                for (let j = 0; j < inputs.length; j++) {
+                    inputs[j].disabled = false;
+                }
+            }
+        }
+    }
+    for (let i = 0; i < elementsToHide.length; i++) {
+        const element = elementsToHide[i].html;
+        if (element !== null) {
+            element.classList.add('hidden-by-toggle');
+            const inputs = element.querySelectorAll('[name]');
+            for (let j = 0; j < inputs.length; j++) {
+                inputs[j].disabled = true;
+            }
+        }
+    }
+}
+
+function hasNoDisabledToggle(toggles, activeToggleUuid) {
+    if (activeToggleUuid === null) {
+        return true
+    }
+    for (const uuid in toggles) {
+        if (uuid !== activeToggleUuid) {
+            const inputs = document.querySelectorAll(`.cnrs-dm-front-mission-form-element[data-uuid="${uuid}"] input[type="radio"]`);
+            for (let i = 0; i < inputs.length; i++) {
+                if (inputs[i].checked === true) {
+                    const value = inputs[i].value === '0';
+                    if ((value === true && toggles[uuid].option1.active === false)
+                        || (value === false && toggles[uuid].option2.active === false)
+                    ) {
+                        return false
+                    }
+                }
+            }
+        }
+    }
+    return true;
 }
 
 function displayLoader() {
@@ -471,11 +676,8 @@ function resizeTooltips() {
     for (let i = 0; i < tooltipBtns.length; i++) {
         const parent = tooltipBtns[i].closest('.cnrs-dm-front-mission-form-element');
         const parentWidth = parent.offsetWidth;
-        const label = tooltipBtns[i].closest('.cnrs-dm-front-mission-form-element-label');
-        const labelWidth = label.scrollWidth + 16;
         const text = tooltipBtns[i].nextElementSibling;
         text.style.maxWidth = parentWidth + 'px';
-        text.style.minWidth = labelWidth + 'px';
     }
 }
 
