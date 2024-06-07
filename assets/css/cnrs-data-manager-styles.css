@@ -2265,7 +2265,7 @@ input:checked + .cnrs-dm-slider:before {
     align-self: center;
 }
 
-.cnrs-dm-documentation-container:first-of-type img {
+.cnrs-dm-documentation-container:not(.cnrs-dm-documentation-container-not-summary) img {
     width: 100%;
 }
 
@@ -2291,7 +2291,7 @@ input:checked + .cnrs-dm-slider:before {
     color: #2271b1;
 }
 
-.cnrs-dm-documentation-container:not(:first-of-type) > h1 {
+.cnrs-dm-documentation-container:not(:first-of-type) > h1:not(#sommaire):not(#summary) {
     margin-top: 50px;
     display: flex;
     justify-content: flex-start;

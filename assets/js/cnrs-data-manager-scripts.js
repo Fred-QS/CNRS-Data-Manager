@@ -545,40 +545,42 @@ function prepareListeners() {
 
 function setTogglesStates(toggle = null) {
 
-    if (toggle === null) {
+    if (typeof originalToggles !== "undefined" && typeof toggle !== "undefined") {
+        if (toggle === null) {
 
-        if (togglesState === null) {
-            togglesState = {};
-            for (let i = 0; i < originalToggles.length; i++) {
-                togglesState[originalToggles[i].id] = {
-                    label: originalToggles[i].label,
-                    option1: {value: originalToggles[i].values[0], active: true},
-                    option2: {value: originalToggles[i].values[1], active: false},
+            if (togglesState === null) {
+                togglesState = {};
+                for (let i = 0; i < originalToggles.length; i++) {
+                    togglesState[originalToggles[i].id] = {
+                        label: originalToggles[i].label,
+                        option1: {value: originalToggles[i].values[0], active: true},
+                        option2: {value: originalToggles[i].values[1], active: false},
+                    }
                 }
             }
-        }
 
-        for (let i = 0; i < missionForm.elements.length; i++) {
-            if (missionForm.elements[i].type === 'toggle') {
-                const uuid = missionForm.elements[i].data.value[0]
-                togglesState[missionForm.elements[i].data.value[0]] = {
-                    label: missionForm.elements[i].label,
-                    option1: {value: missionForm.elements[i].data.values[0], active: true},
-                    option2: {value: missionForm.elements[i].data.values[1], active: false},
-                };
+            for (let i = 0; i < missionForm.elements.length; i++) {
+                if (missionForm.elements[i].type === 'toggle') {
+                    const uuid = missionForm.elements[i].data.value[0]
+                    togglesState[missionForm.elements[i].data.value[0]] = {
+                        label: missionForm.elements[i].label,
+                        option1: {value: missionForm.elements[i].data.values[0], active: true},
+                        option2: {value: missionForm.elements[i].data.values[1], active: false},
+                    };
+                }
             }
-        }
 
-    } else {
+        } else {
 
-        if (typeof togglesState[toggle.uuid] !== "undefined") {
+            if (typeof togglesState[toggle.uuid] !== "undefined") {
 
-            if (togglesState[toggle.uuid].option1.value === toggle.value) {
-                togglesState[toggle.uuid].option1.active = true;
-                togglesState[toggle.uuid].option2.active = false;
-            } else if (togglesState[toggle.uuid].option2.value === toggle.value) {
-                togglesState[toggle.uuid].option1.active = false;
-                togglesState[toggle.uuid].option2.active = true;
+                if (togglesState[toggle.uuid].option1.value === toggle.value) {
+                    togglesState[toggle.uuid].option1.active = true;
+                    togglesState[toggle.uuid].option2.active = false;
+                } else if (togglesState[toggle.uuid].option2.value === toggle.value) {
+                    togglesState[toggle.uuid].option1.active = false;
+                    togglesState[toggle.uuid].option2.active = true;
+                }
             }
         }
     }
