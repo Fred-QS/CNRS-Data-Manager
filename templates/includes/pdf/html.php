@@ -38,13 +38,31 @@
     <tr><td colspan="2"></td></tr>
     <tr><td colspan="2"></td></tr>
     <tr>
-        <td colspan="2"><span style="font-family: <?php echo $boldFont1; ?>, sans-serif; font-size: 20px; color: #68C0B5;"><?php echo $form['international'] === true ? __('Foreign mission', 'cnrs-data-manager') : __('Mission in France', 'cnrs-data-manager') ?></span></td>
+        <td colspan="2"><span style="font-family: <?php echo $boldFont1; ?>, sans-serif; font-size: 20px; color: #68C0B5;"><?php echo $form['international'] === true ? __('Foreign mission', 'cnrs-data-manager') : __('Mission in France', 'cnrs-data-manager') ?> <small>(<i><?php echo (int) $data->has_fees === 1 ? __('With fees', 'cnrs-data-manager') : __('No charge', 'cnrs-data-manager') ?></i>)</small></span></td>
     </tr>
     <?php foreach ($form['elements'] as $element): ?>
         <tr><td colspan="2"></td></tr>
-        <?php if ($element['type'] === 'input'): ?>
+        <?php if ($element['type'] === 'toggle'): ?>
             <tr data-type="<?php echo $element['type'] ?>-label">
-                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?><?php if ($element['data']['required'] === true): ?><img src="<?php echo $require; ?>" width="14" alt="require"><?php endif; ?></span></th>
+                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?></span></th>
+            </tr>
+            <tr data-type="<?php echo $element['type'] ?>-values">
+                <td colspan="2">
+                    <table style="width: 100%">
+                        <?php foreach($element['data']['values'] as $index => $choice): ?>
+                            <tr>
+                                <td style="width: 0.7cm;"><img src="<?php echo $index === $element['data']['choice'] ? $radioChecked : $radioUnchecked; ?>" alt="checkbox" width="24" height="24"></td>
+                                <td style="width: 17.9cm;">
+                                    <span style="font-family: <?php echo $mediumFont1 ?>, sans-serif; font-size: 13px; color: #58595a;"><?php echo $choice ?></span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </td>
+            </tr>
+        <?php elseif ($element['type'] === 'input'): ?>
+            <tr data-type="<?php echo $element['type'] ?>-label">
+                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?></span></th>
             </tr>
             <tr data-type="<?php echo $element['type'] ?>-value">
                 <td colspan="2" style="background-color: #edf7f6;">
@@ -63,7 +81,7 @@
         <?php elseif ($element['type'] === 'number'): ?>
             <?php $split = explode(';', $element['label']) ?>
             <tr data-type="<?php echo $element['type'] ?>-label" style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;">
-                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $split[0] ?><?php if ($element['data']['required'] === true): ?><img src="<?php echo $require; ?>" width="14" alt="require"><?php endif; ?></span></th>
+                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $split[0] ?></span></th>
             </tr>
             <tr data-type="<?php echo $element['type'] ?>-value">
                 <td colspan="2" style="background-color: #edf7f6;">
@@ -81,7 +99,7 @@
             </tr>
         <?php elseif ($element['type'] === 'time'): ?>
             <tr data-type="<?php echo $element['type'] ?>-label">
-                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?><?php if ($element['data']['required'] === true): ?><img src="<?php echo $require; ?>" width="14" alt="require"><?php endif; ?></span></th>
+                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?></span></th>
             </tr>
             <tr data-type="<?php echo $element['type'] ?>-value">
                 <td colspan="2" style="background-color: #edf7f6;">
@@ -99,7 +117,7 @@
             </tr>
         <?php elseif ($element['type'] === 'date'): ?>
             <tr data-type="<?php echo $element['type'] ?>-label">
-                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?><?php if ($element['data']['required'] === true): ?><img src="<?php echo $require; ?>" width="14" alt="require"><?php endif; ?></span></th>
+                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?></span></th>
             </tr>
             <tr data-type="<?php echo $element['type'] ?>-value">
                 <td colspan="2" style="background-color: #edf7f6;">
@@ -117,7 +135,7 @@
             </tr>
         <?php elseif ($element['type'] === 'datetime'): ?>
             <tr data-type="<?php echo $element['type'] ?>-label">
-                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?><?php if ($element['data']['required'] === true): ?><img src="<?php echo $require; ?>" width="14" alt="require"><?php endif; ?></span></th>
+                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?></span></th>
             </tr>
             <tr data-type="<?php echo $element['type'] ?>-value">
                 <td colspan="2" style="background-color: #edf7f6;">
@@ -135,7 +153,7 @@
             </tr>
         <?php elseif ($element['type'] === 'textarea'): ?>
             <tr data-type="<?php echo $element['type'] ?>-label">
-                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?><?php if ($element['data']['required'] === true): ?><img src="<?php echo $require; ?>" width="14" alt="require"><?php endif; ?></span></th>
+                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?></span></th>
             </tr>
             <tr data-type="<?php echo $element['type'] ?>-value">
                 <td colspan="2" style="background-color: #edf7f6;">
@@ -157,7 +175,7 @@
             </tr>
         <?php elseif ($element['type'] === 'checkbox'): ?>
             <tr data-type="<?php echo $element['type'] ?>-label">
-                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?><?php if ($element['data']['required'] === true): ?><img src="<?php echo $require; ?>" width="14" alt="require"><?php endif; ?></span></th>
+                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?></span></th>
             </tr>
             <tr data-type="<?php echo $element['type'] ?>-values">
                 <td colspan="2">
@@ -165,7 +183,7 @@
                         <?php foreach($element['data']['choices'] as $index => $choice): ?>
                             <tr>
                                 <?php $c = str_replace('-opt-comment', '', $choice); ?>
-                                <td style="width: 0.7cm;"><img src="<?php echo isCheckedPDF($c, $element['data']['values']) ? $checked : $unchecked; ?>" alt="checkbox" width="24" height="24"></td>
+                                <td style="width: 0.7cm;"><img src="<?php echo isCheckedPDF($c, stripArrayValuesSlashes($element['data']['values'])) ? $checked : $unchecked; ?>" alt="checkbox" width="24" height="24"></td>
                                 <td style="width: 17.9cm;">
                                     <span style="font-family: <?php echo $mediumFont1 ?>, sans-serif; font-size: 13px; color: #58595a;"><?php echo $c ?></span>
                                 </td>
@@ -187,7 +205,7 @@
             </tr>
         <?php elseif ($element['type'] === 'radio'): ?>
             <tr data-type="<?php echo $element['type'] ?>-label">
-                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?><?php if ($element['data']['required'] === true): ?><img src="<?php echo $require; ?>" width="14" alt="require"><?php endif; ?></span></th>
+                <th align="left" colspan="2"><br><span style="font-family: <?php echo $boldFont2 ?>, sans-serif; font-size: 12px; color: #0C85BB;"><?php echo $element['label'] ?></span></th>
             </tr>
             <tr data-type="<?php echo $element['type'] ?>-values">
                 <td colspan="2">
@@ -195,7 +213,7 @@
                         <?php foreach($element['data']['choices'] as $index => $choice): ?>
                             <tr>
                                 <?php $c = str_replace('-opt-comment', '', $choice); ?>
-                                <td style="width: 0.7cm;"><img src="<?php echo isCheckedPDF($c, $element['data']['values']) ? $radioChecked : $radioUnchecked; ?>" alt="checkbox" width="24" height="24"></td>
+                                <td style="width: 0.7cm;"><img src="<?php echo isCheckedPDF($c, stripArrayValuesSlashes($element['data']['values'])) ? $radioChecked : $radioUnchecked; ?>" alt="checkbox" width="24" height="24"></td>
                                 <td style="width: 17.9cm;">
                                     <span style="font-family: <?php echo $mediumFont1 ?>, sans-serif; font-size: 13px; color: #58595a;"><?php echo $c ?></span>
                                 </td>

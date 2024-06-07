@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-05-31 15:24+0200\n"
-"PO-Revision-Date: 2024-05-31 16:00+0200\n"
+"POT-Creation-Date: 2024-06-07 23:30+0200\n"
+"PO-Revision-Date: 2024-06-07 23:50+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -20,50 +20,55 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: src/Core/Bootstrap.php:156
+#: src/Core/Bootstrap.php:169
 msgid "My JRU"
 msgstr "Mon UMR"
 
-#: src/Core/Bootstrap.php:201 src/Core/Bootstrap.php:202
-#: src/Core/Bootstrap.php:287 src/Core/Views/Form.php:79
+#: src/Core/Bootstrap.php:214 src/Core/Bootstrap.php:215
+#: src/Core/Bootstrap.php:310 src/Core/Views/Form.php:80
 #: src/Core/Views/Settings.php:17
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/Core/Bootstrap.php:214 src/Core/Bootstrap.php:215
+#: src/Core/Bootstrap.php:224 src/Core/Bootstrap.php:225
+#: src/Core/Views/Documentation.php:5
+msgid "Documentation"
+msgstr "Documentation"
+
+#: src/Core/Bootstrap.php:237 src/Core/Bootstrap.php:238
 #: src/Core/Views/Dashboard.php:41
 msgid "Dashboard"
 msgstr "Général"
 
-#: src/Core/Bootstrap.php:224 src/Core/Bootstrap.php:225
+#: src/Core/Bootstrap.php:247 src/Core/Bootstrap.php:248
 #: src/Core/Views/Tools.php:18
 msgid "Tools"
 msgstr "Outils"
 
-#: src/Core/Bootstrap.php:234 src/Core/Bootstrap.php:235
+#: src/Core/Bootstrap.php:257 src/Core/Bootstrap.php:258
 #: src/Core/Views/MapSettings.php:16
 msgid "3D Map"
 msgstr "Carte 3D"
 
-#: src/Core/Bootstrap.php:244 src/Core/Bootstrap.php:245
+#: src/Core/Bootstrap.php:267 src/Core/Bootstrap.php:268
 msgid "Import"
 msgstr "Importation"
 
-#: src/Core/Bootstrap.php:254 src/Core/Bootstrap.php:255
-#: src/Core/Views/Form.php:34 src/Tools/helper.php:1672
+#: src/Core/Bootstrap.php:277 src/Core/Bootstrap.php:278
+#: src/Core/Views/Form.php:35 src/Tools/helper.php:1733
 #: templates/includes/mission-form-download.php:26
 #: templates/includes/mission-form-download.php:36
-#: templates/includes/mission-form-list.php:169
-#: templates/includes/mission-form-list.php:173
-#: templates/includes/mission-form-list.php:181
+#: templates/includes/mission-form-list.php:191
+#: templates/includes/mission-form-list.php:195
+#: templates/includes/mission-form-list.php:203
 msgid "Mission form"
 msgstr "Formulaire de mission"
 
-#: src/Core/Controllers/Ajax.php:65
+#: src/Core/Controllers/Ajax.php:66
 msgid "Bad file type. Only <b>.zip</b> file is allowed."
 msgstr "Type de fichier incorrect. Seul le format  <b>.zip</b>  est autorisé."
 
-#: src/Core/Controllers/Ajax.php:98
+#: src/Core/Controllers/Ajax.php:99
 msgid ""
 "There is more than one Excel file in the zip archive. The archive must "
 "contain a single Excel file."
@@ -71,45 +76,46 @@ msgstr ""
 "Il y a plus d’un fichier Excel dans l’archive zip. L’archive doit contenir "
 "un seul fichier Excel."
 
-#: src/Core/Controllers/Ajax.php:111
+#: src/Core/Controllers/Ajax.php:112
 msgid "The Excel file does not have the expected structure."
 msgstr "Le fichier Excel n’a pas la structure attendue."
 
-#: src/Core/Controllers/Ajax.php:118
+#: src/Core/Controllers/Ajax.php:119
 msgid "No Excel file found in the zip archive."
 msgstr "Aucun fichier Excel n’a été trouvé dans l’archive zip."
 
-#: src/Core/Controllers/Ajax.php:125
+#: src/Core/Controllers/Ajax.php:126
 msgid "There are photos missing from the zip file."
 msgstr "Il manque des photos dans le fichier zip."
 
-#: src/Core/Controllers/Ajax.php:244
+#: src/Core/Controllers/Ajax.php:245
 msgid "The images could not be processed."
 msgstr "Les images n’ont pas pu être traitées."
 
-#: src/Core/Controllers/Ajax.php:246 src/Core/Views/Import.php:25
+#: src/Core/Controllers/Ajax.php:247 src/Core/Views/Import.php:25
 msgid "The projects were imported successfully."
 msgstr "Les projets ont été importés avec succès."
 
-#: src/Core/Controllers/Ajax.php:249
+#: src/Core/Controllers/Ajax.php:250
 msgid "Importing projects into the database failed."
 msgstr "L’importation de projets dans la base de données a échoué."
 
-#: src/Core/Controllers/Ajax.php:255 src/Core/Views/Import.php:25
+#: src/Core/Controllers/Ajax.php:256 src/Core/Views/Import.php:25
 msgid "The import failed."
 msgstr "L’importation a échoué."
 
-#: src/Core/Controllers/Ajax.php:370
+#: src/Core/Controllers/Ajax.php:371
 msgid "financier"
 msgstr "financier"
 
-#: src/Core/Controllers/Ajax.php:393 src/Core/Controllers/Ajax.php:410
-#: src/Core/Controllers/Ajax.php:427 src/Core/Controllers/Ajax.php:439
-#: src/Core/Controllers/Ajax.php:457 src/Core/Controllers/Ajax.php:472
-#: src/Core/Controllers/Ajax.php:500 src/Core/Controllers/Ajax.php:516
-#: src/Core/Controllers/Ajax.php:524 src/Core/Controllers/Ajax.php:541
-#: src/Core/Controllers/Ajax.php:553 src/Core/Controllers/Ajax.php:555
-#: src/Core/Views/Form.php:91
+#: src/Core/Controllers/Ajax.php:394 src/Core/Controllers/Ajax.php:412
+#: src/Core/Controllers/Ajax.php:429 src/Core/Controllers/Ajax.php:441
+#: src/Core/Controllers/Ajax.php:453 src/Core/Controllers/Ajax.php:463
+#: src/Core/Controllers/Ajax.php:481 src/Core/Controllers/Ajax.php:496
+#: src/Core/Controllers/Ajax.php:526 src/Core/Controllers/Ajax.php:542
+#: src/Core/Controllers/Ajax.php:550 src/Core/Controllers/Ajax.php:567
+#: src/Core/Controllers/Ajax.php:579 src/Core/Controllers/Ajax.php:581
+#: src/Core/Views/Form.php:92
 msgid "An error as occurred."
 msgstr "Une erreur s'est produite."
 
@@ -121,80 +127,107 @@ msgstr "Votre nouveau mot de passe"
 msgid "Confirmation"
 msgstr "Confirmation"
 
-#: src/Core/Controllers/Emails.php:93 src/Core/Controllers/Emails.php:173
+#: src/Core/Controllers/Emails.php:93 src/Core/Controllers/Emails.php:205
 msgid "Mission form revision"
 msgstr "Révision du formulaire de mission"
 
-#: src/Core/Controllers/Emails.php:119 templates/includes/emails/canceled.php:2
+#: src/Core/Controllers/Emails.php:121 templates/includes/emails/canceled.php:2
 msgid "Abandoned form"
 msgstr "Formulaire abandonné"
 
-#: src/Core/Controllers/Emails.php:144 templates/includes/emails/exceed.php:2
+#: src/Core/Controllers/Emails.php:122
+#: templates/includes/emails/canceled-by-funder.php:2
+msgid "Abandoned form by credit manager"
+msgstr "Formulaire abandonné par le responsable des crédits"
+
+#: src/Core/Controllers/Emails.php:151
+msgid "Needs approval form"
+msgstr "Formulaire nécessitant une approbation"
+
+#: src/Core/Controllers/Emails.php:176 templates/includes/emails/exceed.php:2
 msgid "Deadline exceeded form"
 msgstr "Formulaire à délai dépassé"
 
-#: src/Core/Controllers/Emails.php:199
+#: src/Core/Controllers/Emails.php:231
 msgid "Validated mission form"
 msgstr "Formulaire de mission validé"
 
-#: src/Core/Controllers/Manager.php:461
+#: src/Core/Controllers/Manager.php:35 src/Core/Views/MissionForm.php:83
+msgid "Fees"
+msgstr "Frais"
+
+#: src/Core/Controllers/Manager.php:37 src/Core/Views/RevisionForm.php:44
+#: templates/includes/pdf/html.php:41
+msgid "With fees"
+msgstr "Avec frais"
+
+#: src/Core/Controllers/Manager.php:38 src/Core/Views/RevisionForm.php:44
+#: templates/includes/pdf/html.php:41
+msgid "No charge"
+msgstr "Sans frais "
+
+#: src/Core/Controllers/Manager.php:483
 msgid "New input field"
 msgstr "Nouveau champ de saisie"
 
-#: src/Core/Controllers/Manager.php:462
+#: src/Core/Controllers/Manager.php:484
 msgid "New numeric field"
 msgstr "Nouveau champ numérique"
 
-#: src/Core/Controllers/Manager.php:463
+#: src/Core/Controllers/Manager.php:485
 msgid "New date field"
 msgstr "Nouveau champ de date"
 
-#: src/Core/Controllers/Manager.php:464
+#: src/Core/Controllers/Manager.php:486
 msgid "New time field"
 msgstr "Nouveau champ d'heure"
 
-#: src/Core/Controllers/Manager.php:465
+#: src/Core/Controllers/Manager.php:487
 msgid "New date & time field"
 msgstr "Nouveau champ de date et d’heure"
 
-#: src/Core/Controllers/Manager.php:466
+#: src/Core/Controllers/Manager.php:488
 msgid "New multi choice field"
 msgstr "Nouveau champ à choix multiples"
 
-#: src/Core/Controllers/Manager.php:467
+#: src/Core/Controllers/Manager.php:489
 msgid "New comment field"
 msgstr "Nouveau champ de commentaire"
 
-#: src/Core/Controllers/Manager.php:468
+#: src/Core/Controllers/Manager.php:490
 msgid "New single choice field"
 msgstr "Nouveau champ à choix unique"
 
-#: src/Core/Controllers/Manager.php:469
+#: src/Core/Controllers/Manager.php:491
 msgid "New separator"
 msgstr "Nouveau séparateur"
 
-#: src/Core/Controllers/Manager.php:470
+#: src/Core/Controllers/Manager.php:492
 msgid "New text field"
 msgstr "Nouveau champ de texte"
 
-#: src/Core/Controllers/Manager.php:471
+#: src/Core/Controllers/Manager.php:493
 msgid "New title field"
 msgstr "Nouveau champ de titre"
 
-#: src/Core/Controllers/Manager.php:472 src/Core/Views/MissionForm.php:257
+#: src/Core/Controllers/Manager.php:494 src/Core/Views/MissionForm.php:326
 #: templates/includes/form-tools/tools/signs.php:7
 msgid "Signing pads"
 msgstr "Pads de signature"
 
-#: src/Core/Controllers/Manager.php:481
+#: src/Core/Controllers/Manager.php:495
+msgid "New toggle set"
+msgstr "Nouveau jeu de bascules"
+
+#: src/Core/Controllers/Manager.php:504
 msgid "My comment"
 msgstr "Mon commentaire"
 
-#: src/Core/Controllers/Manager.php:485
+#: src/Core/Controllers/Manager.php:508
 msgid "My title"
 msgstr "Mon titre"
 
-#: src/Core/Controllers/Manager.php:486
+#: src/Core/Controllers/Manager.php:509
 msgid "My signing pads"
 msgstr "Mes pads de signature"
 
@@ -215,7 +248,8 @@ msgid "Firstname"
 msgstr "Prénom"
 
 #: src/Core/Views/Agents.php:96 src/Core/Views/Dashboard.php:18
-#: templates/includes/filters.php:23 templates/includes/mission-form-list.php:9
+#: templates/includes/filters.php:23
+#: templates/includes/mission-form-list.php:10
 #: templates/partials/cnrs-data-manager-info.php:51
 msgid "Status"
 msgstr "Statut"
@@ -229,8 +263,8 @@ msgstr "Appartenance"
 #: src/Core/Views/Agents.php:106 src/Core/Views/Dashboard.php:17
 #: src/Core/Views/Dashboard.php:138 src/Core/Views/Dashboard.php:204
 #: templates/includes/mission-form-list.php:7
-#: templates/includes/mission-form-list.php:81
-#: templates/includes/mission-form-list.php:205
+#: templates/includes/mission-form-list.php:95
+#: templates/includes/mission-form-list.php:227
 msgid "Identity"
 msgstr "Identité"
 
@@ -342,18 +376,18 @@ msgstr "Choisir un type de données"
 msgid "Agents"
 msgstr "Agents"
 
-#: src/Core/Views/Dashboard.php:62 src/Core/Views/Form.php:181
+#: src/Core/Views/Dashboard.php:62 src/Core/Views/Form.php:193
 msgid "Total"
 msgstr "Total"
 
 #: src/Core/Views/Dashboard.php:66 src/Core/Views/Dashboard.php:71
 #: src/Core/Views/Dashboard.php:276 src/Core/Views/Dashboard.php:278
-#: src/Core/Views/Filters.php:80 src/Core/Views/Form.php:185
-#: src/Core/Views/Form.php:187
+#: src/Core/Views/Filters.php:80 src/Core/Views/Form.php:197
+#: src/Core/Views/Form.php:199
 msgid "Search"
 msgstr "Rechercher"
 
-#: src/Core/Views/Dashboard.php:77 templates/includes/mission-form-list.php:20
+#: src/Core/Views/Dashboard.php:77 templates/includes/mission-form-list.php:21
 msgid ""
 "Either the data source does not contain any results or you need to modify "
 "your search."
@@ -362,114 +396,115 @@ msgstr ""
 "modifier votre recherche."
 
 #: src/Core/Views/Dashboard.php:82 src/Core/Views/Dashboard.php:216
-#: templates/includes/mission-form-list.php:25
-#: templates/includes/mission-form-list.php:217
+#: templates/includes/mission-form-list.php:26
+#: templates/includes/mission-form-list.php:239
 msgid "Select items number per page."
 msgstr "Sélectionnez le nombre d’articles par page."
 
 #: src/Core/Views/Dashboard.php:84 src/Core/Views/Dashboard.php:218
-#: templates/includes/mission-form-list.php:27
-#: templates/includes/mission-form-list.php:219
+#: templates/includes/mission-form-list.php:28
+#: templates/includes/mission-form-list.php:241
 msgid "5 items per page"
 msgstr "5 éléments par page"
 
 #: src/Core/Views/Dashboard.php:85 src/Core/Views/Dashboard.php:219
-#: templates/includes/mission-form-list.php:28
-#: templates/includes/mission-form-list.php:220
+#: templates/includes/mission-form-list.php:29
+#: templates/includes/mission-form-list.php:242
 msgid "10 items per page"
 msgstr "10 éléments par page"
 
 #: src/Core/Views/Dashboard.php:86 src/Core/Views/Dashboard.php:220
-#: templates/includes/mission-form-list.php:29
-#: templates/includes/mission-form-list.php:221
+#: templates/includes/mission-form-list.php:30
+#: templates/includes/mission-form-list.php:243
 msgid "20 items per page"
 msgstr "20 éléments par page"
 
 #: src/Core/Views/Dashboard.php:87 src/Core/Views/Dashboard.php:221
-#: templates/includes/mission-form-list.php:30
-#: templates/includes/mission-form-list.php:222
+#: templates/includes/mission-form-list.php:31
+#: templates/includes/mission-form-list.php:244
 msgid "50 items per page"
 msgstr "50 articles par page"
 
 #: src/Core/Views/Dashboard.php:89 src/Core/Views/Dashboard.php:223
-#: templates/includes/mission-form-list.php:32
-#: templates/includes/mission-form-list.php:224
+#: templates/includes/mission-form-list.php:46
+#: templates/includes/mission-form-list.php:259
 msgid "Apply"
 msgstr "Appliquer"
 
 #: src/Core/Views/Dashboard.php:92 src/Core/Views/Dashboard.php:226
-#: templates/includes/mission-form-list.php:35
-#: templates/includes/mission-form-list.php:227
+#: templates/includes/mission-form-list.php:49
+#: templates/includes/mission-form-list.php:262
 msgid "elements"
 msgstr "éléments"
 
 #: src/Core/Views/Dashboard.php:96 src/Core/Views/Dashboard.php:230
-#: templates/includes/mission-form-list.php:39
-#: templates/includes/mission-form-list.php:231
+#: templates/includes/mission-form-list.php:53
+#: templates/includes/mission-form-list.php:266
 #: templates/includes/pagination.php:18
 msgid "First page"
 msgstr "Première page"
 
 #: src/Core/Views/Dashboard.php:100 src/Core/Views/Dashboard.php:234
-#: templates/includes/mission-form-list.php:43
-#: templates/includes/mission-form-list.php:235
+#: templates/includes/mission-form-list.php:57
+#: templates/includes/mission-form-list.php:270
 #: templates/includes/pagination.php:24
 msgid "Previous page"
 msgstr "Page précédente"
 
 #: src/Core/Views/Dashboard.php:108 src/Core/Views/Dashboard.php:241
-#: templates/includes/mission-form-list.php:51
-#: templates/includes/mission-form-list.php:242
+#: templates/includes/mission-form-list.php:65
+#: templates/includes/mission-form-list.php:277
 msgid "Current page"
 msgstr "Page actuelle"
 
 #: src/Core/Views/Dashboard.php:111 src/Core/Views/Dashboard.php:244
-#: templates/includes/mission-form-list.php:54
-#: templates/includes/mission-form-list.php:245
+#: templates/includes/mission-form-list.php:68
+#: templates/includes/mission-form-list.php:280
 #: templates/includes/pagination.php:43
 msgid "of"
 msgstr "sur"
 
 #: src/Core/Views/Dashboard.php:117 src/Core/Views/Dashboard.php:250
-#: templates/includes/mission-form-list.php:60
-#: templates/includes/mission-form-list.php:251
+#: templates/includes/mission-form-list.php:74
+#: templates/includes/mission-form-list.php:286
 #: templates/includes/pagination.php:49
 msgid "Next page"
 msgstr "Page suivante"
 
 #: src/Core/Views/Dashboard.php:121 src/Core/Views/Dashboard.php:254
-#: templates/includes/mission-form-list.php:64
-#: templates/includes/mission-form-list.php:255
+#: templates/includes/mission-form-list.php:78
+#: templates/includes/mission-form-list.php:290
 #: templates/includes/pagination.php:55
 msgid "Last page"
 msgstr "Dernière page"
 
-#: src/Core/Views/Dashboard.php:133 templates/includes/mission-form-list.php:76
+#: src/Core/Views/Dashboard.php:133 templates/includes/mission-form-list.php:90
 msgid "Table ordered hierarchically."
 msgstr "Tableau ordonné hiérarchiquement."
 
-#: src/Core/Views/Dashboard.php:133 templates/includes/mission-form-list.php:76
+#: src/Core/Views/Dashboard.php:133 templates/includes/mission-form-list.php:90
 msgid "Ascending."
 msgstr "Croissant."
 
 #: src/Core/Views/Dashboard.php:160
-#: templates/includes/mission-form-list.php:100
+#: templates/includes/mission-form-list.php:114
 msgid "No authorization for the distribution of the avatar."
 msgstr "Pas d’autorisation pour la distribution de l’avatar."
 
 #: src/Core/Views/Dashboard.php:162 src/Core/Views/Dashboard.php:186
-#: templates/includes/mission-form-list.php:102
-#: templates/includes/mission-form-list.php:109
-#: templates/includes/mission-form-list.php:115
-#: templates/includes/mission-form-list.php:119
-#: templates/includes/mission-form-list.php:148
-#: templates/includes/mission-form-list.php:168
-#: templates/includes/mission-form-list.php:189
+#: templates/includes/mission-form-list.php:116
+#: templates/includes/mission-form-list.php:123
+#: templates/includes/mission-form-list.php:129
+#: templates/includes/mission-form-list.php:133
+#: templates/includes/mission-form-list.php:137
+#: templates/includes/mission-form-list.php:166
+#: templates/includes/mission-form-list.php:190
+#: templates/includes/mission-form-list.php:211
 msgid "No description"
 msgstr "Pas de description"
 
 #: src/Core/Views/Dashboard.php:189
-#: templates/includes/mission-form-list.php:111
+#: templates/includes/mission-form-list.php:125
 msgid "Show more details"
 msgstr "Afficher plus de détails"
 
@@ -503,13 +538,18 @@ msgstr "Image par défaut"
 msgid "Hided"
 msgstr "Caché"
 
-#: src/Core/Views/Dashboard.php:326 src/Core/Views/Form.php:58
-#: src/Core/Views/Form.php:154 src/Core/Views/Form.php:332
-#: src/Core/Views/MapSettings.php:263 src/Core/Views/MissionForm.php:263
-#: src/Core/Views/MissionForm.php:278 src/Core/Views/RevisionForm.php:34
-#: src/Core/Views/RevisionForm.php:328 src/Core/Views/RevisionForm.php:585
+#: src/Core/Views/Dashboard.php:326 src/Core/Views/Form.php:59
+#: src/Core/Views/Form.php:160 src/Core/Views/Form.php:344
+#: src/Core/Views/MapSettings.php:263 src/Core/Views/MissionForm.php:332
+#: src/Core/Views/MissionForm.php:348 src/Core/Views/RevisionForm.php:41
+#: src/Core/Views/RevisionForm.php:364 src/Core/Views/RevisionForm.php:368
+#: src/Core/Views/RevisionForm.php:649
 msgid "Save"
 msgstr "Sauvegarder"
+
+#: src/Core/Views/Documentation.php:1
+msgid "Copy link"
+msgstr "Copier le lien"
 
 #: src/Core/Views/Filters.php:27 templates/includes/filters.php:6
 msgid "Number of elements per page"
@@ -543,7 +583,7 @@ msgstr "Toutes les années"
 msgid "Apply filters"
 msgstr "Appliquer les filtres"
 
-#: src/Core/Views/Form.php:36
+#: src/Core/Views/Form.php:37
 msgid ""
 "You will be able to design a template for the mission form. The <b>Builder</"
 "b> part will allow you to assemble and customize the elements of the form. "
@@ -558,7 +598,7 @@ msgstr ""
 "vous donnera accès à la configuration du processus régissant le cycle de vie "
 "du formulaire après son achèvement."
 
-#: src/Core/Views/Form.php:38
+#: src/Core/Views/Form.php:39
 msgid ""
 "<b>Warning !</b> As long as at least one manager has not been entered in the "
 "<b>Settings</b> tab, the form page will return a <b>404 error</b>."
@@ -567,7 +607,7 @@ msgstr ""
 "dans l’onglet <b>Paramètres</b> , la page du formulaire renverra une "
 "<b>erreur 404</b>."
 
-#: src/Core/Views/Form.php:42
+#: src/Core/Views/Form.php:43
 msgid ""
 "You must provide an <b>administrator email</b> in order to be able to use "
 "the form builder in the event that a form needs to be <b>approved by an "
@@ -578,146 +618,167 @@ msgstr ""
 "doit être <b>approuvé par un administrateur</b> concernant un <b>délai de "
 "soumission de formulaire</b> trop court."
 
-#: src/Core/Views/Form.php:48
+#: src/Core/Views/Form.php:49
 msgid "Administrator email"
 msgstr "Email administrateur"
 
-#: src/Core/Views/Form.php:62
+#: src/Core/Views/Form.php:63
 msgid "Link to form"
 msgstr "Lien vers le formulaire"
 
-#: src/Core/Views/Form.php:73
+#: src/Core/Views/Form.php:74
 msgid "Builder"
 msgstr "Constructeur"
 
-#: src/Core/Views/Form.php:76 src/Core/Views/Settings.php:288
+#: src/Core/Views/Form.php:77 src/Core/Views/Settings.php:288
 #: src/Core/Views/Settings.php:327 src/Core/Views/Settings.php:366
 msgid "List"
 msgstr "Liste"
 
-#: src/Core/Views/Form.php:93 templates/includes/form-tools/tools/input.php:7
+#: src/Core/Views/Form.php:94 templates/includes/form-tools/tools/toggle.php:7
+msgid "Conditional toggle"
+msgstr "Basculement conditionnel"
+
+#: src/Core/Views/Form.php:95
+msgid "Allows you to condition the display of fields"
+msgstr "Permet de conditionner l’affichage des champs"
+
+#: src/Core/Views/Form.php:99 templates/includes/form-tools/tools/input.php:7
 msgid "Input field"
 msgstr "Champ de saisie"
 
-#: src/Core/Views/Form.php:94
+#: src/Core/Views/Form.php:100
 msgid "Allow user to fill one line field"
 msgstr "Autoriser l’utilisateur à remplir un champ d'une seule ligne"
 
-#: src/Core/Views/Form.php:98
+#: src/Core/Views/Form.php:104
 msgid "Multi choice"
 msgstr "Choix multiple"
 
-#: src/Core/Views/Form.php:99
+#: src/Core/Views/Form.php:105
 msgid "Allow user to choose multiple options"
 msgstr "Permettre à l’utilisateur de choisir plusieurs options"
 
-#: src/Core/Views/Form.php:103
+#: src/Core/Views/Form.php:109
 msgid "Single choice"
 msgstr "Choix unique"
 
-#: src/Core/Views/Form.php:104
+#: src/Core/Views/Form.php:110
 msgid "Allow user to choose a single option"
 msgstr "Autoriser l’utilisateur à choisir une seule option"
 
-#: src/Core/Views/Form.php:108
+#: src/Core/Views/Form.php:114
 #: templates/includes/form-tools/tools/textarea.php:7
 msgid "Text field"
 msgstr "Champs de texte"
 
-#: src/Core/Views/Form.php:109
+#: src/Core/Views/Form.php:115
 msgid "Allow user to fill a multiline field"
 msgstr "Autoriser l’utilisateur à remplir un champ multiligne"
 
-#: src/Core/Views/Form.php:113 templates/includes/form-tools/tools/number.php:7
+#: src/Core/Views/Form.php:119 templates/includes/form-tools/tools/number.php:7
 msgid "Numeric field"
 msgstr "Champ numérique"
 
-#: src/Core/Views/Form.php:114
+#: src/Core/Views/Form.php:120
 msgid "Allow user to fill a numeric field"
 msgstr "Autoriser l’utilisateur à remplir un champ numérique"
 
-#: src/Core/Views/Form.php:118
+#: src/Core/Views/Form.php:124
 #: templates/includes/form-tools/tools/datetime.php:7
 msgid "Date & time field"
 msgstr "Champ Date et heure"
 
-#: src/Core/Views/Form.php:119
+#: src/Core/Views/Form.php:125
 msgid "Allow user to fill a date & time field"
 msgstr "Autoriser l’utilisateur à remplir un champ de date et d’heure"
 
-#: src/Core/Views/Form.php:123 templates/includes/form-tools/tools/date.php:7
+#: src/Core/Views/Form.php:129 templates/includes/form-tools/tools/date.php:7
 msgid "Date field"
 msgstr "Champ de date"
 
-#: src/Core/Views/Form.php:124
+#: src/Core/Views/Form.php:130
 msgid "Allow user to fill a date field"
 msgstr "Autoriser l’utilisateur à remplir un champ de date"
 
-#: src/Core/Views/Form.php:128 templates/includes/form-tools/tools/time.php:7
+#: src/Core/Views/Form.php:134 templates/includes/form-tools/tools/time.php:7
 msgid "Time field"
 msgstr "Champ d'heure"
 
-#: src/Core/Views/Form.php:129
+#: src/Core/Views/Form.php:135
 msgid "Allow user to fill a time field"
 msgstr "Autoriser l’utilisateur à remplir un champ d'heure"
 
-#: src/Core/Views/Form.php:133 templates/includes/form-tools/tools/title.php:7
+#: src/Core/Views/Form.php:139 templates/includes/form-tools/tools/title.php:7
 msgid "Title field"
 msgstr "Champs de Titre"
 
-#: src/Core/Views/Form.php:134
+#: src/Core/Views/Form.php:140
 msgid "Allow author to write a static title"
 msgstr "Autoriser l’auteur à écrire un titre statique"
 
-#: src/Core/Views/Form.php:138
+#: src/Core/Views/Form.php:144
 #: templates/includes/form-tools/tools/comment.php:7
 msgid "Comment field"
 msgstr "Champ de commentaire"
 
-#: src/Core/Views/Form.php:139
+#: src/Core/Views/Form.php:145
 msgid "Allow author to write a static text"
 msgstr "Autoriser l’auteur à écrire un texte statique"
 
-#: src/Core/Views/Form.php:143
+#: src/Core/Views/Form.php:149
 #: templates/includes/form-tools/tools/separator.php:7
 msgid "Separator"
 msgstr "Séparateur"
 
-#: src/Core/Views/Form.php:144
+#: src/Core/Views/Form.php:150
 msgid "Allow author to insert a separator between elements"
 msgstr "Autoriser l’auteur à insérer un séparateur entre les éléments"
 
-#: src/Core/Views/Form.php:148
+#: src/Core/Views/Form.php:154
 msgid "Sign pads"
 msgstr "Pads de signature"
 
-#: src/Core/Views/Form.php:149
+#: src/Core/Views/Form.php:155
 msgid "Allow author to insert sign pads"
 msgstr "Autoriser l’auteur à insérer des pads de signature"
 
-#: src/Core/Views/Form.php:168
+#: src/Core/Views/Form.php:180
 msgid "Enter a title"
 msgstr "Saisir un titre"
 
-#: src/Core/Views/Form.php:170
+#: src/Core/Views/Form.php:182
 #: templates/includes/form-tools/tools/checkbox.php:8
 #: templates/includes/form-tools/tools/radio.php:8
 msgid "Add some choices."
 msgstr "Ajoutez quelques choix."
 
-#: src/Core/Views/Form.php:170 templates/includes/form-tools/tools/signs.php:8
+#: src/Core/Views/Form.php:182 templates/includes/form-tools/tools/signs.php:8
 msgid "Add some signing pads."
 msgstr "Ajoutez des pads de signature."
 
-#: src/Core/Views/Form.php:170
+#: src/Core/Views/Form.php:182
 msgid "Sign<br/>here"
 msgstr "Signer<br/>ici"
 
-#: src/Core/Views/Form.php:195
+#: src/Core/Views/Form.php:182
+msgid "Add toggles."
+msgstr "Ajouter des bascules."
+
+#: src/Core/Views/Form.php:182 src/Core/Views/MissionForm.php:86
+msgid "Credit manager email"
+msgstr "Courriel du responsable des crédits"
+
+#: src/Core/Views/Form.php:182
+#, php-format
+msgid "Hidden by %s toggle"
+msgstr "Masqué par la bascule %s"
+
+#: src/Core/Views/Form.php:207
 msgid "Debug mode"
 msgstr "Mode de débogage"
 
-#: src/Core/Views/Form.php:196
+#: src/Core/Views/Form.php:208
 msgid ""
 "If debugging mode is activated, the email address chosen for the debugging "
 "address will be the one that will receive all emails sent by the <b>CNRS "
@@ -727,43 +788,43 @@ msgstr ""
 "de débogage sera celle qui recevra tous les e-mails envoyés par l’extension "
 "<b>CNRS Data Manager</b> ."
 
-#: src/Core/Views/Form.php:202
+#: src/Core/Views/Form.php:214
 msgid "Active"
 msgstr "Actif"
 
-#: src/Core/Views/Form.php:213
+#: src/Core/Views/Form.php:225
 msgid "Debug email"
 msgstr "E-mail de débogage"
 
-#: src/Core/Views/Form.php:223
+#: src/Core/Views/Form.php:235
 msgid "Administration"
 msgstr "Administration"
 
-#: src/Core/Views/Form.php:229
+#: src/Core/Views/Form.php:241
 msgid "Administrators emails"
 msgstr "E-mails des administrateurs"
 
-#: src/Core/Views/Form.php:253
+#: src/Core/Views/Form.php:265
 msgid "Generic email"
 msgstr "E-mail générique"
 
-#: src/Core/Views/Form.php:263
+#: src/Core/Views/Form.php:275
 msgid "Allow form validation generic confirmation"
 msgstr "Autoriser la validation de formulaire confirmation générique"
 
-#: src/Core/Views/Form.php:274
+#: src/Core/Views/Form.php:286
 msgid "Limit in days for a request in France"
 msgstr "Limite en jours pour une demande en France"
 
-#: src/Core/Views/Form.php:284
+#: src/Core/Views/Form.php:296
 msgid "Limit in days for a request outside France"
 msgstr "Limite en jours pour une demande hors de France"
 
-#: src/Core/Views/Form.php:294
+#: src/Core/Views/Form.php:306
 msgid "Managers"
 msgstr "Gestionnaires"
 
-#: src/Core/Views/Form.php:295
+#: src/Core/Views/Form.php:307
 msgid ""
 "You can add managers attached to conventions by naming the convention and "
 "then adding the email of the main manager as well as that of a secondary "
@@ -776,73 +837,77 @@ msgstr ""
 "pas disponible. L’indisponibilité du gestionnaire principal est validée en "
 "cochant la case à côté de son adresse email."
 
-#: src/Core/Views/Form.php:297
+#: src/Core/Views/Form.php:309
 msgid "Add a convention with its managers"
 msgstr "Ajouter une convention avec ses gestionnaires"
 
-#: src/Core/Views/Form.php:314 templates/includes/new-manager.php:9
+#: src/Core/Views/Form.php:326 templates/includes/new-manager.php:9
 msgid "Convention name"
 msgstr "Nom de la convention"
 
-#: src/Core/Views/Form.php:318 templates/includes/new-manager.php:13
+#: src/Core/Views/Form.php:330 templates/includes/new-manager.php:13
 msgid "Main email"
 msgstr "E-mail principal"
 
-#: src/Core/Views/Form.php:320 templates/includes/new-manager.php:15
+#: src/Core/Views/Form.php:332 templates/includes/new-manager.php:15
 msgid "Not available"
 msgstr "Non disponible"
 
-#: src/Core/Views/Form.php:326 templates/includes/new-manager.php:21
+#: src/Core/Views/Form.php:338 templates/includes/new-manager.php:21
 msgid "Fallback email"
 msgstr "E-mail de secours"
 
-#: src/Core/Views/Form.php:340
+#: src/Core/Views/Form.php:353
 msgid "The form title is required"
 msgstr "Le titre du formulaire est obligatoire"
 
-#: src/Core/Views/Form.php:341
+#: src/Core/Views/Form.php:354
 msgid "The multi choice label is required"
 msgstr "L’étiquette multi-choix est obligatoire"
 
-#: src/Core/Views/Form.php:342
+#: src/Core/Views/Form.php:355
 msgid "A least one choice is required for multi choice bloc"
 msgstr "Un moins un choix est requis pour le bloc à choix multiples"
 
-#: src/Core/Views/Form.php:343
+#: src/Core/Views/Form.php:356
 msgid "The single choice label is required"
 msgstr "L’étiquette à choix unique est obligatoire"
 
-#: src/Core/Views/Form.php:344
+#: src/Core/Views/Form.php:357
 msgid "A least one choice is required for single choice bloc"
 msgstr "Un choix au moins est requis pour le bloc à choix unique"
 
-#: src/Core/Views/Form.php:345
+#: src/Core/Views/Form.php:358
 msgid "A least one pad is required for signing pads bloc"
 msgstr "Un pad au moins est nécessaire pour les pads de signature"
 
-#: src/Core/Views/Form.php:346
+#: src/Core/Views/Form.php:359
 msgid "The input field label is required"
 msgstr "L’étiquette du champ de saisie est obligatoire"
 
-#: src/Core/Views/Form.php:347
+#: src/Core/Views/Form.php:360
 msgid "The text field label is required"
 msgstr "L’étiquette du champ de texte est obligatoire"
 
-#: src/Core/Views/Form.php:348
+#: src/Core/Views/Form.php:361
 msgid "The numeric field label is required"
 msgstr "L’étiquette du champ numérique est obligatoire"
 
-#: src/Core/Views/Form.php:349
+#: src/Core/Views/Form.php:362
 msgid "The date & time field label is required"
 msgstr "L’étiquette du champ date et heure est obligatoire"
 
-#: src/Core/Views/Form.php:350
+#: src/Core/Views/Form.php:363
 msgid "The date field label is required"
 msgstr "L’étiquette du champ de date est obligatoire"
 
-#: src/Core/Views/Form.php:351
+#: src/Core/Views/Form.php:364
 msgid "The time field label is required"
 msgstr "L’étiquette du champ d’heure est obligatoire"
+
+#: src/Core/Views/Form.php:365
+msgid "The toggle fields and label are required"
+msgstr "Les champs de bascule et l’étiquette sont obligatoires"
 
 #: src/Core/Views/Import.php:4
 msgid "Import projects"
@@ -1054,6 +1119,8 @@ msgstr "Fermer"
 #: templates/includes/form-tools/modals/textarea.php:23
 #: templates/includes/form-tools/modals/time.php:23
 #: templates/includes/form-tools/modals/title.php:15
+#: templates/includes/form-tools/modals/toggle.php:33
+#: templates/includes/form-tools/modals/toggles-settings.php:30
 msgid "Update"
 msgstr "Mettre à jour"
 
@@ -1086,7 +1153,7 @@ msgid "Please add your first marker by clicking on the button above."
 msgstr ""
 "Veuillez ajouter votre premier marqueur en cliquant sur le bouton ci-dessus."
 
-#: src/Core/Views/MissionForm.php:12 src/Core/Views/MissionForm.php:13
+#: src/Core/Views/MissionForm.php:13 src/Core/Views/MissionForm.php:14
 #: src/Core/Views/RevisionForm.php:8 src/Core/Views/RevisionForm.php:9
 #, php-format
 msgid ""
@@ -1097,37 +1164,44 @@ msgstr ""
 "quelques %d jours</b>. Votre demande sera rejetée si elle n’est pas jugée "
 "urgente."
 
-#: src/Core/Views/MissionForm.php:15 src/Core/Views/MissionForm.php:34
-#: src/Core/Views/RevisionForm.php:37 templates/includes/pdf/html.php:39
+#: src/Core/Views/MissionForm.php:16 src/Core/Views/MissionForm.php:36
+#: src/Core/Views/RevisionForm.php:44 templates/includes/pdf/html.php:41
 msgid "Foreign mission"
 msgstr "Mission à l'étranger"
 
-#: src/Core/Views/MissionForm.php:16 src/Core/Views/MissionForm.php:33
-#: src/Core/Views/RevisionForm.php:37 templates/includes/pdf/html.php:39
+#: src/Core/Views/MissionForm.php:17 src/Core/Views/MissionForm.php:35
+#: src/Core/Views/RevisionForm.php:44 templates/includes/pdf/html.php:41
 msgid "Mission in France"
 msgstr "Mission en France"
 
-#: src/Core/Views/MissionForm.php:19
+#: src/Core/Views/MissionForm.php:21
 msgid "Please fill out the form"
 msgstr "Veuillez remplir le formulaire"
 
-#: src/Core/Views/MissionForm.php:44
+#: src/Core/Views/MissionForm.php:46
 msgid "Choose a convention"
 msgstr "Choisissez une convention"
 
-#: src/Core/Views/MissionForm.php:257
+#: src/Core/Views/MissionForm.php:93
+msgid ""
+"If your request involves fees, please enter the email of the credit manager"
+msgstr ""
+"Si votre demande implique des frais, veuillez saisir l’adresse e-mail du "
+"responsable des crédits"
+
+#: src/Core/Views/MissionForm.php:326
 msgid "Signing pad"
 msgstr "Pad de signature"
 
-#: src/Core/Views/MissionForm.php:263
+#: src/Core/Views/MissionForm.php:332
 msgid "Signature"
 msgstr "Signature"
 
-#: src/Core/Views/MissionForm.php:263
+#: src/Core/Views/MissionForm.php:332
 msgid "Clear"
 msgstr "Effacer"
 
-#: src/Core/Views/MissionForm.php:263
+#: src/Core/Views/MissionForm.php:332
 #: templates/includes/form-tools/modals/checkbox.php:37
 #: templates/includes/form-tools/modals/comment.php:14
 #: templates/includes/form-tools/modals/date.php:31
@@ -1139,18 +1213,20 @@ msgstr "Effacer"
 #: templates/includes/form-tools/modals/textarea.php:22
 #: templates/includes/form-tools/modals/time.php:22
 #: templates/includes/form-tools/modals/title.php:14
+#: templates/includes/form-tools/modals/toggle.php:32
+#: templates/includes/form-tools/modals/toggles-settings.php:29
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/Core/Views/MissionForm.php:263
+#: src/Core/Views/MissionForm.php:332
 msgid "Get signing pad"
 msgstr "Afficher le pad de signature"
 
-#: src/Core/Views/MissionForm.php:287 src/Core/Views/RevisionForm.php:595
+#: src/Core/Views/MissionForm.php:357 src/Core/Views/RevisionForm.php:658
 msgid "The form has been saved successfully"
 msgstr "Le formulaire a été enregistré avec succès"
 
-#: src/Core/Views/MissionForm.php:289 src/Core/Views/RevisionForm.php:597
+#: src/Core/Views/MissionForm.php:359 src/Core/Views/RevisionForm.php:670
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
@@ -1166,27 +1242,35 @@ msgstr ""
 msgid "No projects referenced for this team."
 msgstr "Aucun projet référencé pour cette équipe."
 
-#: src/Core/Views/RevisionForm.php:13
+#: src/Core/Views/RevisionForm.php:14
+msgid "Credit manager approval"
+msgstr "Approbation du responsable des crédits"
+
+#: src/Core/Views/RevisionForm.php:16
+msgid "Please validate or refuse the request"
+msgstr "Veuillez valider ou refuser la demande"
+
+#: src/Core/Views/RevisionForm.php:19
 msgid "Form check"
 msgstr "Vérification du formulaire"
 
-#: src/Core/Views/RevisionForm.php:13
+#: src/Core/Views/RevisionForm.php:19
 msgid "Revision n°"
 msgstr "Révision n°"
 
-#: src/Core/Views/RevisionForm.php:15
+#: src/Core/Views/RevisionForm.php:21
 msgid "Please control the form"
 msgstr "Veuillez contrôler le formulaire"
 
-#: src/Core/Views/RevisionForm.php:15
+#: src/Core/Views/RevisionForm.php:21
 msgid "Please correct the fields with comments"
 msgstr "Veuillez corriger les champs avec des commentaires"
 
-#: src/Core/Views/RevisionForm.php:25
+#: src/Core/Views/RevisionForm.php:32
 msgid "Manager who revised this version"
 msgstr "Gestionnaire qui a révisé cette version"
 
-#: src/Core/Views/RevisionForm.php:34
+#: src/Core/Views/RevisionForm.php:41
 #, php-format
 msgid ""
 "Please check the form.<br><b>\"%s\"</b> buttons are located under each type "
@@ -1195,43 +1279,51 @@ msgid ""
 "form to the agent if observations have been made, or to validation if the "
 "form has no observations."
 msgstr ""
-"Veuillez vérifier le formulaire.<br><b>Les boutons « %s »</b> sont situés "
+"Veuillez vérifier le formulaire.<br>Les boutons <b>« %s »</b> sont situés "
 "sous chaque type de champ afin que vous puissiez afficher un champ de texte "
 "puis saisir une observation.<br>Une fois le formulaire révisé, cliquez sur "
 "<b>« %s »</b> pour renvoyer le formulaire à l’agent si des observations ont "
 "été faites, ou à la validation si le formulaire ne contient pas "
 "d’observations."
 
-#: src/Core/Views/RevisionForm.php:34 src/Core/Views/RevisionForm.php:92
-#: src/Core/Views/RevisionForm.php:93 src/Core/Views/RevisionForm.php:130
-#: src/Core/Views/RevisionForm.php:131 src/Core/Views/RevisionForm.php:158
-#: src/Core/Views/RevisionForm.php:159 src/Core/Views/RevisionForm.php:190
-#: src/Core/Views/RevisionForm.php:191 src/Core/Views/RevisionForm.php:218
-#: src/Core/Views/RevisionForm.php:219 src/Core/Views/RevisionForm.php:246
-#: src/Core/Views/RevisionForm.php:247 src/Core/Views/RevisionForm.php:274
-#: src/Core/Views/RevisionForm.php:275 src/Core/Views/RevisionForm.php:302
-#: src/Core/Views/RevisionForm.php:303
+#: src/Core/Views/RevisionForm.php:41 src/Core/Views/RevisionForm.php:126
+#: src/Core/Views/RevisionForm.php:127 src/Core/Views/RevisionForm.php:164
+#: src/Core/Views/RevisionForm.php:165 src/Core/Views/RevisionForm.php:192
+#: src/Core/Views/RevisionForm.php:193 src/Core/Views/RevisionForm.php:224
+#: src/Core/Views/RevisionForm.php:225 src/Core/Views/RevisionForm.php:252
+#: src/Core/Views/RevisionForm.php:253 src/Core/Views/RevisionForm.php:280
+#: src/Core/Views/RevisionForm.php:281 src/Core/Views/RevisionForm.php:308
+#: src/Core/Views/RevisionForm.php:309 src/Core/Views/RevisionForm.php:336
+#: src/Core/Views/RevisionForm.php:337
 msgid "Add an observation"
 msgstr "Ajouter une observation"
 
-#: src/Core/Views/RevisionForm.php:43
+#: src/Core/Views/RevisionForm.php:50
 msgid "Manager name"
 msgstr "Nom du gestionnaire"
 
-#: src/Core/Views/RevisionForm.php:49
+#: src/Core/Views/RevisionForm.php:56
 msgid "Manager email"
 msgstr "Email du gestionnaire"
 
-#: src/Core/Views/RevisionForm.php:92 src/Core/Views/RevisionForm.php:130
-#: src/Core/Views/RevisionForm.php:158 src/Core/Views/RevisionForm.php:190
-#: src/Core/Views/RevisionForm.php:218 src/Core/Views/RevisionForm.php:246
-#: src/Core/Views/RevisionForm.php:274 src/Core/Views/RevisionForm.php:302
+#: src/Core/Views/RevisionForm.php:126 src/Core/Views/RevisionForm.php:164
+#: src/Core/Views/RevisionForm.php:192 src/Core/Views/RevisionForm.php:224
+#: src/Core/Views/RevisionForm.php:252 src/Core/Views/RevisionForm.php:280
+#: src/Core/Views/RevisionForm.php:308 src/Core/Views/RevisionForm.php:336
 msgid "Remove observation"
 msgstr "Supprimer l’observation"
 
-#: src/Core/Views/RevisionForm.php:595
+#: src/Core/Views/RevisionForm.php:363
+msgid "Reject"
+msgstr "Rejeter"
+
+#: src/Core/Views/RevisionForm.php:660
 msgid "The form revision has been sent successfully"
 msgstr "La révision du formulaire a été envoyée avec succès"
+
+#: src/Core/Views/RevisionForm.php:662
+msgid "The form validation has been sent successfully"
+msgstr "La validation du formulaire a été envoyée avec succès"
 
 #: src/Core/Views/Settings.php:20
 msgid "Here you can update the settings of the CNRS Data Manager extension."
@@ -1783,79 +1875,87 @@ msgstr "Mise à jour inconnue statut \"%s\""
 msgid "There is no changelog available."
 msgstr "Il n’y a aucun historique des mises à jour disponible."
 
-#: src/Tools/helper.php:19
+#: src/Tools/helper.php:20
 msgid "must not be empty"
 msgstr "ne doit pas être vide"
 
-#: src/Tools/helper.php:20
+#: src/Tools/helper.php:21
 msgid "must at least have one selection"
 msgstr "doit avoir au moins une sélection"
 
-#: src/Tools/helper.php:21
+#: src/Tools/helper.php:22
 msgid "must have one selection"
 msgstr "doit avoir une sélection"
 
-#: src/Tools/helper.php:22
+#: src/Tools/helper.php:23
 msgid "must have been correctly filled out"
 msgstr "doit avoir été correctement remplie."
 
-#: src/Tools/helper.php:23
+#: src/Tools/helper.php:24
 msgid "comment must not be empty"
 msgstr "Le commentaire ne doit pas être vide"
 
-#: src/Tools/helper.php:24
+#: src/Tools/helper.php:25
 msgid "must be numeric"
 msgstr "doit être numérique"
 
-#: src/Tools/helper.php:25
+#: src/Tools/helper.php:26
 msgid "must be equal or greater than 0"
 msgstr "doit être égal ou supérieur à 0"
 
-#: src/Tools/helper.php:591
+#: src/Tools/helper.php:27
+msgid "You forgot a required field"
+msgstr "Vous avez oublié un champ obligatoire"
+
+#: src/Tools/helper.php:593
 msgid "Unspecified"
 msgstr "Non spécifié"
 
-#: src/Tools/helper.php:594
+#: src/Tools/helper.php:596
 msgid "Mister"
 msgstr "Monsieur"
 
-#: src/Tools/helper.php:596
+#: src/Tools/helper.php:598
 msgid "Misses"
 msgstr "Madame"
 
-#: src/Tools/helper.php:1385
+#: src/Tools/helper.php:1440
 msgid "not assigned"
 msgstr "non assigné"
 
-#: src/Tools/helper.php:1590
+#: src/Tools/helper.php:1651
 msgid "Your identifiers are not recognized."
 msgstr "Vos identifiants ne sont pas reconnus."
 
-#: src/Tools/helper.php:1603
+#: src/Tools/helper.php:1664
 msgid "An error has occurred while sending the email."
 msgstr "Une erreur s’est produite lors de l’envoi de l’e-mail."
 
-#: src/Tools/helper.php:1606
+#: src/Tools/helper.php:1667
 msgid "The email is not valid."
 msgstr "L’adresse e-mail n’est pas valide."
 
-#: src/Tools/helper.php:1677
+#: src/Tools/helper.php:1738
 msgid "Mission form print"
 msgstr "Impression du formulaire de mission"
 
-#: src/Tools/helper.php:1682
+#: src/Tools/helper.php:1743
 msgid "Mission form download"
 msgstr "Téléchargement du formulaire de mission"
 
-#: src/Tools/helper.php:1687
+#: src/Tools/helper.php:1748
 msgid "Mission form revision by manager"
 msgstr "Révision du formulaire de mission par le gestionnaire"
 
-#: src/Tools/helper.php:1692
+#: src/Tools/helper.php:1753
 msgid "Mission form revision by agent"
 msgstr "Révision du formulaire de mission par l’agent"
 
 #: src/Tools/helper.php:1758
+msgid "Mission form revision by funder"
+msgstr "Révision du formulaire de mission par le responsable des crédits"
+
+#: src/Tools/helper.php:1829
 msgid "at"
 msgstr "à"
 
@@ -1891,6 +1991,16 @@ msgstr ""
 "                             pour obtenir des instructions sur la façon de "
 "télécharger une version précédente de CNRS Data Manager compatible avec PHP "
 "%3$s."
+
+#: templates/includes/emails/canceled-by-funder.php:3
+msgid "Your mission form has been invalidated by your credit manager."
+msgstr ""
+"Votre formulaire de mission a été rejeté par votre responsable des crédits."
+
+#: templates/includes/emails/canceled-by-funder.php:4
+msgid "For more information, please contact your credit manager."
+msgstr ""
+"Pour plus d’informations, veuillez contacter votre responsable des crédits."
 
 #: templates/includes/emails/canceled.php:3
 msgid ""
@@ -1930,7 +2040,7 @@ msgstr ""
 "Veuillez les traiter le plus rapidement possible en cliquant sur le lien ci-"
 "dessous."
 
-#: templates/includes/emails/edit.php:5
+#: templates/includes/emails/edit.php:5 templates/includes/emails/funder.php:5
 #: templates/includes/emails/revision.php:5
 msgid "Access the form"
 msgstr "Accéder au formulaire"
@@ -1942,6 +2052,18 @@ msgstr "Une demande avec un délai dépassé a été créée."
 #: templates/includes/emails/exceed.php:4
 msgid "Please log in to validate this request or abandon it."
 msgstr "Veuillez vous connecter pour valider cette demande ou l’abandonner."
+
+#: templates/includes/emails/funder.php:2
+msgid "Approval form process"
+msgstr "Processus  d’approbation du formulaire"
+
+#: templates/includes/emails/funder.php:3
+msgid "A mission form needs to be approved."
+msgstr "Un formulaire de mission doit être approuvé."
+
+#: templates/includes/emails/funder.php:4
+msgid "Click on the link below to access the form."
+msgstr "Cliquez sur le lien ci-dessous pour accéder au formulaire."
 
 #: templates/includes/emails/reset-password.php:2
 msgid "Password change request"
@@ -2029,6 +2151,7 @@ msgstr "Paramètres à choix multiples"
 #: templates/includes/form-tools/modals/radio.php:10
 #: templates/includes/form-tools/modals/textarea.php:10
 #: templates/includes/form-tools/modals/time.php:10
+#: templates/includes/form-tools/modals/toggle.php:11
 msgid "Label"
 msgstr "Etiquette"
 
@@ -2045,6 +2168,7 @@ msgstr "Ajouter des choix"
 #: templates/includes/form-tools/modals/radio.php:29
 #: templates/includes/form-tools/modals/textarea.php:14
 #: templates/includes/form-tools/modals/time.php:14
+#: templates/includes/form-tools/modals/toggle.php:25
 msgid "Tooltip"
 msgstr "Info-bulle"
 
@@ -2123,6 +2247,35 @@ msgstr "Paramètres du champ de titre"
 msgid "Your title"
 msgstr "Votre titre"
 
+#: templates/includes/form-tools/modals/toggle.php:5
+msgid "Toggle field settings"
+msgstr "Paramètre du champ de bascules"
+
+#: templates/includes/form-tools/modals/toggle.php:16
+msgid "First choice value"
+msgstr "Valeur de premier choix"
+
+#: templates/includes/form-tools/modals/toggle.php:20
+msgid "Second choice value"
+msgstr "Valeur de deuxième choix"
+
+#: templates/includes/form-tools/modals/toggles-settings.php:3
+#, php-format
+msgid "Toggles settings for \"%s\""
+msgstr "Paramètres pour la bascule « %s »"
+
+#: templates/includes/form-tools/modals/toggles-settings.php:5
+msgid "Toggles list"
+msgstr "Liste des bascules"
+
+#: templates/includes/form-tools/modals/toggles-settings.php:6
+msgid ""
+"Check the options for each toggle if you want the field to be visible when "
+"the option is chosen in the form."
+msgstr ""
+"Vérifiez les options de chaque bascule si vous souhaitez que le champ soit "
+"visible lorsque l’option est choisie dans le formulaire."
+
 #: templates/includes/form-tools/tools/checkbox.php:7
 msgid "Multi choice field"
 msgstr "Champ à choix multiples"
@@ -2142,6 +2295,10 @@ msgstr "Champ à choix unique"
 #: templates/includes/form-tools/tools/title.php:8
 msgid "Add a title."
 msgstr "Ajoutez un titre."
+
+#: templates/includes/form-tools/tools/toggle.php:8
+msgid "Condition some fields."
+msgstr "Conditionnez certains champs."
 
 #: templates/includes/import-file-structure.php:6
 msgid "ZIP file"
@@ -2191,31 +2348,81 @@ msgstr "Confirmer l’importation"
 msgid "Created at"
 msgstr "Créé le"
 
-#: templates/includes/mission-form-list.php:10
-msgid "Revisions"
-msgstr "Révisions"
+#: templates/includes/mission-form-list.php:9
+msgid "Mission start"
+msgstr "Début de la mission"
 
 #: templates/includes/mission-form-list.php:11
+msgid "Versions"
+msgstr "Versions"
+
+#: templates/includes/mission-form-list.php:12
 msgid "Form"
 msgstr "Formulaire"
 
-#: templates/includes/mission-form-list.php:12
+#: templates/includes/mission-form-list.php:13
 msgid "Actions"
 msgstr "Actions"
 
-#: templates/includes/mission-form-list.php:19
+#: templates/includes/mission-form-list.php:20
 msgid "No result found."
 msgstr "Aucun résultat trouvé."
 
-#: templates/includes/mission-form-list.php:125
+#: templates/includes/mission-form-list.php:33
+#: templates/includes/mission-form-list.php:246
+msgid "Select status."
+msgstr "Sélectionnez le statut."
+
+#: templates/includes/mission-form-list.php:35
+#: templates/includes/mission-form-list.php:248
+msgid "All status"
+msgstr "Tout les statuts"
+
+#: templates/includes/mission-form-list.php:36
+#: templates/includes/mission-form-list.php:143
+#: templates/includes/mission-form-list.php:249
 msgid "Pending"
 msgstr "En attente"
 
-#: templates/includes/mission-form-list.php:191
+#: templates/includes/mission-form-list.php:37
+#: templates/includes/mission-form-list.php:250
+msgid "Delayed"
+msgstr "En retard"
+
+#: templates/includes/mission-form-list.php:38
+#: templates/includes/mission-form-list.php:251
+msgid "Abandoned"
+msgstr "Abandonné"
+
+#: templates/includes/mission-form-list.php:39
+#: templates/includes/mission-form-list.php:252
+msgid "Validated"
+msgstr "Validé"
+
+#: templates/includes/mission-form-list.php:41
+#: templates/includes/mission-form-list.php:254
+msgid "Select mission start date order."
+msgstr "Sélectionnez l’ordre de la date de début de la mission."
+
+#: templates/includes/mission-form-list.php:43
+#: templates/includes/mission-form-list.php:256
+msgid "Order by most recent"
+msgstr "Trier par le plus récent"
+
+#: templates/includes/mission-form-list.php:44
+#: templates/includes/mission-form-list.php:257
+msgid "Order by oldest"
+msgstr "Trier par les plus anciens"
+
+#: templates/includes/mission-form-list.php:181
+msgid "Credit manager"
+msgstr "Responsable des crédits"
+
+#: templates/includes/mission-form-list.php:213
 msgid "Abandon"
 msgstr "Abandonner"
 
-#: templates/includes/mission-form-list.php:194
+#: templates/includes/mission-form-list.php:216
 msgid "Validate"
 msgstr "Valider"
 
@@ -2224,7 +2431,7 @@ msgstr "Valider"
 msgid "Form validated on %s"
 msgstr "Formulaire validé le %s"
 
-#: templates/includes/pdf/html.php:23
+#: templates/includes/pdf/html.php:24
 msgid "Manager who validated the form"
 msgstr "Gestionnaire qui a validé le formulaire"
 

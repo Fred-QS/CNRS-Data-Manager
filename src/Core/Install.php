@@ -105,6 +105,9 @@ class Install
               original longtext NOT NULL COMMENT 'Original form json',
               form longtext NOT NULL COMMENT 'Filled out form json',
               status ENUM('PENDING','VALIDATED','EXCEPTION','CANCELED') NOT NULL DEFAULT 'PENDING' COMMENT 'The form status once completed',
+              funder_email varchar(150) DEFAULT NULL COMMENT 'Email from funding service referent',
+              mission_start_at DATE NOT NULL COMMENT 'Mission start date',
+              has_fees tinyint(1) NOT NULL DEFAULT 0 COMMENT 'If mission has fees',
               created_at timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Form creation timestamp'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Filled out mission forms list'"
         );
@@ -134,7 +137,7 @@ class Install
               manager_name varchar(150) DEFAULT NULL COMMENT 'Manager firstname and lastname',
               manager_email varchar(150) DEFAULT NULL COMMENT 'Email from the manager who has checked the form validity',
               form_id bigint(20) UNSIGNED NOT NULL COMMENT 'Relation to filled form',
-              sender enum('AGENT','MANAGER') NOT NULL DEFAULT 'AGENT' COMMENT 'Origin from email',
+              sender enum('AGENT','MANAGER','FUNDER') NOT NULL DEFAULT 'AGENT' COMMENT 'Origin from email',
               observations longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'Observations list',
               created_at datetime NOT NULL DEFAULT current_timestamp() COMMENT 'Revision creation timestamp'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='UMR form revisions'"

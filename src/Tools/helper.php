@@ -24,6 +24,7 @@ $errors = [
     'option' => __('comment must not be empty', 'cnrs-data-manager'),
     'number' => __('must be numeric', 'cnrs-data-manager'),
     'unsigned' => __('must be equal or greater than 0', 'cnrs-data-manager'),
+    'noLabel' => __('You forgot a required field', 'cnrs-data-manager')
 ];
 
 $shortCodesCounter = 0;
@@ -782,7 +783,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -915,6 +916,7 @@ if (!function_exists('cnrsReadShortCode')) {
 
             $json = Forms::getCurrentForm();
             $form = json_decode($json, true);
+            $toggles = getFormToggles($form);
 
             $user = cnrs_dm_connexion();
             $xml = $user === null ? Manager::defineArrayFromXML()['agents'] : [];
@@ -931,13 +933,17 @@ if (!function_exists('cnrsReadShortCode')) {
 
                 if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
                     $uuid = $_POST['cnrs-dm-front-mission-uuid'];
+                    $hasFees = $_POST['cnrs-dm-front-toggle-' . Manager::FEES_UUID];
+                    $funderEmail = $_POST['cnrs-dm-front-funder-email'] ?? null;
                     $jsonForm = Manager::newFilledForm($_POST, $uuid);
                     $definedLimit = (int) $_POST['cnrs-dm-front-mission-intl'] === 1 ? $month_limit : $days_limit;
                     $validated = isValidatedForm($jsonForm, $definedLimit);
-                    $revision_uuid = Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid, $validated);
+                    $revision_uuid = Forms::recordNewForm($jsonForm, stripslashes($json), $user->email, $uuid, $validated, $hasFees, $funderEmail);
                     if ($validated === false) {
                         $adminEmails = Settings::getAdminEmails();
                         Emails::sendToAdmins($adminEmails);
+                    }else if ((int) $hasFees === 1 && $funderEmail !== null) {
+                        Emails::sendToFunder($funderEmail, $revision_uuid);
                     } else {
                         $managerEmail = getManagerEmailFromForm($jsonForm);
                         Emails::sendToManager($managerEmail, $revision_uuid);
@@ -1012,7 +1018,7 @@ if (!function_exists('cnrsReadShortCode')) {
             include_once(dirname(__DIR__) . '/Core/Views/Projects.php');
             return ob_get_clean();
 
-        } else if (in_array($type, ['revision-manager', 'revision-agent'], true)) {
+        } else if (in_array($type, ['revision-manager', 'revision-agent', 'revision-funder'], true)) {
 
             if (!Forms::revisionExists()) {
                 global $wp_query;
@@ -1034,7 +1040,28 @@ if (!function_exists('cnrsReadShortCode')) {
             $days_limit = Settings::getDaysLimit();
             $month_limit = Settings::getMonthLimit();
 
-            if ($type === 'revision-manager'
+            if ($type === 'revision-funder'
+                && isset($_POST['cnrs-dm-front-funder-revision']))
+            {
+                if ($_POST['cnrs-dm-front-funder-revision'] === 'ok') {
+
+                    $data->form = incrementRevisionForm($data->form);
+                    $uuid = wp_generate_uuid4();
+                    $data->uuid = $uuid;
+                    $data->sender = 'FUNDER';
+                    $data->created_at = date("y-m-d H:i:s");
+                    $managerEmail = getManagerEmailFromForm($data->form);
+                    Forms::recordFunderValidation($data);
+                    Emails::sendToManager($managerEmail, $uuid);
+
+                } else {
+
+                    Forms::setAbandonForm($data->form_id);
+                    Emails::sendAbandonForm($data->agent_email, true);
+                }
+                $validated = true;
+
+            } else if ($type === 'revision-manager'
                 && isset($_POST['cnrs-dm-front-manager-revision'])
                 && $_POST['cnrs-dm-front-manager-revision'] === 'ok')
             {
@@ -1081,6 +1108,7 @@ if (!function_exists('cnrsReadShortCode')) {
                 Emails::sendToManager($managerEmail, $uuid);
                 Emails::sendConfirmationEmail($data->agent_email);
                 $validated = true;
+
             }
 
             $json = $data->form;
@@ -1095,6 +1123,32 @@ if (!function_exists('cnrsReadShortCode')) {
         }
 
         return '';
+    }
+}
+
+if (!function_exists('getFormToggles')) {
+
+    function getFormToggles(array $form): array
+    {
+        $toggles = [];
+        $originals = Manager::getOriginalToggle();
+        foreach ($originals as $original) {
+            $toggles[$original['id']] = [
+                'label' => $original['label'],
+                'option1' => ['value' => $original['values'][0], 'action' => true],
+                'option2' => ['value' => $original['values'][1], 'action' => false]
+            ];
+        }
+        foreach ($form['elements'] as $element) {
+            if ($element['type'] === 'toggle') {
+                $toggles[$element['data']['value'][0]] = [
+                    'label' => $element['label'],
+                    'option1' => ['value' => $element['data']['values'][0], 'action' => true],
+                    'option2' => ['value' => $element['data']['values'][1], 'action' => false]
+                ];
+            }
+        }
+        return $toggles;
     }
 }
 
@@ -1698,6 +1752,11 @@ if (!function_exists('setMissionFormURL')) {
                     'uri' => 'cnrs-umr/mission-form-revision/agent',
                     'title' => __('Mission form revision by agent', 'cnrs-data-manager'),
                     'template' => 'mission-form'
+                ],
+                [
+                    'uri' => 'cnrs-umr/mission-form-revision/funder',
+                    'title' => __('Mission form revision by funder', 'cnrs-data-manager'),
+                    'template' => 'mission-form'
                 ]
             ];
 
@@ -1755,8 +1814,13 @@ if (!function_exists('formatDateForPDF')) {
      */
     function formatDateForPDF(string $date, string $type = 'datetime'): string
     {
+
         if (!in_array($type, ['time', 'datetime', 'date'], true)) {
             return $date;
+        }
+
+        if (strlen($date) < 1) {
+            return '';
         }
 
         return match ($type) {
@@ -1853,5 +1917,44 @@ if (!function_exists('getDoc')) {
             }
         }
         return $pages;
+    }
+}
+
+if (!function_exists('getFormReferenceDate')) {
+
+    /**
+     * Retrieve the reference date from a given JSON string.
+     *
+     * @param string $json The JSON string containing the form data.
+     * @return string Returns the reference date if found in the form data, or the current date if not found.
+     */
+    function getFormReferenceDate(string $json): string
+    {
+        $form = json_decode($json, true);
+        foreach ($form['elements'] as $element) {
+            if ($element['data']['isReference'] === true) {
+                return $element['data']['value'][0];
+            }
+        }
+
+        return date("Y-m-d");
+    }
+}
+
+if (!function_exists('stripArrayValuesSlashes')) {
+
+    /**
+     * Strip slashes from each value in the provided array.
+     *
+     * @param array $array The array to strip slashes from.
+     * @return array Returns a new array with the slashes stripped from each value.
+     */
+    function stripArrayValuesSlashes(array $array): array
+    {
+        $striped = [];
+        foreach ($array as $item) {
+            $striped[] = html_entity_decode(stripslashes($item));
+        }
+        return $striped;
     }
 }

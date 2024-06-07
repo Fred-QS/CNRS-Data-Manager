@@ -15,7 +15,7 @@ html, body {
 }
 
 /* Button styles */
-.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-white):not(.cnrs-dm-front-revision-observation) {
+.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-white):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon) {
     color: #ffffff!important;
     background-color: #6ab7e6;
 }
@@ -25,7 +25,7 @@ html, body {
     background-color: #fff;
 }
 
-.cnrs-dm-front-revision-observation.remove {
+.cnrs-dm-front-revision-observation.remove, .cnrs-dm-front-btn-abandon {
     color: #ffffff!important;
     background-color: #ff5c33;
 }
@@ -55,7 +55,7 @@ html, body {
     cursor: pointer;
 }
 
-.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save):not(.cnrs-dm-front-revision-observation)::after {
+.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon)::after {
     content: "\35";
     font-size: 1.6em;
     margin-left: -1em;
@@ -80,6 +80,14 @@ html, body {
 
 .cnrs-dm-front-revision-observation.remove::after {
     content: "\e04f";
+}
+
+.cnrs-dm-front-btn-abandon::after {
+    content: "\e051";
+    font-size: 1.4em;
+    margin-left: -1em;
+    padding-left: 8px;
+    padding-top: 2px;
 }
 
 .cnrs-dm-front-btn::after {
@@ -1619,9 +1627,24 @@ h3.cnrs-dm-front-mission-form-element-label {
     z-index: 2;
 }
 
+.cnrs-dm-front-mission-form-element-label.required.no-label:after {
+    right: -6px;
+    top: 9px;
+}
+
+.cnrs-dm-front-mission-form-element-label.required.no-label + label {
+    margin-left: 14px;
+}
+
+.cnrs-dm-front-mission-form-element[data-type="radio-convention"] {
+    position: relative;
+}
+
 .cnrs-dm-front-mission-form-element[data-type="checkbox"] > label,
 .cnrs-dm-front-mission-form-element[data-type="radio"] > label,
-.cnrs-dm-front-mission-form-element[data-type="radio-convention"] > label {
+.cnrs-dm-front-mission-form-element[data-type="toggle"] > label,
+.cnrs-dm-front-mission-form-element[data-type="radio-convention"] > label,
+.cnrs-dm-front-mission-form-element[data-type="radio-toggle"] > label {
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -1630,6 +1653,7 @@ h3.cnrs-dm-front-mission-form-element-label {
     position: relative;
 }
 
+.cnrs-dm-front-mission-form-element input[type="toggle"],
 .cnrs-dm-front-mission-form-element input[type="radio"] {
     margin: 0 5px 0 0;
 }
@@ -1643,7 +1667,9 @@ h3.cnrs-dm-front-mission-form-element-label {
 }
 
 .cnrs-dm-front-mission-form-element[data-type="radio"] > label:not(:first-of-type),
-.cnrs-dm-front-mission-form-element[data-type="radio-convention"] > label:not(:first-of-type) {
+.cnrs-dm-front-mission-form-element[data-type="toggle"] > label:not(:first-of-type),
+.cnrs-dm-front-mission-form-element[data-type="radio-convention"] > label:not(:first-of-type),
+.cnrs-dm-front-mission-form-element[data-type="radio-toggle"] > label:not(:first-of-type) {
     margin-top: 6px;
 }
 
@@ -1676,6 +1702,9 @@ h3.cnrs-dm-front-mission-form-element-label {
     width: 100%;
     text-align: center;
     margin-top: 4em;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
 
 #cnrs-dm-front-mission-form-errors {
@@ -2126,6 +2155,8 @@ h3.cnrs-dm-front-mission-form-element-label {
 }
 
 input[name^="cnrs-dm-front-mission-form-element-radio"],
+input[name^="cnrs-dm-front-mission-form-element-toggle"],
+input[name^="cnrs-dm-front-toggle-"],
 input[name="cnrs-dm-front-convention"],
 .cnrs-dm-front-radio-revision-input {
     opacity: 0;
@@ -2179,6 +2210,8 @@ input[name="cnrs-dm-front-convention"],
 
 /* checked state */
 input[name^="cnrs-dm-front-mission-form-element-radio"]:checked+.design::before,
+input[name^="cnrs-dm-front-mission-form-element-toggle"]:checked+.design::before,
+input[name^="cnrs-dm-front-toggle-"]:checked+.design::before,
 input[name="cnrs-dm-front-convention"]:checked+.design::before,
 .cnrs-dm-front-radio-revision-input:checked+.design::before {
     opacity: 1;
@@ -2189,6 +2222,10 @@ input[name="cnrs-dm-front-convention"]:checked+.design::before,
 /* other states */
 input[name^="cnrs-dm-front-mission-form-element-radio"]:hover+.design,
 input[name^="cnrs-dm-front-mission-form-element-radio"]:focus+.design,
+input[name^="cnrs-dm-front-mission-form-element-toggle"]:hover+.design,
+input[name^="cnrs-dm-front-mission-form-element-toggle"]:focus+.design,
+input[name^="cnrs-dm-front-toggle-"]:hover+.design,
+input[name^="cnrs-dm-front-toggle-"]:focus+.design,
 input[name="cnrs-dm-front-convention"]:hover+.design,
 input[name="cnrs-dm-front-convention"]:focus+.design ,
 .cnrs-dm-front-radio-revision-input:hover+.design,
@@ -2198,6 +2235,10 @@ input[name="cnrs-dm-front-convention"]:focus+.design ,
 
 input[name^="cnrs-dm-front-mission-form-element-radio"]:hover+.design:before,
 input[name^="cnrs-dm-front-mission-form-element-radio"]:focus+.design:before,
+input[name^="cnrs-dm-front-mission-form-element-toggle"]:hover+.design:before,
+input[name^="cnrs-dm-front-mission-form-element-toggle"]:focus+.design:before,
+input[name^="cnrs-dm-front-toggle-"]:hover+.design:before,
+input[name^="cnrs-dm-front-toggle-"]:focus+.design:before,
 input[name="cnrs-dm-front-convention"]:hover+.design:before,
 input[name="cnrs-dm-front-convention"]:focus+.design:before,
 .cnrs-dm-front-radio-revision-input:hover+.design:before,
@@ -2206,6 +2247,8 @@ input[name="cnrs-dm-front-convention"]:focus+.design:before,
 }
 
 input[name^="cnrs-dm-front-mission-form-element-radio"]:hover~.text,
+input[name^="cnrs-dm-front-mission-form-element-toggle"]:hover~.text,
+input[name^="cnrs-dm-front-toggle-"]:hover~.text,
 input[name="cnrs-dm-front-convention"]:hover~.text,
 .cnrs-dm-front-radio-revision-input:hover~.text {
     color: var(--primary);
@@ -2213,6 +2256,10 @@ input[name="cnrs-dm-front-convention"]:hover~.text,
 
 input[name^="cnrs-dm-front-mission-form-element-radio"]:focus+.design::after,
 input[name^="cnrs-dm-front-mission-form-element-radio"]:active+.design::after,
+input[name^="cnrs-dm-front-mission-form-element-toggle"]:focus+.design::after,
+input[name^="cnrs-dm-front-mission-form-element-toggle"]:active+.design::after,
+input[name^="cnrs-dm-front-toggle-"]:focus+.design::after,
+input[name^="cnrs-dm-front-toggle-"]:active+.design::after,
 input[name="cnrs-dm-front-convention"]:focus+.design::after,
 input[name="cnrs-dm-front-convention"]:active+.design::after,
 .cnrs-dm-front-radio-revision-input:focus+.design::after,
@@ -2398,6 +2445,77 @@ pre.cnrs-dm-front-observation-textarea {
     color: #fff;
 }
 
+.cnrs-dm-front-mission-form-element.hidden-by-toggle {
+    display: none!important;
+}
+
+.cnrs-dm-front-revision-fees-info {
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+
+#cnrs-dm-front-convention-id {
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    z-index: 0;
+    top: 25px;
+    left: 0;
+    padding: 0;
+}
+
+#cnrs-dm-front-convention-text {
+    position: relative;
+    z-index: 2;
+}
+
+#cnrs-dm-front-convention-text.error {
+    border: 1px solid #ff5c33;
+    color: #ff5c33;
+}
+
+#cnrs-dm-front-convention-id + label {
+    width: 100%;
+}
+
+#cnrs-dm-front-conventions-list {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    top: calc(100% + 3px);
+    left: 0;
+    z-index: 20;
+    background-color: #fff;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 200px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transition: all linear 0.2s;
+}
+
+#cnrs-dm-front-conventions-list.display {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cnrs-dm-front-convention {
+    font-family: 'Josefin Sans',Helvetica,Arial,Lucida,sans-serif;
+    font-size: 15px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all linear 0.2s;
+}
+
+.cnrs-dm-front-convention:not(:first-child) {
+    border-top: 1px solid #e1e1e1;
+}
+
+.cnrs-dm-front-convention.selected, .cnrs-dm-front-convention:hover {
+    background-color: #6AB7E6;
+    color: #fff;
+}
+
 @media only screen and (min-width: 768px) {
 
     .cnrs-dm-front-mission-form-login > h2 {
@@ -2421,6 +2539,14 @@ pre.cnrs-dm-front-observation-textarea {
     }
 
     #cnrs-dm-front-mission-dest-button-container > button:last-child {
+        margin-top: 30px;
+    }
+
+    #cnrs-dm-front-mission-form-submit-button-container {
+        flex-direction: column;
+    }
+
+    #cnrs-dm-front-funder-form-validate-button {
         margin-top: 30px;
     }
 }
