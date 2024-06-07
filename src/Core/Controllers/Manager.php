@@ -19,6 +19,7 @@ final class Manager
     const QUERY_STRING_MENU_KEY_L2     = 'tab';
     const QUERY_STRING_MENU_KEY_L3     = 'subtab';
     const QUERY_STRING_MENU_KEY_ACTION = 'action';
+    const FEES_UUID = '013589e2-9014-4d5a-adc5-6e4b1e63eb89';
 
     private static string $xmlPath = '';
 
@@ -30,7 +31,7 @@ final class Manager
     public static function getOriginalToggle(): array
     {
         return [[
-            'id' => '013589e2-9014-4d5a-adc5-6e4b1e63eb89',
+            'id' => self::FEES_UUID,
             'label' => __('Fees', 'cnrs-data-manager'),
             'values' => [
                 __('With fees', 'cnrs-data-manager'),
@@ -529,6 +530,10 @@ final class Manager
         unset($data['cnrs-dm-front-mission-form-original']);
         unset($data['cnrs-dm-front-mission-uuid']);
         unset($data['cnrs-dm-front-mission-intl']);
+        unset($data['cnrs-dm-front-funder-email']);
+        foreach (self::getOriginalToggle() as $originalToggle) {
+            unset($data['cnrs-dm-front-toggle-' . $originalToggle['id']]);
+        }
         $recompose = [];
         foreach ($data as $index => $element) {
             $clean = str_replace('cnrs-dm-front-mission-form-element-', '', $index);
@@ -543,6 +548,8 @@ final class Manager
                 $row = ['index' => (int) str_replace('date-', '', $clean), 'type' => 'date', 'values' => [htmlentities($element)]];
             } else if (stripos($clean, 'number-') !== false) {
                 $row = ['index' => (int) str_replace('number-', '', $clean), 'type' => 'number', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'toggle-') !== false) {
+                $row = ['index' => (int) str_replace('toggle-', '', $clean), 'type' => 'toggle', 'values' => [htmlentities($element)]];
             } else if (stripos($clean, 'textarea-') !== false) {
                 $row = ['index' => (int) str_replace('textarea-', '', $clean), 'type' => 'textarea', 'values' => [htmlentities($element)]];
             } else if (stripos($clean, 'checkbox-') !== false) {
@@ -570,7 +577,9 @@ final class Manager
                 $splitIndex = explode('-', $index);
                 $row = ['index' => (int) $splitIndex[0], 'type' => 'signs', 'pad' => (int) $splitIndex[1], 'values' => json_decode(stripslashes($element), true)];
             }
-            $recompose[] = $row;
+            if (!empty($row)) {
+                $recompose[] = $row;
+            }
         }
         $jsonArray = self::prepareNewFormForDB($recompose, $original);
         $original['elements'] = $jsonArray;
@@ -604,6 +613,8 @@ final class Manager
                 $row = ['index' => (int) str_replace('time-', '', $clean), 'type' => 'time', 'values' => [htmlentities($element)]];
             } else if (stripos($clean, 'date-') !== false) {
                 $row = ['index' => (int) str_replace('date-', '', $clean), 'type' => 'date', 'values' => [htmlentities($element)]];
+            } else if (stripos($clean, 'toggle-') !== false) {
+                $row = ['index' => (int) str_replace('toggle-', '', $clean), 'type' => 'toggle', 'values' => [htmlentities($element)]];
             } else if (stripos($clean, 'number-') !== false) {
                 $row = ['index' => (int) str_replace('number-', '', $clean), 'type' => 'number', 'values' => [htmlentities($element)]];
             } else if (stripos($clean, 'textarea-') !== false) {
@@ -633,9 +644,11 @@ final class Manager
                 $splitIndex = explode('-', $index);
                 $row = ['index' => (int) $splitIndex[0], 'type' => 'signs', 'pad' => (int) $splitIndex[1], 'values' => json_decode(stripslashes($element), true)];
             }
-            $recompose[] = $row;
+            if (!empty($row)) {
+                $recompose[] = $row;
+            }
         }
-        $jsonArray = self::prepareNewFormForDB($recompose, $form);
+        $jsonArray = self::prepareNewFormForDB($recompose, $form, true);
         $form['elements'] = $jsonArray;
         return json_encode($form);
     }
@@ -645,13 +658,16 @@ final class Manager
      *
      * @param array $data The new form data
      * @param array $original The original form data
+     * @param bool $isUpdated If Form is updated or not
      * @return array The modified form data ready for database storage
      */
-    private static function prepareNewFormForDB(array $data, array $original): array
+    private static function prepareNewFormForDB(array $data, array $original, bool $isUpdated = false): array
     {
         $elements = $original['elements'];
+        $indexes = [];
         foreach ($data as $row) {
             $index = $row['index'];
+            $indexes[] = $row['index'];
             $type = $row['type'];
             $values = $row['values'];
             if (in_array($type, ['input', 'textarea', 'time', 'date', 'datetime', 'number'], true)) {
@@ -667,6 +683,15 @@ final class Manager
                 }
             } else if ($type === 'signs') {
                 $elements[$index]['data']['values'][] = ['pad' => $row['pad'], 'data' => $values];
+            } else if ($type === 'toggle') {
+                $elements[$index]['data']['choice'] = (int) $values[0];
+            }
+        }
+        if ($isUpdated === false) {
+            foreach ($elements as $key => $element) {
+                if (!in_array($key, $indexes, true)) {
+                    unset($elements[$key]);
+                }
             }
         }
         return $elements;

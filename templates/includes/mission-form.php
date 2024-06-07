@@ -7,6 +7,8 @@ if (str_starts_with($url, get_site_url() . '/cnrs-umr/mission-form-revision/mana
     $type = 'revision-manager';
 } else if (str_starts_with($url, get_site_url() . '/cnrs-umr/mission-form-revision/agent')) {
     $type = 'revision-agent';
+} else if (str_starts_with($url, get_site_url() . '/cnrs-umr/mission-form-revision/funder')) {
+    $type = 'revision-funder';
 }
 
 get_header(); ?>

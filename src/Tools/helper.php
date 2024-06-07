@@ -24,6 +24,7 @@ $errors = [
     'option' => __('comment must not be empty', 'cnrs-data-manager'),
     'number' => __('must be numeric', 'cnrs-data-manager'),
     'unsigned' => __('must be equal or greater than 0', 'cnrs-data-manager'),
+    'noLabel' => __('You forgot a required field', 'cnrs-data-manager')
 ];
 
 $shortCodesCounter = 0;
@@ -915,6 +916,7 @@ if (!function_exists('cnrsReadShortCode')) {
 
             $json = Forms::getCurrentForm();
             $form = json_decode($json, true);
+            $toggles = getFormToggles($form);
 
             $user = cnrs_dm_connexion();
             $xml = $user === null ? Manager::defineArrayFromXML()['agents'] : [];
@@ -931,8 +933,8 @@ if (!function_exists('cnrsReadShortCode')) {
 
                 if (isset($_POST['cnrs-dm-front-mission-form-original']) && strlen($_POST['cnrs-dm-front-mission-form-original']) > 0) {
                     $uuid = $_POST['cnrs-dm-front-mission-uuid'];
-                    $hasFees = $_POST['cnrs-dm-front-mission-has-fees'];
-                    $funderEmail = $_POST['cnrs-dm-front-mission-funder-email'] ?? null;
+                    $hasFees = $_POST['cnrs-dm-front-toggle-' . Manager::FEES_UUID];
+                    $funderEmail = $_POST['cnrs-dm-front-funder-email'] ?? null;
                     $jsonForm = Manager::newFilledForm($_POST, $uuid);
                     $definedLimit = (int) $_POST['cnrs-dm-front-mission-intl'] === 1 ? $month_limit : $days_limit;
                     $validated = isValidatedForm($jsonForm, $definedLimit);
@@ -1038,7 +1040,28 @@ if (!function_exists('cnrsReadShortCode')) {
             $days_limit = Settings::getDaysLimit();
             $month_limit = Settings::getMonthLimit();
 
-            if ($type === 'revision-manager'
+            if ($type === 'revision-funder'
+                && isset($_POST['cnrs-dm-front-funder-revision']))
+            {
+                if ($_POST['cnrs-dm-front-funder-revision'] === 'ok') {
+
+                    $data->form = incrementRevisionForm($data->form);
+                    $uuid = wp_generate_uuid4();
+                    $data->uuid = $uuid;
+                    $data->sender = 'FUNDER';
+                    $data->created_at = date("y-m-d H:i:s");
+                    $managerEmail = getManagerEmailFromForm($data->form);
+                    Forms::recordFunderValidation($data);
+                    Emails::sendToManager($managerEmail, $uuid);
+
+                } else {
+
+                    Forms::setAbandonForm($data->form_id);
+                    Emails::sendAbandonForm($data->agent_email, true);
+                }
+                $validated = true;
+
+            } else if ($type === 'revision-manager'
                 && isset($_POST['cnrs-dm-front-manager-revision'])
                 && $_POST['cnrs-dm-front-manager-revision'] === 'ok')
             {
@@ -1086,8 +1109,6 @@ if (!function_exists('cnrsReadShortCode')) {
                 Emails::sendConfirmationEmail($data->agent_email);
                 $validated = true;
 
-            } else if ($type === 'revision-funder') {
-
             }
 
             $json = $data->form;
@@ -1102,6 +1123,32 @@ if (!function_exists('cnrsReadShortCode')) {
         }
 
         return '';
+    }
+}
+
+if (!function_exists('getFormToggles')) {
+
+    function getFormToggles(array $form): array
+    {
+        $toggles = [];
+        $originals = Manager::getOriginalToggle();
+        foreach ($originals as $original) {
+            $toggles[$original['id']] = [
+                'label' => $original['label'],
+                'option1' => ['value' => $original['values'][0], 'action' => true],
+                'option2' => ['value' => $original['values'][1], 'action' => false]
+            ];
+        }
+        foreach ($form['elements'] as $element) {
+            if ($element['type'] === 'toggle') {
+                $toggles[$element['data']['value'][0]] = [
+                    'label' => $element['label'],
+                    'option1' => ['value' => $element['data']['values'][0], 'action' => true],
+                    'option2' => ['value' => $element['data']['values'][1], 'action' => false]
+                ];
+            }
+        }
+        return $toggles;
     }
 }
 
@@ -1767,8 +1814,13 @@ if (!function_exists('formatDateForPDF')) {
      */
     function formatDateForPDF(string $date, string $type = 'datetime'): string
     {
+
         if (!in_array($type, ['time', 'datetime', 'date'], true)) {
             return $date;
+        }
+
+        if (strlen($date) < 1) {
+            return '';
         }
 
         return match ($type) {
@@ -1886,5 +1938,23 @@ if (!function_exists('getFormReferenceDate')) {
         }
 
         return date("Y-m-d");
+    }
+}
+
+if (!function_exists('stripArrayValuesSlashes')) {
+
+    /**
+     * Strip slashes from each value in the provided array.
+     *
+     * @param array $array The array to strip slashes from.
+     * @return array Returns a new array with the slashes stripped from each value.
+     */
+    function stripArrayValuesSlashes(array $array): array
+    {
+        $striped = [];
+        foreach ($array as $item) {
+            $striped[] = html_entity_decode(stripslashes($item));
+        }
+        return $striped;
     }
 }

@@ -621,7 +621,7 @@ function retrieveAgents(info) {
     }
 }
 
-function buildFormList(page = 1, search = '', results = 10, status = 'ALL') {
+function buildFormList(page = 1, search = '', results = 10, status = 'ALL', orderBy = 'DESC') {
     if (missionListLoader) {
         missionListLoader.classList.add('show');
         const formData = new FormData();
@@ -631,6 +631,7 @@ function buildFormList(page = 1, search = '', results = 10, status = 'ALL') {
         formData.append('page', page);
         formData.append('search', search);
         formData.append('results_per_page', results);
+        formData.append('date_order_by', orderBy);
         formData.append('status_filter', status);
         const options = {
             method: 'POST',
@@ -666,6 +667,8 @@ function setListListener() {
     const nbOfResult2 = document.querySelector('#cnrs-data-manager-limit-2');
     const statusResult1 = document.querySelector('#cnrs-data-manager-status-1');
     const statusResult2 = document.querySelector('#cnrs-data-manager-status-2');
+    const orderResult1 = document.querySelector('#cnrs-data-manager-order-1');
+    const orderResult2 = document.querySelector('#cnrs-data-manager-order-2');
     const currentPage = document.querySelector('#current-page-selector');
     const paginators = document.querySelectorAll('.cnrs-dm-mission-form-pagination-btn');
     const actions = document.querySelectorAll('.cnrs-dm-actions-triggers');
@@ -680,15 +683,21 @@ function setListListener() {
         statusResult2.onchange = function () {statusResult1.value = this.value;}
     }
 
+    if (orderResult1 && orderResult2) {
+        orderResult1.onchange = function () {orderResult2.value = this.value;}
+        orderResult2.onchange = function () {orderResult1.value = this.value;}
+    }
+
     const apply = document.querySelectorAll('.cnrs-data-manager-limit-action');
     for (let i = 0; i < apply.length; i++) {
         apply[i].onclick = function () {
             if (searchInput && nbOfResult1 && nbOfResult2) {
                 let search = searchInput.value;
                 let status = statusResult1.value;
+                let order = orderResult1.value;
                 let limit = nbOfResult1.value;
                 let current = currentPage ? currentPage.value : 1;
-                buildFormList(current, search, limit, status);
+                buildFormList(current, search, limit, status, order);
             }
         }
     }
@@ -697,8 +706,9 @@ function setListListener() {
             let search = searchInput.value;
             let limit = nbOfResult1 ? nbOfResult1.value : 10;
             let status = statusResult1 ? statusResult1.value : 'ALL';
+            let order = orderResult1 ? orderResult1.value : 'DESC';
             let current = currentPage ? currentPage.value : 1;
-            buildFormList(current, search, limit, status);
+            buildFormList(current, search, limit, status, order);
         }
     }
     for (let i = 0; i < paginators.length; i++) {
@@ -706,9 +716,10 @@ function setListListener() {
             if (searchInput && statusInput) {
                 let search = searchInput.value;
                 let status = statusResult1.value;
+                let order = orderResult1.value;
                 let limit = nbOfResult1.value;
                 let current = this.dataset.page;
-                buildFormList(current, search, limit, status);
+                buildFormList(current, search, limit, status, order);
             }
         }
     }
@@ -1000,7 +1011,7 @@ function saveTogglesSettings() {
 
 function saveToolSettings() {
     const elmt = document.querySelector('#cnrs-dm-form-modal');
-    const element = {'type': '', 'label': '', 'data': {'value': null, 'values': null, 'choices': null, 'required': false, 'tooltip': '', 'isReference': false, 'toggles': []}};
+    const element = {'type': '', 'label': '', 'data': {'value': null, 'values': null, 'choices': null, 'required': false, 'tooltip': '', 'isReference': false, 'toggles': null}};
     const iteration = document.querySelector('input[name="cnrs-dm-iteration"]').value;
     let choicesList = [];
     let newToggle = false;
@@ -1041,6 +1052,8 @@ function saveToolSettings() {
     if (isReference) {
         element.data.isReference = isReference.value === '1';
     }
+    toggles = missionForm.elements[iteration].data.toggles;
+    element.data.toggles = toggles;
     missionForm.elements[iteration] = element;
     if (newToggle === true) {
         setNewToggles();
@@ -1347,7 +1360,7 @@ function refreshFormPreview() {
         html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + '" data-hidden="' + hiddenMessage + '">';
         if (element.type === 'checkbox') {
             html += `<div class="cnrs-dm-form-preview-label">`;
-            html += element.label.trim().length > 0 ? `<span${required}>${element.label} ${tooltip}</span>` : '';
+            html += element.label.trim().length > 0 ? `<span${required}>${element.label} ${tooltip}</span>` : `<span${required} data-nolabel="true">${tooltip}</span>`;
             if (element.data.choices === null || element.data.choices.length === 0) {
                 html += `<i>${addSomeChoices}</i>`;
             } else {
@@ -1370,14 +1383,14 @@ function refreshFormPreview() {
         } else if (element.type === 'comment') {
             html += `<div class="cnrs-dm-form-preview-comment">${element.data.value[0] ?? ''}</div>`;
         } else if (element.type === 'input') {
-            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : '<label>';
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `</label>`;
         } else if (element.type === 'number') {
             let split = element.label.split(';');
             let label = split[0];
             let unit = typeof split[1] !== "undefined" ? '<span class="cnrs-dm-form-unit">' +  split[1] + '</span>' : '';
-            html += label.length > 0 ? `<label><span${required}>${label} ${tooltip}</span>` : '<label>';
+            html += label.length > 0 ? `<label><span${required}>${label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<div class="cnrs-dm-number-field"><span class="cnrs-dm-filled" data-type="number">
             ${Math.floor(Math.random() * 10)}
             <span class="cnrs-dm-carets">
@@ -1387,7 +1400,7 @@ function refreshFormPreview() {
         </span>${unit}</div>`;
             html += `</label>`;
         } else if (element.type === 'date') {
-            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : '<label>';
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             if (element.data.isReference === true) {
                 html += `<span class="cnrs-dm-preview-reference-wrapper">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="12" height="12"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
@@ -1402,7 +1415,7 @@ function refreshFormPreview() {
         </span>`;
             html += `</label>`;
         } else if (element.type === 'time') {
-            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : '<label>';
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<span class="cnrs-dm-filled" data-type="time">
             ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}
             <span>
@@ -1411,7 +1424,7 @@ function refreshFormPreview() {
         </span>`;
             html += `</label>`;
         } else if (element.type === 'datetime') {
-            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : '<label>';
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<span class="cnrs-dm-filled" data-type="datetime">
             ${('0' + d.getDate()).slice(-2)}/${('0' + (d.getMonth() + 1)).slice(-2)}/${d.getFullYear()}&nbsp;
             ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}
@@ -1421,7 +1434,7 @@ function refreshFormPreview() {
         </span>`;
             html += `</label>`;
         } else if (element.type === 'radio') {
-            html += element.label.trim().length > 0 ? `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label} ${tooltip}</span>` : '<div class="cnrs-dm-form-preview-label">';
+            html += element.label.trim().length > 0 ? `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label} ${tooltip}</span>` : `<div class="cnrs-dm-form-preview-label"><span${required} data-nolabel="true">${tooltip}</span>`;
             if (element.data.choices === null || element.data.choices.length === 0) {
                 html += `<i>${addSomeChoices}</i>`;
             } else {
@@ -1442,7 +1455,7 @@ function refreshFormPreview() {
             }
             html += `</div>`;
         } else if (element.type === 'toggle') {
-            html += element.label.trim().length > 0 ? `<div class="cnrs-dm-form-preview-label" data-uuid="${element.data.value[0]}"><span${required}>${element.label} ${tooltip}</span>` : '<div class="cnrs-dm-form-preview-label" data-uuid="${element.data.value[0]}">';
+            html += element.label.trim().length > 0 ? `<div class="cnrs-dm-form-preview-label" data-uuid="${element.data.value[0]}"><span${required}>${element.label} ${tooltip}</span>` : `<div class="cnrs-dm-form-preview-label" data-uuid="${element.data.value[0]}"><span${required} data-nolabel="true">${tooltip}</span>`;
             if (element.data.values === null || element.data.values.length === 0) {
                 html += `<i>${addSomeToggles}</i>`;
             } else {
@@ -1458,7 +1471,7 @@ function refreshFormPreview() {
         } else if (element.type === 'separator') {
             html += '<hr/>';
         } else if (element.type === 'textarea') {
-            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : '<label>';
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;

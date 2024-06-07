@@ -501,6 +501,7 @@ class Ajax
                 $search = trim(html_entity_decode($_POST['search']));
                 $limit = (int) $_POST['results_per_page'];
                 $status = $_POST['status_filter'];
+                $orderBy = $_POST['date_order_by'];
                 $count = Forms::getFormsCount($search, $limit, $current, $status);
                 $pages = 0;
                 $rows = [];
@@ -513,7 +514,7 @@ class Ajax
                     } else if ($current > $pages) {
                         $current = $pages;
                     }
-                    $rows = Forms::getPaginatedFormsList($search, $limit, $current, $status);
+                    $rows = Forms::getPaginatedFormsList($search, $limit, $current, $status, $orderBy);
                     $previous = $current > 1 ? $current - 1 : null;
                     $next = $current < $pages ? $current + 1 : null;
                 }

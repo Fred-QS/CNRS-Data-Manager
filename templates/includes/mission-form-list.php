@@ -8,7 +8,7 @@ $head = [
     __('Created at', 'cnrs-data-manager'),
     __('Mission start', 'cnrs-data-manager'),
     __('Status', 'cnrs-data-manager'),
-    __('Revisions', 'cnrs-data-manager'),
+    __('Versions', 'cnrs-data-manager'),
     __('Form', 'cnrs-data-manager'),
     __('Actions', 'cnrs-data-manager')
 ];
@@ -32,11 +32,16 @@ $head = [
             </select>
             <label for="cnrs-data-manager-status-1" class="screen-reader-text"><?php echo __('Select status.', 'cnrs-data-manager') ?></label>
             <select id="cnrs-data-manager-status-1">
-                <option <?php echo $status === 'ALL' ? 'selected' : '' ?> value="ALL"><?php echo __('All', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'ALL' ? 'selected' : '' ?> value="ALL"><?php echo __('All status', 'cnrs-data-manager') ?></option>
                 <option <?php echo $status === 'PENDING' ? 'selected' : '' ?> value="PENDING"><?php echo __('Pending', 'cnrs-data-manager') ?></option>
                 <option <?php echo $status === 'EXCEPTION' ? 'selected' : '' ?> value="EXCEPTION"><?php echo __('Delayed', 'cnrs-data-manager') ?></option>
                 <option <?php echo $status === 'CANCELED' ? 'selected' : '' ?> value="CANCELED"><?php echo __('Abandoned', 'cnrs-data-manager') ?></option>
                 <option <?php echo $status === 'VALIDATED' ? 'selected' : '' ?> value="VALIDATED"><?php echo __('Validated', 'cnrs-data-manager') ?></option>
+            </select>
+            <label for="cnrs-data-manager-order-1" class="screen-reader-text"><?php echo __('Select mission start date order.', 'cnrs-data-manager') ?></label>
+            <select id="cnrs-data-manager-order-1">
+                <option <?php echo $orderBy === 'DESC' ? 'selected' : '' ?> value="DESC"><?php echo __('Order by most recent', 'cnrs-data-manager') ?></option>
+                <option <?php echo $orderBy === 'ASC' ? 'selected' : '' ?> value="ASC"><?php echo __('Order by oldest', 'cnrs-data-manager') ?></option>
             </select>
             <input type="button" class="button action cnrs-data-manager-limit-action" value="<?php echo __('Apply', 'cnrs-data-manager') ?>">
         </div>
@@ -170,7 +175,11 @@ $head = [
                         <ol>
                             <?php foreach ($managers as $manager): ?>
                                 <li>
-                                    <a href="mailto:<?php echo $manager['email'] ?>" target="_blank"><?php echo $manager['name'] ?></a>
+                                    <?php if ($manager['sender'] === 'MANAGER'): ?>
+                                        <a href="mailto:<?php echo $manager['email'] ?>" target="_blank"><?php echo $manager['name'] ?></a>
+                                    <?php else: ?>
+                                        <a href="mailto:<?php echo $manager['funder_email'] ?>" target="_blank"><?php echo __('Credit manager') ?></a>
+                                    <?php endif; ?>
                                 </li>
                             <?php endforeach; ?>
                         </ol>
@@ -236,11 +245,16 @@ $head = [
             </select>
             <label for="cnrs-data-manager-status-2" class="screen-reader-text"><?php echo __('Select status.', 'cnrs-data-manager') ?></label>
             <select id="cnrs-data-manager-status-2">
-                <option <?php echo $status === 'All' ? 'selected' : '' ?> value="All"><?php echo __('All', 'cnrs-data-manager') ?></option>
+                <option <?php echo $status === 'All' ? 'selected' : '' ?> value="ALL"><?php echo __('All status', 'cnrs-data-manager') ?></option>
                 <option <?php echo $status === 'PENDING' ? 'selected' : '' ?> value="PENDING"><?php echo __('Pending', 'cnrs-data-manager') ?></option>
                 <option <?php echo $status === 'EXCEPTION' ? 'selected' : '' ?> value="EXCEPTION"><?php echo __('Delayed', 'cnrs-data-manager') ?></option>
                 <option <?php echo $status === 'CANCELED' ? 'selected' : '' ?> value="CANCELED"><?php echo __('Abandoned', 'cnrs-data-manager') ?></option>
                 <option <?php echo $status === 'VALIDATED' ? 'selected' : '' ?> value="VALIDATED"><?php echo __('Validated', 'cnrs-data-manager') ?></option>
+            </select>
+            <label for="cnrs-data-manager-order-2" class="screen-reader-text"><?php echo __('Select mission start date order.', 'cnrs-data-manager') ?></label>
+            <select id="cnrs-data-manager-order-2">
+                <option <?php echo $orderBy === 'DESC' ? 'selected' : '' ?> value="DESC"><?php echo __('Order by most recent', 'cnrs-data-manager') ?></option>
+                <option <?php echo $orderBy === 'ASC' ? 'selected' : '' ?> value="ASC"><?php echo __('Order by oldest', 'cnrs-data-manager') ?></option>
             </select>
             <input type="button" class="button action cnrs-data-manager-limit-action" value="<?php echo __('Apply') ?>">
         </div>
