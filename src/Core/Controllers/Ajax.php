@@ -22,7 +22,8 @@ class Ajax
         'get_agents_list' => 'getAgentsList',
         'get_forms_list' => 'getFormsList',
         'get_new_manager' => 'getNewManager',
-        'form_list_action' => 'formListAction'
+        'form_list_action' => 'formListAction',
+        'get_form_toggles' => 'getFormToggles'
     ];
 
     private static array $publicActions = [];
@@ -33,7 +34,7 @@ class Ajax
 
     private static array $optionals = ["INTITULE", "FINANCEUR", "LIEN_SITE", "IMAGE"];
 
-    private static array $formModules = ['input', 'checkbox', 'radio', 'textarea', 'title', 'comment', 'signs', 'number', 'date', 'time', 'datetime'];
+    private static array $formModules = ['input', 'checkbox', 'radio', 'textarea', 'title', 'comment', 'signs', 'number', 'date', 'time', 'datetime', 'toggle'];
 
     /**
      * Registers hooks for AJAX actions in WordPress.
@@ -396,7 +397,8 @@ class Ajax
             $iteration = (int) $_POST['iteration'];
             try {
                 if (in_array($tool, self::$formModules, true) || $tool === 'separator') {
-                    $json['json'] = Manager::formToolsInit($tool);
+                    $uuid = $tool === 'toggle' ? wp_generate_uuid4() : null;
+                    $json['json'] = Manager::formToolsInit($tool, $uuid);
                     ob_start();
                     include(CNRS_DATA_MANAGER_PATH . '/templates/includes/form-tools/tools/' . $tool . '.php');
                     $json['data'] = ob_get_clean();
@@ -443,6 +445,28 @@ class Ajax
         exit;
     }
 
+    public static function getFormToggles(): void
+    {
+        $data = null;
+        $json = ['error' => null, 'data' => $data];
+        if (!isset($_POST['label']) || !isset($_POST['iteration']) || !isset($_POST['toggles'])) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        } else {
+            $label = $_POST['label'];
+            $toggles = json_decode(stripslashes($_POST['toggles']), true);
+            $iteration = (int) $_POST['iteration'];
+            try {
+                ob_start();
+                include(CNRS_DATA_MANAGER_PATH . '/templates/includes/form-tools/modals/toggles-settings.php');
+                $json['data'] = ob_get_clean();
+            } catch (JsonException $e) {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
     /**
      * Retrieves the list of agents from an XML file and sends it as a JSON response.
      *
@@ -477,6 +501,7 @@ class Ajax
                 $search = trim(html_entity_decode($_POST['search']));
                 $limit = (int) $_POST['results_per_page'];
                 $status = $_POST['status_filter'];
+                $orderBy = $_POST['date_order_by'];
                 $count = Forms::getFormsCount($search, $limit, $current, $status);
                 $pages = 0;
                 $rows = [];
@@ -489,7 +514,7 @@ class Ajax
                     } else if ($current > $pages) {
                         $current = $pages;
                     }
-                    $rows = Forms::getPaginatedFormsList($search, $limit, $current, $status);
+                    $rows = Forms::getPaginatedFormsList($search, $limit, $current, $status, $orderBy);
                     $previous = $current > 1 ? $current - 1 : null;
                     $next = $current < $pages ? $current + 1 : null;
                 }

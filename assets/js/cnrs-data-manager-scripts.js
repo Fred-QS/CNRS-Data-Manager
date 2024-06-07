@@ -96,7 +96,11 @@ let filenameTimeout;
 let xlsFile = null;
 let wpContainerWidth = 0;
 let agentsList = [];
+let togglesState = null;
 
+if (typeof originalToggles !== "undefined") {
+    setNewToggles();
+}
 prepareListeners();
 setToolsListeners(true);
 deleteManagerButtonsAction();
@@ -501,9 +505,8 @@ function prepareListeners() {
         }
     }
 
-    const copyMessage = docWrapper.dataset.copy
     for (let i = 0; i < docTitles.length; i++) {
-        docTitles[i].insertAdjacentHTML('beforeend', `<span title="${copyMessage}" class="cnrs-dm-doc-title-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="20" height="20"><path fill="currentColor" d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg></span>`);
+        docTitles[i].insertAdjacentHTML('beforeend', `<span title="${docWrapper.dataset.copy}" class="cnrs-dm-doc-title-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="20" height="20"><path fill="currentColor" d="M579.8 267.7c56.5-56.5 56.5-148 0-204.5c-50-50-128.8-56.5-186.3-15.4l-1.6 1.1c-14.4 10.3-17.7 30.3-7.4 44.6s30.3 17.7 44.6 7.4l1.6-1.1c32.1-22.9 76-19.3 103.8 8.6c31.5 31.5 31.5 82.5 0 114L422.3 334.8c-31.5 31.5-82.5 31.5-114 0c-27.9-27.9-31.5-71.8-8.6-103.8l1.1-1.6c10.3-14.4 6.9-34.4-7.4-44.6s-34.4-6.9-44.6 7.4l-1.1 1.6C206.5 251.2 213 330 263 380c56.5 56.5 148 56.5 204.5 0L579.8 267.7zM60.2 244.3c-56.5 56.5-56.5 148 0 204.5c50 50 128.8 56.5 186.3 15.4l1.6-1.1c14.4-10.3 17.7-30.3 7.4-44.6s-30.3-17.7-44.6-7.4l-1.6 1.1c-32.1 22.9-76 19.3-103.8-8.6C74 372 74 321 105.5 289.5L217.7 177.2c31.5-31.5 82.5-31.5 114 0c27.9 27.9 31.5 71.8 8.6 103.9l-1.1 1.6c-10.3 14.4-6.9 34.4 7.4 44.6s34.4 6.9 44.6-7.4l1.1-1.6C433.5 260.8 427 182 377 132c-56.5-56.5-148-56.5-204.5 0L60.2 244.3z"/></svg></span>`);
     }
 
     const links = document.querySelectorAll('.cnrs-dm-doc-title-link');
@@ -526,9 +529,59 @@ function prepareListeners() {
                 backToTopDoc.classList.remove('show');
             }
         }
+        const hash = window.location.hash;
+        if (hash.length > 0) {
+            window.onload = function () {
+                const top = document.getElementById(hash.slice(1)).offsetTop;
+                window.scrollTo(0, top);
+            }
+
+        }
     }
 
     removeAdminEmailListeners();
+    setTogglesStates();
+}
+
+function setTogglesStates(toggle = null) {
+
+    if (toggle === null) {
+
+        if (togglesState === null) {
+            togglesState = {};
+            for (let i = 0; i < originalToggles.length; i++) {
+                togglesState[originalToggles[i].id] = {
+                    label: originalToggles[i].label,
+                    option1: {value: originalToggles[i].values[0], active: true},
+                    option2: {value: originalToggles[i].values[1], active: false},
+                }
+            }
+        }
+
+        for (let i = 0; i < missionForm.elements.length; i++) {
+            if (missionForm.elements[i].type === 'toggle') {
+                const uuid = missionForm.elements[i].data.value[0]
+                togglesState[missionForm.elements[i].data.value[0]] = {
+                    label: missionForm.elements[i].label,
+                    option1: {value: missionForm.elements[i].data.values[0], active: true},
+                    option2: {value: missionForm.elements[i].data.values[1], active: false},
+                };
+            }
+        }
+
+    } else {
+
+        if (typeof togglesState[toggle.uuid] !== "undefined") {
+
+            if (togglesState[toggle.uuid].option1.value === toggle.value) {
+                togglesState[toggle.uuid].option1.active = true;
+                togglesState[toggle.uuid].option2.active = false;
+            } else if (togglesState[toggle.uuid].option2.value === toggle.value) {
+                togglesState[toggle.uuid].option1.active = false;
+                togglesState[toggle.uuid].option2.active = true;
+            }
+        }
+    }
 }
 
 function removeAdminEmailListeners() {
@@ -568,7 +621,7 @@ function retrieveAgents(info) {
     }
 }
 
-function buildFormList(page = 1, search = '', results = 10, status = 'ALL') {
+function buildFormList(page = 1, search = '', results = 10, status = 'ALL', orderBy = 'DESC') {
     if (missionListLoader) {
         missionListLoader.classList.add('show');
         const formData = new FormData();
@@ -578,6 +631,7 @@ function buildFormList(page = 1, search = '', results = 10, status = 'ALL') {
         formData.append('page', page);
         formData.append('search', search);
         formData.append('results_per_page', results);
+        formData.append('date_order_by', orderBy);
         formData.append('status_filter', status);
         const options = {
             method: 'POST',
@@ -613,6 +667,8 @@ function setListListener() {
     const nbOfResult2 = document.querySelector('#cnrs-data-manager-limit-2');
     const statusResult1 = document.querySelector('#cnrs-data-manager-status-1');
     const statusResult2 = document.querySelector('#cnrs-data-manager-status-2');
+    const orderResult1 = document.querySelector('#cnrs-data-manager-order-1');
+    const orderResult2 = document.querySelector('#cnrs-data-manager-order-2');
     const currentPage = document.querySelector('#current-page-selector');
     const paginators = document.querySelectorAll('.cnrs-dm-mission-form-pagination-btn');
     const actions = document.querySelectorAll('.cnrs-dm-actions-triggers');
@@ -627,15 +683,21 @@ function setListListener() {
         statusResult2.onchange = function () {statusResult1.value = this.value;}
     }
 
+    if (orderResult1 && orderResult2) {
+        orderResult1.onchange = function () {orderResult2.value = this.value;}
+        orderResult2.onchange = function () {orderResult1.value = this.value;}
+    }
+
     const apply = document.querySelectorAll('.cnrs-data-manager-limit-action');
     for (let i = 0; i < apply.length; i++) {
         apply[i].onclick = function () {
             if (searchInput && nbOfResult1 && nbOfResult2) {
                 let search = searchInput.value;
                 let status = statusResult1.value;
+                let order = orderResult1.value;
                 let limit = nbOfResult1.value;
                 let current = currentPage ? currentPage.value : 1;
-                buildFormList(current, search, limit, status);
+                buildFormList(current, search, limit, status, order);
             }
         }
     }
@@ -644,8 +706,9 @@ function setListListener() {
             let search = searchInput.value;
             let limit = nbOfResult1 ? nbOfResult1.value : 10;
             let status = statusResult1 ? statusResult1.value : 'ALL';
+            let order = orderResult1 ? orderResult1.value : 'DESC';
             let current = currentPage ? currentPage.value : 1;
-            buildFormList(current, search, limit, status);
+            buildFormList(current, search, limit, status, order);
         }
     }
     for (let i = 0; i < paginators.length; i++) {
@@ -653,9 +716,10 @@ function setListListener() {
             if (searchInput && statusInput) {
                 let search = searchInput.value;
                 let status = statusResult1.value;
+                let order = orderResult1.value;
                 let limit = nbOfResult1.value;
                 let current = this.dataset.page;
-                buildFormList(current, search, limit, status);
+                buildFormList(current, search, limit, status, order);
             }
         }
     }
@@ -718,6 +782,9 @@ function validateMissionForm() {
         if (['checkbox', 'radio', 'signs'].includes(element.type) && (element.data.choices === null || element.data.choices.length === 0)) {
             errors.push(element.type + '-choices');
         }
+        if (element.type === 'toggle' && (element.data.values === null || element.data.values.length === 0)) {
+            errors.push(element.type);
+        }
     }
     return errors;
 }
@@ -736,6 +803,7 @@ function addFormTool(info) {
     if (info.error === null) {
         missionFormStructure.insertAdjacentHTML('beforeend', info.data);
         setToolsListeners();
+        let json = JSON.parse(info.json);
         if (info.html !== null) {
             if (document.querySelector('#cnrs-dm-form-modal-wrapper')) {
                 document.querySelector('#cnrs-dm-form-modal-wrapper').remove();
@@ -755,6 +823,21 @@ function addFormTool(info) {
             }
             const saveBtn = document.querySelector('#cnrs-dm-form-button-save');
             if (saveBtn) {
+                if (json.type === 'toggle') {
+                    const fields = document.querySelectorAll('.cnrs-dm-form-modal-label-toggle input');
+                    for (let i = 0; i < fields.length; i++) {
+                        fields[i].oninput = function() {
+                            if (fields[0].value.length > 0
+                                && fields[1].value.length > 0
+                                && fields[0].value !== fields[1].value
+                            ) {
+                                saveBtn.disabled = false;
+                            } else {
+                                saveBtn.disabled = true;
+                            }
+                        }
+                    }
+                }
                 saveBtn.onclick = function () {
                     saveToolSettings();
                 }
@@ -787,7 +870,8 @@ function addFormTool(info) {
                 }
             }
         }
-        missionForm.elements.push(JSON.parse(info.json));
+        missionForm.elements.push(json);
+        setNewToggles();
         refreshFormPreview();
     } else {
         console.error(info.error);
@@ -815,6 +899,22 @@ function getToolModal(info) {
             }
             const saveBtn = document.querySelector('#cnrs-dm-form-button-save');
             if (saveBtn) {
+                let inputToggle = document.querySelector('input[name="cnrs-dm-type"]');
+                if (inputToggle && inputToggle.value === 'toggle') {
+                    const fields = document.querySelectorAll('.cnrs-dm-form-modal-label-toggle input');
+                    for (let i = 0; i < fields.length; i++) {
+                        fields[i].oninput = function() {
+                            if (fields[0].value.length > 0
+                                && fields[1].value.length > 0
+                                && fields[0].value !== fields[1].value
+                            ) {
+                                saveBtn.disabled = false;
+                            } else {
+                                saveBtn.disabled = true;
+                            }
+                        }
+                    }
+                }
                 saveBtn.onclick = function () {
                     saveToolSettings();
                 }
@@ -863,11 +963,58 @@ function getToolModal(info) {
     }
 }
 
+function getTogglesModal(info) {
+    if (info.error === null) {
+        if (info.data !== null) {
+            if (document.querySelector('#cnrs-dm-form-modal-wrapper')) {
+                document.querySelector('#cnrs-dm-form-modal-wrapper').remove();
+            }
+            adminWrapper.insertAdjacentHTML('beforeend', info.data);
+            let modalWrapper = document.querySelector('#cnrs-dm-form-modal-wrapper');
+            modalWrapper.style.width = wpContainerWidth + 'px';
+            modalWrapper.style.left = (window.innerWidth - wpContainerWidth) + 'px';
+            setTimeout(function () {
+                modalWrapper.classList.add('display');
+            }, 50);
+            const cancelBtn = document.querySelector('#cnrs-dm-form-button-cancel');
+            if (cancelBtn) {
+                cancelBtn.onclick = function () {
+                    closeModalWrapper();
+                }
+            }
+            const saveBtn = document.querySelector('#cnrs-dm-form-button-save');
+            if (saveBtn) {
+                saveBtn.onclick = function () {
+                    saveTogglesSettings();
+                }
+            }
+        }
+    } else {
+        console.error(info.error);
+    }
+}
+
+function saveTogglesSettings() {
+    const togglesSettings = document.querySelectorAll('.cnrs-dm-toggle-setting');
+    for (let i = 0; i < togglesSettings.length; i++) {
+        const iteration = parseInt(document.querySelector('input[name="cnrs-dm-iteration"]').value);
+        const uuid = togglesSettings[i].dataset.id;
+        const option1Value = togglesSettings[i].querySelector('input[id="cnrs-dm-toggle-option1-' + uuid + '"]').checked;
+        const option2Value = togglesSettings[i].querySelector('input[id="cnrs-dm-toggle-option2-' + uuid + '"]').checked;
+        missionForm.elements[iteration].data.toggles[uuid].option1.active = option1Value;
+        missionForm.elements[iteration].data.toggles[uuid].option2.active = option2Value;
+        setTogglesStates();
+        refreshFormPreview();
+        closeModalWrapper();
+    }
+}
+
 function saveToolSettings() {
     const elmt = document.querySelector('#cnrs-dm-form-modal');
-    const element = {'type': '', 'label': '', 'data': {'value': null, 'values': null, 'choices': null, 'required': false, 'tooltip': '', 'isReference': false}};
+    const element = {'type': '', 'label': '', 'data': {'value': null, 'values': null, 'choices': null, 'required': false, 'tooltip': '', 'isReference': false, 'toggles': null}};
     const iteration = document.querySelector('input[name="cnrs-dm-iteration"]').value;
     let choicesList = [];
+    let newToggle = false;
 
     element.type = document.querySelector('input[name="cnrs-dm-type"]').value;
     if (document.querySelector('input[name="cnrs-dm-label"]')) {
@@ -887,6 +1034,14 @@ function saveToolSettings() {
         choicesList.push(input.value + appendix);
     }
     element.data.choices = choicesList.length > 0 ? choicesList : null;
+    const toggleOne = document.querySelector('input[name="cnrs-dm-toggle-first-toggle"]');
+    const toggleTwo = document.querySelector('input[name="cnrs-dm-toggle-second-toggle"]');
+    const toggleUuid = document.querySelector('input[name="cnrs-dm-toggle-uuid"]');
+    if (toggleOne && toggleTwo && toggleUuid) {
+        element.data.values = [toggleOne.value, toggleTwo.value];
+        element.data.value = [toggleUuid.value];
+        newToggle = true;
+    }
     const required = document.querySelector('input[name="cnrs-dm-required-option"]');
     element.data.required = required ? required.checked : false;
     const tooltip = document.querySelector('textarea[name="cnrs-dm-tooltip"]');
@@ -897,14 +1052,85 @@ function saveToolSettings() {
     if (isReference) {
         element.data.isReference = isReference.value === '1';
     }
+    toggles = missionForm.elements[iteration].data.toggles;
+    element.data.toggles = toggles;
     missionForm.elements[iteration] = element;
+    if (newToggle === true) {
+        setNewToggles();
+    }
+    setTogglesStates();
     refreshFormPreview();
     closeModalWrapper();
+}
+
+function setNewToggles() {
+    let elements = [];
+    for (let i = 0; i < missionForm.elements.length; i++) {
+        let element = missionForm.elements[i];
+        if (Array.isArray(element.data.toggles) && element.data.toggles.length === 0) {
+            element.data.toggles = {};
+        }
+        let existingToggles = getToggles();
+        let toAssignToggles = [];
+        if (element.type === 'toggle') {
+            const originalUuid = element.data.value[0];
+            for (let j = 0; j < existingToggles.length; j++) {
+                if (existingToggles[j].id !== originalUuid) {
+                    toAssignToggles.push(existingToggles[j]);
+                }
+            }
+        } else {
+            toAssignToggles = existingToggles;
+        }
+        // delete abandoned toggles
+        let existingUuid = [];
+        for (let j = 0; j < toAssignToggles.length; j++) {
+            existingUuid.push(toAssignToggles[j].id);
+        }
+        for (const id in element.data.toggles) {
+            if (!existingUuid.includes(id)) {
+                delete element.data.toggles[id]
+            }
+        }
+        // set new toggles in elements
+        for (let j = 0; j < toAssignToggles.length; j++) {
+            if (typeof element.data.toggles[toAssignToggles[j].id] === 'undefined') {
+                element.data.toggles[toAssignToggles[j].id] = {
+                    label: toAssignToggles[j].label,
+                    option1: {value: toAssignToggles[j].values[0], active: true},
+                    option2: {value: toAssignToggles[j].values[1], active: true}
+                }
+            }
+        }
+        elements.push(element);
+    }
+    missionForm.elements = elements;
+}
+
+function getToggles() {
+
+    let toggles = [...originalToggles];
+    for (let i = 0; i < missionForm.elements.length; i++) {
+        let element = missionForm.elements[i];
+        if (element.type === 'toggle'
+            && element.data.value.length > 0
+            && element.data.values !== null
+            && element.data.values.length === 2
+        ) {
+            toggles.push({
+                'id': element.data.value[0],
+                'label': element.label,
+                'values': [element.data.values[0], element.data.values[1]]
+            })
+        }
+    }
+    return toggles;
 }
 
 function setToolsListeners(refresh = false) {
     const editBtn = document.querySelectorAll('.cnrs-dm-tool-button[data-action="edit"]');
     const deleteBtn = document.querySelectorAll('.cnrs-dm-tool-button[data-action="delete"]');
+    const togglesBtn = document.querySelectorAll('.cnrs-dm-tool-button[data-action="toggles"]');
     const tools = document.querySelectorAll('.cnrs-dm-form-tool-render');
     const movers = document.querySelectorAll('.cnrs-dm-mission-form-mover');
     const isReference = document.querySelectorAll('input[name="cnrs-dm-form-tool-is-reference-input"]');
@@ -942,11 +1168,50 @@ function setToolsListeners(refresh = false) {
             const tool = this.closest('.cnrs-dm-form-tool-render');
             const index = parseInt(tool.dataset.index);
             if (missionForm.elements[index]) {
+                if (missionForm.elements[index].type === 'toggle') {
+                    const uuid = missionForm.elements[index].data.value[0];
+                    for (let j = 0; j < missionForm.elements.length; j++) {
+                        if (!Array.isArray(missionForm.elements[j].data.toggles)
+                            && typeof missionForm.elements[j].data.toggles[uuid] !== 'undefined'
+                        ) {
+                            delete missionForm.elements[j].data.toggles[uuid];
+                            if (typeof togglesState[uuid] !== 'undefined') {
+                                delete togglesState[uuid];
+                            }
+                        }
+                    }
+                }
                 missionForm.elements.splice(index, 1);
             }
             tool.remove();
             resetFormIterations();
             refreshFormPreview();
+        }
+    }
+
+    for (let i = 0; i < togglesBtn.length; i++) {
+        const btn = togglesBtn[i];
+        btn.onclick = function() {
+            const tool = this.closest('.cnrs-dm-form-tool-render');
+            const index = parseInt(tool.dataset.index);
+            const formData = new FormData();
+            const url = '/wp-admin/admin-ajax.php';
+            formData.append('action', 'get_form_toggles');
+            formData.append('label', missionForm.elements[index].label);
+            formData.append('toggles', JSON.stringify(missionForm.elements[index].data.toggles));
+            formData.append('iteration', index);
+            const options = {
+                method: 'POST',
+                body: formData,
+            };
+            fetch(url, options)
+                .then(
+                    response => response.json()
+                ).then(
+                success => getTogglesModal(success.data)
+            ).catch(
+                error => getTogglesModal({error: error, data: null})
+            );
         }
     }
 
@@ -970,7 +1235,6 @@ function setToolsListeners(refresh = false) {
             for (let j = 0; j < renders.length; j++) {
                 renders[j].dataset.index = j;
             }
-
             elements.splice(originalIteration, 1);
             let reorder = [];
             for (let j = 0; j < elements.length; j++) {
@@ -978,6 +1242,9 @@ function setToolsListeners(refresh = false) {
                     reorder.push(elmt);
                 }
                 reorder.push(elements[j]);
+            }
+            if (iteration === elements.length) {
+                reorder.push(elmt);
             }
             missionForm.elements = reorder;
             refreshFormPreview();
@@ -1027,12 +1294,59 @@ function closeModalWrapper() {
     }, 250);
 }
 
+function isHiddenByToggleAction(toggles) {
+
+    if (toggles !== null) {
+        for (const toggleUuid in toggles) {
+            const label = toggles[toggleUuid].label;
+            const option1 = toggles[toggleUuid].option1;
+            const option2 = toggles[toggleUuid].option2;
+            if (typeof togglesState[toggleUuid] !== "undefined") {
+                if (option1.active === false && togglesState[toggleUuid].option1.active === true) {
+                    return {hide: togglesState[toggleUuid].option1.active, toggleName: label};
+                }
+                if (option2.active === false && togglesState[toggleUuid].option2.active === true) {
+                    return {hide: togglesState[toggleUuid].option2.active, toggleName: label};
+                }
+            }
+        }
+    }
+    return {hide: false, toggleName: '%s'};
+}
+
 function refreshFormPreview() {
     let html = '';
     const d = new Date;
     const addSomeChoices = missionFormPreview.dataset.choices;
+    const addSomeToggles = missionFormPreview.dataset.toggles;
     const addSomePads = missionFormPreview.dataset.pads;
     const signHere = missionFormPreview.dataset.sign;
+    const funderLabel = missionFormPreview.dataset.funderlabel;
+    let hiddenMessage = missionFormPreview.dataset.hidden;
+    for (let i = 0; i < originalToggles.length; i++) {
+        html += '<div class="cnrs-dm-preview-elements" data-hidden="' + hiddenMessage + '">';
+        html += `<div class="cnrs-dm-form-preview-label" data-uuid="${originalToggles[i].id}"><span class="cnrs-dm-required">${originalToggles[i].label}</span>`;
+        for (let j = 0; j < originalToggles[i].values.length; j++) {
+            let label = originalToggles[i].values[j];
+            html += '<label>';
+            html += `<input type="radio" name="toggle-${i}"${togglesState[originalToggles[i].id]['option' + (j+1)].active === true ? ' checked' : ''}>`;
+            html += `<span>${label}</span>`;
+            html += '</label>';
+        }
+        html += `</div>`;
+        html += `</div>`;
+        if (i === 0) {
+            let t = {};
+            t[originalToggles[i].id] = {label: originalToggles[i].label, option1: {value: originalToggles[i].values[0], active: true}, option2: {value: originalToggles[i].values[1], active: false}};
+            let hidden = isHiddenByToggleAction(t);
+            hiddenMessage = hiddenMessage.replace('%s', hidden.toggleName);
+            html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + ' from-mandatory" data-hidden="' + hiddenMessage + '">';
+            html += `<label><span class="cnrs-dm-required">${funderLabel}</span>`;
+            html += `<span class="cnrs-dm-suspensions"></span>`;
+            html += `</label>`;
+            html += `</div>`;
+        }
+    }
     for (let i = 0; i < missionForm.elements.length; i++) {
         const element = missionForm.elements[i];
         const required = typeof element.data !== "undefined" && element.data.required === true
@@ -1041,9 +1355,12 @@ function refreshFormPreview() {
         const tooltip = typeof element.data !== "undefined" && typeof element.data.tooltip !== "undefined" && element.data.tooltip.length > 0
             ? `<span class="cnrs-dm-tooltip-icon" title="${element.data.tooltip.replaceAll('<br/>', ' ')}">?</span>`
             : '';
-        html += '<div class="cnrs-dm-preview-elements">';
+        let hidden = isHiddenByToggleAction(element.data.toggles);
+        hiddenMessage = hiddenMessage.replace('%s', hidden.toggleName);
+        html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + '" data-hidden="' + hiddenMessage + '">';
         if (element.type === 'checkbox') {
-            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label} ${tooltip}</span>`;
+            html += `<div class="cnrs-dm-form-preview-label">`;
+            html += element.label.trim().length > 0 ? `<span${required}>${element.label} ${tooltip}</span>` : `<span${required} data-nolabel="true">${tooltip}</span>`;
             if (element.data.choices === null || element.data.choices.length === 0) {
                 html += `<i>${addSomeChoices}</i>`;
             } else {
@@ -1066,65 +1383,65 @@ function refreshFormPreview() {
         } else if (element.type === 'comment') {
             html += `<div class="cnrs-dm-form-preview-comment">${element.data.value[0] ?? ''}</div>`;
         } else if (element.type === 'input') {
-            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `</label>`;
         } else if (element.type === 'number') {
             let split = element.label.split(';');
             let label = split[0];
             let unit = typeof split[1] !== "undefined" ? '<span class="cnrs-dm-form-unit">' +  split[1] + '</span>' : '';
-            html += `<label><span${required}>${label} ${tooltip}</span>`;
+            html += label.length > 0 ? `<label><span${required}>${label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<div class="cnrs-dm-number-field"><span class="cnrs-dm-filled" data-type="number">
-                ${Math.floor(Math.random() * 10)}
-                <span class="cnrs-dm-carets">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"/></svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8H288c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z"/></svg>
-                </span>
-            </span>${unit}</div>`;
+            ${Math.floor(Math.random() * 10)}
+            <span class="cnrs-dm-carets">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8H288c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8H288c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z"/></svg>
+            </span>
+        </span>${unit}</div>`;
             html += `</label>`;
         } else if (element.type === 'date') {
-            html += `<label><span${required}>${element.label} ${tooltip}`;
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             if (element.data.isReference === true) {
                 html += `<span class="cnrs-dm-preview-reference-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="12" height="12"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
-                </span>`;
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="12" height="12"><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg>
+            </span>`;
             }
             html += `</span>`;
             html += `<span class="cnrs-dm-filled" data-type="date">
-                ${('0' + d.getDate()).slice(-2)}/${('0' + (d.getMonth() + 1)).slice(-2)}/${d.getFullYear()}
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>
-                </span>
-            </span>`;
+            ${('0' + d.getDate()).slice(-2)}/${('0' + (d.getMonth() + 1)).slice(-2)}/${d.getFullYear()}
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H64C28.7 64 0 92.7 0 128v16 48V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V192 144 128c0-35.3-28.7-64-64-64H344V24c0-13.3-10.7-24-24-24s-24 10.7-24 24V64H152V24zM48 192H400V448c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192z"/></svg>
+            </span>
+        </span>`;
             html += `</label>`;
         } else if (element.type === 'time') {
-            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<span class="cnrs-dm-filled" data-type="time">
-                ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>
-                </span>
-            </span>`;
+            ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></svg>
+            </span>
+        </span>`;
             html += `</label>`;
         } else if (element.type === 'datetime') {
-            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<span class="cnrs-dm-filled" data-type="datetime">
-                ${('0' + d.getDate()).slice(-2)}/${('0' + (d.getMonth() + 1)).slice(-2)}/${d.getFullYear()}&nbsp;
-                ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm80 64c-8.8 0-16 7.2-16 16v96c0 8.8 7.2 16 16 16h96c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80z"/></svg>
-                </span>
-            </span>`;
+            ${('0' + d.getDate()).slice(-2)}/${('0' + (d.getMonth() + 1)).slice(-2)}/${d.getFullYear()}&nbsp;
+            ${('0' + d.getHours()).slice(-2)}:${('0' + d.getMinutes()).slice(-2)}
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm80 64c-8.8 0-16 7.2-16 16v96c0 8.8 7.2 16 16 16h96c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80z"/></svg>
+            </span>
+        </span>`;
             html += `</label>`;
         } else if (element.type === 'radio') {
-            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label} ${tooltip}</span>`;
+            html += element.label.trim().length > 0 ? `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label} ${tooltip}</span>` : `<div class="cnrs-dm-form-preview-label"><span${required} data-nolabel="true">${tooltip}</span>`;
             if (element.data.choices === null || element.data.choices.length === 0) {
                 html += `<i>${addSomeChoices}</i>`;
             } else {
                 for (let j = 0; j < element.data.choices.length; j++) {
                     let label = element.data.choices[j].replace('-opt-comment', '');
                     html += '<label>';
-                    html += `<input type="radio" name="checkbox-${i}">`;
+                    html += `<input type="radio" name="radio-${i}">`;
                     html += `<span>${label}</span>`;
                     html += '</label>';
                     if (label + '-opt-comment' === element.data.choices[j]) {
@@ -1137,10 +1454,24 @@ function refreshFormPreview() {
                 }
             }
             html += `</div>`;
+        } else if (element.type === 'toggle') {
+            html += element.label.trim().length > 0 ? `<div class="cnrs-dm-form-preview-label" data-uuid="${element.data.value[0]}"><span${required}>${element.label} ${tooltip}</span>` : `<div class="cnrs-dm-form-preview-label" data-uuid="${element.data.value[0]}"><span${required} data-nolabel="true">${tooltip}</span>`;
+            if (element.data.values === null || element.data.values.length === 0) {
+                html += `<i>${addSomeToggles}</i>`;
+            } else {
+                for (let j = 0; j < element.data.values.length; j++) {
+                    let label = element.data.values[j];
+                    html += '<label>';
+                    html += `<input type="radio" name="toggle-${i}"${togglesState[element.data.value[0]]['option' + (j+1)].active === true ? ' checked' : ''}>`;
+                    html += `<span>${label}</span>`;
+                    html += '</label>';
+                }
+            }
+            html += `</div>`;
         } else if (element.type === 'separator') {
             html += '<hr/>';
         } else if (element.type === 'textarea') {
-            html += `<label><span${required}>${element.label} ${tooltip}</span>`;
+            html += element.label.trim().length > 0 ? `<label><span${required}>${element.label} ${tooltip}</span>` : `<label><span${required} data-nolabel="true">${tooltip}</span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
@@ -1148,9 +1479,8 @@ function refreshFormPreview() {
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `</label>`;
         } else if (element.type === 'title') {
-            html += `<h4>${element.data.value[0] ?? ''}</h4>`;
+            html += `<h3>${element.data.value[0] ?? ''}</h3>`;
         } else if (element.type === 'signs') {
-            html += `<div class="cnrs-dm-form-preview-label"><span${required}>${element.label}</span>`;
             if (element.data.choices === null || element.data.choices.length === 0) {
                 html += `<i>${addSomePads}</i>`;
             } else {
@@ -1166,21 +1496,38 @@ function refreshFormPreview() {
                 }
                 html += '</div>';
             }
-            html += '</div>';
         }
         html += '</div>';
     }
     missionFormPreview.innerHTML = html;
     
     const tools = document.querySelectorAll('.cnrs-dm-form-tool-render');
-    const previewElements = document.querySelectorAll('.cnrs-dm-preview-elements');
+    const previewElements = document.querySelectorAll('.cnrs-dm-preview-elements:not(.from-mandatory)');
+    const mandatoryBlocs = document.querySelectorAll('.cnrs-dm-form-tool-render-mandatory').length;
     for (let i = 0; i < tools.length; i++) {
         tools[i].onmouseover = function () {
-            previewElements[i].classList.add('locate');
+            if (previewElements[i + mandatoryBlocs]) {
+                previewElements[i + mandatoryBlocs].classList.add('locate');
+            }
         }
         tools[i].onmouseleave = function () {
-            previewElements[i].classList.remove('locate');
+            if (previewElements[i + mandatoryBlocs]) {
+                previewElements[i + mandatoryBlocs].classList.remove('locate');
+            }
         }
+    }
+    setTogglesListeners();
+}
+
+function setTogglesListeners() {
+    const toggles = document.querySelectorAll('.cnrs-dm-form-preview-label[data-uuid] input');
+    for (let i = 0; i < toggles.length; i++) {
+        toggles[i].oninput = function () {
+            const uuid = this.closest('.cnrs-dm-form-preview-label[data-uuid]').dataset.uuid;
+            const value = this.nextElementSibling.innerHTML;
+            setTogglesStates({uuid, value})
+            refreshFormPreview();
+        };
     }
 }
 
@@ -1663,5 +2010,17 @@ function initSettingsShortCodeFilters() {
                 }
             });
         }
+    }
+}
+
+function isJson(str) {
+    if (str === null || typeof str === "undefined") {
+        return false;
+    }
+    try {
+        JSON.parse(str);
+        return true;
+    } catch (e) {
+        return false;
     }
 }

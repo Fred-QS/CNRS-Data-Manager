@@ -110,14 +110,46 @@ class Emails
      * Sends an abandoned form notification email.
      *
      * @param string $email The email address to send the notification to.
+     * @param bool $byFunder If abandoned by credit manager.
      *
      * @return bool Returns true if the email was sent successfully, false otherwise.
      */
-    public static function sendAbandonForm(string $email): bool
+    public static function sendAbandonForm(string $email, bool $byFunder = false): bool
     {
         try {
-            $subject = __('Abandoned form', 'cnrs-data-manager');
-            $template = 'canceled';
+            $subject = $byFunder === false 
+                ? __('Abandoned form', 'cnrs-data-manager')
+                : __('Abandoned form by credit manager', 'cnrs-data-manager');
+            $template = $byFunder === false
+                ? 'canceled'
+                : 'canceled-by-funder';
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Sends a funder approval notification email.
+     *
+     * @param string $email The email address to send the notification to.
+     * @param string $uuid A unique identifier for the funder.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendToFunder(string $email, string $uuid): bool
+    {
+        try {
+            $subject = __('Needs approval form', 'cnrs-data-manager');
+            $template = 'funder';
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');

@@ -37,12 +37,15 @@ class Forms
         string $originalForm,
         string $userEmail,
         string $uuid,
-        bool $isValidated
+        bool $isValidated,
+        bool $hasFees,
+        ?string $funderEmail
     ): ?string
     {
         global $wpdb;
         $exist = $wpdb->get_row("SELECT id FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
         if ($exist === null) {
+            $missionStartAt = getFormReferenceDate($newForm);
             $wpdb->insert(
                 "{$wpdb->prefix}cnrs_data_manager_mission_forms",
                 array(
@@ -51,9 +54,12 @@ class Forms
                     'original' => $originalForm,
                     'form' => $newForm,
                     'status' => $isValidated === true ? 'PENDING' : 'EXCEPTION',
+                    'funder_email' => $funderEmail,
+                    'mission_start_at' => $missionStartAt,
+                    'has_fees' => (int) $hasFees,
                     'created_at' => date("Y-m-d H:i:s")
                 ),
-                array('%s', '%s', '%s', '%s', '%s')
+                array('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s')
             );
             if ($isValidated === true) {
                 $form_id = $wpdb->insert_id;
@@ -203,9 +209,10 @@ class Forms
      * @param int $limit The maximum number of forms to retrieve per page.
      * @param int $current The current page number.
      * @param string $status The forms' status.
+     * @param string $orderBy Filter by Mission start at date (ASC/DESC).
      * @return array Returns an array containing the forms matching the search criteria, sorted by created_at date in descending order.
      */
-    public static function getPaginatedFormsList(string $search, int $limit, int $current, string $status): array
+    public static function getPaginatedFormsList(string $search, int $limit, int $current, string $status, string $orderBy = 'DESC'): array
     {
         global $wpdb;
         $where = strlen($search) > 0 ? "WHERE email LIKE '%{$search}%'" : '';
@@ -215,7 +222,7 @@ class Forms
             $where = $status !== 'ALL' ? "WHERE status='{$status}'" : '';
         }
         $offset = ($current*$limit) - $limit;
-        return $wpdb->get_results("SELECT id, email, created_at, uuid, status FROM {$wpdb->prefix}cnrs_data_manager_mission_forms {$where} ORDER BY created_at DESC LIMIT {$offset}, {$limit}", ARRAY_A);
+        return $wpdb->get_results("SELECT id, email, created_at, mission_start_at, uuid, status FROM {$wpdb->prefix}cnrs_data_manager_mission_forms {$where} ORDER BY mission_start_at {$orderBy} LIMIT {$offset}, {$limit}", ARRAY_A);
     }
 
     /**
@@ -227,7 +234,7 @@ class Forms
     public static function getFormsByUuid(string $uuid): ?object
     {
         global $wpdb;
-        $form = $wpdb->get_row("SELECT id, form, email FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
+        $form = $wpdb->get_row("SELECT id, form, email, has_fees FROM {$wpdb->prefix}cnrs_data_manager_mission_forms WHERE uuid = '{$uuid}'");
         if ($form !== null) {
             $revision = $wpdb->get_row("SELECT manager_name, manager_email, created_at as validated_at FROM {$wpdb->prefix}cnrs_data_manager_revisions WHERE form_id = {$form->id} ORDER BY id DESC");
             $agents = Manager::defineArrayFromXML()['agents'];
@@ -311,7 +318,7 @@ class Forms
     public static function getConventions(): array
     {
         global $wpdb;
-        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_conventions ORDER BY id DESC", ARRAY_A);
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_conventions ORDER BY name ASC", ARRAY_A);
     }
 
     /**
@@ -349,7 +356,7 @@ class Forms
     public static function getRevision(): ?object
     {
         global $wpdb;
-        return $wpdb->get_row("SELECT {$wpdb->prefix}cnrs_data_manager_revisions.*, {$wpdb->prefix}cnrs_data_manager_mission_forms.uuid as form_uuid, {$wpdb->prefix}cnrs_data_manager_mission_forms.email as agent_email, {$wpdb->prefix}cnrs_data_manager_mission_forms.form FROM {$wpdb->prefix}cnrs_data_manager_revisions INNER JOIN {$wpdb->prefix}cnrs_data_manager_mission_forms ON {$wpdb->prefix}cnrs_data_manager_mission_forms.id = {$wpdb->prefix}cnrs_data_manager_revisions.form_id WHERE {$wpdb->prefix}cnrs_data_manager_revisions.uuid = '{$_GET['r']}' AND {$wpdb->prefix}cnrs_data_manager_revisions.active = 1");
+        return $wpdb->get_row("SELECT {$wpdb->prefix}cnrs_data_manager_revisions.*, {$wpdb->prefix}cnrs_data_manager_mission_forms.uuid as form_uuid, {$wpdb->prefix}cnrs_data_manager_mission_forms.email as agent_email, {$wpdb->prefix}cnrs_data_manager_mission_forms.form, {$wpdb->prefix}cnrs_data_manager_mission_forms.funder_email, {$wpdb->prefix}cnrs_data_manager_mission_forms.has_fees FROM {$wpdb->prefix}cnrs_data_manager_revisions INNER JOIN {$wpdb->prefix}cnrs_data_manager_mission_forms ON {$wpdb->prefix}cnrs_data_manager_mission_forms.id = {$wpdb->prefix}cnrs_data_manager_revisions.form_id WHERE {$wpdb->prefix}cnrs_data_manager_revisions.uuid = '{$_GET['r']}' AND {$wpdb->prefix}cnrs_data_manager_revisions.active = 1");
     }
 
     /**
@@ -498,6 +505,41 @@ class Forms
     }
 
     /**
+     * Records the funder validation in the database.
+     *
+     * @param object $data The data object containing the funder validation information.
+     *                     It should have the following properties:
+     *                     - id (int): The ID of the funder validation record.
+     *                     - uuid (string): The UUID of the funder validation record.
+     *                     - form_id (int): The form ID associated with the funder validation record.
+     *                     - sender (string): The sender of the funder validation record.
+     *                     - created_at (string): The timestamp when the funder validation record was created.
+     * @return void
+     */
+    public static function recordFunderValidation(object $data): void
+    {
+        global $wpdb;
+        $wpdb->update(
+            "{$wpdb->prefix}cnrs_data_manager_revisions",
+            array('active' => 0),
+            array('id' => $data->id),
+            array('%d'),
+            array('%d')
+        );
+        $wpdb->insert(
+            "{$wpdb->prefix}cnrs_data_manager_revisions",
+            array(
+                'active' => 1,
+                'uuid' => $data->uuid,
+                'form_id' => $data->form_id,
+                'sender' => $data->sender,
+                'created_at' => $data->created_at
+            ),
+            array('%d', '%s', '%d', '%s', '%s')
+        );
+    }
+
+    /**
      * Retrieves the revision managers associated with a specific form from the database.
      *
      * @param int $formId The ID of the form to retrieve the revision managers for.
@@ -506,7 +548,7 @@ class Forms
     public static function getRevisionManagers(int $formId): array
     {
         global $wpdb;
-        return $wpdb->get_results("SELECT manager_name as name, manager_email as email FROM {$wpdb->prefix}cnrs_data_manager_revisions WHERE form_id={$formId} AND manager_name IS NOT NULL AND manager_email IS NOT NULL", ARRAY_A);
+        return $wpdb->get_results("SELECT {$wpdb->prefix}cnrs_data_manager_revisions.manager_name as name, {$wpdb->prefix}cnrs_data_manager_revisions.manager_email as email, {$wpdb->prefix}cnrs_data_manager_revisions.sender, {$wpdb->prefix}cnrs_data_manager_mission_forms.funder_email FROM {$wpdb->prefix}cnrs_data_manager_revisions INNER JOIN {$wpdb->prefix}cnrs_data_manager_mission_forms ON {$wpdb->prefix}cnrs_data_manager_revisions.form_id = {$wpdb->prefix}cnrs_data_manager_mission_forms.id WHERE {$wpdb->prefix}cnrs_data_manager_revisions.form_id={$formId} AND ({$wpdb->prefix}cnrs_data_manager_revisions.sender = 'MANAGER' OR {$wpdb->prefix}cnrs_data_manager_revisions.sender = 'FUNDER')", ARRAY_A);
     }
     
     public static function updateForm(object $data): void
