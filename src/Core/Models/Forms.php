@@ -318,7 +318,7 @@ class Forms
     public static function getConventions(): array
     {
         global $wpdb;
-        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_conventions ORDER BY id DESC", ARRAY_A);
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_conventions ORDER BY name ASC", ARRAY_A);
     }
 
     /**

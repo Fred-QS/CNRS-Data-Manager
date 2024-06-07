@@ -1636,6 +1636,10 @@ h3.cnrs-dm-front-mission-form-element-label {
     margin-left: 14px;
 }
 
+.cnrs-dm-front-mission-form-element[data-type="radio-convention"] {
+    position: relative;
+}
+
 .cnrs-dm-front-mission-form-element[data-type="checkbox"] > label,
 .cnrs-dm-front-mission-form-element[data-type="radio"] > label,
 .cnrs-dm-front-mission-form-element[data-type="toggle"] > label,
@@ -2448,6 +2452,68 @@ pre.cnrs-dm-front-observation-textarea {
 .cnrs-dm-front-revision-fees-info {
     font-size: 0.8em;
     opacity: 0.7;
+}
+
+#cnrs-dm-front-convention-id {
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    z-index: 0;
+    top: 25px;
+    left: 0;
+    padding: 0;
+}
+
+#cnrs-dm-front-convention-text {
+    position: relative;
+    z-index: 2;
+}
+
+#cnrs-dm-front-convention-text.error {
+    border: 1px solid #ff5c33;
+    color: #ff5c33;
+}
+
+#cnrs-dm-front-convention-id + label {
+    width: 100%;
+}
+
+#cnrs-dm-front-conventions-list {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    top: calc(100% + 3px);
+    left: 0;
+    z-index: 20;
+    background-color: #fff;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 200px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transition: all linear 0.2s;
+}
+
+#cnrs-dm-front-conventions-list.display {
+    opacity: 1;
+    visibility: visible;
+}
+
+.cnrs-dm-front-convention {
+    font-family: 'Josefin Sans',Helvetica,Arial,Lucida,sans-serif;
+    font-size: 15px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all linear 0.2s;
+}
+
+.cnrs-dm-front-convention:not(:first-child) {
+    border-top: 1px solid #e1e1e1;
+}
+
+.cnrs-dm-front-convention.selected, .cnrs-dm-front-convention:hover {
+    background-color: #6AB7E6;
+    color: #fff;
 }
 
 @media only screen and (min-width: 768px) {

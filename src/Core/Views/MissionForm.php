@@ -42,18 +42,22 @@ if ($validated === false): ?>
             <input type="hidden" value="<?php echo wp_generate_uuid4() ?>" name="cnrs-dm-front-mission-uuid">
             <?php if (count($conventions) > 1): ?>
                 <div class="cnrs-dm-front-mission-form-element cnrs-dm-front-radio-references" data-type="radio-convention" data-state="light">
-                        <span class="cnrs-dm-front-mission-form-element-label required">
-                            <?php echo __('Choose a convention', 'cnrs-data-manager') ?>
-                        </span>
-                    <?php $conventionIndex = 0; ?>
-                    <?php foreach ($conventions as $convention): ?>
-                        <label>
-                            <input<?php if ($conventionIndex === 0): echo ' checked'; endif; ?> value="<?php echo $convention['id'] ?>" type="radio" name="cnrs-dm-front-convention">
-                            <span class="design"></span>
-                            <span class="text"><?php echo $convention['name'] ?></span>
-                        </label>
-                        <?php $conventionIndex++; ?>
-                    <?php endforeach; ?>
+                    <span class="cnrs-dm-front-mission-form-element-label required">
+                        <?php echo __('Choose a convention', 'cnrs-data-manager') ?>
+                    </span>
+                    <input required id="cnrs-dm-front-convention-id" name="cnrs-dm-front-convention" type="number" step="1" min="0" value="<?php echo $conventions[0]['id'] ?>">
+                    <label>
+                        <input id="cnrs-dm-front-convention-text" type="text" spellcheck="false" autocomplete="off" value="<?php echo $conventions[0]['name'] ?>">
+                    </label>
+                    <ul id="cnrs-dm-front-conventions-list">
+                        <?php $conventionIndex = 0; ?>
+                        <?php foreach ($conventions as $i => $convention): ?>
+                            <li class="cnrs-dm-front-convention<?php echo $i === 0 ? ' selected' : '' ?>" data-id="<?php echo $convention['id'] ?>" style="display: none;">
+                                <?php echo $convention['name'] ?>
+                            </li>
+                            <?php $conventionIndex++; ?>
+                        <?php endforeach; ?>
+                    </ul>
                 </div>
             <?php else: ?>
                 <input type="hidden" value="<?php echo $conventions[0]['id'] ?>" name="cnrs-dm-front-convention">
@@ -102,7 +106,7 @@ if ($validated === false): ?>
                 <?php foreach ($form['elements'] as $element): ?>
                     <?php $data = $element['data'] ?>
                     <?php if ($element['type'] === 'toggle'): ?>
-                        <div class="cnrs-dm-front-mission-form-element cnrs-dm-front-radio-references" data-type="radio-<?php echo $element['type'] ?>" data-state="light" data-uuid="<?php echo $element['data']['value'][0] ?>">
+                        <div class="cnrs-dm-front-mission-form-element cnrs-dm-front-radio-references" data-type="radio-<?php echo $element['type'] ?>" data-state="light" data-uuid="<?php echo $element['data']['value'][0] ?>" data-label="<?php echo $element['label'] ?>">
                             <span class="cnrs-dm-front-mission-form-element-label required<?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>">
                                 <?php echo $element['label'] ?>
                                 <?php if (strlen($data['tooltip']) > 0): ?>
@@ -128,7 +132,7 @@ if ($validated === false): ?>
                         </div>
                     <?php elseif ($element['type'] === 'checkbox'): ?>
                         <div class="cnrs-dm-front-mission-form-element cnrs-dm-front-checkbox-wrapper" data-type="<?php echo $element['type'] ?>" data-state="<?php echo $data['required'] === true ? 'light' : 'black' ?>">
-                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>">
+                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>" data-label="<?php echo $element['label'] ?>">
                                 <?php echo $element['label'] ?>
                                 <?php if (strlen($data['tooltip']) > 0): ?>
                                     <span class="cnrs-dm-front-tooltip-container<?php echo $data['required'] === true ? ' required' : '' ?>">
@@ -160,7 +164,7 @@ if ($validated === false): ?>
                         </div>
                     <?php elseif ($element['type'] === 'radio'): ?>
                         <div class="cnrs-dm-front-mission-form-element cnrs-dm-front-radio-references" data-type="<?php echo $element['type'] ?>" data-state="<?php echo $data['required'] === true ? 'light' : 'black' ?>">
-                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>">
+                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>" data-label="<?php echo $element['label'] ?>">
                                 <?php echo $element['label'] ?>
                                 <?php if (strlen($data['tooltip']) > 0): ?>
                                     <span class="cnrs-dm-front-tooltip-container<?php echo $data['required'] === true ? ' required' : '' ?>">
@@ -188,7 +192,7 @@ if ($validated === false): ?>
                         </div>
                     <?php elseif ($element['type'] === 'input'): ?>
                         <div class="cnrs-dm-front-mission-form-element" data-type="<?php echo $element['type'] ?>" data-state="<?php echo $data['required'] === true ? 'light' : 'black' ?>">
-                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>">
+                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>" data-label="<?php echo $element['label'] ?>">
                                 <?php echo $element['label'] ?>
                                 <?php if (strlen($data['tooltip']) > 0): ?>
                                     <span class="cnrs-dm-front-tooltip-container<?php echo $data['required'] === true ? ' required' : '' ?>">
@@ -208,7 +212,7 @@ if ($validated === false): ?>
                     <?php elseif ($element['type'] === 'number'): ?>
                         <?php $split = explode(';', $element['label']); $label = $split[0]; ?>
                         <div class="cnrs-dm-front-mission-form-element" data-type="<?php echo $element['type'] ?>" data-state="<?php echo $data['required'] === true ? 'light' : 'black' ?>">
-                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>">
+                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>" data-label="<?php echo $label ?>">
                                 <?php echo $label ?>
                                 <?php if (strlen($data['tooltip']) > 0): ?>
                                     <span class="cnrs-dm-front-tooltip-container<?php echo $data['required'] === true ? ' required' : '' ?>">
@@ -230,7 +234,7 @@ if ($validated === false): ?>
                         </div>
                     <?php elseif ($element['type'] === 'date'): ?>
                         <div class="cnrs-dm-front-mission-form-element" data-type="<?php echo $element['type'] ?>" data-state="<?php echo $data['required'] === true ? 'light' : 'black' ?>">
-                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>">
+                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>" data-label="<?php echo $element['label'] ?>">
                                 <?php echo $element['label'] ?>
                                 <?php if (strlen($data['tooltip']) > 0): ?>
                                     <span class="cnrs-dm-front-tooltip-container<?php echo $data['required'] === true ? ' required' : '' ?>">
@@ -252,7 +256,7 @@ if ($validated === false): ?>
                         </div>
                     <?php elseif ($element['type'] === 'time'): ?>
                         <div class="cnrs-dm-front-mission-form-element" data-type="<?php echo $element['type'] ?>" data-state="<?php echo $data['required'] === true ? 'light' : 'black' ?>">
-                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>">
+                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>" data-label="<?php echo $element['label'] ?>">
                                 <?php echo $element['label'] ?>
                                 <?php if (strlen($data['tooltip']) > 0): ?>
                                     <span class="cnrs-dm-front-tooltip-container<?php echo $data['required'] === true ? ' required' : '' ?>">
@@ -271,7 +275,7 @@ if ($validated === false): ?>
                         </div>
                     <?php elseif ($element['type'] === 'datetime'): ?>
                         <div class="cnrs-dm-front-mission-form-element" data-type="<?php echo $element['type'] ?>" data-state="<?php echo $data['required'] === true ? 'light' : 'black' ?>">
-                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>">
+                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>" data-label="<?php echo $element['label'] ?>">
                                 <?php echo $element['label'] ?>
                                 <?php if (strlen($data['tooltip']) > 0): ?>
                                     <span class="cnrs-dm-front-tooltip-container<?php echo $data['required'] === true ? ' required' : '' ?>">
@@ -290,7 +294,7 @@ if ($validated === false): ?>
                         </div>
                     <?php elseif ($element['type'] === 'textarea'): ?>
                         <div class="cnrs-dm-front-mission-form-element" data-type="<?php echo $element['type'] ?>" data-state="<?php echo $data['required'] === true ? 'light' : 'black' ?>">
-                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>">
+                            <span class="cnrs-dm-front-mission-form-element-label<?php echo $data['required'] === true ? ' required' : '' ?><?php echo strlen(trim($element['label'])) === 0 ? ' no-label' : '' ?>" data-label="<?php echo $element['label'] ?>">
                                 <?php echo $element['label'] ?>
                                 <?php if (strlen($data['tooltip']) > 0): ?>
                                     <span class="cnrs-dm-front-tooltip-container<?php echo $data['required'] === true ? ' required' : '' ?>">
