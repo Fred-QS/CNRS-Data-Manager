@@ -2469,6 +2469,17 @@ input:checked + .cnrs-dm-slider:before {
     padding-right: 10px;
 }
 
+#cnrs-dm-pre-enqueue {
+    padding: 14px 20px;
+    background-color: #3c3c3c;
+    border-radius: 6px;
+    color: #fff;
+    width: max-content;
+    margin: 0;
+    overflow-x: auto;
+    max-width: calc(100% - 40px);
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;

@@ -620,7 +620,9 @@ if (!function_exists('sanitizeURIForPagination')) {
                 $current = substr($current, 0, -1);
             }
         }
-        return $current . '&' . $trigger . '=' . $page;
+        return str_contains($current, '?')
+            ? $current . '&' . $trigger . '=' . $page
+            : $current . '?' . $trigger . '=' . $page;
     }
 }
 
@@ -1956,5 +1958,47 @@ if (!function_exists('stripArrayValuesSlashes')) {
             $striped[] = html_entity_decode(stripslashes($item));
         }
         return $striped;
+    }
+}
+
+if (!function_exists('highlightText')) {
+
+    /**
+     * Highlight and colorize the provided text based on the file extension.
+     *
+     * @param string $text The text to be highlighted.
+     * @param string $fileExt The file extension to determine the highlighting settings.
+     * @return string The highlighted and colorized text.
+     */
+    function highlightText(string $text, string $fileExt=""): string
+    {
+        if ($fileExt == "php")
+        {
+            ini_set("highlight.comment", "#4e574e");
+            ini_set("highlight.default", "#5b82bd");
+            ini_set("highlight.html", "#b35454");
+            ini_set("highlight.keyword", "#b87fe3; font-weight: bold");
+            ini_set("highlight.string", "#e6ce57");
+        }
+        else if ($fileExt == "html")
+        {
+            ini_set("highlight.comment", "4e574e");
+            ini_set("highlight.default", "#f1f1f1");
+            ini_set("highlight.html", "#b35454");
+            ini_set("highlight.keyword", "orange; font-weight: bold");
+            ini_set("highlight.string", "#ffffff");
+        }
+
+        $text = trim($text);
+        $text = highlight_string("<?php " . $text, true);  // highlight_string() requires opening PHP tag or otherwise it will not colorize the text
+        $text = trim($text);
+        $text = preg_replace("|^\\<code\\>\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>|", "", $text, 1);  // remove prefix
+        $text = preg_replace("|\\</code\\>\$|", "", $text, 1);  // remove suffix 1
+        $text = trim($text);  // remove line breaks
+        $text = preg_replace("|\\</span\\>\$|", "", $text, 1);  // remove suffix 2
+        $text = trim($text);  // remove line breaks
+        $text = preg_replace("|^(\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>)(&lt;\\?php&nbsp;)(.*?)(\\</span\\>)|", "\$1\$3\$4", $text);  // remove custom added "<?php "
+
+        return $text;
     }
 }

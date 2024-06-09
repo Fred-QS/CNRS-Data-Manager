@@ -243,14 +243,14 @@ class Settings
         global $wpdb;
         $settings = $wpdb->get_results( "SELECT category_template FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
         $newFiles = [
-            'category' => get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/category.php',
-            'archive' => get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/archive.php',
-            'project' => get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/project.php',
+            'category.php' => get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/category.php',
+            'archive.php' => get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/archive.php',
+            'cnrs-script.js' => get_theme_root() . '/' . wp_get_theme()->get_stylesheet() . '/cnrs-script.js',
         ];
         if ((int) $settings[0]['category_template'] === 1) {
             foreach ($newFiles as $name => $newFile) {
                 if (!file_exists($newFile)) {
-                    $template = CNRS_DATA_MANAGER_PATH . '/templates/samples/' . $name . '.php';
+                    $template = CNRS_DATA_MANAGER_PATH . '/templates/samples/' . $name;
                     copy($template, $newFile);
                 }
             }

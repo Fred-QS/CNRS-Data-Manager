@@ -43,6 +43,19 @@ $platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
         <li><?php echo __('The <b>PHP</b> template file for the agent modal display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-info.php</i></b>', 'cnrs-data-manager') ?></li>
     </ul>
     <br>
+    <b><?php echo __('Theme templates', 'cnrs-data-manager') ?></b>
+    <?php $path = '/wp-content' . explode('wp-content', get_stylesheet_directory())[1] ?>
+    <ul class="cnrs-dm-files-list">
+        <li><?php echo sprintf(__('The <b>PHP</b> template file for archive posts (filtering project category) <b><i>%s/archive.php</i></b>', 'cnrs-data-manager'), $path) ?></li>
+        <li><?php echo sprintf(__('The <b>PHP</b> template file for the category page <b><i>%s/project.php</i></b>', 'cnrs-data-manager'), $path) ?></li>
+        <li><?php echo sprintf(__('The <b>JS</b> script file for the active theme <b><i>%s/cnrs-script.js</i></b>', 'cnrs-data-manager'), $path) ?></li>
+    </ul>
+    <i><?php echo __('Add this code for embedding the <b>cnrs-script.js</b> file to the <b>functions.php</b> in the active theme folder') ?></i>
+    <pre id="cnrs-dm-pre-enqueue"><?php echo highlightText("function cnrs_script_enqueue() {
+    wp_enqueue_script( 'custom-scripts', get_stylesheet_directory_uri() . '/cnrs-script.js' );
+}
+add_action( 'wp_enqueue_scripts', 'cnrs_script_enqueue');", 'php'); ?></pre>
+    <br>
     <b><?php echo __('Email templates', 'cnrs-data-manager') ?></b>
     <ul class="cnrs-dm-files-list">
         <li><?php echo __('The <b>PHP</b> template file for email header <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-email-header.php</i></b>', 'cnrs-data-manager') ?></li>
