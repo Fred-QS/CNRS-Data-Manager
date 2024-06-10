@@ -206,8 +206,8 @@ class Bootstrap
     protected static function getSubmenuItems(): array
     {
         global $wpdb;
-        $settings = $wpdb->get_results( "SELECT filename FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        $filename = $settings[0]['filename'];
+        $settings = $wpdb->get_row( "SELECT filename FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $filename = $settings['filename'];
         $menu = [
             [
                 'parent_slug'            => 'cnrs-data-manager',

@@ -19,11 +19,12 @@ class Tools
      * @return array An associative array with the category ID and name.
      * @global wpdb $wpdb WordPress database object.
      */
-    public static function getTeamsCategoryId(): array
+    public static function getTeamsCategoryId(string $lang = 'fr'): array
     {
         global $wpdb;
-        $result = $wpdb->get_results( "SELECT teams_category FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        return ['id' => $result[0]['teams_category'], 'name' => get_cat_name($result[0]['teams_category'])];
+        $result = $wpdb->get_row( "SELECT teams_category FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $res = json_decode($result['teams_category'], true);
+        return ['id' => (int) $res[$lang], 'name' => get_cat_name((int) $res[$lang])];
     }
 
     /**
@@ -31,11 +32,12 @@ class Tools
      *
      * @return array The array containing the services category ID and name.
      */
-    public static function getServicesCategoryId(): array
+    public static function getServicesCategoryId(string $lang = 'fr'): array
     {
         global $wpdb;
-        $result = $wpdb->get_results( "SELECT services_category FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        return ['id' => $result[0]['services_category'], 'name' => get_cat_name($result[0]['services_category'])];
+        $result = $wpdb->get_row( "SELECT services_category FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $res = json_decode($result['services_category'], true);
+        return ['id' => (int) $res[$lang], 'name' => get_cat_name((int) $res[$lang])];
     }
 
     /**
@@ -43,11 +45,12 @@ class Tools
      *
      * @return array The array containing the platforms category ID and name.
      */
-    public static function getPlatformsCategoryId(): array
+    public static function getPlatformsCategoryId(string $lang = 'fr'): array
     {
         global $wpdb;
-        $result = $wpdb->get_results( "SELECT platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        return ['id' => $result[0]['platforms_category'], 'name' => get_cat_name($result[0]['platforms_category'])];
+        $result = $wpdb->get_row( "SELECT platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $res = json_decode($result['platforms_category'], true);
+        return ['id' => (int) $res[$lang], 'name' => get_cat_name((int) $res[$lang])];
     }
 
     /**
@@ -68,26 +71,29 @@ class Tools
             global $wpdb;
             $table = $wpdb->prefix . 'cnrs_data_manager_relations';
             $type = stripslashes($_POST['cnrs-data-manager-tools-type']);
-            $prefix = 'cnrs-data-manager-tools-' . $type . '-';
+            $prefix = 'cnrs-data-manager-tools-' . $type;
             $wpdb->delete($table, ['type' => $type]);
 
             $posts = [];
             foreach ($_POST as $key => $value) {
-                if (stripos($key, 'cnrs-data-manager-tools-' . $type . '-xml-') !== false) {
+                if (stripos($key, $prefix . '-xml-') !== false) {
                     $posts[] = $key;
                 }
             }
 
             foreach ($posts as $post) {
-                $index = (int) str_replace('cnrs-data-manager-tools-' . $type . '-xml-', '', $post);
-                if (stripslashes($_POST['cnrs-data-manager-tools-' . $type . '-post-' . $index]) !== null) {
-                    $insert = [
-                        'term_id' => stripslashes($_POST['cnrs-data-manager-tools-' . $type . '-post-' . $index]),
-                        'xml_entity_id' => stripslashes($_POST[$post]),
-                        'type' => stripslashes($_POST['cnrs-data-manager-tools-' . $type . '-type-' . $index])
-                    ];
+                $index = (int) str_replace($prefix . '-xml-', '', $post);
+                if ($_POST[$prefix . '-post-' . $index] !== null) {
+                    $array = $_POST[$prefix . '-post-' . $index];
+                    foreach ($array as $item) {
+                        $insert = [
+                            'term_id' => stripslashes($item),
+                            'xml_entity_id' => stripslashes($_POST[$post]),
+                            'type' => stripslashes($_POST[$prefix . '-type-' . $index])
+                        ];
 
-                    $wpdb->insert($table, $insert, ['%d', '%d', '%s']);
+                        $wpdb->insert($table, $insert, ['%d', '%d', '%s']);
+                    }
                 }
             }
         }
@@ -137,6 +143,6 @@ class Tools
     public static function getTeams(): array
     {
         global $wpdb;
-        return $wpdb->get_results( "SELECT term_id as cat, xml_entity_id as xml FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE type = 'teams' AND term_id != 0", ARRAY_A );
+        return $wpdb->get_results( "SELECT DISTINCT term_id FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE type = 'teams' AND term_id != 0", ARRAY_A );
     }
 }

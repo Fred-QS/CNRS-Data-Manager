@@ -18,8 +18,11 @@ class Settings
     public static function getSettings(): array
     {
         global $wpdb;
-        $result = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        return $result[0];
+        $result = $wpdb->get_row( "SELECT * FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A);
+        $result['teams_category'] = json_decode($result['teams_category'], true);
+        $result['services_category'] = json_decode($result['services_category'], true);
+        $result['platforms_category'] = json_decode($result['platforms_category'], true);
+        return $result;
     }
 
     /**
@@ -57,37 +60,37 @@ class Settings
         {
             $post = [
                 'mode' => stripslashes($_POST['cnrs-dm-mode']),
-                'teams_category' => stripslashes($_POST['cnrs-data-manager-categories-list-teams']),
+                'teams_category' => json_encode($_POST['cnrs-data-manager-categories-list-teams']),
                 'teams_view_selector' => stripslashes($_POST['cnrs-dm-selector-teams']),
-                'services_category' => stripslashes($_POST['cnrs-data-manager-categories-list-services']),
+                'services_category' => json_encode($_POST['cnrs-data-manager-categories-list-services']),
                 'services_view_selector' => stripslashes($_POST['cnrs-dm-selector-services']),
-                'platforms_category' => stripslashes($_POST['cnrs-data-manager-categories-list-platforms']),
+                'platforms_category' => json_encode($_POST['cnrs-data-manager-categories-list-platforms']),
                 'platforms_view_selector' => stripslashes($_POST['cnrs-dm-selector-platforms']),
                 'category_template' => stripslashes($_POST['cnrs-dm-category-template']) === 'on' ? 1 : 0,
                 'silent_pagination' => stripslashes($_POST['cnrs-dm-pagination-ajax-checkbox']) === 'on' ? 1 : 0,
                 'filter_modules' => !empty($_POST['cnrs-dm-filter-module']) ? stripslashes(implode(',', $_POST['cnrs-dm-filter-module'])) : 'none',
             ];
             global $wpdb;
-            $currents = $wpdb->get_results( "SELECT teams_category, services_category, platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings ", ARRAY_A );
-            $currentTeams = (int) $currents[0]['teams_category'];
-            $currentServices = (int) $currents[0]['services_category'];
-            $currentPlatforms = (int) $currents[0]['platforms_category'];
+            $currents = $wpdb->get_row( "SELECT teams_category, services_category, platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings ", ARRAY_A );
+            $currentTeams = json_decode($currents['teams_category'], true);
+            $currentServices = json_decode($currents['services_category'], true);
+            $currentPlatforms = json_decode($currents['platforms_category'], true);
 
             $relationTable = $wpdb->prefix . 'cnrs_data_manager_relations';
-            if ($currentTeams !== (int) $post['teams_category']) {
+            if (cnrs_categories_settings_have_changed($currentTeams, json_decode($post['teams_category'], true)) === true) {
                 $wpdb->delete($relationTable, ['type' => 'teams']);
             }
 
-            if ($currentServices !== (int) $post['services_category']) {
+            if (cnrs_categories_settings_have_changed($currentServices, json_decode($post['services_category'], true)) === true) {
                 $wpdb->delete($relationTable, ['type' => 'services']);
             }
 
-            if ($currentPlatforms !== (int) $post['platforms_category']) {
+            if (cnrs_categories_settings_have_changed($currentPlatforms, json_decode($post['platforms_category'], true)) === true) {
                 $wpdb->delete($relationTable, ['type' => 'platforms']);
             }
 
             $wpdb->query($wpdb->prepare(
-                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category=%d,teams_view_selector=%d,services_category=%d,services_view_selector=%d,platforms_category=%d,platforms_view_selector=%d,mode=%s,category_template=%d,silent_pagination=%d,filter_modules=%s",
+                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category=%s,teams_view_selector=%d,services_category=%s,services_view_selector=%d,platforms_category=%s,platforms_view_selector=%d,mode=%s,category_template=%d,silent_pagination=%d,filter_modules=%s",
                 $post['teams_category'],
                 $post['teams_view_selector'],
                 $post['services_category'],
@@ -208,8 +211,8 @@ class Settings
     public static function getDisplayMode(): string
     {
         global $wpdb;
-        $settings = $wpdb->get_results( "SELECT mode FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        return $settings[0]['mode'];
+        $settings = $wpdb->get_row( "SELECT mode FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        return $settings['mode'];
     }
 
     /**
@@ -225,8 +228,8 @@ class Settings
     public static function isSelectorAvailable(string $type): bool
     {
         global $wpdb;
-        $settings = $wpdb->get_results( "SELECT {$type}_view_selector FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        return $settings[0][$type . '_view_selector'] === '1';
+        $settings = $wpdb->get_row( "SELECT {$type}_view_selector FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        return $settings[$type . '_view_selector'] === '1';
     }
 
     /**
@@ -277,8 +280,8 @@ class Settings
     public static function getFilters(): array
     {
         global $wpdb;
-        $result = $wpdb->get_results( "SELECT filter_modules FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        $filters = $result[0]['filter_modules'];
+        $result = $wpdb->get_row( "SELECT filter_modules FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $filters = $result['filter_modules'];
         return $filters === 'none' ? [] : explode(',', $filters);
     }
 
@@ -294,20 +297,20 @@ class Settings
     public static function getPaginationType(): bool
     {
         global $wpdb;
-        $result = $wpdb->get_results( "SELECT silent_pagination FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        $filters = (int) $result[0]['silent_pagination'];
+        $result = $wpdb->get_row( "SELECT silent_pagination FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $filters = (int) $result['silent_pagination'];
         return $filters === 1;
     }
 
     public static function getSubCategoriesFromParentSlug(string $slug): array
     {
         global $wpdb;
-        $parent = $wpdb->get_results( "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '{$slug}'", ARRAY_A );
+        $parent = $wpdb->get_row( "SELECT term_id FROM {$wpdb->prefix}terms WHERE slug = '{$slug}'", ARRAY_A );
         if (empty($parent)) {
             return [];
         }
 
-        $parent_term_id = (int) $parent[0]['term_id'];
+        $parent_term_id = (int) $parent['term_id'];
         return $wpdb->get_results( "SELECT {$wpdb->prefix}terms.slug, {$wpdb->prefix}terms.name FROM {$wpdb->prefix}term_taxonomy INNER JOIN {$wpdb->prefix}terms ON {$wpdb->prefix}term_taxonomy.term_id = {$wpdb->prefix}terms.term_id WHERE {$wpdb->prefix}term_taxonomy.parent = {$parent_term_id} ");
     }
 

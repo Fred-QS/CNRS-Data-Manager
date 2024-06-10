@@ -293,8 +293,8 @@ final class Manager
         }
         Settings::updateFilename();
         global $wpdb;
-        $settings = $wpdb->get_results( "SELECT filename FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        $filename = $settings[0]['filename'];
+        $settings = $wpdb->get_row( "SELECT filename FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $filename = $settings['filename'];
 
         if (HttpClient::call($filename, true)) {
             return self::parseXML(HttpClient::call($filename));

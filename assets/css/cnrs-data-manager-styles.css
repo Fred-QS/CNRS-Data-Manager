@@ -2480,6 +2480,40 @@ input:checked + .cnrs-dm-slider:before {
     max-width: calc(100% - 40px);
 }
 
+.cnrs-dm-pll-select-wrapper {
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+    background: #fff url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E') no-repeat right 5px top 55%;
+    background-size: 16px 16px;
+    vertical-align: middle;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: max-content;
+    padding-left: 8px;
+}
+
+.cnrs-dm-pll-select-wrapper:not(:first-of-type) {
+    margin-top: 5px;
+}
+
+.cnrs-dm-pll-select-wrapper:active {
+    border-color: #2271b1;
+}
+
+.cnrs-dm-pll-select-wrapper select {
+    border: none;
+}
+
+.cnrs-dm-pll-select-wrapper select:focus {
+    box-shadow: none;
+    border: none;
+}
+
+.cnrs-dm-pll-select-wrapper img {
+    margin-right: 8px;
+}
+
 @media only screen and (min-width: 783px) {
     #cnrs-dm-map-preview {
         visibility: hidden;
@@ -2689,6 +2723,10 @@ input:checked + .cnrs-dm-slider:before {
 }
 
 @media only screen and (max-width: 782px) {
+
+    .cnrs-dm-pll-select-wrapper {
+        width: calc(100% - 8px);
+    }
 
     .cnrs-dm-data-selector-td {
         padding: 10px 0 0!important;

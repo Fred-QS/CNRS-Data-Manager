@@ -294,6 +294,7 @@ if ($providerType === 'services') {
                         </span>
                             <a href="<?php echo $project['url'] ?>" target="_blank" class="cnrs-dm-imported-item-info">
                                 <span><?php echo $project['name'] ?></span>
+                                <small><i>(<?php echo $project['uri'] ?>)</i></small>
                                 <i><?php echo $project['excerpt'] ?></i>
                             </a>
                         </div>

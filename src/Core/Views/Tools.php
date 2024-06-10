@@ -7,9 +7,9 @@ $relations = Tools::getRelations();
 $teams = CNRS_DATA_MANAGER_XML_DATA['teams'];
 $services = CNRS_DATA_MANAGER_XML_DATA['services'];
 $platforms = CNRS_DATA_MANAGER_XML_DATA['platforms'];
-$teamsPosts = getAllPostsFromCategoryId(Tools::getTeamsCategoryId());
-$servicesPosts = getAllPostsFromCategoryId(Tools::getServicesCategoryId());
-$platformsPosts = getAllPostsFromCategoryId(Tools::getPlatformsCategoryId());
+$teamsPosts = getAllPostsFromCategoryId('teams');
+$servicesPosts = getAllPostsFromCategoryId('services');
+$platformsPosts = getAllPostsFromCategoryId('platforms');
 ?>
 
 <div class="wrap cnrs-data-manager-page" style="position: relative">
@@ -96,13 +96,18 @@ add_action( 'wp_enqueue_scripts', 'cnrs_script_enqueue');", 'php'); ?></pre>
                         <input type="hidden" name="cnrs-data-manager-tools-teams-type-<?php echo $teamsCnt ?>" value="teams">
                     </th>
                     <td rowspan="2" style="vertical-align: top;">
-                        <?php if (!empty($teamsPosts['data'])): ?>
-                            <select id="cnrs-data-manager-tools-teams-post-<?php echo $teamsCnt ?>" required name="cnrs-data-manager-tools-teams-post-<?php echo $teamsCnt ?>">
-                                <option selected disabled value="0"><?php echo __('Select a post', 'cnrs-data-manager') ?></option>
-                            <?php foreach ($teamsPosts['data'] as $teamsPost): ?>
-                                <option <?php echo isCNRSDataManagerToolsSelected($relations['teams'], $teamsPost['id'], $team['equipe_id']) ? 'selected' : '' ?> value="<?php echo $teamsPost['id'] ?>"><?php echo $teamsPost['title'] ?></option>
+                        <?php if (!empty($teamsPosts['data']['fr'])): ?>
+                            <?php foreach ($teamsPosts['data'] as $lang => $teamsPost): ?>
+                            <div class="cnrs-dm-pll-select-wrapper">
+                                <?php echo $teamsPosts['pll'] === true ? $teamsPosts['data'][$lang][0]['flag'] : '' ?>
+                                <select id="cnrs-data-manager-tools-teams-post-<?php echo $teamsCnt ?>" required name="cnrs-data-manager-tools-teams-post-<?php echo $teamsCnt ?>[<?php echo $lang ?>]">
+                                    <option selected disabled value="0"><?php echo __('Select a team', 'cnrs-data-manager') ?></option>
+                                    <?php foreach ($teamsPosts['data'][$lang] as $post): ?>
+                                        <option <?php echo isCNRSDataManagerToolsSelected($relations['teams'], $post['id'], $team['equipe_id']) ? 'selected' : '' ?> value="<?php echo $post['id'] ?>"><?php echo $post['title'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                             <?php endforeach; ?>
-                            </select>
                         <?php else: ?>
                             <i class="cnrs-dm-no-article"><?php echo __('No article available for this category.', 'cnrs-data-manager') ?></i>
                         <?php endif; ?>
@@ -117,7 +122,7 @@ add_action( 'wp_enqueue_scripts', 'cnrs_script_enqueue');", 'php'); ?></pre>
             <?php endforeach; ?>
             </tbody>
         </table>
-        <?php if (!empty($teamsPosts['data'])): ?>
+        <?php if (!empty($teamsPosts['data']['fr'])): ?>
             <p class="submit">
                 <input type="submit" name="submit" class="button button-primary" value="<?php echo __('Update', 'cnrs-data-manager') ?>">
             </p>
@@ -141,13 +146,18 @@ add_action( 'wp_enqueue_scripts', 'cnrs_script_enqueue');", 'php'); ?></pre>
                         <input type="hidden" name="cnrs-data-manager-tools-services-type-<?php echo $servicesCnt ?>" value="services">
                     </th>
                     <td rowspan="2" style="vertical-align: top;">
-                        <?php if (!empty($servicesPosts['data'])): ?>
-                            <select id="cnrs-data-manager-tools-services-post-<?php echo $servicesCnt ?>" required name="cnrs-data-manager-tools-services-post-<?php echo $servicesCnt ?>">
-                                <option selected disabled value="0"><?php echo __('Select a post', 'cnrs-data-manager') ?></option>
-                                <?php foreach ($servicesPosts['data'] as $servicesPost): ?>
-                                    <option <?php echo isCNRSDataManagerToolsSelected($relations['services'], $servicesPost['id'], $service['service_id']) ? 'selected' : '' ?> value="<?php echo $servicesPost['id'] ?>"><?php echo $servicesPost['title'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                        <?php if (!empty($servicesPosts['data']['fr'])): ?>
+                            <?php foreach ($servicesPosts['data'] as $lang => $servicesPost): ?>
+                            <div class="cnrs-dm-pll-select-wrapper">
+                                <?php echo $servicesPosts['pll'] === true ? $servicesPosts['data'][$lang][0]['flag'] : '' ?>
+                                <select id="cnrs-data-manager-tools-services-post-<?php echo $servicesCnt ?>" required name="cnrs-data-manager-tools-services-post-<?php echo $servicesCnt ?>[<?php echo $lang ?>]">
+                                    <option selected disabled value="0"><?php echo __('Select a service', 'cnrs-data-manager') ?></option>
+                                    <?php foreach ($servicesPosts['data'][$lang] as $post): ?>
+                                        <option <?php echo isCNRSDataManagerToolsSelected($relations['services'], $post['id'], $service['service_id']) ? 'selected' : '' ?> value="<?php echo $post['id'] ?>"><?php echo $post['title'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <?php endforeach; ?>
                         <?php else: ?>
                             <i class="cnrs-dm-no-article"><?php echo __('No article available for this category.', 'cnrs-data-manager') ?></i>
                         <?php endif; ?>
@@ -162,7 +172,7 @@ add_action( 'wp_enqueue_scripts', 'cnrs_script_enqueue');", 'php'); ?></pre>
             <?php endforeach; ?>
             </tbody>
         </table>
-        <?php if (!empty($servicesPosts['data'])): ?>
+        <?php if (!empty($servicesPosts['data']['fr'])): ?>
             <p class="submit">
                 <input type="submit" name="submit" class="button button-primary" value="<?php echo __('Update', 'cnrs-data-manager') ?>">
             </p>
@@ -186,13 +196,18 @@ add_action( 'wp_enqueue_scripts', 'cnrs_script_enqueue');", 'php'); ?></pre>
                         <input type="hidden" name="cnrs-data-manager-tools-platforms-type-<?php echo $platformsCnt ?>" value="platforms">
                     </th>
                     <td rowspan="2" style="vertical-align: top;">
-                        <?php if (!empty($platformsPosts['data'])): ?>
-                            <select id="cnrs-data-manager-tools-platforms-post-<?php echo $platformsCnt ?>" required name="cnrs-data-manager-tools-platforms-post-<?php echo $platformsCnt ?>">
-                                <option selected disabled value="0"><?php echo __('Select a post', 'cnrs-data-manager') ?></option>
-                                <?php foreach ($platformsPosts['data'] as $platformsPost): ?>
-                                    <option <?php echo isCNRSDataManagerToolsSelected($relations['platforms'], $platformsPost['id'], $platform['plateforme_id']) ? 'selected' : '' ?> value="<?php echo $platformsPost['id'] ?>"><?php echo $platformsPost['title'] ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                        <?php if (!empty($platformsPosts['data']['fr'])): ?>
+                            <?php foreach ($platformsPosts['data'] as $lang => $platformsPost): ?>
+                                <div class="cnrs-dm-pll-select-wrapper">
+                                    <?php echo $platformsPosts['pll'] === true ? $platformsPosts['data'][$lang][0]['flag'] : '' ?>
+                                    <select id="cnrs-data-manager-tools-platforms-post-<?php echo $platformsCnt ?>" required name="cnrs-data-manager-tools-platforms-post-<?php echo $platformsCnt ?>[<?php echo $lang ?>]">
+                                        <option selected disabled value="0"><?php echo __('Select a platform', 'cnrs-data-manager') ?></option>
+                                        <?php foreach ($platformsPosts['data'][$lang] as $post): ?>
+                                            <option <?php echo isCNRSDataManagerToolsSelected($relations['platforms'], $post['id'], $platform['plateforme_id']) ? 'selected' : '' ?> value="<?php echo $post['id'] ?>"><?php echo $post['title'] ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            <?php endforeach; ?>
                         <?php else: ?>
                             <i class="cnrs-dm-no-article"><?php echo __('No article available for this category.', 'cnrs-data-manager') ?></i>
                         <?php endif; ?>
@@ -207,7 +222,7 @@ add_action( 'wp_enqueue_scripts', 'cnrs_script_enqueue');", 'php'); ?></pre>
             <?php endforeach; ?>
             </tbody>
         </table>
-        <?php if (!empty($platformsPosts['data'])): ?>
+        <?php if (!empty($platformsPosts['data']['fr'])): ?>
             <p class="submit">
                 <input type="submit" name="submit" class="button button-primary" value="<?php echo __('Update', 'cnrs-data-manager') ?>">
             </p>

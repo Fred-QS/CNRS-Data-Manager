@@ -70,11 +70,11 @@ class Install
         );
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_settings (
               filename varchar(255) DEFAULT NULL COMMENT 'XML endpoint url',
-              teams_category int(11) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Category for teams',
+              teams_category varchar(255) NOT NULL COMMENT 'Categories for teams',
               teams_view_selector tinyint(4) NOT NULL DEFAULT 1 COMMENT 'Display teams view selector',
-              services_category int(11) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Category for services',
+              services_category varchar(255) NOT NULL COMMENT 'Categories for services',
               services_view_selector tinyint(4) NOT NULL DEFAULT 1 COMMENT 'Display services view selector',
-              platforms_category int(11) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Category for platforms',
+              platforms_category varchar(255) NOT NULL COMMENT 'Categories for platforms',
               platforms_view_selector tinyint(4) NOT NULL DEFAULT 1 COMMENT 'Display platforms view selector',
               mode enum('widget','page') NOT NULL DEFAULT 'widget' COMMENT 'Display mode for entity list',
               default_latitude decimal(8,6) NOT NULL DEFAULT 48.883890 COMMENT 'Default latitude value for 3D map',
