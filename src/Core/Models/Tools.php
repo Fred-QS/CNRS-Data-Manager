@@ -140,9 +140,33 @@ class Tools
      *
      * @return array The array containing the teams' term ID and related xml entity ID.
      */
-    public static function getTeams(): array
+    public static function getTeams(string $lang = 'fr'): array
     {
         global $wpdb;
-        return $wpdb->get_results( "SELECT DISTINCT term_id FROM {$wpdb->prefix}cnrs_data_manager_relations WHERE type = 'teams' AND term_id != 0", ARRAY_A );
+
+        $cat = match ($lang) {
+            'en' => get_category_by_slug('teams'),
+            default => get_category_by_slug('equipes'),
+        };
+
+        if ($cat !== false) {
+
+            $posts = get_posts([
+                'fields' => 'ids',
+                'post_type' => 'post',
+                'lang' => $lang,
+                'numberposts' => -1,
+                'post_status'    => 'publish',
+                'category' => $cat->cat_ID,
+                'orderby' => 'post_title',
+                'order' => 'ASC',
+            ]);
+
+            $values = implode(', ', $posts);
+
+            return $wpdb->get_results( "SELECT DISTINCT {$wpdb->prefix}cnrs_data_manager_relations.term_id, {$wpdb->prefix}cnrs_data_manager_relations.xml_entity_id FROM {$wpdb->prefix}cnrs_data_manager_relations INNER JOIN {$wpdb->prefix}posts ON {$wpdb->prefix}cnrs_data_manager_relations.term_id = {$wpdb->prefix}posts.ID WHERE {$wpdb->prefix}cnrs_data_manager_relations.type = 'teams' AND {$wpdb->prefix}cnrs_data_manager_relations.term_id IN ({$values}) ORDER BY {$wpdb->prefix}posts.post_title ASC", ARRAY_A );
+        }
+
+        return $wpdb->get_results( "SELECT DISTINCT {$wpdb->prefix}cnrs_data_manager_relations.term_id, {$wpdb->prefix}cnrs_data_manager_relations.xml_entity_id FROM {$wpdb->prefix}cnrs_data_manager_relations INNER JOIN {$wpdb->prefix}posts ON {$wpdb->prefix}cnrs_data_manager_relations.term_id = {$wpdb->prefix}posts.ID WHERE {$wpdb->prefix}cnrs_data_manager_relations.type = 'teams' AND {$wpdb->prefix}cnrs_data_manager_relations.term_id != 0 ORDER BY {$wpdb->prefix}posts.post_title ASC", ARRAY_A );
     }
 }

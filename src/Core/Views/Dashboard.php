@@ -40,6 +40,7 @@ if ($providerType === 'services') {
             <?php echo svgFromBase64(CNRS_DATA_MANAGER_DASHBOARD_ICON, '#5d5d5d', 22) ?>
             <?php echo __('Dashboard', 'cnrs-data-manager'); ?>
         </h1>
+        <?php cnrs_polylang_installed() ?>
         <h3 class="cnrs-dm-tools-h2"><?php echo __('Overview', 'cnrs-data-manager') ?></h3>
         <p id="cnrs-dm-first-text"><?php echo __('In this section, you will find an overview of the information provided by the XML file containing the data updated by the CNRS IS.', 'cnrs-data-manager') ?></p>
         <p id="cnrs-dm-last-text"><?php echo __('Select a data type using the selection field below to browse results for teams, services, platforms or agents.', 'cnrs-data-manager') ?></p>
@@ -285,6 +286,7 @@ if ($providerType === 'services') {
                 <tr class="cnrs-dm-projects-row<?php echo ($key + 1) % 2 === 0 ? ' even' : '' ?>">
                     <th scope="row" class="cnrs-dm-data-selector-th cnrs-dm-data-selector-th-top">
                         <input type="hidden" name="cnrs-data-manager-project[]" value="<?php echo $project['id'] ?>">
+                        <input type="hidden" name="cnrs-data-manager-project-lang-<?php echo $project['id'] ?>" value="<?php echo $project['lang'] ?>">
                         <div class="cnrs-dm-project-item">
                         <span class="cnrs-dm-project-image-tag cnrs-dm-imported-item-image">
                                 <?php echo $project['image'] !== ''
@@ -293,7 +295,7 @@ if ($providerType === 'services') {
                                 ?>
                         </span>
                             <a href="<?php echo $project['url'] ?>" target="_blank" class="cnrs-dm-imported-item-info">
-                                <span><?php echo $project['name'] ?></span>
+                                <span><?php echo $project['name'] . ' (' . $project['lang'] . ')' ?></span>
                                 <small><i>(<?php echo $project['uri'] ?>)</i></small>
                                 <i><?php echo $project['excerpt'] ?></i>
                             </a>
@@ -306,7 +308,8 @@ if ($providerType === 'services') {
                     </th>
                     <td>
                         <div class="cnrs-data-manager-project-teams">
-                            <?php foreach (getTeams() as $team): ?>
+                            <?php $teamsFr = getTeams()['fr']; ?>
+                            <?php foreach ($teamsFr as $team): ?>
                                 <label>
                                     <input <?php echo isTeamSelected($team['id'], $project['teams']) ? 'checked' : '' ?> type="checkbox" value="<?php echo $team['id'] ?>" name="cnrs-data-manager-project-teams-<?php echo $project['id'] ?>[]">
                                     <i><?php echo $team['name'] ?></i>

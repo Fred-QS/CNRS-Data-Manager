@@ -266,6 +266,7 @@ $platformsConfig = getCategoriesConfig('platforms', $settings['platforms_categor
             <p>
                 <?php echo __('The filter and view selectors are not dynamic and just allow you to generate the shortcode to use. On the other hand, the <b>Show view selector</b> selector is dynamic and will be saved in the database.', 'cnrs-data-manager') ?>
             </p>
+            <?php cnrs_polylang_installed() ?>
             <table class="form-table" role="presentation">
                 <tbody>
                 <tr>

@@ -52,7 +52,11 @@ class Bootstrap
     public static function cnrs_data_manager_cron_hook(): void
     {
         $array = Manager::defineArrayFromXML(true);
-        $jsonPath = CNRS_DATA_MANAGER_PATH . '/tmp/data.json';
+        $dirPath = CNRS_DATA_MANAGER_PATH . '/api-tmp';
+        if (!file_exists($dirPath)) {
+            @mkdir($dirPath, 0777, true);
+        }
+        $jsonPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/data.json';
         $file = fopen($jsonPath, "w+");
         fwrite($file, json_encode($array, JSON_PRETTY_PRINT));
         fclose($file);

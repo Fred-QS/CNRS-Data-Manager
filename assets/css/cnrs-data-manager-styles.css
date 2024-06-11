@@ -147,6 +147,10 @@ th.sortable p span, th.sorted p span {
     padding: 0 10px 0 0!important;
 }
 
+.cnrs-dm-data-selector-th-import {
+    padding: 10px 0 20px!important;
+}
+
 .cnrs-dm-data-selector-td {
     padding: 0 10px!important;
     vertical-align: middle!important;
@@ -895,6 +899,9 @@ label[for="cnrs-dm-filename"] {
 
 label[for="cnrs-data-manager-projects-team"] {
     vertical-align: top;
+    padding-bottom: 5px;
+    display: flex;
+    font-weight: bold;
 }
 
 .cnrs-data-manager-project-teams {
@@ -2483,7 +2490,6 @@ input:checked + .cnrs-dm-slider:before {
 .cnrs-dm-pll-select-wrapper {
     border: 1px solid #8c8f94;
     border-radius: 3px;
-    background: #fff url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23555%22%2F%3E%3C%2Fsvg%3E') no-repeat right 5px top 55%;
     background-size: 16px 16px;
     vertical-align: middle;
     display: flex;
@@ -2491,6 +2497,7 @@ input:checked + .cnrs-dm-slider:before {
     align-items: center;
     width: max-content;
     padding-left: 8px;
+    background-color: #fff;
 }
 
 .cnrs-dm-pll-select-wrapper:not(:first-of-type) {
@@ -2503,6 +2510,7 @@ input:checked + .cnrs-dm-slider:before {
 
 .cnrs-dm-pll-select-wrapper select {
     border: none;
+    width: 100%;
 }
 
 .cnrs-dm-pll-select-wrapper select:focus {
@@ -2512,6 +2520,45 @@ input:checked + .cnrs-dm-slider:before {
 
 .cnrs-dm-pll-select-wrapper img {
     margin-right: 8px;
+}
+
+.cnrs-dm-polylang-installed-wrapper {
+    display: flex;
+    max-width: calc(100% - 20px);
+    width: max-content;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.1);
+    margin: 10px 0;
+}
+
+.cnrs-dm-polylang-installed-wrapper img {
+    width: 40px;
+    border-radius: 200px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.cnrs-dm-polylang-installed-wrapper p {
+    width: calc(100% - 50px);
+    margin: 0;
+    line-height: 1.4em;
+}
+
+.cnrs-dm-polylang-installed-wrapper p b:first-child {
+    color: #53AC64;
+}
+
+.cnrs-dm-polylang-installed-wrapper p b:last-of-type {
+    color: #2271b1;
+}
+
+.cnrs-dm-polylang-installed-wrapper p span {
+    font-size: 20px;
 }
 
 @media only screen and (min-width: 783px) {
@@ -2892,6 +2939,7 @@ input:checked + .cnrs-dm-slider:before {
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
     }
 
     .cnrs-dm-label-like {

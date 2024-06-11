@@ -4,7 +4,7 @@
         <li class="cnrs-dm-imported-item">
             <span class="cnrs-dm-imported-item-image" style="background-image: url(<?php echo $p['image'] ?>)"></span>
             <a href="<?php echo $p['url'] ?>" target="_blank" class="cnrs-dm-imported-item-info">
-                <span><?php echo $p['title'] ?></span>
+                <span><?php echo $p['title'] ?><?php echo $p['lang'] !== 'fr' ? ' (' . $p['lang'] . ')' : '' ?></span>
                 <i><?php echo $p['excerpt'] ?></i>
             </a>
         </li>

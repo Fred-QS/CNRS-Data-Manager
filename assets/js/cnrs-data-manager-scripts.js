@@ -47,7 +47,7 @@ const fileImportBtn = document.querySelector('#cnrs-dm-import-file-btn');
 const fileImportSubmitBtn = document.querySelector('#cnrs-dm-file-import-form-submit');
 const importInitialStateContainer = document.querySelector('#cnrs-dm-import-initial-state-container');
 const importResponseStateContainer = document.querySelector('#cnrs-dm-import-response-state-container');
-const fileImportTeamSelector = document.querySelector('#cnrs-data-manager-projects-team');
+const fileImportTeamSelectors = document.querySelectorAll('.cnrs-data-manager-projects-team');
 const projectInputSearch = document.querySelector('#cnrs-data-manager-search-projects');
 const projectSearchButton = document.querySelector('#cnrs-data-manager-search-submit-projects');
 const projectExpander = document.querySelectorAll('.cnrs-dm-projects-expander');
@@ -1547,7 +1547,11 @@ function handleXMLCheckResult(json) {
             formData.append('file', xlsFile);
             formData.append('data', JSON.stringify(xlsArray));
             formData.append('action', 'import_xml_file');
-            formData.append('team', fileImportTeamSelector.value);
+            let teams = {};
+            for (let i = 0; i < fileImportTeamSelectors.length; i++) {
+                teams[fileImportTeamSelectors[i].dataset.lang] = parseInt(fileImportTeamSelectors[i].value);
+            }
+            formData.append('teams', JSON.stringify(teams));
             const options = {
                 method: 'POST',
                 body: formData,

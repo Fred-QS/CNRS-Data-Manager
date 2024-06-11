@@ -87,7 +87,8 @@ class Install
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_team_project (
               team_id int(10) UNSIGNED NOT NULL COMMENT 'Team unique ID',
               project_id int(10) UNSIGNED NOT NULL COMMENT 'Project unique ID',
-              display_order int(10) UNSIGNED DEFAULT NULL COMMENT 'Display order from 1 to 16. Not displayed if NULL'
+              display_order int(10) UNSIGNED DEFAULT NULL COMMENT 'Display order from 1 to 16. Not displayed if NULL',
+              lang varchar(2) NOT NULL DEFAULT 'fr' COMMENT 'Language of the post',
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Relations and display order between projects and teams'"
         );
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_agents_accounts (

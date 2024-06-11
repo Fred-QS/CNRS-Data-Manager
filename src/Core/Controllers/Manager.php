@@ -287,7 +287,7 @@ final class Manager
      */
     public static function defineArrayFromXML(bool $sync = false): array
     {
-        $jsonPath = CNRS_DATA_MANAGER_PATH . '/tmp/data.json';
+        $jsonPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/data.json';
         if (file_exists($jsonPath) && $sync === false) {
             return json_decode(file_get_contents($jsonPath), true);
         }

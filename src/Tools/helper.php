@@ -811,7 +811,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder', 'publications'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -1148,6 +1148,13 @@ if (!function_exists('cnrsReadShortCode')) {
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/RevisionForm.php');
             return ob_get_clean();
+
+        } else if ($type === 'publications') {
+
+            $shortCodesCounter++;
+
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', [], null);
         }
 
         return '';
@@ -1432,43 +1439,68 @@ if (!function_exists('addQueryVars')) {
 if (!function_exists('getTeams')) {
 
     /**
-     * Retrieves teams with their names and optionally their WordPress names.
+     * Get teams from XML data.
      *
-     * @param bool $onlyNames If true, only the names of the teams will be returned.
-     * @return array Returns an array of teams, each containing the ID and name of the team. If $onlyNames is true, the array will only contain name data.
+     * @param bool $onlyNames Optional. Whether to only get team names. Default false.
+     * @return array Returns an array of teams. Each team is represented as an associative array with keys 'id' and 'name'.
      */
     function getTeams(bool $onlyNames = false): array
     {
+        $pll = function_exists('pll_the_languages');
+        $list = ['fr'];
+        $flags = null;
+        $result = ['fr' => []];
+
+        if ($pll === true) {
+            $list = pll_languages_list();
+            $flags = cnrs_get_languages_from_pll([], false);
+        }
+
         $xmlTeams = Manager::defineArrayFromXML()['teams'];
-        $teams = Tools::getTeams();
-        $result = [];
-        foreach ($xmlTeams as $xmlTeam) {
-            $id = $xmlTeam['equipe_id'];
-            $xml_name = $xmlTeam['nom'];
-            $wp_name = (function () use ($teams, $id) {
-                foreach ($teams as $team) {
-                    if ((int) $team['xml_entity_id'] === (int) $id) {
-                        $post = get_post((int) $team['term_id']);
-                        $title = $post->post_title;
-                        return strlen($title) > 0 ? $title : null;
+
+        foreach ($list as $lang) {
+
+            $teams = Tools::getTeams($lang);
+
+            foreach ($xmlTeams as $xmlTeam) {
+
+                $id = $xmlTeam['equipe_id'];
+                $xml_name = $xmlTeam['nom'];
+
+                $wp_name = (function () use ($teams, $id) {
+                    foreach ($teams as $team) {
+                        if ((int) $team['xml_entity_id'] === (int) $id) {
+                            $post = get_post((int) $team['term_id']);
+                            $title = $post->post_title;
+                            return strlen($title) > 0 ? $title : null;
+                        }
                     }
+                    return null;
+                })();
+
+                if ($onlyNames === true && $wp_name !== null) {
+
+                    $result[$lang][] = [
+                        'id' => $id,
+                        'lang' => $lang,
+                        'flag' => $flags[$lang],
+                        'name' => $wp_name
+                    ];
+
+                } else if ($onlyNames === false) {
+
+                    $result[$lang][] = [
+                        'id' => $id,
+                        'lang' => $lang,
+                        'flag' => $flags[$lang],
+                        'name' => $xml_name . ($wp_name !== null
+                                ? ''
+                                : ' (' . __('not assigned', 'cnrs-data-manager') . ')')
+                    ];
                 }
-                return null;
-            })();
-            if ($onlyNames === true && $wp_name !== null) {
-                $result[] = [
-                    'id' => $id,
-                    'name' => $wp_name
-                ];
-            } else if ($onlyNames === false) {
-                $result[] = [
-                    'id' => $id,
-                    'name' => $xml_name . ($wp_name !== null
-                            ? ' (' . $wp_name . ')'
-                            : ' (' . __('not assigned', 'cnrs-data-manager') . ')')
-                ];
             }
         }
+
         return $result;
     }
 }
@@ -1497,6 +1529,7 @@ if (!function_exists('getProjects')) {
                 'name' => $project->post_title,
                 'uri' => $project->post_name,
                 'excerpt' => $project->post_excerpt,
+                'lang' => function_exists('pll_get_post_language') ? pll_get_post_language($project->ID, 'slug') : 'fr',
                 'image' => get_the_post_thumbnail($project->ID),
                 'teams' => []
             ];
@@ -1592,6 +1625,7 @@ if (!function_exists('updateProjectsRelations')) {
 
                     $teams = $_POST['cnrs-data-manager-project-teams-' . $projectID];
                     $orders = $_POST['cnrs-data-manager-project-order-' . $projectID];
+                    $lang = $_POST['cnrs-data-manager-project-lang-' . $projectID];
                     $reorders = [];
                     foreach ($orders as $order) {
                         if ($order !== '0') {
@@ -1603,7 +1637,8 @@ if (!function_exists('updateProjectsRelations')) {
                         $inserts[] = [
                             'team_id' => (int) $teams[$i],
                             'project_id' => (int) $projectID,
-                            'display_order' => (int) $reorders[$i]
+                            'display_order' => (int) $reorders[$i],
+                            'lang' => $lang
                         ];
                     }
                 }
@@ -2128,5 +2163,25 @@ if (!function_exists('cnrs_is_there_agents')) {
             }
         }
         return false;
+    }
+}
+
+if (!function_exists('cnrs_polylang_installed')) {
+
+    /**
+     * Check if the Polylang extension is installed.
+     *
+     * @return void
+     */
+    function cnrs_polylang_installed(): void
+    {
+        if (function_exists('pll_the_languages')) {
+            ob_start(); ?>
+            <div class="cnrs-dm-polylang-installed-wrapper">
+                <img src="/wp-content/plugins/cnrs-data-manager/assets/media/polylang-logo.png" alt="polylang-logo">
+                <p><?php echo __('The <b>Polylang</b> extension is installed! <b>CNRS Data Manager</b> is compatible with Polylang', 'cnrs-data-manager') ?> <span>😉</span></p>
+            </div>
+            <?php echo ob_get_clean();
+        }
     }
 }
