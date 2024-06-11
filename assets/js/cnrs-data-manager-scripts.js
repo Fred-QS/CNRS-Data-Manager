@@ -47,7 +47,7 @@ const fileImportBtn = document.querySelector('#cnrs-dm-import-file-btn');
 const fileImportSubmitBtn = document.querySelector('#cnrs-dm-file-import-form-submit');
 const importInitialStateContainer = document.querySelector('#cnrs-dm-import-initial-state-container');
 const importResponseStateContainer = document.querySelector('#cnrs-dm-import-response-state-container');
-const fileImportTeamSelector = document.querySelector('#cnrs-data-manager-projects-team');
+const fileImportTeamSelectors = document.querySelectorAll('.cnrs-data-manager-projects-team');
 const projectInputSearch = document.querySelector('#cnrs-data-manager-search-projects');
 const projectSearchButton = document.querySelector('#cnrs-data-manager-search-submit-projects');
 const projectExpander = document.querySelectorAll('.cnrs-dm-projects-expander');
@@ -545,40 +545,42 @@ function prepareListeners() {
 
 function setTogglesStates(toggle = null) {
 
-    if (toggle === null) {
+    if (typeof originalToggles !== "undefined" && typeof toggle !== "undefined") {
+        if (toggle === null) {
 
-        if (togglesState === null) {
-            togglesState = {};
-            for (let i = 0; i < originalToggles.length; i++) {
-                togglesState[originalToggles[i].id] = {
-                    label: originalToggles[i].label,
-                    option1: {value: originalToggles[i].values[0], active: true},
-                    option2: {value: originalToggles[i].values[1], active: false},
+            if (togglesState === null) {
+                togglesState = {};
+                for (let i = 0; i < originalToggles.length; i++) {
+                    togglesState[originalToggles[i].id] = {
+                        label: originalToggles[i].label,
+                        option1: {value: originalToggles[i].values[0], active: true},
+                        option2: {value: originalToggles[i].values[1], active: false},
+                    }
                 }
             }
-        }
 
-        for (let i = 0; i < missionForm.elements.length; i++) {
-            if (missionForm.elements[i].type === 'toggle') {
-                const uuid = missionForm.elements[i].data.value[0]
-                togglesState[missionForm.elements[i].data.value[0]] = {
-                    label: missionForm.elements[i].label,
-                    option1: {value: missionForm.elements[i].data.values[0], active: true},
-                    option2: {value: missionForm.elements[i].data.values[1], active: false},
-                };
+            for (let i = 0; i < missionForm.elements.length; i++) {
+                if (missionForm.elements[i].type === 'toggle') {
+                    const uuid = missionForm.elements[i].data.value[0]
+                    togglesState[missionForm.elements[i].data.value[0]] = {
+                        label: missionForm.elements[i].label,
+                        option1: {value: missionForm.elements[i].data.values[0], active: true},
+                        option2: {value: missionForm.elements[i].data.values[1], active: false},
+                    };
+                }
             }
-        }
 
-    } else {
+        } else {
 
-        if (typeof togglesState[toggle.uuid] !== "undefined") {
+            if (typeof togglesState[toggle.uuid] !== "undefined") {
 
-            if (togglesState[toggle.uuid].option1.value === toggle.value) {
-                togglesState[toggle.uuid].option1.active = true;
-                togglesState[toggle.uuid].option2.active = false;
-            } else if (togglesState[toggle.uuid].option2.value === toggle.value) {
-                togglesState[toggle.uuid].option1.active = false;
-                togglesState[toggle.uuid].option2.active = true;
+                if (togglesState[toggle.uuid].option1.value === toggle.value) {
+                    togglesState[toggle.uuid].option1.active = true;
+                    togglesState[toggle.uuid].option2.active = false;
+                } else if (togglesState[toggle.uuid].option2.value === toggle.value) {
+                    togglesState[toggle.uuid].option1.active = false;
+                    togglesState[toggle.uuid].option2.active = true;
+                }
             }
         }
     }
@@ -1545,7 +1547,11 @@ function handleXMLCheckResult(json) {
             formData.append('file', xlsFile);
             formData.append('data', JSON.stringify(xlsArray));
             formData.append('action', 'import_xml_file');
-            formData.append('team', fileImportTeamSelector.value);
+            let teams = {};
+            for (let i = 0; i < fileImportTeamSelectors.length; i++) {
+                teams[fileImportTeamSelectors[i].dataset.lang] = parseInt(fileImportTeamSelectors[i].value);
+            }
+            formData.append('teams', JSON.stringify(teams));
             const options = {
                 method: 'POST',
                 body: formData,

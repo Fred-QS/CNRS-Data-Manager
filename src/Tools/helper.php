@@ -620,7 +620,9 @@ if (!function_exists('sanitizeURIForPagination')) {
                 $current = substr($current, 0, -1);
             }
         }
-        return $current . '&' . $trigger . '=' . $page;
+        return str_contains($current, '?')
+            ? $current . '&' . $trigger . '=' . $page
+            : $current . '?' . $trigger . '=' . $page;
     }
 }
 
@@ -630,12 +632,12 @@ if (!function_exists('getCategoriesConfig')) {
      * Get the configuration options for categories list.
      *
      * @param string $name The name of the categories list.
-     * @param int $selected The selected option value.
+     * @param array $selected The selected option values.
      * @param string $class The additional CSS class to be applied to the list. Default is an empty string.
      *
      * @return array The configuration options for the categories list.
      */
-    function getCategoriesConfig(string $name, int $selected, string $class = ''): array
+    function getCategoriesConfig(string $name, array $selected, string $class = ''): array
     {
         $c = 'cnrs-data-manager-categories-list';
         if (strlen($class) > 0) {
@@ -655,37 +657,63 @@ if (!function_exists('getCategoriesConfig')) {
 
 if (!function_exists('getAllPostsFromCategoryId')) {
 
+
     /**
-     * Get all posts from a given category ID.
+     * Get all posts from a specific category.
      *
-     * @param array $data An associative array containing the necessary data:
-     *                    - 'id': The category ID.
-     *                    - 'name': The name of the category.
-     * @return array An array containing the retrieved posts:
-     *               - 'data': An array of posts, each containing the post ID and title.
-     *               - 'name': The name of the category.
+     * @param string $cat The category identifier ('services', 'platforms', or 'teams').
+     * @return array Returns an array containing the post data for the specified category.
      */
-    function getAllPostsFromCategoryId(array $data): array
+    function getAllPostsFromCategoryId(string $cat): array
     {
-        $id = $data['id'];
-        $args = array(
-            'post_type'      => 'post',
-            'cat'            => $id,
-            'posts_per_page' => -1,
-            'orderby'        => 'title',
-            'order'          => 'ASC'
-        );
-
-        $the_query = new WP_Query( $args );
+        $pll = function_exists('pll_the_languages');
         $array = [];
+        $list = ['fr'];
+        $name = null;
+        $flags = ['fr' => null];
 
-        if ($the_query->have_posts()) {
-            while ($the_query->have_posts()) {
-                $the_query->the_post();
-                $array[] = ['id' => get_the_ID(), 'title' => get_the_title()];
+        if ($pll === true) {
+            $list = pll_languages_list();
+            $flags = cnrs_get_languages_from_pll([], false);
+        }
+
+        foreach ($list as $item) {
+
+            $data = match ($cat) {
+                'services' => Tools::getServicesCategoryId($item),
+                'platforms' => Tools::getPlatformsCategoryId($item),
+                default => Tools::getTeamsCategoryId($item)
+            };
+
+            if ($name === null && $item === 'fr') {
+                $name = $data['name'];
+            }
+
+            $id = $data['id'];
+            $args = array(
+                'post_type'      => 'post',
+                'cat'            => $id,
+                'posts_per_page' => -1,
+                'orderby'        => 'title',
+                'order'          => 'ASC'
+            );
+
+            $the_query = new WP_Query( $args );
+
+            if ($the_query->have_posts()) {
+                while ($the_query->have_posts()) {
+                    $the_query->the_post();
+                    $array[$item][] = [
+                        'id' => get_the_ID(),
+                        'title' => get_the_title(),
+                        'flag' => $flags[$item],
+                        'lang' => $item
+                    ];
+                }
             }
         }
-        return ['data' => $array, 'name' => $data['name']];
+
+        return ['data' => $array, 'name' => $name, 'pll' => $pll];
     }
 }
 
@@ -783,7 +811,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder', 'publications'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -889,7 +917,7 @@ if (!function_exists('cnrsReadShortCode')) {
 
             $link = stripos($target, '?') !== false ? $target . '&cnrs-dm-ref=' . $id  : $target . '?cnrs-dm-ref=' . $id;
             $link = $link[0] === '/' || stripos($link, 'http') === 0 ? $link : '/' . $link;
-            return "<a class='cnrs-dm-front-btn cnrs-dm-front-btn-{$id}' data-shortcode='cnrs-data-manager-{$shortCodesCounter}' id='cnrs-dm-front-btn-{$shortCodesCounter}' href='{$link}'>{$text}</a>";
+            return "<a class='cnrs-dm-front-btn cnrs-dm-front-btn-std cnrs-dm-front-btn-{$id}' data-shortcode='cnrs-data-manager-{$shortCodesCounter}' id='cnrs-dm-front-btn-{$shortCodesCounter}' href='{$link}'>{$text}</a>";
 
         } else if ($type === 'page-title') {
 
@@ -1120,6 +1148,13 @@ if (!function_exists('cnrsReadShortCode')) {
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/RevisionForm.php');
             return ob_get_clean();
+
+        } else if ($type === 'publications') {
+
+            $shortCodesCounter++;
+
+            wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', [], null);
         }
 
         return '';
@@ -1404,43 +1439,68 @@ if (!function_exists('addQueryVars')) {
 if (!function_exists('getTeams')) {
 
     /**
-     * Retrieves teams with their names and optionally their WordPress names.
+     * Get teams from XML data.
      *
-     * @param bool $onlyNames If true, only the names of the teams will be returned.
-     * @return array Returns an array of teams, each containing the ID and name of the team. If $onlyNames is true, the array will only contain name data.
+     * @param bool $onlyNames Optional. Whether to only get team names. Default false.
+     * @return array Returns an array of teams. Each team is represented as an associative array with keys 'id' and 'name'.
      */
     function getTeams(bool $onlyNames = false): array
     {
+        $pll = function_exists('pll_the_languages');
+        $list = ['fr'];
+        $flags = null;
+        $result = ['fr' => []];
+
+        if ($pll === true) {
+            $list = pll_languages_list();
+            $flags = cnrs_get_languages_from_pll([], false);
+        }
+
         $xmlTeams = Manager::defineArrayFromXML()['teams'];
-        $teams = Tools::getTeams();
-        $result = [];
-        foreach ($xmlTeams as $xmlTeam) {
-            $id = $xmlTeam['equipe_id'];
-            $xml_name = $xmlTeam['nom'];
-            $wp_name = (function () use ($teams, $id) {
-                foreach ($teams as $team) {
-                    if ((int) $team['xml'] === (int) $id) {
-                        $post = get_post((int) $team['cat']);
-                        $title = $post->post_title;
-                        return strlen($title) > 0 ? $title : null;
+
+        foreach ($list as $lang) {
+
+            $teams = Tools::getTeams($lang);
+
+            foreach ($xmlTeams as $xmlTeam) {
+
+                $id = $xmlTeam['equipe_id'];
+                $xml_name = $xmlTeam['nom'];
+
+                $wp_name = (function () use ($teams, $id) {
+                    foreach ($teams as $team) {
+                        if ((int) $team['xml_entity_id'] === (int) $id) {
+                            $post = get_post((int) $team['term_id']);
+                            $title = $post->post_title;
+                            return strlen($title) > 0 ? $title : null;
+                        }
                     }
+                    return null;
+                })();
+
+                if ($onlyNames === true && $wp_name !== null) {
+
+                    $result[$lang][] = [
+                        'id' => $id,
+                        'lang' => $lang,
+                        'flag' => $flags[$lang],
+                        'name' => $wp_name
+                    ];
+
+                } else if ($onlyNames === false) {
+
+                    $result[$lang][] = [
+                        'id' => $id,
+                        'lang' => $lang,
+                        'flag' => $flags[$lang],
+                        'name' => $xml_name . ($wp_name !== null
+                                ? ''
+                                : ' (' . __('not assigned', 'cnrs-data-manager') . ')')
+                    ];
                 }
-                return null;
-            })();
-            if ($onlyNames === true && $wp_name !== null) {
-                $result[] = [
-                    'id' => $id,
-                    'name' => $wp_name
-                ];
-            } else if ($onlyNames === false) {
-                $result[] = [
-                    'id' => $id,
-                    'name' => $xml_name . ($wp_name !== null
-                            ? ' (' . $wp_name . ')'
-                            : ' (' . __('not assigned', 'cnrs-data-manager') . ')')
-                ];
             }
         }
+
         return $result;
     }
 }
@@ -1456,7 +1516,8 @@ if (!function_exists('getProjects')) {
     {
         $projects = get_posts([
             'post_type' => 'project',
-            'orderby'    => 'ID',
+            'orderby' => 'post_title',
+            'order' => 'ASC',
             'numberposts' => -1,
         ]);
         $relations = Projects::getProjects();
@@ -1466,7 +1527,9 @@ if (!function_exists('getProjects')) {
                 'id' => $project->ID,
                 'url' => $project->guid,
                 'name' => $project->post_title,
+                'uri' => $project->post_name,
                 'excerpt' => $project->post_excerpt,
+                'lang' => function_exists('pll_get_post_language') ? pll_get_post_language($project->ID, 'slug') : 'fr',
                 'image' => get_the_post_thumbnail($project->ID),
                 'teams' => []
             ];
@@ -1562,6 +1625,7 @@ if (!function_exists('updateProjectsRelations')) {
 
                     $teams = $_POST['cnrs-data-manager-project-teams-' . $projectID];
                     $orders = $_POST['cnrs-data-manager-project-order-' . $projectID];
+                    $lang = $_POST['cnrs-data-manager-project-lang-' . $projectID];
                     $reorders = [];
                     foreach ($orders as $order) {
                         if ($order !== '0') {
@@ -1573,7 +1637,8 @@ if (!function_exists('updateProjectsRelations')) {
                         $inserts[] = [
                             'team_id' => (int) $teams[$i],
                             'project_id' => (int) $projectID,
-                            'display_order' => (int) $reorders[$i]
+                            'display_order' => (int) $reorders[$i],
+                            'lang' => $lang
                         ];
                     }
                 }
@@ -1956,5 +2021,167 @@ if (!function_exists('stripArrayValuesSlashes')) {
             $striped[] = html_entity_decode(stripslashes($item));
         }
         return $striped;
+    }
+}
+
+if (!function_exists('highlightText')) {
+
+    /**
+     * Highlight and colorize the provided text based on the file extension.
+     *
+     * @param string $text The text to be highlighted.
+     * @param string $fileExt The file extension to determine the highlighting settings.
+     * @return string The highlighted and colorized text.
+     */
+    function highlightText(string $text, string $fileExt=""): string
+    {
+        if ($fileExt == "php")
+        {
+            ini_set("highlight.comment", "#4e574e");
+            ini_set("highlight.default", "#5b82bd");
+            ini_set("highlight.html", "#b35454");
+            ini_set("highlight.keyword", "#b87fe3; font-weight: bold");
+            ini_set("highlight.string", "#e6ce57");
+        }
+        else if ($fileExt == "html")
+        {
+            ini_set("highlight.comment", "4e574e");
+            ini_set("highlight.default", "#f1f1f1");
+            ini_set("highlight.html", "#b35454");
+            ini_set("highlight.keyword", "orange; font-weight: bold");
+            ini_set("highlight.string", "#ffffff");
+        }
+
+        $text = trim($text);
+        $text = highlight_string("<?php " . $text, true);  // highlight_string() requires opening PHP tag or otherwise it will not colorize the text
+        $text = trim($text);
+        $text = preg_replace("|^\\<code\\>\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>|", "", $text, 1);  // remove prefix
+        $text = preg_replace("|\\</code\\>\$|", "", $text, 1);  // remove suffix 1
+        $text = trim($text);  // remove line breaks
+        $text = preg_replace("|\\</span\\>\$|", "", $text, 1);  // remove suffix 2
+        $text = trim($text);  // remove line breaks
+        $text = preg_replace("|^(\\<span style\\=\"color\\: #[a-fA-F0-9]{0,6}\"\\>)(&lt;\\?php&nbsp;)(.*?)(\\</span\\>)|", "\$1\$3\$4", $text);  // remove custom added "<?php "
+
+        return $text;
+    }
+}
+
+if (!function_exists('cnrs_get_languages_from_pll')) {
+
+
+    /**
+     * Get languages from Polylang and generate HTML select element.
+     *
+     * @param array $config The configuration options.
+     * @param bool $dom Whether to return the generated HTML or the language data.
+     * @return string|array Returns the generated HTML if $dom is true, otherwise returns an array of language data.
+     */
+    function cnrs_get_languages_from_pll(array $config, bool $dom = true): string|array
+    {
+        if (function_exists('pll_the_languages')) {
+
+            ob_start();
+            pll_the_languages(['show_flags' => 1, 'show_names' => 0]);
+            $flags = ob_get_clean();
+
+            $rows = explode('</li>', $flags);
+            array_pop($rows);
+
+            $langs = array_map(function($row) {
+                preg_match('/lang="(.*?)-/s', $row, $match);
+                $lang = $match[1];
+                preg_match('/<img(.*?)\/>/s', $row, $match);
+                $flag = $match[0];
+                return ['lang' => $lang, 'flag' => $flag];
+            }, $rows);
+
+            if ($dom === false) {
+                $res = [];
+                foreach ($langs as $lang) {
+                    $res[$lang['lang']] = $lang['flag'];
+                }
+                return $res;
+            }
+
+            $html = '';
+
+            foreach ($langs as $lang) {
+
+                $cats = get_categories(['lang' => $lang['lang'], 'hide_empty' => false]);
+                ob_start(); ?>
+                <div class="cnrs-dm-pll-select-wrapper">
+                    <?php echo $lang['flag'] ?>
+                    <select required name="<?php echo $config['name'] ?>[<?php echo $lang['lang'] ?>]">
+                        <?php foreach ($cats as $cat): ?>
+                            <option<?php echo isset($config['selected'][$lang['lang']]) && (int) $config['selected'][$lang['lang']] === (int) $cat->term_id ? ' selected' : '' ?> class="level-0" value="<?php echo $cat->term_id ?>"><?php echo $cat->name ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <?php $html .= ob_get_clean();
+            }
+            return $html;
+        }
+        $config['selected'] = $config['selected']['fr'];
+        $config['name'] = $config['name'] . '[fr]';
+        return wp_dropdown_categories($config);
+    }
+}
+
+if (!function_exists('cnrs_categories_settings_have_changed')) {
+
+    /**
+     * Check if the categories settings have changed between the old and new values.
+     *
+     * @param array $old The old categories settings array.
+     * @param array $new The new categories settings array.
+     * @return bool Returns true if the categories settings have changed, false otherwise.
+     */
+    function cnrs_categories_settings_have_changed(array $old, array $new): bool
+    {
+        foreach ($old as $lang => $id) {
+            if (isset($new[$lang]) && (int) $id !== (int) $new[$lang]) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+if (!function_exists('cnrs_is_there_agents')) {
+
+    /**
+     * Check if there are agents in the provided entities.
+     *
+     * @param array $entities The entities to check.
+     * @return bool Returns true if there are agents in any of the entities, false otherwise.
+     */
+    function cnrs_is_there_agents(array $entities): bool
+    {
+        foreach ($entities as $entity) {
+            if (count($entity['agents']) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+if (!function_exists('cnrs_polylang_installed')) {
+
+    /**
+     * Check if the Polylang extension is installed.
+     *
+     * @return void
+     */
+    function cnrs_polylang_installed(): void
+    {
+        if (function_exists('pll_the_languages')) {
+            ob_start(); ?>
+            <div class="cnrs-dm-polylang-installed-wrapper">
+                <img src="/wp-content/plugins/cnrs-data-manager/assets/media/polylang-logo.png" alt="polylang-logo">
+                <p><?php echo __('The <b>Polylang</b> extension is installed! <b>CNRS Data Manager</b> is compatible with Polylang', 'cnrs-data-manager') ?> <span>😉</span></p>
+            </div>
+            <?php echo ob_get_clean();
+        }
     }
 }

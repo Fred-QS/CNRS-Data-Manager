@@ -2,6 +2,7 @@
 
 namespace CnrsDataManager\Core\Controllers;
 
+use Error;
 use ErrorException;
 use JsonException;
 use ZipArchive;
@@ -233,8 +234,8 @@ class Ajax
     {
         $json = ['error' => null, 'data' => null];
         try {
-            if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip' && isset($_POST['data']) && isset($_POST['team'])) {
-                $team = (int) $_POST['team'];
+            if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip' && isset($_POST['data']) && isset($_POST['teams'])) {
+                $teams = json_decode(stripslashes($_POST['teams']), true);
                 $strip = str_replace('\\n', '<br>', $_POST['data']);
                 $strip = str_replace('\\', '', $strip);
                 $data = json_decode($strip, true, 512, JSON_THROW_ON_ERROR);
@@ -245,15 +246,15 @@ class Ajax
                     $json['error'] = __('The images could not be processed.', 'cnrs-data-manager');
                 } else {
                     $json['data'] = __('The projects were imported successfully.', 'cnrs-data-manager');
-                    $import = self::importProjectsToDB($data, $dir, $team);
+                    $import = self::importProjectsToDB($data, $dir, $teams);
                     if ($import === false) {
                         $json = ['error' => __('Importing projects into the database failed.', 'cnrs-data-manager'), 'data' => null];
                     }
                     $json['data'] = $import;
                 }
             }
-        } catch (JsonException $e) {
-            $json['error'] = __('The import failed.', 'cnrs-data-manager');
+        } catch (Error|ErrorException|JsonException $e) {
+            $json['error'] = __(/*'The import failed.'*/$e->getMessage(), 'cnrs-data-manager');
         }
         wp_send_json_success($json);
         exit;
@@ -293,13 +294,15 @@ class Ajax
      *
      * @param array $data The data of the projects to be imported.
      * @param string $uploadPath The path where the images are uploaded.
+     * @param array $teams Array of teams Ids.
      * @return bool|string Returns false if any image is missing or a string of the HTML list.
      */
-    private static function importProjectsToDB(array $data, string $uploadPath, int $teamId): bool|string
+    private static function importProjectsToDB(array $data, string $uploadPath, array $teams): bool|string
     {
         $posts = [];
         foreach ($data as $row) {
             $id = null;
+            $translated = [];
             $url = site_url() . '/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg';
             if ($row['IMAGE'] !== null) {
                 $imagePath = $uploadPath . self::$timestamp . '-' . $row['IMAGE'];
@@ -320,6 +323,9 @@ class Ajax
                 $attach_data = wp_generate_attachment_metadata($id, $imagePath);
                 wp_update_attachment_metadata($id, $attach_data);
             }
+
+            $projectFrId = $teams['fr'];
+
             $wpProjectToDB = [
                 'post_author' => get_current_user_id(),
                 'post_content' => self::preparePostContent($row),
@@ -329,19 +335,72 @@ class Ajax
                 'comment_status' => 'open',
                 'ping_status' => 'closed'
             ];
+
             if ($id !== null) {
                 $wpProjectToDB['_thumbnail_id'] = $id;
             }
+
             $postId = wp_insert_post($wpProjectToDB);
-            Projects::setTeamProjectRelation($postId, $teamId);
+            Projects::setTeamProjectRelation($postId, $projectFrId, 'fr');
+
+            if (function_exists('pll_set_post_language')) {
+                pll_set_post_language($postId, 'fr');
+            }
+
             $recorded = get_post($postId, ARRAY_A);
+            $translated['fr'] = $postId;
+
             $posts[] = [
                 'url' => $recorded['guid'],
                 'image' => $url,
+                'lang' => 'fr',
                 'excerpt' => $row['INTITULE'],
                 'title' => $recorded['post_title']
             ];
+
+            foreach ($teams as $lang => $teamId) {
+
+                if ($lang !== 'fr') {
+
+                    $wpProjectToDB = [
+                        'post_author' => get_current_user_id(),
+                        'post_content' => self::preparePostContent($row),
+                        'post_title' => $row['ACRONYME'],
+                        'post_status' => 'publish',
+                        'post_type' => 'project',
+                        'comment_status' => 'open',
+                        'ping_status' => 'closed'
+                    ];
+
+                    if ($id !== null) {
+                        $wpProjectToDB['_thumbnail_id'] = $id;
+                    }
+
+                    $postId = wp_insert_post($wpProjectToDB);
+                    Projects::setTeamProjectRelation($postId, $teamId, $lang);
+
+                    if (function_exists('pll_set_post_language')) {
+                        pll_set_post_language($postId, $lang);
+                    }
+
+                    $translated[$lang] = $postId;
+                    $recorded = get_post($postId, ARRAY_A);
+
+                    $posts[] = [
+                        'url' => $recorded['guid'],
+                        'image' => $url,
+                        'lang' => $lang,
+                        'excerpt' => $row['INTITULE'],
+                        'title' => $recorded['post_title']
+                    ];
+
+                    if (count($translated) > 1 && function_exists('pll_save_post_translations')) {
+                        pll_save_post_translations($translated);
+                    }
+                }
+            }
         }
+
         ob_start();
         include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-list.php');
         return ob_get_clean();

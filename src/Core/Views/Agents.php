@@ -38,30 +38,38 @@
             <!-- End CNRS Data Manager agents list -->
         <?php else: ?>
             <!-- Start CNRS Data Manager agents list filtered by <?php echo $type ?> -->
-            <div class="cnrs-dm-front-sorted-agents-container">
-                <?php foreach ($entities as $entity): ?>
-                    <!-- Start CNRS Data Manager <?php echo $type ?> title -->
-                    <div class="cnrs-dm-front-entity-title-container">
-                        <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-sorted-title.php')?>
-                    </div>
-                    <!-- End CNRS Data Manager <?php echo $type ?> title -->
-                    <!-- Start CNRS Data Manager agents list -->
-                    <div class="cnrs-dm-front-agents-container">
-                        <?php foreach ($entity['agents'] as $agent): ?>
-                            <div class="cnrs-dm-front-agent-wrapper<?php echo in_array($defaultView, [null, 'list']) ? ' cnrs-dm-front-agent-wrapper-list' : ' cnrs-dm-front-agent-wrapper-grid' ?>">
-                                <?php if ($isSelectorAvailable === true || in_array($defaultView, [null, 'list'])): ?>
-                                    <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
-                                <?php endif; ?>
-                                <?php if ($isSelectorAvailable === true || $defaultView === 'grid'): ?>
-                                    <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
-                                <?php endif; ?>
-                                <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php')?>
+            <?php if (cnrs_is_there_agents($entities)): ?>
+                <div class="cnrs-dm-front-sorted-agents-container">
+                    <?php foreach ($entities as $entity): ?>
+                        <?php if (count($entity['agents']) > 0): ?>
+                            <!-- Start CNRS Data Manager <?php echo $type ?> title -->
+                            <div class="cnrs-dm-front-entity-title-container">
+                                <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-sorted-title.php')?>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
-                    <!-- End CNRS Data Manager agents list -->
-                <?php endforeach; ?>
-            </div>
+                            <!-- End CNRS Data Manager <?php echo $type ?> title -->
+                            <!-- Start CNRS Data Manager agents list -->
+                            <div class="cnrs-dm-front-agents-container">
+                                <?php foreach ($entity['agents'] as $agent): ?>
+                                    <div class="cnrs-dm-front-agent-wrapper<?php echo in_array($defaultView, [null, 'list']) ? ' cnrs-dm-front-agent-wrapper-list' : ' cnrs-dm-front-agent-wrapper-grid' ?>">
+                                        <?php if ($isSelectorAvailable === true || in_array($defaultView, [null, 'list'])): ?>
+                                            <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-inline.php')?>
+                                        <?php endif; ?>
+                                        <?php if ($isSelectorAvailable === true || $defaultView === 'grid'): ?>
+                                            <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-card.php')?>
+                                        <?php endif; ?>
+                                        <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-info.php')?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <!-- End CNRS Data Manager agents list -->
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="cnrs-dm-front-no-result-found">
+                    <i><?php echo __('No agent matches your search criteria.', 'cnrs-data-manager') ?></i>
+                </div>
+            <?php endif; ?>
             <!-- End CNRS Data Manager agents list filtered by <?php echo $type ?> -->
         <?php endif; ?>
     <?php else: ?>

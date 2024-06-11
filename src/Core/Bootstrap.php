@@ -52,7 +52,11 @@ class Bootstrap
     public static function cnrs_data_manager_cron_hook(): void
     {
         $array = Manager::defineArrayFromXML(true);
-        $jsonPath = CNRS_DATA_MANAGER_PATH . '/tmp/data.json';
+        $dirPath = CNRS_DATA_MANAGER_PATH . '/api-tmp';
+        if (!file_exists($dirPath)) {
+            @mkdir($dirPath, 0777, true);
+        }
+        $jsonPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/data.json';
         $file = fopen($jsonPath, "w+");
         fwrite($file, json_encode($array, JSON_PRETTY_PRINT));
         fclose($file);
@@ -206,8 +210,8 @@ class Bootstrap
     protected static function getSubmenuItems(): array
     {
         global $wpdb;
-        $settings = $wpdb->get_results( "SELECT filename FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
-        $filename = $settings[0]['filename'];
+        $settings = $wpdb->get_row( "SELECT filename FROM {$wpdb->prefix}cnrs_data_manager_settings", ARRAY_A );
+        $filename = $settings['filename'];
         $menu = [
             [
                 'parent_slug'            => 'cnrs-data-manager',
