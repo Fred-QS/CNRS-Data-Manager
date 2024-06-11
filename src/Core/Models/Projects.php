@@ -9,17 +9,19 @@ class Projects
      *
      * @param int $postID The ID of the project.
      * @param int $teamID The ID of the team.
+     * @param string $lang
      * @return void
      */
-    public static function setTeamProjectRelation(int $postID, int $teamID): void
+    public static function setTeamProjectRelation(int $postID, int $teamID, string $lang): void
     {
         global $wpdb;
         $insert = [
             'team_id' => $teamID,
-            'project_id' => $postID
+            'project_id' => $postID,
+            'lang' => $lang,
         ];
 
-        $wpdb->insert($wpdb->prefix . 'cnrs_data_manager_team_project', $insert, ['%d', '%d']);
+        $wpdb->insert($wpdb->prefix . 'cnrs_data_manager_team_project', $insert, ['%d', '%d', '%s']);
     }
 
     /**
@@ -58,9 +60,9 @@ class Projects
         $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_team_project");
         foreach ($inserts as $insert) {
             if ($insert['display_order'] === null) {
-                $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_team_project (team_id, project_id) VALUES ({$insert['team_id']}, {$insert['project_id']})");
+                $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_team_project (team_id, project_id, lang) VALUES ({$insert['team_id']}, {$insert['project_id']}, '{$insert['lang']}')");
             } else {
-                $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_team_project (team_id, project_id, display_order) VALUES ({$insert['team_id']}, {$insert['project_id']}, {$insert['display_order']})");
+                $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_team_project (team_id, project_id, display_order, lang) VALUES ({$insert['team_id']}, {$insert['project_id']}, {$insert['display_order']}, '{$insert['lang']}')");
             }
         }
     }

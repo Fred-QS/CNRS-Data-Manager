@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-06-07 23:30+0200\n"
-"PO-Revision-Date: 2024-06-07 23:50+0200\n"
+"POT-Creation-Date: 2024-06-09 22:14+0200\n"
+"PO-Revision-Date: 2024-06-09 22:21+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -55,7 +55,7 @@ msgid "Import"
 msgstr "Importation"
 
 #: src/Core/Bootstrap.php:277 src/Core/Bootstrap.php:278
-#: src/Core/Views/Form.php:35 src/Tools/helper.php:1733
+#: src/Core/Views/Form.php:35 src/Tools/helper.php:1735
 #: templates/includes/mission-form-download.php:26
 #: templates/includes/mission-form-download.php:36
 #: templates/includes/mission-form-list.php:191
@@ -164,7 +164,7 @@ msgstr "Avec frais"
 #: src/Core/Controllers/Manager.php:38 src/Core/Views/RevisionForm.php:44
 #: templates/includes/pdf/html.php:41
 msgid "No charge"
-msgstr "Sans frais "
+msgstr "Sans frais"
 
 #: src/Core/Controllers/Manager.php:483
 msgid "New input field"
@@ -440,14 +440,14 @@ msgstr "éléments"
 #: src/Core/Views/Dashboard.php:96 src/Core/Views/Dashboard.php:230
 #: templates/includes/mission-form-list.php:53
 #: templates/includes/mission-form-list.php:266
-#: templates/includes/pagination.php:18
+#: templates/includes/pagination.php:19
 msgid "First page"
 msgstr "Première page"
 
 #: src/Core/Views/Dashboard.php:100 src/Core/Views/Dashboard.php:234
 #: templates/includes/mission-form-list.php:57
 #: templates/includes/mission-form-list.php:270
-#: templates/includes/pagination.php:24
+#: templates/includes/pagination.php:25
 msgid "Previous page"
 msgstr "Page précédente"
 
@@ -460,21 +460,21 @@ msgstr "Page actuelle"
 #: src/Core/Views/Dashboard.php:111 src/Core/Views/Dashboard.php:244
 #: templates/includes/mission-form-list.php:68
 #: templates/includes/mission-form-list.php:280
-#: templates/includes/pagination.php:43
+#: templates/includes/pagination.php:44
 msgid "of"
 msgstr "sur"
 
 #: src/Core/Views/Dashboard.php:117 src/Core/Views/Dashboard.php:250
 #: templates/includes/mission-form-list.php:74
 #: templates/includes/mission-form-list.php:286
-#: templates/includes/pagination.php:49
+#: templates/includes/pagination.php:50
 msgid "Next page"
 msgstr "Page suivante"
 
 #: src/Core/Views/Dashboard.php:121 src/Core/Views/Dashboard.php:254
 #: templates/includes/mission-form-list.php:78
 #: templates/includes/mission-form-list.php:290
-#: templates/includes/pagination.php:55
+#: templates/includes/pagination.php:56
 msgid "Last page"
 msgstr "Dernière page"
 
@@ -1106,8 +1106,8 @@ msgid "Close"
 msgstr "Fermer"
 
 #: src/Core/Views/MapSettings.php:186 src/Core/Views/Settings.php:392
-#: src/Core/Views/Tools.php:109 src/Core/Views/Tools.php:154
-#: src/Core/Views/Tools.php:199
+#: src/Core/Views/Tools.php:122 src/Core/Views/Tools.php:167
+#: src/Core/Views/Tools.php:212
 #: templates/includes/form-tools/modals/checkbox.php:38
 #: templates/includes/form-tools/modals/comment.php:15
 #: templates/includes/form-tools/modals/date.php:32
@@ -1569,7 +1569,7 @@ msgstr ""
 "simplement de générer le shortcode à utiliser. D’autre part, le <b>sélecteur "
 "de vue Show est</b> dynamique et sera enregistré dans la base de données."
 
-#: src/Core/Views/Settings.php:273 src/Core/Views/Tools.php:71
+#: src/Core/Views/Settings.php:273 src/Core/Views/Tools.php:84
 msgid "Assign a category to teams"
 msgstr "Attribuer une catégorie aux équipes"
 
@@ -1598,11 +1598,11 @@ msgstr "Grille"
 msgid "Show view selector"
 msgstr "Afficher le sélecteur de vue"
 
-#: src/Core/Views/Settings.php:312 src/Core/Views/Tools.php:116
+#: src/Core/Views/Settings.php:312 src/Core/Views/Tools.php:129
 msgid "Assign a category to services"
 msgstr "Attribuer une catégorie aux services"
 
-#: src/Core/Views/Settings.php:351 src/Core/Views/Tools.php:161
+#: src/Core/Views/Settings.php:351 src/Core/Views/Tools.php:174
 msgid "Assign a category to platforms"
 msgstr "Attribuer une catégorie aux plateformes"
 
@@ -1751,10 +1751,49 @@ msgstr ""
 "wp-includes/cnrs-data-manager/templates/cnrs-data-manager-card.php</i></b>"
 
 #: src/Core/Views/Tools.php:46
+msgid "Theme templates"
+msgstr "Modèles de thème"
+
+#: src/Core/Views/Tools.php:49
+#, php-format
+msgid ""
+"The <b>PHP</b> template file for archive posts (filtering project category) "
+"<b><i>%s/archive.php</i></b>"
+msgstr ""
+"Le fichier modèle <b>PHP</b> pour les articles d’archive (filtrage de la "
+"catégorie de projet) <b><i>%s/archive.php</i></b>"
+
+#: src/Core/Views/Tools.php:50
+#, php-format
+msgid ""
+"The <b>PHP</b> template file for the category page <b><i>%s/project.php</i></"
+"b>"
+msgstr ""
+"Le fichier de modèle <b>PHP</b> pour afficher la carte de l’agent <b><i>/wp-"
+"includes/cnrs-data-manager/templates/cnrs-data-manager-card.php</i></b>"
+
+#: src/Core/Views/Tools.php:51
+#, php-format
+msgid ""
+"The <b>JS</b> script file for the active theme <b><i>%s/cnrs-script.js</i></"
+"b>"
+msgstr ""
+"Le fichier <b>SVG</b> pour le bouton d’affichage de liste <b><i>/wp-includes/"
+"cnrs-data-manager/svg/list.svg</i></b>"
+
+#: src/Core/Views/Tools.php:53
+msgid ""
+"Add this code for embedding the <b>cnrs-script.js</b> file to the "
+"<b>functions.php</b> in the active theme folder"
+msgstr ""
+"Ajoutez ce code pour intégrer le fichier <b>cnrs-script.js</b> dans "
+"<b>functions.php</b> dans le dossier du thème actif"
+
+#: src/Core/Views/Tools.php:59
 msgid "Email templates"
 msgstr "Modèles d’e-mail"
 
-#: src/Core/Views/Tools.php:48
+#: src/Core/Views/Tools.php:61
 msgid ""
 "The <b>PHP</b> template file for email header <b><i>/wp-includes/cnrs-data-"
 "manager/templates/cnrs-data-manager-email-header.php</i></b>"
@@ -1762,7 +1801,7 @@ msgstr ""
 "Le fichier de modèle <b>PHP</b> pour l’en-tête d’email <b><i>/wp-includes/"
 "cnrs-data-manager/templates/cnrs-data-manager-email-header.php</i></b>"
 
-#: src/Core/Views/Tools.php:49
+#: src/Core/Views/Tools.php:62
 msgid ""
 "The <b>PHP</b> template file for email footer <b><i>/wp-includes/cnrs-data-"
 "manager/templates/cnrs-data-manager-email-footer.php</i></b>"
@@ -1771,11 +1810,11 @@ msgstr ""
 "includes/cnrs-data-manager/templates/cnrs-data-manager-email-footer.php</i></"
 "b>"
 
-#: src/Core/Views/Tools.php:52
+#: src/Core/Views/Tools.php:65
 msgid "Icons templates"
 msgstr "Modèles d’icônes"
 
-#: src/Core/Views/Tools.php:54
+#: src/Core/Views/Tools.php:67
 msgid ""
 "The <b>SVG</b> file for the list view button <b><i>/wp-includes/cnrs-data-"
 "manager/svg/list.svg</i></b>"
@@ -1783,7 +1822,7 @@ msgstr ""
 "Le fichier <b>SVG</b> pour le bouton d’affichage de liste <b><i>/wp-includes/"
 "cnrs-data-manager/svg/list.svg</i></b>"
 
-#: src/Core/Views/Tools.php:55
+#: src/Core/Views/Tools.php:68
 msgid ""
 "The <b>SVG</b> file for the grid view button <b><i>/wp-includes/cnrs-data-"
 "manager/svg/grid.svg</i></b>"
@@ -1791,7 +1830,7 @@ msgstr ""
 "Le fichier <b>SVG</b> pour le bouton d’affichage en grille <b><i>/wp-"
 "includes/cnrs-data-manager/svg/grid.svg</i></b>"
 
-#: src/Core/Views/Tools.php:56
+#: src/Core/Views/Tools.php:69
 msgid ""
 "The <b>SVG</b> file for the loader icon <b><i>/wp-includes/cnrs-data-manager/"
 "svg/loader.svg</i></b>"
@@ -1799,7 +1838,7 @@ msgstr ""
 "Le fichier <b>SVG</b> pour le loader <b><i>/wp-includes/cnrs-data-manager/"
 "svg/loader.svg</i></b>"
 
-#: src/Core/Views/Tools.php:60
+#: src/Core/Views/Tools.php:73
 msgid ""
 "These files allow you to customize the rendering of agents in the front part "
 "of <b>WordPress</b>."
@@ -1807,7 +1846,7 @@ msgstr ""
 "Ces fichiers vous permettent de personnaliser le rendu des agents dans la "
 "partie avant de <b>WordPress</b>."
 
-#: src/Core/Views/Tools.php:62
+#: src/Core/Views/Tools.php:75
 msgid ""
 "Keep in mind that the files must keep <b>the same name and path</b>. Only "
 "the content can be modified at your convenience for personalization."
@@ -1816,22 +1855,22 @@ msgstr ""
 "même chemin d’accès</b>. Seul le contenu peut être modifié à votre "
 "convenance pour la personnalisation."
 
-#: src/Core/Views/Tools.php:66
+#: src/Core/Views/Tools.php:79
 msgid "Restore files"
 msgstr "Restaurer les fichiers"
 
-#: src/Core/Views/Tools.php:72 src/Core/Views/Tools.php:117
-#: src/Core/Views/Tools.php:162
+#: src/Core/Views/Tools.php:85 src/Core/Views/Tools.php:130
+#: src/Core/Views/Tools.php:175
 msgid "Category"
 msgstr "Catégorie"
 
-#: src/Core/Views/Tools.php:88 src/Core/Views/Tools.php:133
-#: src/Core/Views/Tools.php:178
+#: src/Core/Views/Tools.php:101 src/Core/Views/Tools.php:146
+#: src/Core/Views/Tools.php:191
 msgid "Select a post"
 msgstr "Sélectionner une publication"
 
-#: src/Core/Views/Tools.php:94 src/Core/Views/Tools.php:139
-#: src/Core/Views/Tools.php:184
+#: src/Core/Views/Tools.php:107 src/Core/Views/Tools.php:152
+#: src/Core/Views/Tools.php:197
 msgid "No article available for this category."
 msgstr "Aucun article n’est disponible pour cette catégorie."
 
@@ -1893,7 +1932,7 @@ msgstr "doit avoir été correctement remplie."
 
 #: src/Tools/helper.php:24
 msgid "comment must not be empty"
-msgstr "Le commentaire ne doit pas être vide"
+msgstr "le commentaire ne doit pas être vide"
 
 #: src/Tools/helper.php:25
 msgid "must be numeric"
@@ -1919,43 +1958,43 @@ msgstr "Monsieur"
 msgid "Misses"
 msgstr "Madame"
 
-#: src/Tools/helper.php:1440
+#: src/Tools/helper.php:1442
 msgid "not assigned"
 msgstr "non assigné"
 
-#: src/Tools/helper.php:1651
+#: src/Tools/helper.php:1653
 msgid "Your identifiers are not recognized."
 msgstr "Vos identifiants ne sont pas reconnus."
 
-#: src/Tools/helper.php:1664
+#: src/Tools/helper.php:1666
 msgid "An error has occurred while sending the email."
 msgstr "Une erreur s’est produite lors de l’envoi de l’e-mail."
 
-#: src/Tools/helper.php:1667
+#: src/Tools/helper.php:1669
 msgid "The email is not valid."
 msgstr "L’adresse e-mail n’est pas valide."
 
-#: src/Tools/helper.php:1738
+#: src/Tools/helper.php:1740
 msgid "Mission form print"
 msgstr "Impression du formulaire de mission"
 
-#: src/Tools/helper.php:1743
+#: src/Tools/helper.php:1745
 msgid "Mission form download"
 msgstr "Téléchargement du formulaire de mission"
 
-#: src/Tools/helper.php:1748
+#: src/Tools/helper.php:1750
 msgid "Mission form revision by manager"
 msgstr "Révision du formulaire de mission par le gestionnaire"
 
-#: src/Tools/helper.php:1753
+#: src/Tools/helper.php:1755
 msgid "Mission form revision by agent"
 msgstr "Révision du formulaire de mission par l’agent"
 
-#: src/Tools/helper.php:1758
+#: src/Tools/helper.php:1760
 msgid "Mission form revision by funder"
 msgstr "Révision du formulaire de mission par le responsable des crédits"
 
-#: src/Tools/helper.php:1829
+#: src/Tools/helper.php:1831
 msgid "at"
 msgstr "à"
 
@@ -2435,6 +2474,41 @@ msgstr "Formulaire validé le %s"
 msgid "Manager who validated the form"
 msgstr "Gestionnaire qui a validé le formulaire"
 
+#: templates/modules/candidate.php:15
+msgid "Spontaneous application"
+msgstr "Candidature spontanée"
+
+#: templates/modules/candidate.php:17
+msgid "Send us your CV, profile and cover letter directly."
+msgstr ""
+"Envoyez-nous directement votre CV, votre profil et votre lettre de "
+"motivation."
+
+#: templates/modules/candidate.php:24
+msgid "I postulate"
+msgstr "Je postule"
+
+#: templates/modules/project-article.php:18
+msgid "Read more"
+msgstr "Lire la suite"
+
+#: templates/modules/project.php:23
+msgid "Projects"
+msgstr "Projets"
+
+#: templates/modules/project.php:40
+msgid "Find all our projects"
+msgstr "Retrouvez tous nos projets"
+
+#: templates/modules/project.php:56 templates/samples/category.php:32
+msgid "Sorry, no posts matched your criteria."
+msgstr "Aucun message ne correspond à vos critères de recherche."
+
+#: templates/modules/title.php:6
+#, php-format
+msgid "Find the %s"
+msgstr "Retrouvez les %s"
+
 #: templates/partials/cnrs-data-manager-info.php:56
 msgid "Team"
 msgstr "Équipe"
@@ -2462,10 +2536,6 @@ msgstr "Lien"
 #: templates/partials/cnrs-data-manager-sorted-title.php:19
 msgid "Without belonging"
 msgstr "Sans appartenance"
-
-#: templates/samples/category.php:50 templates/samples/project.php:44
-msgid "Sorry, no posts matched your criteria."
-msgstr "Aucun message ne correspond à vos critères de recherche."
 
 #. Plugin Name of the plugin/theme
 msgid "CNRS Data Manager"
