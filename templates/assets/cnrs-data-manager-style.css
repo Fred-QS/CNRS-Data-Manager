@@ -15,7 +15,8 @@ html, body {
 }
 
 /* Button styles */
-.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-white):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon) {
+.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-white):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon),
+.cnrs-dm-front-publication-link-container > a {
     color: #ffffff!important;
     background-color: #6ab7e6;
 }
@@ -30,7 +31,7 @@ html, body {
     background-color: #ff5c33;
 }
 
-.cnrs-dm-front-btn {
+.cnrs-dm-front-btn, .cnrs-dm-front-publication-link-container > a {
     border-width: 14px!important;
     border-color: rgba(255,255,255,0);
     border-radius: 0;
@@ -55,7 +56,8 @@ html, body {
     cursor: pointer;
 }
 
-.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon)::after {
+.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon)::after,
+.cnrs-dm-front-publication-link-container > a::after {
     content: "\35";
     font-size: 1.6em;
 }
@@ -93,7 +95,8 @@ html, body {
     padding-top: 2px;
 }
 
-.cnrs-dm-front-btn::after {
+.cnrs-dm-front-btn::after,
+.cnrs-dm-front-publication-link-container > a::after {
     top: 0.1em;
     line-height: 1em;
     opacity: 0;
@@ -118,7 +121,7 @@ html, body {
     opacity: 0.5;
 }
 
-.cnrs-dm-front-btn:not(:disabled):hover {
+.cnrs-dm-front-btn:not(:disabled):hover, .cnrs-dm-front-publication-link-container > a:hover {
     border-radius: 0!important;
     letter-spacing: 1px!important;
     border: 2px solid transparent;
@@ -127,7 +130,7 @@ html, body {
     padding: .3em 2em 0 .7em;
 }
 
-.cnrs-dm-front-btn:not(:disabled):hover::after {
+.cnrs-dm-front-btn:not(:disabled):hover::after, .cnrs-dm-front-publication-link-container > a:hover::after {
     -webkit-transition: none!important;
     transition: none!important;
     opacity: 1;
@@ -2517,6 +2520,42 @@ pre.cnrs-dm-front-observation-textarea {
 .cnrs-dm-front-convention.selected, .cnrs-dm-front-convention:hover {
     background-color: #6AB7E6;
     color: #fff;
+}
+
+.cnrs-dm-front-publication-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 30px;
+}
+
+.cnrs-dm-front-publication-wrapper:nth-child(odd) {
+    background: #f9f9f9;
+}
+
+.cnrs-dm-front-publication-wrapper > h3 {
+    width: 100%;
+    padding: 0;
+    color: #69C0B5;
+    font-weight: bold;
+}
+
+.cnrs-dm-front-publication-wrapper > *:not(.cnrs-dm-front-publication-link-container) {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.cnrs-dm-front-publication-wrapper > p {
+    padding: 0;
+}
+
+.cnrs-dm-front-publication-link-container a {
+    margin: 10px;
+}
+
+.cnrs-dm-front-publication-link-container {
+    margin-top: 20px;
 }
 
 @media only screen and (min-width: 768px) {
