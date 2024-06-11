@@ -5,9 +5,9 @@ use CnrsDataManager\Core\Models\Settings;
 Settings::update();
 Settings::deployCategoryTemplate();
 $settings = Settings::getSettings();
-$teamsConfig = getCategoriesConfig('teams', (int) $settings['teams_category']);
-$servicesConfig = getCategoriesConfig('services', (int) $settings['services_category']);
-$platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_category']);
+$teamsConfig = getCategoriesConfig('teams', $settings['teams_category']);
+$servicesConfig = getCategoriesConfig('services', $settings['services_category']);
+$platformsConfig = getCategoriesConfig('platforms', $settings['platforms_category']);
 
 ?>
 
@@ -266,6 +266,7 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
             <p>
                 <?php echo __('The filter and view selectors are not dynamic and just allow you to generate the shortcode to use. On the other hand, the <b>Show view selector</b> selector is dynamic and will be saved in the database.', 'cnrs-data-manager') ?>
             </p>
+            <?php cnrs_polylang_installed() ?>
             <table class="form-table" role="presentation">
                 <tbody>
                 <tr>
@@ -273,7 +274,7 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                         <label><?php echo __('Assign a category to teams', 'cnrs-data-manager') ?></label>
                     </th>
                     <td>
-                        <?php echo wp_dropdown_categories($teamsConfig) ?>
+                        <?php echo cnrs_get_languages_from_pll($teamsConfig) ?>
                         <div class="cnrs-dm-shortcode-filters">
                             <span><?php echo __('Filter', 'cnrs-data-manager') ?></span>
                             <ul>
@@ -312,7 +313,7 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                         <label><?php echo __('Assign a category to services', 'cnrs-data-manager') ?></label>
                     </th>
                     <td>
-                        <?php echo wp_dropdown_categories($servicesConfig) ?>
+                        <?php echo cnrs_get_languages_from_pll($servicesConfig) ?>
                         <div class="cnrs-dm-shortcode-filters">
                             <span><?php echo __('Filter', 'cnrs-data-manager') ?></span>
                             <ul>
@@ -351,7 +352,7 @@ $platformsConfig = getCategoriesConfig('platforms', (int) $settings['platforms_c
                         <label><?php echo __('Assign a category to platforms', 'cnrs-data-manager') ?></label>
                     </th>
                     <td>
-                        <?php echo wp_dropdown_categories($platformsConfig) ?>
+                        <?php echo cnrs_get_languages_from_pll($platformsConfig) ?>
                         <div class="cnrs-dm-shortcode-filters">
                             <span><?php echo __('Filter', 'cnrs-data-manager') ?></span>
                             <ul>

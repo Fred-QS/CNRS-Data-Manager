@@ -58,6 +58,9 @@ html, body {
 .cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon)::after {
     content: "\35";
     font-size: 1.6em;
+}
+
+.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon):not(.cnrs-dm-front-btn-std)::after {
     margin-left: -1em;
 }
 

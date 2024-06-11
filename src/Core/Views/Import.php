@@ -3,6 +3,7 @@
         <?php echo svgFromBase64(CNRS_DATA_MANAGER_IMPORT_ICON, '#5d5d5d', 26) ?>
         <?php echo __('Import projects', 'cnrs-data-manager'); ?>
     </h1>
+    <?php cnrs_polylang_installed() ?>
     <p>
         <?php echo __('The extension allows you to import <b>Projects</b> in bulk. To do this, please follow the instructions below, namely the type of file to upload in <b>ZIP</b> format, the structure contained in the file as well as the columns that must be present and completed in the expected format for the file import.', 'cnrs-data-manager') ?>
     </p>
@@ -26,15 +27,27 @@
         <table class="form-table" role="presentation">
             <tbody>
             <tr>
-                <th scope="row" class="cnrs-dm-data-selector-th">
+                <td colspan="2" scope="row" class="cnrs-dm-data-selector-th cnrs-dm-data-selector-th-top cnrs-dm-data-selector-th-import">
                     <label for="cnrs-data-manager-projects-team"><?php echo __('Select a team', 'cnrs-data-manager') ?></label>
-                </th>
-                <td>
-                    <select id="cnrs-data-manager-projects-team" name="cnrs-data-manager-projects-team">
-                        <?php foreach (getTeams() as $team): ?>
-                            <option value="<?php echo $team['id'] ?>"><?php echo $team['name'] ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <?php $teams = getTeams() ?>
+                    <?php foreach ($teams as $lang => $team): ?>
+                        <?php if (function_exists('pll_the_languages')): ?>
+                            <div class="cnrs-dm-pll-select-wrapper">
+                                <?php echo $team[0]['flag'] ?>
+                                <select class="cnrs-data-manager-projects-team" name="cnrs-data-manager-projects-team[<?php echo $team[0]['lang'] ?>]" data-lang="<?php echo $team[0]['lang'] ?>">
+                                    <?php foreach ($team as $t): ?>
+                                        <option value="<?php echo $t['id'] ?>"><?php echo $t['name'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        <?php else: ?>
+                            <select class="cnrs-data-manager-projects-team" name="cnrs-data-manager-projects-team[<?php echo $team[0]['lang'] ?>]" data-lang="<?php echo $team[0]['lang'] ?>">
+                                <?php foreach ($team as $t): ?>
+                                    <option value="<?php echo $t['id'] ?>"><?php echo $t['name'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </td>
             </tr>
             </tbody>

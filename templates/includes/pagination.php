@@ -6,9 +6,10 @@ $current = $pagination['current'];
 $next = $pagination['next'];
 $previous = $pagination['previous'];
 $mode = isset($fromModule) ? 'front' : 'all';
+
 ?>
 
-<?php if (have_posts()): ?>
+<?php if ($pages > 1): ?>
     <div class="cnrs-dm-front-pagination-wrapper"<?php if ($pages < 2): echo 'style="display: none;"'; endif; ?>>
         <div class="cnrs-dm-front-pagination<?php echo $pages < 2 ? ' one-page' : '' ?>">
             <span class="cnrs-dm-front-pagination-displaying-num"><?php echo $rowsCount === 1 ? sprintf('%d element on %d', $rowsCount, $count) : sprintf('%d elements on %d', $rowsCount, $count) ?></span>
