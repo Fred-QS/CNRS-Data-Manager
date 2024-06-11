@@ -4,6 +4,15 @@ namespace CnrsDataManager\Core\Controllers;
 
 class HttpClient
 {
+    /**
+     * Makes a CURL call to the specified URL and returns the response XML string.
+     *
+     * @param string|null $url The URL to make the CURL call to. If null, no CURL call will be made.
+     * @param bool $test Determines if the method is being called for testing purposes or not. Default is false.
+     * @return bool|string If $test is true, returns true if the CURL call was successful and the response XML string
+     *                     passes all the required checks, otherwise returns false. If $test is false, returns the response
+     *                     XML string.
+     */
     public static function call(string|null $url, bool $test = false): bool|string
     {
         $check = false;
@@ -52,6 +61,19 @@ class HttpClient
         curl_close($curl);
         $ip = json_decode($output, true);
         return $ip['origin'];
+    }
+
+    public static function getPublications()
+    {
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => 'https://oskar-bordeaux.fr/rest/collections',
+            CURLOPT_FAILONERROR => true
+        ]);
+        ob_start();
+        curl_exec($curl);
+        $json = ob_get_clean();
+        return json_decode($json, true);
     }
 
     /**
