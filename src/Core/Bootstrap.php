@@ -51,15 +51,22 @@ class Bootstrap
     
     public static function cnrs_data_manager_cron_hook(): void
     {
-        $array = Manager::defineArrayFromXML(true);
         $dirPath = CNRS_DATA_MANAGER_PATH . '/api-tmp';
+
+        $array = Manager::defineArrayFromXML(true);
         if (!file_exists($dirPath)) {
             @mkdir($dirPath, 0777, true);
         }
-        $jsonPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/data.json';
-        $file = fopen($jsonPath, "w+");
-        fwrite($file, json_encode($array, JSON_PRETTY_PRINT));
-        fclose($file);
+        $dataPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/data.json';
+        $dataFile = fopen($dataPath, "w+");
+        fwrite($dataFile, json_encode($array, JSON_PRETTY_PRINT));
+        fclose($dataFile);
+
+        $publications = Manager::getPublications(true);
+        $publicationsPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/publications.json';
+        $publicationsFile = fopen($publicationsPath, "w+");
+        fwrite($publicationsFile, json_encode($publications, JSON_PRETTY_PRINT));
+        fclose($publicationsFile);
     }
 
     /**

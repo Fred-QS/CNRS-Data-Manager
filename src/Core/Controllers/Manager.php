@@ -303,6 +303,22 @@ final class Manager
     }
 
     /**
+     * Return publications.
+     *
+     * @param bool $sync Optional. Whether to synchronize the data with the stored file.
+     *                   Default is false.
+     * @return array The publications as an array.
+     */
+    public static function getPublications(bool $sync = false): array
+    {
+        $jsonPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/publications.json';
+        if (file_exists($jsonPath) && $sync === false) {
+            return json_decode(file_get_contents($jsonPath), true);
+        }
+        return HttpClient::getPublications();
+    }
+
+    /**
      * Return current action key or false if not exists
      *
      * @return string|bool

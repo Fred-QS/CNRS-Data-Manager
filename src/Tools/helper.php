@@ -1155,6 +1155,12 @@ if (!function_exists('cnrsReadShortCode')) {
 
             wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
             wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', [], null);
+
+            $publications = Manager::getPublications();
+
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/Publications.php');
+            return ob_get_clean();
         }
 
         return '';
