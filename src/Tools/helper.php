@@ -276,6 +276,10 @@ if (!function_exists('cnrs_install_folders')) {
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-email.css'
             ],
             [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-categories.css',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-categories.css'
+            ],
+            [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-script.js',
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js'
             ],
@@ -308,6 +312,10 @@ if (!function_exists('cnrs_install_folders')) {
                 'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-email-header.php'
             ],
             [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-post-preview.php',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-post-preview.php'
+            ],
+            [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/svg/list.svg',
                 'to' => CNRS_DATA_MANAGER_DEPORTED_SVG_PATH . '/list.svg'
             ],
@@ -326,6 +334,18 @@ if (!function_exists('cnrs_install_folders')) {
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/languages/cnrs-data-manager-fr_FR.po',
                 'to' => ABSPATH . '/wp-content/languages/plugins/cnrs-data-manager-fr_FR.po'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/samples/archive.php',
+                'to' => get_stylesheet_directory() . '/archive.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/samples/category.php',
+                'to' => get_stylesheet_directory() . '/category.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/samples/cnrs-script.js',
+                'to' => get_stylesheet_directory() . '/cnrs-script.js'
             ]
         ];
 
@@ -353,6 +373,14 @@ if (!function_exists('cnrs_remove_folders')) {
     function cnrs_remove_folders(bool $all = false): void
     {
         rrmdir(ABSPATH . '/wp-includes/cnrs-data-manager');
+        $archiveFile = get_stylesheet_directory() . '/archive.php';
+        if (file_exists($archiveFile)) {
+            unlink($archiveFile);
+        }
+        $categoryFile = get_stylesheet_directory() . '/category.php';
+        if (file_exists($categoryFile)) {
+            unlink($categoryFile);
+        }
         if ($all === true) {
             cnrs_remove_translations();
         }
@@ -426,7 +454,7 @@ if (!function_exists('cnrs_dm_get_home_path')) {
             if (!function_exists('get_home_path')) {
                 require_once(ABSPATH . 'wp-admin/includes/file.php');
             }
-            $homePath = wp_normalize_path(cnrs_dm_cloned_get_home_path());
+            $homePath = cnrs_normalize_path(cnrs_dm_cloned_get_home_path());
             if ($homePath == '//' || $homePath == '') {
                 $homePath = '/';
             } else {
@@ -437,7 +465,7 @@ if (!function_exists('cnrs_dm_get_home_path')) {
     }
 }
 
-if (!function_exists('wp_normalize_path')) {
+if (!function_exists('cnrs_normalize_path')) {
     /**
      * Normalize a filesystem path.
      *
@@ -450,7 +478,7 @@ if (!function_exists('wp_normalize_path')) {
      *
      * @return string Normalized path.
      */
-    function wp_normalize_path($path): string
+    function cnrs_normalize_path($path): string
     {
         $wrapper = '';
         if (wp_is_stream($path)) {
@@ -811,7 +839,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder', 'publications'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder', 'publications', 'categories'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -1161,6 +1189,62 @@ if (!function_exists('cnrsReadShortCode')) {
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Publications.php');
             return ob_get_clean();
+
+        } else if ($type === 'categories') {
+
+            wp_enqueue_style('cnrs-data-manager-categories-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-categories.css', [], null);
+
+            ob_start();
+            single_cat_title();
+            $catName = ob_get_clean();
+
+            $cat = get_the_category(get_the_ID());
+            $parents = [];
+            if (!empty($cat)) {
+
+                // Child cat details
+                $name = trim($cat[0]->name);
+                $slug = trim($cat[0]->slug);
+
+                // Get terms structure
+                $uri = get_category_parents($cat[0]->term_id);
+                $parents = trim($uri) === '' ? [] : explode('/', $uri);
+                $parents = array_filter($parents, function ($segment) {
+                    return strlen($segment) > 0;
+                });
+            }
+            $candidatingCatFr = 'Recrutement';
+            $candidatingCatEn = 'Recruitment';
+
+            // Filter string for title
+            $toSentencePart = lcfirst(str_replace(['É'], ['é'], $catName));
+            if (in_array($toSentencePart, ['recrutement', 'recruitment'], true)) {
+                $toSentencePart .= 's';
+            }
+
+            $urls = [
+                'Offres d\'emploi' => 'http://google.com',
+                'Jobs' => 'http://google.com',
+                'Stages' => 'http://google.com',
+                'Internships' => 'http://google.com',
+                'Sujets de Thèse' => 'http://google.com',
+                'Thesis Topics' => 'http://google.com'
+            ];
+
+            $candidateCatNames = [
+                'Offres d\'emploi',
+                'Stages',
+                'Sujets de Thèse',
+                'Recrutement',
+                'Jobs',
+                'Internships',
+                'Thesis Topics',
+                'Recruitment'
+            ];
+
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/Categories.php');
+            return ob_get_clean();
         }
 
         return '';
@@ -1273,8 +1357,8 @@ if (!function_exists('cnrsFiltersController')) {
             }
         }
 
-        if (get_query_var('s')) {
-            $args['s'] = get_query_var('s');
+        if (get_query_var('cdm-search')) {
+            $args['s'] = get_query_var('cdm-search');
         }
 
         if (get_query_var('cdm-year') && get_query_var('cdm-year') !== 'all') {
@@ -1435,6 +1519,7 @@ if (!function_exists('addQueryVars')) {
             $qvars[] = 'cdm-limit';
             $qvars[] = 'cdm-tax';
             $qvars[] = 'cdm-year';
+            $qvars[] = 'cdm-search';
             $qvars[] = 'cdm-parent';
             $qvars[] = 'cdm-team';
             return $qvars;

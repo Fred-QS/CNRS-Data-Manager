@@ -98,7 +98,7 @@ function getFetchHTML(data, uri, error) {
 
     } else {
 
-        console.log(data);
+        console.warn(data);
     }
     loader.classList.add('hide');
 }

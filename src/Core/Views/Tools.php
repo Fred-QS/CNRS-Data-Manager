@@ -41,16 +41,17 @@ $platformsPosts = getAllPostsFromCategoryId('platforms');
         <li><?php echo __('The <b>PHP</b> template file for the full agent list item <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-list-item.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?php echo __('The <b>PHP</b> template file for the entity title if display mode is sorted <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-sorted-title.php</i></b>', 'cnrs-data-manager') ?></li>
         <li><?php echo __('The <b>PHP</b> template file for the agent modal display <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-info.php</i></b>', 'cnrs-data-manager') ?></li>
+        <li><?php echo __('The <b>PHP</b> template file for the post preview in blog list <b><i>/wp-includes/cnrs-data-manager/templates/cnrs-data-manager-post-preview.php</i></b>', 'cnrs-data-manager') ?></li>
     </ul>
     <br>
     <b><?php echo __('Theme templates', 'cnrs-data-manager') ?></b>
     <?php $path = '/wp-content' . explode('wp-content', get_stylesheet_directory())[1] ?>
     <ul class="cnrs-dm-files-list">
-        <li><?php echo sprintf(__('The <b>PHP</b> template file for archive posts (filtering project category) <b><i>%s/archive.php</i></b>', 'cnrs-data-manager'), $path) ?></li>
-        <li><?php echo sprintf(__('The <b>PHP</b> template file for the category page <b><i>%s/project.php</i></b>', 'cnrs-data-manager'), $path) ?></li>
-        <li><?php echo sprintf(__('The <b>JS</b> script file for the active theme <b><i>%s/cnrs-script.js</i></b>', 'cnrs-data-manager'), $path) ?></li>
+        <li><?php echo sprintf(__('The <b>PHP</b> template file for archive and project posts list (filtering project category) <b><i>%s/archive.php</i></b>', 'cnrs-data-manager'), $path) ?></li>
+        <li><?php echo sprintf(__('The <b>PHP</b> template file for the category page <b><i>%s/category.php</i></b>', 'cnrs-data-manager'), $path) ?></li>
+        <li><?php echo sprintf(__('The <b>JS</b> file for the active theme <b><i>%s/cnrs-script.js</i></b>', 'cnrs-data-manager'), $path) ?></li>
     </ul>
-    <i><?php echo __('Add this code for embedding the <b>cnrs-script.js</b> file to the <b>functions.php</b> in the active theme folder') ?></i>
+    <i><?php echo __('Add this code for embedding the <b>cnrs-script.js</b> file to the <b>functions.php</b> in the active theme folder', 'cnrs-data-manager') ?></i>
     <pre id="cnrs-dm-pre-enqueue"><?php echo highlightText("function cnrs_script_enqueue() {
     wp_enqueue_script( 'custom-scripts', get_stylesheet_directory_uri() . '/cnrs-script.js' );
 }

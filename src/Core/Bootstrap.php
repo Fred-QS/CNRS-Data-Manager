@@ -93,7 +93,7 @@ class Bootstrap
             }
 
         } else {
-            $currentThemeFolder = get_template_directory();
+            $currentThemeFolder = get_stylesheet_directory();
             define('CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER', $currentThemeFolder);
             setUserConnexion();
         }

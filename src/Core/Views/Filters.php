@@ -2,6 +2,7 @@
 
 if ($filterType === 'project') {
     $index = array_search('sub-categories-list', $filters, true);
+
     if ($index !== false) {
         $filters[$index] = 'by-team';
     }
@@ -54,7 +55,7 @@ switch (count($filters)) {
                 <label class="cnrs-dm-front-single-input-label" for="cnrs-dm-front-filter-cats-selector"><?php echo __('Select a team', 'cnrs-data-manager') ?></label>
                 <select id="cnrs-dm-front-filter-cats-selector" name="cdm-team">
                     <option selected value="0"><?php echo __('All teams', 'cnrs-data-manager') ?></option>
-                    <?php foreach ($teams as $team): ?>
+                    <?php foreach ($teams[substr(get_locale(), 0, 2)] as $team): ?>
                         <option<?php echo isset($_GET['cdm-team']) && $_GET['cdm-team'] === $team['id'] ? ' selected' : '' ?> value="<?php echo $team['id'] ?>"><?php echo $team['name'] ?></option>
                     <?php endforeach; ?>
                 </select>
@@ -78,7 +79,7 @@ switch (count($filters)) {
             <!-- Start CNRS Data Manager search filter module section -->
             <div class="cnrs-dm-front-filter cnrs-dm-front-filter-column cnrs-dm-front-filters-modules <?php echo $moduleSizeClass ?>" id="cnrs-dm-front-filter-search-container-<?php echo $shortCodesCounter ?>">
                 <label class="cnrs-dm-front-single-input-label" for="cnrs-dm-front-filter-search-input"><?php echo __('Search', 'cnrs-data-manager') ?></label>
-                <input type="search" name="s" id="cnrs-dm-front-filter-search-input" value="<?php echo $_GET['s'] ?>">
+                <input type="search" name="cdm-search" id="cnrs-dm-front-filter-search-input" value="<?php echo $_GET['cdm-search'] ?>">
             </div>
             <!-- End CNRS Data Manager search filter module section -->
         <?php endif; ?>

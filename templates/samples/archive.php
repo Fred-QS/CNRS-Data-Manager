@@ -9,5 +9,5 @@ if (get_queried_object()->name !== 'project') {
     exit();
 } else {
     // Only projects posts displayed at /project uri
-    include_once(CNRS_DATA_MANAGER_PATH . '/templates/modules/project.php');
+    echo do_shortcode('[cnrs-data-manager type="categories"]');
 }
