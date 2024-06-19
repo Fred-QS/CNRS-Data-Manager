@@ -334,18 +334,6 @@ if (!function_exists('cnrs_install_folders')) {
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/languages/cnrs-data-manager-fr_FR.po',
                 'to' => ABSPATH . '/wp-content/languages/plugins/cnrs-data-manager-fr_FR.po'
-            ],
-            [
-                'from' => CNRS_DATA_MANAGER_PATH . '/templates/samples/archive.php',
-                'to' => get_stylesheet_directory() . '/archive.php'
-            ],
-            [
-                'from' => CNRS_DATA_MANAGER_PATH . '/templates/samples/category.php',
-                'to' => get_stylesheet_directory() . '/category.php'
-            ],
-            [
-                'from' => CNRS_DATA_MANAGER_PATH . '/templates/samples/cnrs-script.js',
-                'to' => get_stylesheet_directory() . '/cnrs-script.js'
             ]
         ];
 
@@ -373,14 +361,6 @@ if (!function_exists('cnrs_remove_folders')) {
     function cnrs_remove_folders(bool $all = false): void
     {
         rrmdir(ABSPATH . '/wp-includes/cnrs-data-manager');
-        $archiveFile = get_stylesheet_directory() . '/archive.php';
-        if (file_exists($archiveFile)) {
-            unlink($archiveFile);
-        }
-        $categoryFile = get_stylesheet_directory() . '/category.php';
-        if (file_exists($categoryFile)) {
-            unlink($categoryFile);
-        }
         if ($all === true) {
             cnrs_remove_translations();
         }
@@ -640,7 +620,7 @@ if (!function_exists('sanitizeURIForPagination')) {
     function sanitizeURIForPagination(int $page, string $mode = 'back'): string
     {
         $current = $_SERVER['REQUEST_URI'];
-        $trigger = $mode === 'back' ? 'cnrs-data-manager-pagi' : 'paged';
+        $trigger = $mode === 'back' ? 'cnrs-data-manager-pagi' : 'cdm-page';
         $trigger = $mode === 'all' ? 'cdm-page' : $trigger;
         if (stripos($current, $trigger) !== false) {
             $current = explode($trigger, $current)[0];
@@ -1057,6 +1037,7 @@ if (!function_exists('cnrsReadShortCode')) {
                     filemtime(dirname(__DIR__) . '/assets/js/cnrs-data-manager-pagination.js')
                 );
             }
+
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Pagination.php');
             return ob_get_clean();
@@ -1194,53 +1175,16 @@ if (!function_exists('cnrsReadShortCode')) {
 
             wp_enqueue_style('cnrs-data-manager-categories-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-categories.css', [], null);
 
-            ob_start();
-            single_cat_title();
-            $catName = ob_get_clean();
+            $cat = get_queried_object();
+            $catName = $cat->name;
+            $catID = $cat->term_id;
 
-            $cat = get_the_category(get_the_ID());
-            $parents = [];
-            if (!empty($cat)) {
+            $candidate_email = Settings::getCandidatingEmail();
 
-                // Child cat details
-                $name = trim($cat[0]->name);
-                $slug = trim($cat[0]->slug);
-
-                // Get terms structure
-                $uri = get_category_parents($cat[0]->term_id);
-                $parents = trim($uri) === '' ? [] : explode('/', $uri);
-                $parents = array_filter($parents, function ($segment) {
-                    return strlen($segment) > 0;
-                });
-            }
-            $candidatingCatFr = 'Recrutement';
-            $candidatingCatEn = 'Recruitment';
-
-            // Filter string for title
-            $toSentencePart = lcfirst(str_replace(['É'], ['é'], $catName));
-            if (in_array($toSentencePart, ['recrutement', 'recruitment'], true)) {
-                $toSentencePart .= 's';
-            }
-
-            $urls = [
-                'Offres d\'emploi' => 'http://google.com',
-                'Jobs' => 'http://google.com',
-                'Stages' => 'http://google.com',
-                'Internships' => 'http://google.com',
-                'Sujets de Thèse' => 'http://google.com',
-                'Thesis Topics' => 'http://google.com'
-            ];
-
-            $candidateCatNames = [
-                'Offres d\'emploi',
-                'Stages',
-                'Sujets de Thèse',
-                'Recrutement',
-                'Jobs',
-                'Internships',
-                'Thesis Topics',
-                'Recruitment'
-            ];
+            $hiddenFiltersByCatId = Settings::getHiddenTermsIds();
+            $isFilterHidden = in_array($catID, $hiddenFiltersByCatId, true) === true;
+            $candidatingCatId = Settings::getCandidatingTermsIds();
+            $isCandidating = in_array($catID, $candidatingCatId, true) === true && $candidate_email !== null;
 
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Categories.php');
@@ -1320,7 +1264,7 @@ if (!function_exists('cnrsFiltersController')) {
      */
     function cnrsFiltersController(string $currentCatSlug = 'none'): void
     {
-        $paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
+        $paged = get_query_var('cdm-page') ? absint(get_query_var('cdm-page')) : 1;
         $posts_per_page = get_query_var('cdm-limit') ? absint(get_query_var('cdm-limit')) : 10;
 
         if ($currentCatSlug !== 'none') {
@@ -1518,6 +1462,7 @@ if (!function_exists('addQueryVars')) {
         add_filter('query_vars', function ($qvars) {
             $qvars[] = 'cdm-limit';
             $qvars[] = 'cdm-tax';
+            $qvars[] = 'cdm-page';
             $qvars[] = 'cdm-year';
             $qvars[] = 'cdm-search';
             $qvars[] = 'cdm-parent';
@@ -2274,5 +2219,62 @@ if (!function_exists('cnrs_polylang_installed')) {
             </div>
             <?php echo ob_get_clean();
         }
+    }
+}
+
+if (!function_exists('cnrs_get_translated_categories')) {
+
+    /**
+     * Get translated categories with information about each language.
+     *
+     * @return array Returns an array containing translated categories with information about each language.
+     */
+    function cnrs_get_translated_categories(): array
+    {
+        $categories = get_categories([
+            'hide_empty' => false,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+        $array = [];
+        if (!function_exists('pll_the_languages')) {
+            $array = array_map(function (object $category) {
+                return [
+                    'fr' => [
+                        'term_id' => $category->term_id,
+                        'name' => $category->name,
+                        'slug' => $category->slug,
+                        'flag' => null
+                    ]
+                ];
+            }, $categories);
+        } else {
+            $originalLang = pll_default_language();
+            $flags = cnrs_get_languages_from_pll([], false);
+            foreach ($categories as $category) {
+                if (pll_get_term_language($category->term_id) === $originalLang) {
+                    $cat = [];
+                    $cat[$originalLang] = [
+                        'term_id' => $category->term_id,
+                        'name' => $category->name,
+                        'slug' => $category->slug,
+                        'flag' => $flags[$originalLang]
+                    ];
+                    $toTranslate = pll_get_term_translations($category->term_id);
+                    unset($toTranslate[$originalLang]);
+                    foreach ($toTranslate as $lang => $translationId) {
+                        $translatedCat = get_category($translationId);
+                        $cat[$lang] = [
+                            'term_id' => $translatedCat->term_id,
+                            'name' => $translatedCat->name,
+                            'slug' => $translatedCat->slug,
+                            'flag' => $flags[$lang]
+                        ];
+                    }
+                    $array[] = $cat;
+                }
+            }
+        }
+        return $array;
     }
 }

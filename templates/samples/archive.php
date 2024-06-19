@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * CNRS Data Manager generated archives template file
+ */
+
 if (get_queried_object()->name !== 'project') {
     // Redirect all archived posts url to 404 error
     global $wp_query;

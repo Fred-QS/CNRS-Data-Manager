@@ -4,16 +4,18 @@
 
 <div class="cnrs-category-title">
     <h3><?php echo get_bloginfo() ?></h3>
-    <h2><?php echo sprintf(__('Find the %s', 'cnrs-data-manager'), $toSentencePart) ?></h2>
+    <h2><?php echo sprintf(__('Find the %s', 'cnrs-data-manager'), strtolower($catName)) ?></h2>
 </div>
 
-<?php echo do_shortcode('[cnrs-data-manager type="filters"]') ?>
+<?php if ($isFilterHidden === false): ?>
+    <?php echo do_shortcode('[cnrs-data-manager type="filters"]') ?>
+<?php endif; ?>
 
 <?php $previewTemplate = null ?>
 <?php if (have_posts()): ?>
-    <div id="cnrs-data-manager-front-blog" class="cnrs-dm-front-silent-container">
+    <div id="cnrs-data-manager-front-blog" class="cnrs-dm-front-silent-container<?php if ($isCandidating === false): ?> cnrs-dm-front-silent-container-poster<?php else: ?> cnrs-dm-front-silent-container-card<?php endif; ?>">
     <?php while (have_posts()) : the_post(); ?>
-        <?php if (!in_array($name, $candidateCatNames, true)): ?>
+        <?php if ($isCandidating === false): ?>
             <?php $previewTemplate = 'poster' ?>
         <?php else: ?>
             <?php $previewTemplate = 'card' ?>
@@ -22,12 +24,14 @@
     <?php endwhile; ?>
     </div>
 <?php else: ?>
-    <p class="cnrs-dm-front-no-result"><?php echo __('Sorry, no posts matched your criteria.', 'cnrs-data-manager') ?></p>
+    <div class="cnrs-dm-front-silent-container">
+        <p class="cnrs-dm-front-no-result"><?php echo __('Sorry, no posts matched your criteria.', 'cnrs-data-manager') ?></p>
+    </div>
 <?php endif; ?>
 
 <?php echo do_shortcode('[cnrs-data-manager type="pagination"]') ?>
 
-<?php if (in_array($candidatingCatFr, $parents, true) || in_array($candidatingCatEn, $parents, true)): ?>
+<?php if ($isCandidating === true && have_posts()): ?>
     <div class="cnrs-data-manager-front-candidate-wrapper">
         <div class="cnrs-data-manager-front-candidate-title">
             <h2><?php echo __('Spontaneous application', 'cnrs-data-manager') ?></h2>
@@ -36,7 +40,7 @@
             </p>
         </div>
         <div class="cnrs-data-manager-front-candidate-btn-container">
-            <a class="cnrs-data-manager-front-candidate-btn" target="_blank" href="<?php echo $urls[$name] ?>"><?php echo __('I postulate', 'cnrs-data-manager') ?></a>
+            <a class="cnrs-data-manager-front-candidate-btn" target="_blank" href="mailto:<?php echo $candidate_email ?>"><?php echo __('I postulate', 'cnrs-data-manager') ?></a>
         </div>
     </div>
 <?php endif; ?>

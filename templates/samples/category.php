@@ -1,7 +1,7 @@
 <?php
 
 /**
- *  WP category custom page.
+ * CNRS Data Manager generated categories template file
  */
 
 get_header();

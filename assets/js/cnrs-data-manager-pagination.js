@@ -26,8 +26,7 @@ function prepareListeners() {
     let form = document.querySelector('.cnrs-dm-front-filters-wrapper');
     let pagination = document.querySelector('.cnrs-dm-front-pagination-module-wrapper');
 
-    if (form && pagination) {
-        let links = pagination.querySelectorAll('[class^="cnrs-dm-front-pagination-"]');
+    if (form) {
         form.onsubmit = function (e) {
             e.preventDefault();
             let inputs = this.querySelectorAll('[name]');
@@ -40,7 +39,10 @@ function prepareListeners() {
             let uri = window.location.pathname + '?' + serialise(json);
             sendRequest(uri);
         }
+    }
 
+    if (pagination) {
+        let links = pagination.querySelectorAll('[class^="cnrs-dm-front-pagination-"]');
         for (let i = 0; i < links.length; i++) {
             links[i].onclick = function (e) {
                 e.preventDefault();

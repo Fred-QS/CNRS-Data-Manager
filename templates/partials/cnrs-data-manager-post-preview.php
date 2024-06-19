@@ -6,7 +6,7 @@
                 <?php $image_url = wp_get_attachment_image_src(get_post_thumbnail_id(get_the_ID()), 'full'); ?>
                 <?php $image = strlen($image_url[0]) > 0 ? $image_url[0] : '/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg'; ?>
                 <a href="<?php echo the_permalink() ?>" class="entry-featured-image-url" style="background-image: url(<?php echo esc_url( $image ) ?>);">
-                    <span class="cnrs-data-manager-front-article-image-overlay" data-icon=""></span>
+                    <span class="cnrs-data-manager-front-article-image-overlay"></span>
                 </a>
             </div>
             <h2 class="cnrs-data-manager-front-article-title">
