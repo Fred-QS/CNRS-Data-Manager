@@ -1,6 +1,6 @@
 <?php
 global $wp_query;
-$current = max(1, get_query_var('paged'));
+$current = max(1, $_GET['cdm-page']);
 $pagination = [
     'pages' => (int) $wp_query->max_num_pages,
     'displayed_items' => $wp_query->post_count,

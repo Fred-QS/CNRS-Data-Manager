@@ -67,8 +67,9 @@ class Settings
                 'platforms_category' => json_encode($_POST['cnrs-data-manager-categories-list-platforms']),
                 'platforms_view_selector' => stripslashes($_POST['cnrs-dm-selector-platforms']),
                 'category_template' => stripslashes($_POST['cnrs-dm-category-template']) === 'on' ? 1 : 0,
-                'silent_pagination' => stripslashes($_POST['cnrs-dm-pagination-ajax-checkbox']) === 'on' ? 1 : 0,
+                'silent_pagination' => (isset($_POST['cnrs-dm-pagination-ajax-checkbox']) && stripslashes($_POST['cnrs-dm-pagination-ajax-checkbox']) === 'on') ? 1 : 0,
                 'filter_modules' => !empty($_POST['cnrs-dm-filter-module']) ? stripslashes(implode(',', $_POST['cnrs-dm-filter-module'])) : 'none',
+                'candidating_email' => strlen(stripslashes($_POST['cnrs-dm-candidating-email'])) > 0 ? stripslashes($_POST['cnrs-dm-candidating-email']) : null
             ];
             global $wpdb;
             $currents = $wpdb->get_row( "SELECT teams_category, services_category, platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings ", ARRAY_A );
@@ -89,19 +90,33 @@ class Settings
                 $wpdb->delete($relationTable, ['type' => 'platforms']);
             }
 
-            $wpdb->query($wpdb->prepare(
-                "UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category=%s,teams_view_selector=%d,services_category=%s,services_view_selector=%d,platforms_category=%s,platforms_view_selector=%d,mode=%s,category_template=%d,silent_pagination=%d,filter_modules=%s",
-                $post['teams_category'],
-                $post['teams_view_selector'],
-                $post['services_category'],
-                $post['services_view_selector'], 
-                $post['platforms_category'],
-                $post['platforms_view_selector'],
-                $post['mode'],
-                $post['category_template'],
-                $post['silent_pagination'],
-                $post['filter_modules']
-            ));
+            if ($post['candidating_email'] === null) {
+                $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category='{$post['teams_category']}',teams_view_selector={$post['teams_view_selector']},services_category='{$post['services_category']}',services_view_selector={$post['services_view_selector']},platforms_category='{$post['platforms_category']}',platforms_view_selector={$post['platforms_view_selector']},mode='{$post['mode']}',category_template={$post['category_template']},silent_pagination={$post['silent_pagination']},filter_modules='{$post['filter_modules']}',candidating_email=NULL");
+            } else {
+                $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category='{$post['teams_category']}',teams_view_selector={$post['teams_view_selector']},services_category='{$post['services_category']}',services_view_selector={$post['services_view_selector']},platforms_category='{$post['platforms_category']}',platforms_view_selector={$post['platforms_view_selector']},mode='{$post['mode']}',category_template={$post['category_template']},silent_pagination={$post['silent_pagination']},filter_modules='{$post['filter_modules']}',candidating_email='{$post['candidating_email']}'");
+            }
+
+            $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_hidden_filters");
+            if (isset($_POST['cnrs-dm-filter-allowed'])) {
+                foreach ($_POST['cnrs-dm-filter-allowed'] as $id) {
+                    $wpdb->insert(
+                        "{$wpdb->prefix}cnrs_data_manager_hidden_filters",
+                        ['term_id' => $id],
+                        ['%d']
+                    );
+                }
+            }
+
+            $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_candidating");
+            if (isset($_POST['cnrs-dm-candidating'])) {
+                foreach ($_POST['cnrs-dm-candidating'] as $id) {
+                    $wpdb->insert(
+                        "{$wpdb->prefix}cnrs_data_manager_candidating",
+                        ['term_id' => $id],
+                        ['%d']
+                    );
+                }
+            }
         }
     }
 
@@ -386,5 +401,42 @@ class Settings
         global $wpdb;
         $settings = $wpdb->get_row("SELECT generic_email, generic_active FROM {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
         return $settings->generic_active === '1' ? $settings->generic_email : null;
+    }
+
+    /**
+     * Retrieves the hidden term IDs from the database.
+     *
+     * This method fetches the term IDs of hidden filters from the "cnrs_data_manager_hidden_filters" table in the database.
+     *
+     * @return int[] The array of hidden term IDs retrieved from the database.
+     * @global wpdb $wpdb The global WordPress database access object.
+     */
+    public static function getHiddenTermsIds(): array
+    {
+        global $wpdb;
+        $hidden = $wpdb->get_results("SELECT term_id FROM {$wpdb->prefix}cnrs_data_manager_hidden_filters", ARRAY_A);
+        return array_map(function (array $row) {return (int) $row['term_id'];}, $hidden);
+    }
+
+    /**
+     * Retrieves an array of candidating term IDs from the database.
+     *
+     * This method fetches the term IDs from the "cnrs_data_manager_candidating" table in the database and returns them as an array.
+     *
+     * @return array An array of candidating term IDs.
+     * @global wpdb $wpdb The global WordPress database access object.
+     */
+    public static function getCandidatingTermsIds(): array
+    {
+        global $wpdb;
+        $ids = $wpdb->get_results("SELECT term_id FROM {$wpdb->prefix}cnrs_data_manager_candidating", ARRAY_A);
+        return array_map(function (array $row) {return (int) $row['term_id'];}, $ids);
+    }
+
+    public static function getCandidatingEmail(): string|null
+    {
+        global $wpdb;
+        $settings = $wpdb->get_row("SELECT candidating_email FROM {$wpdb->prefix}cnrs_data_manager_settings");
+        return $settings->candidating_email;
     }
 }

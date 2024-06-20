@@ -2,12 +2,13 @@
 
 use CnrsDataManager\Core\Models\Settings;
 
-Settings::update();
-Settings::deployCategoryTemplate();
 $settings = Settings::getSettings();
+$hiddenFiltersByCatId = Settings::getHiddenTermsIds();
+$candidatingCatIds = Settings::getCandidatingTermsIds();
 $teamsConfig = getCategoriesConfig('teams', $settings['teams_category']);
 $servicesConfig = getCategoriesConfig('services', $settings['services_category']);
 $platformsConfig = getCategoriesConfig('platforms', $settings['platforms_category']);
+$categories = cnrs_get_translated_categories();
 
 ?>
 
@@ -17,9 +18,7 @@ $platformsConfig = getCategoriesConfig('platforms', $settings['platforms_categor
         <?php echo __('Settings', 'cnrs-data-manager'); ?>
     </h1>
     <p>
-        <?php echo __('Here you can update the settings of the CNRS Data Manager extension.', 'cnrs-data-manager') ?>
-        <br/>
-        <?php echo __('In order to save your changes, please click on the <b>Update</b> button.', 'cnrs-data-manager') ?>
+        <?php echo __('Here you can update the settings of the CNRS Data Manager extension.', 'cnrs-data-manager') ?> <?php echo __('In order to save your changes, please click on the <b>Update</b> button.', 'cnrs-data-manager') ?>
     </p>
 
     <p>
@@ -59,6 +58,16 @@ $platformsConfig = getCategoriesConfig('platforms', $settings['platforms_categor
                     </td>
                 </tr>
                 <?php if ($settings['filename'] !== null): ?>
+                    <tr>
+                        <th scope="row">
+                            <label for="cnrs-dm-mode"><?php echo __('Candidating email', 'cnrs-data-manager') ?></label>
+                        </th>
+                        <td>
+                            <label>
+                                <input type="email" name="cnrs-dm-candidating-email" value="<?php echo $settings['candidating_email'] ?>">
+                            </label>
+                        </td>
+                    </tr>
                     <tr>
                         <th scope="row">
                             <label for="cnrs-dm-mode"><?php echo __('List display mode', 'cnrs-data-manager') ?></label>
@@ -172,7 +181,7 @@ $platformsConfig = getCategoriesConfig('platforms', $settings['platforms_categor
             </table>
             <hr/>
             <p>
-                <?php echo __('In order to optimize the use of filters and pagination, you can choose to use the custom page kit containing the files <b>category.php</b>, <b>archive.php</b> and <b>project.php</b> provided by the extension. It will be up to you to create your own design in the corresponding CSS and JS files (see the list in the <b>Tools</b> tab).', 'cnrs-data-manager') ?>
+                <?php echo __('In order to optimize the use of filters and pagination, you can choose to use the custom page kit containing the files <b>category.php</b>, <b>archive.php</b> and <b>cnrs-script.js</b> provided by the extension. It will be up to you to create your own design in the corresponding CSS and JS files (see the list in the <b>Tools</b> tab).', 'cnrs-data-manager') ?>
                 <br/>
                 <?php echo __('To use these templates, please check the <b>Use templates</b> box below. The extension will create the <b>custom pages kit</b> at the root of the activated theme, including filters and pagination.', 'cnrs-data-manager') ?>
             </p>
@@ -229,6 +238,29 @@ $platformsConfig = getCategoriesConfig('platforms', $settings['platforms_categor
                 </tr>
                 <tr>
                     <th scope="row">
+                        <label><?php echo __('Disable filters', 'cnrs-data-manager') ?></label>
+                        <br>
+                        <i class="cnrs-data-manager-disclaimer"><?php echo __('Hide filters on certain category or project landing pages.', 'cnrs-data-manager') ?></i>
+                    </th>
+                    <td>
+                        <?php cnrs_polylang_installed() ?>
+                        <div class="cnrs-dm-filters-allowed-wrapper">
+                            <?php foreach ($categories as $row): ?>
+                                <div class="cnrs-dm-filters-allowed-container">
+                                    <?php foreach ($row as $lang => $category): ?>
+                                        <label>
+                                            <?php echo $category['flag'] !== null ? $category['flag'] : '' ?>
+                                            <input<?php echo in_array((int) $category['term_id'], $hiddenFiltersByCatId, true) ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-filter-allowed[]" value="<?php echo $category['term_id'] ?>">
+                                            <i><?php echo $category['name'] ?></i>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
                         <label><?php echo __('Pagination', 'cnrs-data-manager') ?></label>
                         <br>
                         <i class="cnrs-data-manager-disclaimer"><?php echo __('To be implemented in category page only.', 'cnrs-data-manager') ?></i>
@@ -250,6 +282,47 @@ $platformsConfig = getCategoriesConfig('platforms', $settings['platforms_categor
                                 </svg>
                             </span>
                         </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label><?php echo __('Categories', 'cnrs-data-manager') ?></label>
+                        <br>
+                        <i class="cnrs-data-manager-disclaimer"><?php echo __('To be implemented in categories / projects landing page only.', 'cnrs-data-manager') ?></i>
+                    </th>
+                    <td>
+                        <p class="cnrs-dm-shortcode-p">
+                            <span class="cnrs-data-manager-copy-shortcode">
+                                <span class="cnrs-dm-copied-to-clipboard"><?php echo __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                                <code>[cnrs-data-manager type="categories"]</code>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                                    <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                                </svg>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label><?php echo __('Candidating', 'cnrs-data-manager') ?></label>
+                        <br>
+                        <i class="cnrs-data-manager-disclaimer"><?php echo __('Associate categories and candidating.', 'cnrs-data-manager') ?></i>
+                    </th>
+                    <td>
+                        <?php cnrs_polylang_installed() ?>
+                        <div class="cnrs-dm-filters-allowed-wrapper">
+                            <?php foreach ($categories as $row): ?>
+                                <div class="cnrs-dm-filters-allowed-container">
+                                    <?php foreach ($row as $lang => $category): ?>
+                                        <label>
+                                            <?php echo $category['flag'] !== null ? $category['flag'] : '' ?>
+                                            <input<?php echo in_array((int) $category['term_id'], $candidatingCatIds, true) ? ' checked' : '' ?> type="checkbox" name="cnrs-dm-candidating[]" value="<?php echo $category['term_id'] ?>">
+                                            <i><?php echo $category['name'] ?></i>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
