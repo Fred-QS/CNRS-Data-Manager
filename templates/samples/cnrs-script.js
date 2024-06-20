@@ -1,3 +1,7 @@
+/**
+ * CNRS Data Manager generated script file
+ */
+
 window.onload = function() {
     setAges();
 }

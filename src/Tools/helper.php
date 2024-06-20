@@ -276,6 +276,10 @@ if (!function_exists('cnrs_install_folders')) {
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-email.css'
             ],
             [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-categories.css',
+                'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-categories.css'
+            ],
+            [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/assets/cnrs-data-manager-script.js',
                 'to' => ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js'
             ],
@@ -306,6 +310,10 @@ if (!function_exists('cnrs_install_folders')) {
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-email-header.php',
                 'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-email-header.php'
+            ],
+            [
+                'from' => CNRS_DATA_MANAGER_PATH . '/templates/partials/cnrs-data-manager-post-preview.php',
+                'to' => CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-post-preview.php'
             ],
             [
                 'from' => CNRS_DATA_MANAGER_PATH . '/templates/svg/list.svg',
@@ -426,7 +434,7 @@ if (!function_exists('cnrs_dm_get_home_path')) {
             if (!function_exists('get_home_path')) {
                 require_once(ABSPATH . 'wp-admin/includes/file.php');
             }
-            $homePath = wp_normalize_path(cnrs_dm_cloned_get_home_path());
+            $homePath = cnrs_normalize_path(cnrs_dm_cloned_get_home_path());
             if ($homePath == '//' || $homePath == '') {
                 $homePath = '/';
             } else {
@@ -437,7 +445,7 @@ if (!function_exists('cnrs_dm_get_home_path')) {
     }
 }
 
-if (!function_exists('wp_normalize_path')) {
+if (!function_exists('cnrs_normalize_path')) {
     /**
      * Normalize a filesystem path.
      *
@@ -450,7 +458,7 @@ if (!function_exists('wp_normalize_path')) {
      *
      * @return string Normalized path.
      */
-    function wp_normalize_path($path): string
+    function cnrs_normalize_path($path): string
     {
         $wrapper = '';
         if (wp_is_stream($path)) {
@@ -612,7 +620,7 @@ if (!function_exists('sanitizeURIForPagination')) {
     function sanitizeURIForPagination(int $page, string $mode = 'back'): string
     {
         $current = $_SERVER['REQUEST_URI'];
-        $trigger = $mode === 'back' ? 'cnrs-data-manager-pagi' : 'paged';
+        $trigger = $mode === 'back' ? 'cnrs-data-manager-pagi' : 'cdm-page';
         $trigger = $mode === 'all' ? 'cdm-page' : $trigger;
         if (stripos($current, $trigger) !== false) {
             $current = explode($trigger, $current)[0];
@@ -811,7 +819,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder', 'publications'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder', 'publications', 'categories'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -1029,6 +1037,7 @@ if (!function_exists('cnrsReadShortCode')) {
                     filemtime(dirname(__DIR__) . '/assets/js/cnrs-data-manager-pagination.js')
                 );
             }
+
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Pagination.php');
             return ob_get_clean();
@@ -1161,6 +1170,25 @@ if (!function_exists('cnrsReadShortCode')) {
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Publications.php');
             return ob_get_clean();
+
+        } else if ($type === 'categories') {
+
+            wp_enqueue_style('cnrs-data-manager-categories-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-categories.css', [], null);
+
+            $cat = get_queried_object();
+            $catName = $cat->name;
+            $catID = $cat->term_id;
+
+            $candidate_email = Settings::getCandidatingEmail();
+
+            $hiddenFiltersByCatId = Settings::getHiddenTermsIds();
+            $isFilterHidden = in_array($catID, $hiddenFiltersByCatId, true) === true;
+            $candidatingCatId = Settings::getCandidatingTermsIds();
+            $isCandidating = in_array($catID, $candidatingCatId, true) === true && $candidate_email !== null;
+
+            ob_start();
+            include_once(dirname(__DIR__) . '/Core/Views/Categories.php');
+            return ob_get_clean();
         }
 
         return '';
@@ -1236,7 +1264,7 @@ if (!function_exists('cnrsFiltersController')) {
      */
     function cnrsFiltersController(string $currentCatSlug = 'none'): void
     {
-        $paged = get_query_var('paged') ? absint(get_query_var('paged')) : 1;
+        $paged = get_query_var('cdm-page') ? absint(get_query_var('cdm-page')) : 1;
         $posts_per_page = get_query_var('cdm-limit') ? absint(get_query_var('cdm-limit')) : 10;
 
         if ($currentCatSlug !== 'none') {
@@ -1273,8 +1301,8 @@ if (!function_exists('cnrsFiltersController')) {
             }
         }
 
-        if (get_query_var('s')) {
-            $args['s'] = get_query_var('s');
+        if (get_query_var('cdm-search')) {
+            $args['s'] = get_query_var('cdm-search');
         }
 
         if (get_query_var('cdm-year') && get_query_var('cdm-year') !== 'all') {
@@ -1434,7 +1462,9 @@ if (!function_exists('addQueryVars')) {
         add_filter('query_vars', function ($qvars) {
             $qvars[] = 'cdm-limit';
             $qvars[] = 'cdm-tax';
+            $qvars[] = 'cdm-page';
             $qvars[] = 'cdm-year';
+            $qvars[] = 'cdm-search';
             $qvars[] = 'cdm-parent';
             $qvars[] = 'cdm-team';
             return $qvars;
@@ -2189,5 +2219,62 @@ if (!function_exists('cnrs_polylang_installed')) {
             </div>
             <?php echo ob_get_clean();
         }
+    }
+}
+
+if (!function_exists('cnrs_get_translated_categories')) {
+
+    /**
+     * Get translated categories with information about each language.
+     *
+     * @return array Returns an array containing translated categories with information about each language.
+     */
+    function cnrs_get_translated_categories(): array
+    {
+        $categories = get_categories([
+            'hide_empty' => false,
+            'orderby' => 'name',
+            'order' => 'ASC'
+        ]);
+        $array = [];
+        if (!function_exists('pll_the_languages')) {
+            $array = array_map(function (object $category) {
+                return [
+                    'fr' => [
+                        'term_id' => $category->term_id,
+                        'name' => $category->name,
+                        'slug' => $category->slug,
+                        'flag' => null
+                    ]
+                ];
+            }, $categories);
+        } else {
+            $originalLang = pll_default_language();
+            $flags = cnrs_get_languages_from_pll([], false);
+            foreach ($categories as $category) {
+                if (pll_get_term_language($category->term_id) === $originalLang) {
+                    $cat = [];
+                    $cat[$originalLang] = [
+                        'term_id' => $category->term_id,
+                        'name' => $category->name,
+                        'slug' => $category->slug,
+                        'flag' => $flags[$originalLang]
+                    ];
+                    $toTranslate = pll_get_term_translations($category->term_id);
+                    unset($toTranslate[$originalLang]);
+                    foreach ($toTranslate as $lang => $translationId) {
+                        $translatedCat = get_category($translationId);
+                        $cat[$lang] = [
+                            'term_id' => $translatedCat->term_id,
+                            'name' => $translatedCat->name,
+                            'slug' => $translatedCat->slug,
+                            'flag' => $flags[$lang]
+                        ];
+                    }
+                    $array[] = $cat;
+                }
+            }
+        }
+        return $array;
     }
 }

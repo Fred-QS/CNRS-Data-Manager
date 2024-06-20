@@ -30,6 +30,8 @@ class Bootstrap
         add_action('init', array(__CLASS__, 'hookWpInit'));
         add_action( 'cnrs_data_manager_cron_hook', array(__CLASS__, 'cnrs_data_manager_cron_hook') );
         Projects::cleanGhostProjects();
+        Settings::update();
+        Settings::deployCategoryTemplate();
 
         if (is_admin()) {
             if (isset($_GET['page']) 
@@ -93,7 +95,7 @@ class Bootstrap
             }
 
         } else {
-            $currentThemeFolder = get_template_directory();
+            $currentThemeFolder = get_stylesheet_directory();
             define('CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER', $currentThemeFolder);
             setUserConnexion();
         }
