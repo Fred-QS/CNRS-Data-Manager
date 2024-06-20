@@ -1178,6 +1178,7 @@ if (!function_exists('cnrsReadShortCode')) {
             $cat = get_queried_object();
             $catName = $cat->name;
             $catID = $cat->term_id;
+            $slug = $cat->slug;
 
             $candidate_email = Settings::getCandidatingEmail();
 

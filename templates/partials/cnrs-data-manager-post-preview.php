@@ -23,7 +23,7 @@
                 <span><?php the_title(); ?></span>
             </h2>
             <div class="cnrs-data-manager-front-article-content">
-                <?php echo get_the_content(); ?>
+                <?php echo str_replace(["\n", '&nbsp;'], ["<br>", ''], get_the_content()); ?>
             </div>
         </article>
     </div>

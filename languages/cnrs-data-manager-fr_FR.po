@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-06-20 09:11+0200\n"
-"PO-Revision-Date: 2024-06-20 09:19+0200\n"
+"POT-Creation-Date: 2024-06-20 11:51+0200\n"
+"PO-Revision-Date: 2024-06-20 11:52+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -20,42 +20,53 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: src/Core/Bootstrap.php:182
+#: src/Core/Bootstrap.php:60
+msgid ""
+"<b>Warning:</b> For performance reasons, you should add <code style=\"color: "
+"#2271b1;\">define ('DISABLE_WP_CRON', true);</code> to your <b style="
+"\"color: #2271b1;\">wp-config.php</b> file, then create the cron job task: "
+msgstr ""
+"<b>Avertissement:</b> Pour des raisons de performances, vous devez ajouter "
+"<code style=\"color: #2271b1;\">define ('DISABLE_WP_CRON', true);</code> à "
+"votre fichier <b style=\"color: #2271b1;\">wp-config.php</b> , puis créer la "
+"tâche de travail cron : "
+
+#: src/Core/Bootstrap.php:191
 msgid "My JRU"
 msgstr "Mon UMR"
 
-#: src/Core/Bootstrap.php:227 src/Core/Bootstrap.php:228
-#: src/Core/Bootstrap.php:323 src/Core/Views/Form.php:80
+#: src/Core/Bootstrap.php:236 src/Core/Bootstrap.php:237
+#: src/Core/Bootstrap.php:332 src/Core/Views/Form.php:80
 #: src/Core/Views/Settings.php:18
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/Core/Bootstrap.php:237 src/Core/Bootstrap.php:238
+#: src/Core/Bootstrap.php:246 src/Core/Bootstrap.php:247
 #: src/Core/Views/Documentation.php:5
 msgid "Documentation"
 msgstr "Documentation"
 
-#: src/Core/Bootstrap.php:250 src/Core/Bootstrap.php:251
+#: src/Core/Bootstrap.php:259 src/Core/Bootstrap.php:260
 #: src/Core/Views/Dashboard.php:41
 msgid "Dashboard"
 msgstr "Général"
 
-#: src/Core/Bootstrap.php:260 src/Core/Bootstrap.php:261
+#: src/Core/Bootstrap.php:269 src/Core/Bootstrap.php:270
 #: src/Core/Views/Tools.php:18
 msgid "Tools"
 msgstr "Outils"
 
-#: src/Core/Bootstrap.php:270 src/Core/Bootstrap.php:271
+#: src/Core/Bootstrap.php:279 src/Core/Bootstrap.php:280
 #: src/Core/Views/MapSettings.php:16
 msgid "3D Map"
 msgstr "Carte 3D"
 
-#: src/Core/Bootstrap.php:280 src/Core/Bootstrap.php:281
+#: src/Core/Bootstrap.php:289 src/Core/Bootstrap.php:290
 msgid "Import"
 msgstr "Importation"
 
-#: src/Core/Bootstrap.php:290 src/Core/Bootstrap.php:291
-#: src/Core/Views/Form.php:35 src/Tools/helper.php:1834
+#: src/Core/Bootstrap.php:299 src/Core/Bootstrap.php:300
+#: src/Core/Views/Form.php:35 src/Tools/helper.php:1835
 #: templates/includes/mission-form-download.php:26
 #: templates/includes/mission-form-download.php:36
 #: templates/includes/mission-form-list.php:191
@@ -2023,47 +2034,47 @@ msgstr "Monsieur"
 msgid "Misses"
 msgstr "Madame"
 
-#: src/Tools/helper.php:1534
+#: src/Tools/helper.php:1535
 msgid "not assigned"
 msgstr "non assigné"
 
-#: src/Tools/helper.php:1752
+#: src/Tools/helper.php:1753
 msgid "Your identifiers are not recognized."
 msgstr "Vos identifiants ne sont pas reconnus."
 
-#: src/Tools/helper.php:1765
+#: src/Tools/helper.php:1766
 msgid "An error has occurred while sending the email."
 msgstr "Une erreur s’est produite lors de l’envoi de l’e-mail."
 
-#: src/Tools/helper.php:1768
+#: src/Tools/helper.php:1769
 msgid "The email is not valid."
 msgstr "L’adresse e-mail n’est pas valide."
 
-#: src/Tools/helper.php:1839
+#: src/Tools/helper.php:1840
 msgid "Mission form print"
 msgstr "Impression du formulaire de mission"
 
-#: src/Tools/helper.php:1844
+#: src/Tools/helper.php:1845
 msgid "Mission form download"
 msgstr "Téléchargement du formulaire de mission"
 
-#: src/Tools/helper.php:1849
+#: src/Tools/helper.php:1850
 msgid "Mission form revision by manager"
 msgstr "Révision du formulaire de mission par le gestionnaire"
 
-#: src/Tools/helper.php:1854
+#: src/Tools/helper.php:1855
 msgid "Mission form revision by agent"
 msgstr "Révision du formulaire de mission par l’agent"
 
-#: src/Tools/helper.php:1859
+#: src/Tools/helper.php:1860
 msgid "Mission form revision by funder"
 msgstr "Révision du formulaire de mission par le responsable des crédits"
 
-#: src/Tools/helper.php:1930
+#: src/Tools/helper.php:1931
 msgid "at"
 msgstr "à"
 
-#: src/Tools/helper.php:2218
+#: src/Tools/helper.php:2219
 msgid ""
 "The <b>Polylang</b> extension is installed! <b>CNRS Data Manager</b> is "
 "compatible with Polylang"

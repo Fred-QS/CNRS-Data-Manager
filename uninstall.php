@@ -31,6 +31,9 @@ class CnrsDataManagerUninstall // phpcs:ignore
         try {
             cnrs_remove_folders(true);
             self::removeTables();
+            if (wp_next_scheduled('cnrs_data_manager_cron_hook')) {
+                wp_clear_scheduled_hook('cnrs_data_manager_cron_hook');
+            }
         } catch (Exception|Error $e) {
             // Prevent error on uninstall
         }

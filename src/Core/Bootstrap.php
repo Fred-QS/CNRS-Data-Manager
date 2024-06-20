@@ -28,7 +28,10 @@ class Bootstrap
     public static function init(): void
     {
         add_action('init', array(__CLASS__, 'hookWpInit'));
-        add_action( 'cnrs_data_manager_cron_hook', array(__CLASS__, 'cnrs_data_manager_cron_hook') );
+        add_action('cnrs_data_manager_cron_hook', array(__CLASS__, 'cnrs_data_manager_cron_hook'));
+        if (!defined('DISABLE_WP_CRON') || DISABLE_WP_CRON === false) {
+            add_action( 'admin_notices', array(__CLASS__, 'cnrs_cron_message'));
+        }
         Projects::cleanGhostProjects();
         Settings::update();
         Settings::deployCategoryTemplate();
@@ -49,6 +52,12 @@ class Bootstrap
         if (!wp_next_scheduled('cnrs_data_manager_cron_hook')) {
             wp_schedule_event(strtotime(date("Y-m-d ") . "23:59:59"), 'daily', 'cnrs_data_manager_cron_hook');
         }
+    }
+
+    public static function cnrs_cron_message(): void
+    {
+        $cron = '<code style="color: #53AC64;">0 0 * * 0 wget -q -O - ' . get_site_url() . '/wp-cron.php?doing_wp_cron >/dev/null 2>&1</code>';
+        printf('<div class="notice notice-warning"><p>%s %s</p></div>', __('<b>Warning:</b> For performance reasons, you should add <code style="color: #2271b1;">define (\'DISABLE_WP_CRON\', true);</code> to your <b style="color: #2271b1;">wp-config.php</b> file, then create the cron job task: ', 'cnrs-data-manager'), $cron);
     }
     
     public static function cnrs_data_manager_cron_hook(): void
