@@ -82,6 +82,7 @@ class Install
               category_template tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Tells if the category.php file has to be created',
               silent_pagination tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Define if posts silent pagination is activate',
               filter_modules varchar(255) NOT NULL DEFAULT 'per-page,sub-categories-list,by-year,search-field' COMMENT 'Module selection for post filters',
+              candidating_email varchar(255) DEFAULT NULL COMMENT 'Email to send candidating info',
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='CNRS Data Manager extension settings'"
         );
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_team_project (
@@ -142,6 +143,14 @@ class Install
               observations longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT 'Observations list',
               created_at datetime NOT NULL DEFAULT current_timestamp() COMMENT 'Revision creation timestamp'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='UMR form revisions'"
+        );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_hidden_filters (
+              term_id bigint(20) UNSIGNED NOT NULL COMMENT 'Term ID for which filters are hidden'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Hidden filters for categories and projects'"
+        );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_candidating (
+              term_id bigint(20) UNSIGNED NOT NULL COMMENT 'Term ID for which candating is activated'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Candidating association with categories'"
         );
         // Populate tables
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_map_markers (title, lat, lng) VALUES

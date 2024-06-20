@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * CNRS Data Manager generated archives template file
+ */
+
 if (get_queried_object()->name !== 'project') {
     // Redirect all archived posts url to 404 error
     global $wp_query;
@@ -9,5 +13,5 @@ if (get_queried_object()->name !== 'project') {
     exit();
 } else {
     // Only projects posts displayed at /project uri
-    include_once(CNRS_DATA_MANAGER_PATH . '/templates/modules/project.php');
+    echo do_shortcode('[cnrs-data-manager type="categories"]');
 }
