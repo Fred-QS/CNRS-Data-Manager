@@ -9,6 +9,12 @@ $teamsConfig = getCategoriesConfig('teams', $settings['teams_category']);
 $servicesConfig = getCategoriesConfig('services', $settings['services_category']);
 $platformsConfig = getCategoriesConfig('platforms', $settings['platforms_category']);
 $categories = cnrs_get_translated_categories();
+$designs = Settings::getDesigns();
+$designsTypes = [
+    'POSTER' => __('Poster', 'cnrs-data-manager'),
+    'CARD' => __('Card', 'cnrs-data-manager'),
+    'THUMBNAIL' => __('Thumbnail', 'cnrs-data-manager')
+];
 
 ?>
 
@@ -459,6 +465,38 @@ $categories = cnrs_get_translated_categories();
                         </p>
                     </td>
                 </tr>
+                </tbody>
+            </table>
+            <hr>
+            <p><?php echo __('In order to manage the <b>design</b> of the article previews on the main pages of the different categories, please select the <b>display template</b> for each category.', 'cnrs-data-manager') ?></p>
+            <p><?php echo __('Project previews are by default displayed with the <b>Card</b> template.', 'cnrs-data-manager') ?></p>
+            <?php cnrs_polylang_installed() ?>
+            <table class="form-table" role="presentation">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="cnrs-dm-filters-allowed-wrapper">
+                                <?php foreach ($categories as $row): ?>
+                                    <div class="cnrs-dm-filters-allowed-container cnrs-dm-design-container">
+                                        <?php foreach ($row as $lang => $category): ?>
+                                        <p>
+                                            <?php echo $category['flag'] !== null ? $category['flag'] : '' ?>
+                                            <i><?php echo $category['name'] ?></i>
+                                        </p>
+                                        <div class="cnrs-dm-design-wrapper">
+                                            <?php foreach ($designsTypes as $designsType => $designTranslation): ?>
+                                                <label>
+                                                    <input<?php echo cnrs_isDesignSelected($category['term_id'], $designsType, $designs) === true ? ' checked' : '' ?> type="radio" name="cnrs-dm-design[<?php echo $category['term_id'] ?>]" value="<?php echo $designsType ?>">
+                                                    <span><?php echo $designTranslation ?></span>
+                                                </label>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         <?php endif; ?>

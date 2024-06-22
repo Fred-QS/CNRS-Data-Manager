@@ -71,6 +71,7 @@ class Settings
                 'filter_modules' => !empty($_POST['cnrs-dm-filter-module']) ? stripslashes(implode(',', $_POST['cnrs-dm-filter-module'])) : 'none',
                 'candidating_email' => strlen(stripslashes($_POST['cnrs-dm-candidating-email'])) > 0 ? stripslashes($_POST['cnrs-dm-candidating-email']) : null
             ];
+
             global $wpdb;
             $currents = $wpdb->get_row( "SELECT teams_category, services_category, platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings ", ARRAY_A );
             $currentTeams = json_decode($currents['teams_category'], true);
@@ -114,6 +115,17 @@ class Settings
                         "{$wpdb->prefix}cnrs_data_manager_candidating",
                         ['term_id' => $id],
                         ['%d']
+                    );
+                }
+            }
+
+            $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_articles_preview_design");
+            if (isset($_POST['cnrs-dm-design'])) {
+                foreach ($_POST['cnrs-dm-design'] as $term_id => $template) {
+                    $wpdb->insert(
+                        "{$wpdb->prefix}cnrs_data_manager_articles_preview_design",
+                        ['term_id' => $term_id, 'design' => $template],
+                        ['%d', '%s']
                     );
                 }
             }
@@ -433,10 +445,46 @@ class Settings
         return array_map(function (array $row) {return (int) $row['term_id'];}, $ids);
     }
 
+    /**
+     * Retrieves the candidating email from the database.
+     *
+     * This method fetches the candidating email from the "cnrs_data_manager_settings" table in the database.
+     *
+     * @return string|null The candidating email retrieved from the database, or null if not found.
+     * @global wpdb $wpdb The global WordPress database access object.
+     */
     public static function getCandidatingEmail(): string|null
     {
         global $wpdb;
         $settings = $wpdb->get_row("SELECT candidating_email FROM {$wpdb->prefix}cnrs_data_manager_settings");
         return $settings->candidating_email;
+    }
+
+    /**
+     * Retrieves an array of designs from the database.
+     *
+     * @return array An array of designs in the database.
+     * @global wpdb $wpdb The WordPress database object.
+     *
+     */
+    public static function getDesigns(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_articles_preview_design", ARRAY_A);
+    }
+
+    /**
+     * Retrieves the design from the database associated with the given term ID.
+     *
+     * @param int $term_id The ID of the term.
+     * @return string The design associated with the term ID.
+     * @global wpdb $wpdb The WordPress database object.
+     *
+     */
+    public static function getDesignFromTermId(int $term_id): string
+    {
+        global $wpdb;
+        $result = $wpdb->get_row("SELECT design FROM {$wpdb->prefix}cnrs_data_manager_articles_preview_design WHERE term_id = {$term_id}");
+        return $result->design;
     }
 }

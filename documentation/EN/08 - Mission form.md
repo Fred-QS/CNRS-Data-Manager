@@ -85,4 +85,4 @@ Once the form is completed by the agent, a manager will receive an email if the 
 
 - [< Import](/documentation/EN/07%20-%20Import.md)
 
-- [> Uninstallation](/documentation/EN/08%20-%20Uninstallation.md)
+- [> Collaborators](/documentation/EN/09%20-%20Collaborators.md)

@@ -152,6 +152,23 @@ class Install
               term_id bigint(20) UNSIGNED NOT NULL COMMENT 'Term ID for which candating is activated'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Candidating association with categories'"
         );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_articles_preview_design (
+            term_id bigint(20) UNSIGNED NOT NULL COMMENT 'The term id from the articles', 
+            design ENUM('POSTER','CARD','THUMBNAIL') NOT NULL DEFAULT 'POSTER' COMMENT 'The article preview design' 
+            ) ENGINE = InnoDB COMMENT = 'Design pattern for article preview in categories landing page'"
+        );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_project_entities (
+            id bigint(20) UNSIGNED PRIMARY (id) NOT NULL AUTO_INCREMENT COMMENT 'The primary key',
+            entity_type ENUM('FUNDER','PARTNER') NOT NULL DEFAULT 'FUNDER' COMMENT 'The entity type', 
+            entity_name VARCHAR(255) NOT NULL COMMENT 'The entity name', 
+            entity_logo INT NULL DEFAULT NULL COMMENT 'The entity logo path'
+            ) ENGINE = InnoDB COMMENT = 'Entites related to a project like partners or funders'"
+        );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_project_entity_relation (
+            project_id BIGINT UNSIGNED NOT NULL COMMENT 'The project post ID',
+            entity_id BIGINT UNSIGNED NOT NULL COMMENT 'The entity ID'
+            ) ENGINE = InnoDB COMMENT = 'Entites and Projects relations'"
+        );
         // Populate tables
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_map_markers (title, lat, lng) VALUES
             ('New York', 40.700000, -74.100000),

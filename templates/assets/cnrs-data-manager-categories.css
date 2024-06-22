@@ -2,7 +2,12 @@
 *                        CNRS Data Manager Categories / Projects CSS                         *
 *********************************************************************************************/
 
-.cnrs-dm-front-silent-container-poster {
+@font-face {
+    font-family: Stamp;
+    src: url("/wp-content/plugins/cnrs-data-manager/assets/fonts/stamp/Stamp.ttf");
+}
+
+.cnrs-dm-front-silent-container-poster, .cnrs-dm-front-silent-container-thumbnail {
     display: grid;
     grid-gap: 40px;
     grid-auto-rows: minmax(40px, auto);
@@ -38,10 +43,20 @@
     margin-top: 40px;
 }
 
-.cnrs-dm-front-silent-container-card .cnrs-data-manager-front-article-title {
+.cnrs-dm-front-silent-container-thumbnail .cnrs-data-manager-front-blog-item {
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+    padding: 20px 30px;
+}
+
+.cnrs-dm-front-silent-container-card .cnrs-data-manager-front-article-title,
+.cnrs-dm-front-silent-container-thumbnail .cnrs-data-manager-front-article-title {
     font-weight: bold;
     font-family: 'Josefin Sans',Helvetica,Arial,Lucida,sans-serif;
     opacity: 0.7;
+}
+
+.cnrs-dm-front-silent-container-thumbnail .cnrs-data-manager-front-article-title {
+    font-size: 20px;
 }
 
 .cnrs-dm-front-silent-container-poster .cnrs-data-manager-front-article-title {
@@ -223,9 +238,30 @@
     margin-left: 0;
 }
 
+.cnrs-data-manager-front-article-wrapper {
+    position: relative;
+}
+
+.cnrs-dm-front-tags {
+    position: absolute;
+    color: #ff4d4d;
+    border: 2px solid #ff4d4d;
+    font-size: 50px;
+    border-radius: 8px;
+    right: 0;
+    bottom: 20px;
+    letter-spacing: 2px;
+    z-index: 6;
+    font-family: Stamp, sans-serif;
+    padding: 20px 15px 15px!important;
+    transform-origin: 50% 50%;
+    transform: rotate(-20deg);
+}
+
 @media only screen and (min-width: 980px) {
 
-    .cnrs-dm-front-silent-container-poster {
+    .cnrs-dm-front-silent-container-poster,
+    .cnrs-dm-front-silent-container-thumbnail {
         grid-template-columns: repeat(3, 1fr);
     }
 
@@ -247,7 +283,8 @@
 
 @media only screen and (min-width: 782px) and (max-width: 979px) {
 
-    .cnrs-dm-front-silent-container-poster {
+    .cnrs-dm-front-silent-container-poster,
+    .cnrs-dm-front-silent-container-thumbnail {
         grid-template-columns: repeat(2, 1fr);
     }
 
@@ -269,7 +306,8 @@
 
 @media only screen and (max-width: 781px) {
 
-    .cnrs-dm-front-silent-container-poster {
+    .cnrs-dm-front-silent-container-poster,
+    .cnrs-dm-front-silent-container-thumbnail {
         grid-template-columns: repeat(1, 1fr);
     }
 

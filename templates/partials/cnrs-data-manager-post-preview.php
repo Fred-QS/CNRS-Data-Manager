@@ -1,4 +1,4 @@
-<?php if ($previewTemplate === 'poster'): ?>
+<?php if ($previewTemplate === 'POSTER'): ?>
 
     <div class="cnrs-data-manager-front-blog-item">
         <article id="cnrs-data-manager-post-<?php echo get_the_ID() ?>" class="cnrs-data-manager-front-article-wrapper category-<?php echo $slug ?>">
@@ -12,10 +12,15 @@
             <h2 class="cnrs-data-manager-front-article-title">
                 <a href="<?php echo the_permalink() ?>"><?php the_title(); ?></a>
             </h2>
+            <?php $posttags = get_the_tags(); if ($isCandidating === true && $posttags): ?>
+                <?php foreach($posttags as $tag): ?>
+                    <p class="cnrs-dm-front-tags cnrs-dm-front-tag-<?php echo $tag->slug ?>"><?php echo $tag->name ?></p>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </article>
     </div>
 
-<?php elseif ($previewTemplate === 'card'): ?>
+<?php elseif ($previewTemplate === 'CARD'): ?>
 
     <div class="cnrs-data-manager-front-blog-item recruter">
         <article id="cnrs-data-manager-post-<?php echo get_the_ID() ?>" class="cnrs-data-manager-front-article-wrapper category-<?php echo $slug ?>">
@@ -23,7 +28,30 @@
                 <span><?php the_title(); ?></span>
             </h2>
             <div class="cnrs-data-manager-front-article-content">
-                <?php echo str_replace(["\n", '&nbsp;'], ["<br>", ''], get_the_content()); ?>
+                <?php echo str_replace("\n", '<span class="clearfix"></span>', get_the_content()); ?>
+                <?php $posttags = get_the_tags(); if ($isCandidating === true && $posttags): ?>
+                    <?php foreach($posttags as $tag): ?>
+                        <p class="cnrs-dm-front-tags cnrs-dm-front-tag-<?php echo $tag->slug ?>"><?php echo $tag->name ?></p>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </article>
+    </div>
+
+<?php elseif ($previewTemplate === 'THUMBNAIL'): ?>
+
+    <div class="cnrs-data-manager-front-blog-item recruter">
+        <article id="cnrs-data-manager-post-<?php echo get_the_ID() ?>" class="cnrs-data-manager-front-article-wrapper category-<?php echo $slug ?>">
+            <h2 class="cnrs-data-manager-front-article-title">
+                <span><?php the_title(); ?></span>
+            </h2>
+            <div class="cnrs-data-manager-front-article-content">
+                <?php echo str_replace("\n", '<span class="clearfix"></span>', get_the_content()); ?>
+                <?php $posttags = get_the_tags(); if ($isCandidating === true && $posttags): ?>
+                    <?php foreach($posttags as $tag): ?>
+                        <p class="cnrs-dm-front-tags cnrs-dm-front-tag-<?php echo $tag->slug ?>"><?php echo $tag->name ?></p>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
         </article>
     </div>

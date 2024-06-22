@@ -56,7 +56,7 @@ class Bootstrap
 
     public static function cnrs_cron_message(): void
     {
-        $cron = '<code style="color: #53AC64;">0 0 * * 0 wget -q -O - ' . get_site_url() . '/wp-cron.php?doing_wp_cron >/dev/null 2>&1</code>';
+        $cron = '<code style="color: #53AC64;">0 0 * * * wget -q -O - ' . get_site_url() . '/wp-cron.php?doing_wp_cron >/dev/null 2>&1</code>';
         printf('<div class="notice notice-warning"><p>%s %s</p></div>', __('<b>Warning:</b> For performance reasons, you should add <code style="color: #2271b1;">define (\'DISABLE_WP_CRON\', true);</code> to your <b style="color: #2271b1;">wp-config.php</b> file, then create the cron job task: ', 'cnrs-data-manager'), $cron);
     }
     
@@ -302,6 +302,16 @@ class Bootstrap
                     'menu_slug'              => 'data-manager-mission-form',
                     'callback'               => function () {
                         include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Form.php');
+                    }
+                ],
+                [
+                    'parent_slug'            => 'cnrs-data-manager',
+                    'page_title'             => __('Collaborators', 'cnrs-data-manager'),
+                    'menu_title'             => __('Collaborators', 'cnrs-data-manager'),
+                    'capability'             => 'manage_options',
+                    'menu_slug'              => 'data-manager-collaborators',
+                    'callback'               => function () {
+                        include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Collaborators.php');
                     }
                 ]
             ];

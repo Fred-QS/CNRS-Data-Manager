@@ -1179,6 +1179,7 @@ if (!function_exists('cnrsReadShortCode')) {
             $catName = $cat->name;
             $catID = $cat->term_id;
             $slug = $cat->slug;
+            $previewTemplate = $catName !== 'project' ? Settings::getDesignFromTermId($catID) : 'POSTER';
 
             $candidate_email = Settings::getCandidatingEmail();
 
@@ -2277,5 +2278,27 @@ if (!function_exists('cnrs_get_translated_categories')) {
             }
         }
         return $array;
+    }
+}
+
+if (!function_exists('cnrs_isDesignSelected')) {
+
+    /**
+     * Check if a design is selected for a specific term and template.
+     *
+     * @param int $term_id The ID of the term.
+     * @param string $template The name of the template.
+     * @param array $designs An array of designs to check against.
+     *
+     * @return bool True if a design is selected, false otherwise.
+     */
+    function cnrs_isDesignSelected(int $term_id, string $template, array $designs): bool
+    {
+        foreach ($designs as $design) {
+            if ((int) $design['term_id'] === $term_id && $design['design'] === $template) {
+                return true;
+            }
+        }
+        return false;
     }
 }
