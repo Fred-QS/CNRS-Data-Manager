@@ -10,6 +10,7 @@ use CnrsDataManager\Excel\IOFactory;
 use CnrsDataManager\Excel\RichText\RichText;
 use CnrsDataManager\Core\Models\Projects;
 use CnrsDataManager\Core\Models\Forms;
+use CnrsDataManager\Core\Models\Collaborators;
 use CnrsDataManager\Core\Controllers\Emails;
 use CnrsDataManager\Core\Controllers\Manager;
 
@@ -24,7 +25,10 @@ class Ajax
         'get_forms_list' => 'getFormsList',
         'get_new_manager' => 'getNewManager',
         'form_list_action' => 'formListAction',
-        'get_form_toggles' => 'getFormToggles'
+        'get_form_toggles' => 'getFormToggles',
+        'get_collaborators_list' => 'getCollaboratorsList',
+        'get_collaborator_modal' => 'getCollaboratorModal',
+        'collaborator_action' => 'collaboratorAction'
     ];
 
     private static array $publicActions = [];
@@ -639,6 +643,90 @@ class Ajax
             } catch (ErrorException $e) {
                 $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
             }
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Retrieves the list of collaborators and sends it as a JSON response.
+     *
+     * @return void
+     */
+    public static function getCollaboratorsList(): void
+    {
+        $json = ['error' => null, 'data' => ['total' => 0], 'html' => ''];
+        if (!isset($_POST['page']) || !isset($_POST['search']) || !isset($_POST['results_per_page'])) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        } else {
+            try {
+                $current = ctype_digit((string) $_POST['page']) ? (int) $_POST['page'] : 1;
+                $search = trim(html_entity_decode($_POST['search']));
+                $limit = (int) $_POST['results_per_page'];
+                $entityType = $_POST['type_filter'];
+                $orderBy = $_POST['date_order_by'];
+                $count = Collaborators::getCollaboratorsCount($search, $limit, $current, $entityType);
+                $pages = 0;
+                $rows = [];
+                $previous = null;
+                $next = null;
+                if ($count > 0 && $limit > 0) {
+                    $pages = $count / $limit < 1 ? 1 : ceil($count / $limit);
+                    if ($current < 1) {
+                        $current = 1;
+                    } else if ($current > $pages) {
+                        $current = $pages;
+                    }
+                    $rows = Collaborators::getPaginatedCollaboratorsList($search, $limit, $current, $entityType, $orderBy);
+                    $previous = $current > 1 ? $current - 1 : null;
+                    $next = $current < $pages ? $current + 1 : null;
+                }
+                ob_start();
+                include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/collaborators-list.php');
+                $json['html'] = ob_get_clean();
+                $json['data'] = ['total' => $count];
+            } catch (ErrorException $e) {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Retrieves the collaborator modal HTML and sends it as a JSON response.
+     *
+     * @return void
+     */
+    public static function getCollaboratorModal(): void
+    {
+        $json = ['error' => null, 'data' => null];
+        try {
+            $data = null;
+            ob_start();
+            include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/collaborator-modal.php');
+            $json['html'] = ob_get_clean();
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    public static function collaboratorAction(): void
+    {
+        $json = ['error' => null, 'data' => null];
+        try {
+            if ($_POST['trigger'] === 'edit') {
+                $data = Collaborators::getCollaboratorById((int) $_POST['id']);
+                ob_start();
+                include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/collaborator-modal.php');
+                $json['html'] = ob_get_clean();
+            } else {
+                Collaborators::deleteCollaboratorById((int) $_POST['id']);
+            }
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
         }
         wp_send_json_success($json);
         exit;

@@ -57,6 +57,19 @@ th.sortable p span, th.sorted p span {
     align-items: center;
 }
 
+.cnrs-dm-collaborator-avatar {
+    border-radius: 9999px;
+    width: 60px;
+    height: 60px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3c3c3c;
+}
+
 .cnrs-dm-row-title {
     color: #2271b1;
 }
@@ -160,6 +173,16 @@ th.sortable p span, th.sorted p span {
 #cnrs-dm-search-box-form-project {
     display: flex;
     justify-content: flex-end;
+}
+
+.cnrs-dm-collaborators-create-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 5px;
+}
+
+#cnrs-dm-add-new-collaborator {
+    min-width: 100px;
 }
 
 #cnrs-dm-filename-error-input {
@@ -1919,7 +1942,8 @@ input:checked + .cnrs-dm-slider:before {
     transform: translateX(14px);
 }
 
-#cnrs-dm-mission-form-list-wrapper {
+#cnrs-dm-mission-form-list-wrapper,
+#cnrs-dm-collaborators-list-wrapper {
     min-height: 100px;
     display: block;
     width: 100%;
@@ -1927,7 +1951,8 @@ input:checked + .cnrs-dm-slider:before {
     z-index: 1;
 }
 
-#cnrs-dm-mission-form-loader-container {
+#cnrs-dm-mission-form-loader-container,
+#cnrs-dm-collaborators-loader-container {
     position: absolute;
     height: calc(100% + 30px);
     width: calc(100% + 20px);
@@ -1943,12 +1968,14 @@ input:checked + .cnrs-dm-slider:before {
     transition: all linear 0.2s;
 }
 
-#cnrs-dm-mission-form-loader-container.show {
+#cnrs-dm-mission-form-loader-container.show,
+#cnrs-dm-collaborators-loader-container.show {
     visibility: visible;
     opacity: 1;
 }
 
-#cnrs-dm-mission-form-loader {
+#cnrs-dm-mission-form-loader,
+#cnrs-dm-collaborators-loader {
     width: 50px;
     height: 50px;
     display: flex;
@@ -1961,17 +1988,20 @@ input:checked + .cnrs-dm-slider:before {
     animation: rotateState ease-in-out 1s infinite;
 }
 
-#cnrs-dm-mission-form-loader svg {
+#cnrs-dm-mission-form-loader svg,
+#cnrs-dm-collaborators-loader svg {
     width: 100%;
     height: 100%;
     color: #2271B1;
 }
 
-#cnrs-dm-mission-form-loader svg path {
+#cnrs-dm-mission-form-loader svg path,
+#cnrs-dm-collaborators-loader svg path {
     fill: currentColor;
 }
 
-#cnrs-dm-mission-form-list-no-result {
+#cnrs-dm-mission-form-list-no-result,
+#cnrs-dm-collaborators-list-no-result {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -1979,12 +2009,18 @@ input:checked + .cnrs-dm-slider:before {
     align-items: center;
 }
 
-#cnrs-dm-mission-form-list-no-result p {
+#cnrs-dm-collaborators-list-no-result {
+    margin-top: 10px;
+}
+
+#cnrs-dm-mission-form-list-no-result p,
+#cnrs-dm-collaborators-list-no-result p {
     text-align: center;
     margin: 0;
 }
 
-#cnrs-dm-mission-form-list-container {
+#cnrs-dm-mission-form-list-container,
+#cnrs-dm-collaborators-list-container {
     display: block;
 }
 
@@ -2617,6 +2653,97 @@ input:checked + .cnrs-dm-slider:before {
     opacity: 0.7;
 }
 
+#cnrs-dm-collaborator-modal-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: rgba(241, 241, 241, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5555555;
+}
+
+#cnrs-dm-collaborator-modal-form {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    background-color: #f1f1f1;
+    border: 1px solid #fff;
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#cnrs-dm-collaborator-modal-btn-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    width: 100%;
+}
+
+#cnrs-dm-collaborator-modal-form h2 {
+    margin-top: 0;
+}
+
+#cnrs-dm-collaborator-modal-form label {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#cnrs-dm-collaborator-modal-form label * {
+    width: 100%;
+}
+
+#cnrs-dm-collaborator-modal-form label b {
+    margin-bottom: 3px;
+}
+
+#cnrs-dm-collaborator-modal-image-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+#cnrs-dm-collaborator-modal-image {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 1000px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: #fff;
+}
+
+#cnrs-dm-collaborator-modal-image-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-top: 3px;
+    margin-bottom: 20px;
+}
+
+#cnrs-dm-collaborator-modal-image-right {
+    flex-direction: column;
+    justify-content: center!important;
+    align-items: center!important;
+    margin-left: 20px;
+    width: max-content!important;
+}
+
 @media only screen and (min-width: 783px) {
 
     .cnrs-dm-filters-allowed-wrapper {
@@ -2828,6 +2955,11 @@ input:checked + .cnrs-dm-slider:before {
     #cnrs-dm-doc-back-to-top svg {
         color: #fff;
     }
+
+    #cnrs-dm-collaborator-modal-image {
+        width: 80px!important;
+        height: 80px;
+    }
 }
 
 @media only screen and (max-width: 782px) {
@@ -2868,8 +3000,15 @@ input:checked + .cnrs-dm-slider:before {
         width: 100px;
     }
 
-    #cnrs-data-manager-search, #cnrs-data-manager-search-projects, #cnrs-data-manager-mission-search {
+    #cnrs-data-manager-search,
+    #cnrs-data-manager-search-projects,
+    #cnrs-data-manager-mission-search,
+    #cnrs-data-manager-collaborators-search {
         width: calc(100% - 105px);
+    }
+
+    #cnrs-dm-add-new-collaborator {
+        width: 100%;
     }
 
     #cnrs-dm-filename-error-input {
@@ -3065,6 +3204,15 @@ input:checked + .cnrs-dm-slider:before {
 
     #cnrs-dm-doc-back-to-top {
         display: none;
+    }
+
+    #cnrs-dm-collaborator-modal-image {
+        width: 100px!important;
+        height: 100px;
+    }
+
+    #cnrs-dm-collaborator-modal-form {
+        margin-top: -100px;
     }
 }
 

@@ -79,6 +79,11 @@ const docLinks = document.querySelectorAll('.cnrs-dm-documentation-container a')
 const docImages = document.querySelectorAll('.cnrs-dm-documentation-container-not-summary img');
 const docTitles = document.querySelectorAll('.cnrs-dm-documentation-container-not-summary h1');
 const backToTopDoc = document.querySelector('#cnrs-dm-doc-back-to-top');
+const collaboratorsPage = document.querySelector('#cnrs-data-manager-collaborators-wrapper');
+const collaboratorsListLoader = document.querySelector('#cnrs-dm-collaborators-loader-container');
+const collaboratorsListContainer = document.querySelector('#cnrs-dm-collaborators-list-container');
+const collaboratorsTotal = document.querySelector('#cnrs-dm-collaborators-total span');
+const createCollaborator = document.querySelector('#cnrs-dm-add-new-collaborator');
 
 const tinyMCEConfig = {
     width: "100%",
@@ -539,8 +544,112 @@ function prepareListeners() {
         }
     }
 
+    if (collaboratorsPage) {
+        createCollaborator.onclick = function() {
+            getCollaboratorModal();
+        }
+        buildCollaboratorsList();
+    }
+
     removeAdminEmailListeners();
     setTogglesStates();
+}
+
+function getCollaboratorModal() {
+    collaboratorsListLoader.classList.add('show');
+    const formData = new FormData();
+    const url = '/wp-admin/admin-ajax.php';
+    formData.append('action', 'get_collaborator_modal');
+    formData.append('data', null);
+    const options = {
+        method: 'POST',
+        body: formData,
+    };
+    fetch(url, options)
+        .then(
+            response => response.json()
+        ).then(
+        success => insertCollaboratorModalInHTML(success.data)
+    ).catch(
+        error => insertCollaboratorModalInHTML({error: error, data: null, html: ''})
+    );
+}
+
+function insertCollaboratorModalInHTML(info) {
+    if (info.error === null) {
+        collaboratorsPage.insertAdjacentHTML('beforeend', info.html);
+        const closeModal = document.querySelector('#cnrs-dm-collaborator-modal-wrapper');
+        const closeModalBtn = document.querySelector('#cnrs-dm-collaborator-modal-close');
+        const loadImage = document.querySelector('[name="cnrs-data-manager-collaborator-logo"]');
+        const deleteImage = document.querySelector('#cnrs-data-manager-collaborator-logo-delete');
+        const imagePreview = document.querySelector('#cnrs-dm-collaborator-modal-image');
+        const imageHidden = document.querySelector('[name="cnrs-data-manager-collaborator-logo-hidden"]');
+        if (closeModalBtn) {
+            closeModalBtn.onclick = function () {
+                closeModal.remove();
+            }
+        }
+        if (loadImage && imageHidden) {
+            loadImage.onchange = function () {
+                if (this.files && this.files[0]) {
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.style.backgroundImage = `url(${e.target.result})`;
+                        imageHidden.value = 'loaded';
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            }
+        }
+        if (deleteImage && loadImage && imageHidden) {
+            deleteImage.onclick = function () {
+                loadImage.value = null;
+                imagePreview.style.backgroundImage = 'url(/wp-content/plugins/cnrs-data-manager/assets/media/default_avatar.png)'
+                imageHidden.value = 'none';
+            }
+        }
+    } else {
+        console.log(info.error);
+    }
+    collaboratorsListLoader.classList.remove('show');
+}
+
+function buildCollaboratorsList(page = 1, search = '', results = 10, type = 'ALL', orderBy = 'DESC') {
+    if (collaboratorsListLoader) {
+        collaboratorsListLoader.classList.add('show');
+        const formData = new FormData();
+        const url = '/wp-admin/admin-ajax.php';
+        formData.append('action', 'get_collaborators_list');
+        formData.append('page', page);
+        formData.append('search', search);
+        formData.append('results_per_page', results);
+        formData.append('date_order_by', orderBy);
+        formData.append('type_filter', type);
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+        fetch(url, options)
+            .then(
+                response => response.json()
+            ).then(
+            success => insertCollaboratorsListInHTML(success.data)
+        ).catch(
+            error => insertCollaboratorsListInHTML({error: error, data: null, html: ''})
+        );
+    }
+}
+
+function insertCollaboratorsListInHTML(info) {
+    if (info.error === null) {
+        collaboratorsListContainer.innerHTML = '';
+        collaboratorsListContainer.insertAdjacentHTML('beforeend', info.html);
+        setListListener(true);
+        collaboratorsTotal.innerHTML = '(' + info.data.total + ')';
+    } else {
+        console.log(info.error);
+    }
+    collaboratorsListLoader.classList.remove('show');
 }
 
 function setTogglesStates(toggle = null) {
@@ -655,14 +764,14 @@ function insertListInHTML(info) {
         missionFormListContainer.innerHTML = '';
         missionFormListContainer.insertAdjacentHTML('beforeend', info.html);
         setListListener();
-        missionListLoader.classList.remove('show');
         missionFormTotal.innerHTML = '(' + info.data.total + ')';
     } else {
         console.log(info.error);
     }
+    missionListLoader.classList.remove('show');
 }
 
-function setListListener() {
+function setListListener(collaborators = false) {
     const searchInput = document.querySelector('#cnrs-data-manager-mission-search');
     const searchBtn = document.querySelector('#cnrs-data-manager-search-submit');
     const nbOfResult1 = document.querySelector('#cnrs-data-manager-limit-1');
@@ -699,7 +808,11 @@ function setListListener() {
                 let order = orderResult1.value;
                 let limit = nbOfResult1.value;
                 let current = currentPage ? currentPage.value : 1;
-                buildFormList(current, search, limit, status, order);
+                if (collaborators === false) {
+                    buildFormList(current, search, limit, status, order);
+                } else {
+                    buildCollaboratorsList(current, search, limit, status, order);
+                }
             }
         }
     }
@@ -710,7 +823,11 @@ function setListListener() {
             let status = statusResult1 ? statusResult1.value : 'ALL';
             let order = orderResult1 ? orderResult1.value : 'DESC';
             let current = currentPage ? currentPage.value : 1;
-            buildFormList(current, search, limit, status, order);
+            if (collaborators === false) {
+                buildFormList(current, search, limit, status, order);
+            } else {
+                buildCollaboratorsList(current, search, limit, status, order);
+            }
         }
     }
     for (let i = 0; i < paginators.length; i++) {
@@ -721,7 +838,11 @@ function setListListener() {
                 let order = orderResult1.value;
                 let limit = nbOfResult1.value;
                 let current = this.dataset.page;
-                buildFormList(current, search, limit, status, order);
+                if (collaborators === false) {
+                    buildFormList(current, search, limit, status, order);
+                } else {
+                    buildCollaboratorsList(current, search, limit, status, order);
+                }
             }
         }
     }
@@ -737,27 +858,75 @@ function setListListener() {
         }
     }
 
-    for (let i = 0; i < actions.length; i++) {
-        if (!actions[i].classList.contains('disabled')) {
-            actions[i].onclick = function () {
-                missionListLoader.classList.add('show');
-                const formData = new FormData();
-                const url = '/wp-admin/admin-ajax.php';
-                formData.append('action', 'form_list_action');
-                formData.append('trigger', this.dataset.action);
-                formData.append('form_id', this.dataset.form);
-                const options = {
-                    method: 'POST',
-                    body: formData,
-                };
-                fetch(url, options)
-                    .then(
-                        response => response.json()
-                    ).then(
-                    success => refreshListTab(success.data)
-                ).catch(
-                    error => refreshListTab({error: error, data: null})
-                );
+    if (collaborators === false) {
+        for (let i = 0; i < actions.length; i++) {
+            if (!actions[i].classList.contains('disabled')) {
+                actions[i].onclick = function () {
+                    missionListLoader.classList.add('show');
+                    const formData = new FormData();
+                    const url = '/wp-admin/admin-ajax.php';
+                    formData.append('action', 'form_list_action');
+                    formData.append('trigger', this.dataset.action);
+                    formData.append('form_id', this.dataset.form);
+                    const options = {
+                        method: 'POST',
+                        body: formData,
+                    };
+                    fetch(url, options)
+                        .then(
+                            response => response.json()
+                        ).then(
+                        success => refreshListTab(success.data)
+                    ).catch(
+                        error => refreshListTab({error: error, data: null})
+                    );
+                }
+            }
+        }
+    } else {
+        for (let i = 0; i < actions.length; i++) {
+            if (actions[i].dataset.action === 'edit') {
+                actions[i].onclick = function () {
+                    collaboratorsListLoader.classList.add('show');
+                    const formData = new FormData();
+                    const url = '/wp-admin/admin-ajax.php';
+                    formData.append('action', 'collaborator_action');
+                    formData.append('trigger', 'edit');
+                    formData.append('id', parseInt(this.dataset.collaborator));
+                    const options = {
+                        method: 'POST',
+                        body: formData,
+                    };
+                    fetch(url, options)
+                        .then(
+                            response => response.json()
+                        ).then(
+                        success => insertCollaboratorModalInHTML(success.data)
+                    ).catch(
+                        error => refreshListTab({error: error, data: null})
+                    );
+                }
+            } else if (actions[i].dataset.action === 'delete') {
+                actions[i].onclick = function () {
+                    collaboratorsListLoader.classList.add('show');
+                    const formData = new FormData();
+                    const url = '/wp-admin/admin-ajax.php';
+                    formData.append('action', 'collaborator_action');
+                    formData.append('trigger', 'delete');
+                    formData.append('id', parseInt(this.dataset.collaborator));
+                    const options = {
+                        method: 'POST',
+                        body: formData,
+                    };
+                    fetch(url, options)
+                        .then(
+                            response => response.json()
+                        ).then(
+                        success => refreshListTab(success.data)
+                    ).catch(
+                        error => refreshListTab({error: error, data: null})
+                    );
+                }
             }
         }
     }

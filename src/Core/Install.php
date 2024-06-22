@@ -161,7 +161,7 @@ class Install
             id bigint(20) UNSIGNED PRIMARY (id) NOT NULL AUTO_INCREMENT COMMENT 'The primary key',
             entity_type ENUM('FUNDER','PARTNER') NOT NULL DEFAULT 'FUNDER' COMMENT 'The entity type', 
             entity_name VARCHAR(255) NOT NULL COMMENT 'The entity name', 
-            entity_logo INT NULL DEFAULT NULL COMMENT 'The entity logo path'
+            entity_logo bigint(20) UNSIGNED DEFAULT NULL COMMENT 'The entity logo ID'
             ) ENGINE = InnoDB COMMENT = 'Entites related to a project like partners or funders'"
         );
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_project_entity_relation (
