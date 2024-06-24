@@ -112,9 +112,9 @@ class Bootstrap
         
         Tools::setPostsMeta([
             'cnrs_project_acronym',
-            'cnrs_project_leaders',
-            'cnrs_project_team',
-            'cnrs_project_link'
+            'cnrs_project_leaders_and_team',
+            'cnrs_project_link',
+            'cnrs_project_link_text'
         ]);
         cnrs_install_folders();
         addQueryVars();

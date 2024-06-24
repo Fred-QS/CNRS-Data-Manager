@@ -64,6 +64,17 @@ class CnrsDataManagerUninstall // phpcs:ignore
         foreach ($tables as $table) {
             $wpdb->query("DROP TABLE IF EXISTS {$table}");
         }
+
+        $metas = [
+            'cnrs_project_acronym',
+            'cnrs_project_leaders_and_team',
+            'cnrs_project_link',
+            'cnrs_project_link_text'
+        ];
+
+        foreach ($metas as $meta) {
+            $wpdb->query("DELETE FROM {$wpdb->prefix}postmeta WHERE meta_key = '{$meta}'");
+        }
     }
 }
 
