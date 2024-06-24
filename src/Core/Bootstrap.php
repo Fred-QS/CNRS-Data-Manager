@@ -49,7 +49,7 @@ class Bootstrap
             add_action('plugins_loaded', array(__CLASS__, 'loadTextDomain'));
         }
 
-        add_shortcode( 'cnrs-data-manager', 'cnrsReadShortCode' );
+        add_shortcode('cnrs-data-manager', 'cnrsReadShortCode');
         if (!wp_next_scheduled('cnrs_data_manager_cron_hook')) {
             wp_schedule_event(strtotime(date("Y-m-d ") . "23:59:59"), 'daily', 'cnrs_data_manager_cron_hook');
         }
