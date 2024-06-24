@@ -15,6 +15,7 @@ use CnrsDataManager\Core\Controllers\Ajax;
 use CnrsDataManager\Core\Models\Settings;
 use CnrsDataManager\Core\Models\Projects;
 use CnrsDataManager\Core\Models\Forms;
+use CnrsDataManager\Core\Models\Tools;
 
 class Bootstrap
 {
@@ -108,6 +109,13 @@ class Bootstrap
             define('CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER', $currentThemeFolder);
             setUserConnexion();
         }
+        
+        Tools::setPostsMeta([
+            'cnrs_project_acronym',
+            'cnrs_project_leaders',
+            'cnrs_project_team',
+            'cnrs_project_link'
+        ]);
         cnrs_install_folders();
         addQueryVars();
     }

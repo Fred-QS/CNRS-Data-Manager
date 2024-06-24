@@ -129,7 +129,7 @@ class Collaborators
         }
         $row = (array) $row;
         if ($row['entity_logo'] !== null) {
-            $row['entity_logo'] = wp_get_attachment_url((int)$row['entity_logo']);
+            $row['entity_logo'] = wp_get_attachment_url((int) $row['entity_logo']);
         }
         return $row;
     }
@@ -148,5 +148,88 @@ class Collaborators
             $wpdb->query("DELETE FROM {$wpdb->prefix}posts WHERE ID = {$row->entity_logo}");
         }
         $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_project_entities WHERE id = {$id}");
+    }
+
+    /**
+     * Retrieves the collaborators associated with the given project ID.
+     *
+     * @param int $projectId The ID of the project to retrieve collaborators from.
+     * @return array An array of collaborators, where each collaborator is represented as an associative array with keys representing the columns of the cnrs_data_manager_project_entities table.
+     */
+    public static function getCollaboratorsFromProjectId(int $projectId): array
+    {
+        global $wpdb;
+        $results = $wpdb->get_results("SELECT {$wpdb->prefix}cnrs_data_manager_project_entities.* FROM {$wpdb->prefix}cnrs_data_manager_project_entities INNER JOIN {$wpdb->prefix}cnrs_data_manager_project_entity_relation ON {$wpdb->prefix}cnrs_data_manager_project_entities.id = {$wpdb->prefix}cnrs_data_manager_project_entity_relation.entity_id WHERE {$wpdb->prefix}cnrs_data_manager_project_entity_relation.project_id = {$projectId}", ARRAY_A);
+        $split = ['funders' => [], 'partners' => []];
+        foreach ($results as $result) {
+            if ($result['entity_type'] === 'FUNDER') {
+                $split['funders'][] = $result;
+            } else if ($result['entity_type'] === 'PARTNER') {
+                $split['partners'][] = $result;
+            }
+        }
+        return $split;
+    }
+
+    /**
+     * Retrieves the list of collaborators, split into funders and partners.
+     *
+     * @return array An associative array containing two sub-arrays: 'funders' and 'partners'.
+     *     Each sub-array contains the details of the respective type of collaborators.
+     *     The 'entity_logo' key in each collaborator's details contains a URL to the corresponding logo.
+     */
+    public static function getCollaborators(): array
+    {
+        global $wpdb;
+        $results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_project_entities", ARRAY_A);
+        $split = ['funders' => [], 'partners' => []];
+        foreach ($results as $result) {
+            if ($result['entity_logo'] !== null) {
+                $result['entity_logo'] = wp_get_attachment_url((int) $result['entity_logo']);
+            }
+            if ($result['entity_type'] === 'FUNDER') {
+                $split['funders'][] = $result;
+            } else if ($result['entity_type'] === 'PARTNER') {
+                $split['partners'][] = $result;
+            }
+        }
+        return $split;
+    }
+
+    /**
+     * Save the project-entity relations based on the provided form data.
+     *
+     * @return void
+     */
+    public static function saveRelations(): void
+    {
+        if (isset($_POST['cnrs-dm-collaborators'])) {
+            global $wpdb;
+            $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_project_entity_relation");
+            foreach ($_POST['cnrs-dm-collaborators'] as $projectId => $collabs) {
+                if (isset($collabs['funders'])) {
+                    foreach ($collabs['funders'] as $funderID) {
+                        $wpdb->insert(
+                            "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
+                            array(
+                                'project_id' => (int) $projectId,
+                                'entity_id' => (int) $funderID
+                            )
+                        );
+                    }
+                }
+                if (isset($collabs['partners'])) {
+                    foreach ($collabs['partners'] as $partnerID) {
+                        $wpdb->insert(
+                            "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
+                            array(
+                                'project_id' => (int) $projectId,
+                                'entity_id' => (int) $partnerID
+                            )
+                        );
+                    }
+                }
+            }
+        }
     }
 }

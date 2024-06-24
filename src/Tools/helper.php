@@ -1554,8 +1554,8 @@ if (!function_exists('getProjects')) {
     {
         $projects = get_posts([
             'post_type' => 'project',
-            'orderby' => 'post_title',
-            'order' => 'ASC',
+            'orderby' => 'ID',
+            'order' => 'DESC',
             'numberposts' => -1,
         ]);
         $relations = Projects::getProjects();
@@ -1567,7 +1567,12 @@ if (!function_exists('getProjects')) {
                 'name' => $project->post_title,
                 'uri' => $project->post_name,
                 'excerpt' => $project->post_excerpt,
-                'lang' => function_exists('pll_get_post_language') ? pll_get_post_language($project->ID, 'slug') : 'fr',
+                'lang' => function_exists('pll_get_post_language')
+                    ? pll_get_post_language($project->ID, 'slug')
+                    : 'fr',
+                'flag' => function_exists('pll_get_post_language')
+                    ? cnrs_get_languages_from_pll([], false)[pll_get_post_language($project->ID, 'slug')]
+                    : null,
                 'image' => get_the_post_thumbnail($project->ID),
                 'teams' => []
             ];
@@ -2300,5 +2305,52 @@ if (!function_exists('cnrs_isDesignSelected')) {
             }
         }
         return false;
+    }
+}
+
+if (!function_exists('isCollaboratorSelected')) {
+
+    /**
+     * Check if a collaborator is selected by ID in the given array.
+     *
+     * @param int $id The ID of the collaborator to check.
+     * @param array $array An array of collaborators to check against.
+     *
+     * @return bool True if the collaborator is selected, false otherwise.
+     */
+    function isCollaboratorSelected(int $id, array $array): bool
+    {
+        foreach ($array as $item) {
+            if ((int) $item['id'] === $id) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+if (!function_exists('getCollaboratorsThumbnails')) {
+
+    /**
+     * Get the HTML thumbnails for a list of collaborators.
+     *
+     * @param array $array An array of collaborators.
+     *
+     * @return string The HTML code for the collaborators thumbnails.
+     */
+    function getCollaboratorsThumbnails(array $array): string
+    {
+        $html = '';
+        foreach ($array as $item) {
+            $html .= "<div class=\"cnrs-dm-collaborators-tags\">
+                <span class=\"cnrs-dm-collaborators-tags-delete\" data-collab-id=\"{$item['id']}\">
+                    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 384 512\" width=\"12\" height=\"12\">
+                        <path d=\"M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z\"/>
+                    </svg>
+                </span>
+                <span class=\"cnrs-dm-collaborators-tags-text\">{$item['entity_name']}</span>
+            </div>";
+        }
+        return $html;
     }
 }

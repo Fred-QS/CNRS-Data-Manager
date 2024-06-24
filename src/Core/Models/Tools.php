@@ -169,4 +169,27 @@ class Tools
 
         return $wpdb->get_results( "SELECT DISTINCT {$wpdb->prefix}cnrs_data_manager_relations.term_id, {$wpdb->prefix}cnrs_data_manager_relations.xml_entity_id FROM {$wpdb->prefix}cnrs_data_manager_relations INNER JOIN {$wpdb->prefix}posts ON {$wpdb->prefix}cnrs_data_manager_relations.term_id = {$wpdb->prefix}posts.ID WHERE {$wpdb->prefix}cnrs_data_manager_relations.type = 'teams' AND {$wpdb->prefix}cnrs_data_manager_relations.term_id != 0 ORDER BY {$wpdb->prefix}posts.post_title ASC", ARRAY_A );
     }
+
+
+    /**
+     * Sets the custom meta fields for posts.
+     *
+     * @param array $metas The array of custom meta fields to be set.
+     * @return void
+     */
+    public static function setPostsMeta(array $metas): void
+    {
+        $toCreate = [];
+        foreach ($metas as $meta) {
+            global $wpdb;
+            $result = $wpdb->get_row("SELECT meta_id FROM {$wpdb->prefix}postmeta WHERE meta_key = '{$meta}'");
+            if ($result === null) {
+                $wpdb->insert(
+                    "{$wpdb->prefix}postmeta",
+                    ['post_id' => 0, 'meta_key' => $meta, 'meta_value' => ''],
+                    ['%d', '%s', '%s']
+                );
+            }
+        }
+    }
 }

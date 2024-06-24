@@ -44,11 +44,11 @@ $translations = [
             <span class="displaying-num"><?php echo count($rows) . ' ' .  __('elements', 'cnrs-data-manager') ?></span>
             <span class="pagination-links">
                 <?php if($previous !== null): ?>
-                    <span class="first-page button cnrs-dm-collaborators-pagination-btn" data-page="1">
+                    <span class="first-page button cnrs-dm-mission-form-pagination-btn" data-page="1">
                         <span class="screen-reader-text"><?php echo __('First page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">«</span>
                     </span>
-                    <span class="prev-page button cnrs-dm-collaborators-pagination-btn" data-page="<?php echo $previous ?>">
+                    <span class="prev-page button cnrs-dm-mission-form-pagination-btn" data-page="<?php echo $previous ?>">
                         <span class="screen-reader-text"><?php echo __('Previous page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">‹</span>
                     </span>
@@ -65,11 +65,11 @@ $translations = [
                     </span>
                 </span>
                 <?php if($next !== null): ?>
-                    <span class="next-page button cnrs-dm-collaborators-pagination-btn" data-page="<?php echo $next ?>">
+                    <span class="next-page button cnrs-dm-mission-form-pagination-btn" data-page="<?php echo $next ?>">
                         <span class="screen-reader-text"><?php echo __('Next page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">›</span>
                     </span>
-                    <span class="last-page button cnrs-dm-collaborators-pagination-btn" data-page="<?php echo $pages ?>">
+                    <span class="last-page button cnrs-dm-mission-form-pagination-btn" data-page="<?php echo $pages ?>">
                         <span class="screen-reader-text"><?php echo __('Last page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">»</span>
                     </span>
@@ -167,11 +167,11 @@ $translations = [
             <span class="displaying-num"><?php echo count($rows) . ' ' .  __('elements') ?></span>
             <span class="pagination-links">
                 <?php if($previous !== null): ?>
-                    <span class="first-page button cnrs-dm-collaborators-pagination-btn" data-page="1">
+                    <span class="first-page button cnrs-dm-mission-form-pagination-btn" data-page="1">
                         <span class="screen-reader-text"><?php echo __('First page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">«</span>
                     </span>
-                    <span class="prev-page button cnrs-dm-collaborators-pagination-btn" data-page="<?php echo $previous ?>">
+                    <span class="prev-page button cnrs-dm-mission-form-pagination-btn" data-page="<?php echo $previous ?>">
                         <span class="screen-reader-text"><?php echo __('Previous page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">‹</span>
                     </span>
@@ -187,11 +187,11 @@ $translations = [
                     </span>
                 </span>
                 <?php if($next !== null): ?>
-                    <span class="next-page button cnrs-dm-collaborators-pagination-btn" data-page="<?php echo $next ?>">
+                    <span class="next-page button cnrs-dm-mission-form-pagination-btn" data-page="<?php echo $next ?>">
                         <span class="screen-reader-text"><?php echo __('Next page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">›</span>
                     </span>
-                    <span class="last-page button cnrs-dm-collaborators-pagination-btn" data-age="<?php echo $pages ?>">
+                    <span class="last-page button cnrs-dm-mission-form-pagination-btn" data-age="<?php echo $pages ?>">
                         <span class="screen-reader-text"><?php echo __('Last page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">»</span>
                     </span>

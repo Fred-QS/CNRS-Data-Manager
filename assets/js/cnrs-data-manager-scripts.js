@@ -84,6 +84,10 @@ const collaboratorsListLoader = document.querySelector('#cnrs-dm-collaborators-l
 const collaboratorsListContainer = document.querySelector('#cnrs-dm-collaborators-list-container');
 const collaboratorsTotal = document.querySelector('#cnrs-dm-collaborators-total span');
 const createCollaborator = document.querySelector('#cnrs-dm-add-new-collaborator');
+const collaboratorProjectExpander = document.querySelectorAll('.cnrs-dm-collaborators-chevron');
+const collaboratorSearchInputs = document.querySelectorAll('.cnrs-dm-collaborators-search-input');
+const collaboratorLis = document.querySelectorAll('.cnrs-dm-collaborator-li');
+const addImagesToProjectBtn = document.querySelectorAll('.cnrs-data-add-images-btn');
 
 const tinyMCEConfig = {
     width: "100%",
@@ -102,6 +106,19 @@ let xlsFile = null;
 let wpContainerWidth = 0;
 let agentsList = [];
 let togglesState = null;
+
+
+window.onclick = function (e) {
+    const uls = document.querySelectorAll('.cnrs-dm-collaborators-lister');
+    if (!e.target.classList.contains('cnrs-dm-collaborators-lister')
+        && !e.target.closest('.cnrs-dm-collaborators-lister')
+        && !e.target.classList.contains('cnrs-dm-collaborators-search-input')
+    ) {
+        for (let i = 0; i < uls.length; i++) {
+            uls[i].classList.remove('open');
+        }
+    }
+}
 
 if (typeof originalToggles !== "undefined") {
     setNewToggles();
@@ -551,8 +568,216 @@ function prepareListeners() {
         buildCollaboratorsList();
     }
 
+    for (let i = 0; i < collaboratorProjectExpander.length; i++) {
+        collaboratorProjectExpander[i].onclick = function () {
+            const container = this.closest('.cnrs-dm-filters-allowed-container')
+                .querySelector('.cnrs-dm-collaborators-project-assign-wrapper');
+            const header = this.closest('.cnrs-dm-filters-allowed-container')
+                .querySelector('.cnrs-dm-filters-allowed-header');
+            if (this.classList.contains('open')) {
+                this.classList.remove('open');
+                container.classList.remove('open');
+                header.classList.remove('open');
+            } else {
+                this.classList.add('open');
+                container.classList.add('open');
+                header.classList.add('open');
+            }
+        }
+    }
+
+    for (let i = 0; i < collaboratorSearchInputs.length; i++) {
+        collaboratorSearchInputs[i].onfocus = function () {
+            const ul = this.nextElementSibling;
+            if (ul) {
+                ul.classList.add('open');
+                setTagsLogicListeners(this);
+            }
+        }
+        collaboratorSearchInputs[i].onkeyup = function (e) {
+            const ul = this.nextElementSibling;
+            if (e.key === 'Escape' && ul) {
+                this.blur();
+                ul.classList.remove('open');
+            } else if (e.key === 'Enter') {
+                // ...
+            }
+        }
+        collaboratorSearchInputs[i].oninput = function () {
+            setTagsLogicListeners(this);
+        }
+    }
+
+    for (let i = 0; i < collaboratorLis.length; i++) {
+        collaboratorLis[i].querySelector('input[type="checkbox"]').oninput = function () {
+            const allInputs = this.closest('ul').querySelectorAll('input[type="checkbox"]');
+            const container = this.closest('.cnrs-dm-collaborators-project-assign-generic-wrapper')
+                .querySelector('.cnrs-dm-collaborators-project-assign-generic');
+            const type = this.dataset.type;
+            const counter = this.closest('.cnrs-dm-collaborators-container')
+                .querySelector('.cnrs-dm-collaborators-counter-' + type);
+            let html = '';
+            let cnt = 0;
+            for (let j = 0; j < allInputs.length; j++) {
+                const input = allInputs[j];
+                if (input.checked === true) {
+                    html += `<div class="cnrs-dm-collaborators-tags">
+                        <span class="cnrs-dm-collaborators-tags-delete" data-collab-id="${input.dataset.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="12" height="12">
+                                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                            </svg>
+                        </span>
+                        <span class="cnrs-dm-collaborators-tags-text">${input.dataset.name}</span>
+                    </div>`;
+                    cnt++;
+                }
+            }
+            counter.innerHTML = `(${cnt})`;
+            container.innerHTML = '';
+            container.insertAdjacentHTML('beforeend', html);
+            setTagsDynamicListeners();
+        }
+    }
+
+    for (let i = 0; i < addImagesToProjectBtn.length; i++) {
+        addImagesToProjectBtn[i].onclick = function () {
+            const projectId = parseInt(this.dataset.id);
+            const formData = new FormData();
+            const url = '/wp-admin/admin-ajax.php';
+            formData.append('action', 'get_attachments');
+            formData.append('project_id', projectId);
+            const options = {
+                method: 'POST',
+                body: formData,
+            };
+            fetch(url, options)
+                .then(
+                    response => response.json()
+                ).then(
+                success => getMediaModalInHTML(success.data)
+            ).catch(
+                error => getMediaModalInHTML({error: error, data: null, html: ''})
+            );
+        }
+    }
+
+    setTagsDynamicListeners();
     removeAdminEmailListeners();
     setTogglesStates();
+}
+
+function getMediaModalInHTML(response) {
+    if (response.error === null) {
+        adminWrapper.insertAdjacentHTML('beforeend', response.html);
+        const closeModal = document.querySelector('#cnrs-dm-attachments-modal-wrapper');
+        const closeModalBtn = document.querySelector('#cnrs-dm-attachments-modal-close');
+        const saveModalBtn = document.querySelector('#cnrs-dm-attachments-modal-save');
+        const images = document.querySelectorAll('.cnrs-dm-attachments-image');
+        const projectId = parseInt(document.querySelector('#cnrs-dm-attachments-modal-wrapper').dataset.project);
+        if (closeModalBtn) {
+            closeModalBtn.onclick = function () {
+                closeModal.remove();
+            }
+        }
+        if (saveModalBtn) {
+            saveModalBtn.onclick = function () {
+                let info = [];
+                for (let i = 0; i < images.length; i++) {
+                    const input = images[i].querySelector('input[type="checkbox"]');
+                    if (input.checked === true) {
+                        const thumbnail = images[i].style.backgroundImage
+                            .replace('url("', '')
+                            .replace('")', '');
+                        const id = parseInt(images[i].dataset.id);
+                        info.push({thumbnail, id});
+                    }
+                }
+                setImagesForProject(projectId, info);
+                closeModal.remove();
+            }
+        }
+        for (let i = 0; i < images.length; i++) {
+            images[i].onclick = function () {
+                if (this.querySelector('input[type="checkbox"]').checked === true) {
+                    this.classList.add('selected');
+                } else {
+                    this.classList.remove('selected');
+                }
+            }
+        }
+    } else {
+        console.warn(response.error);
+    }
+}
+
+function setImagesForProject(projectId, info)
+{
+    const container = document.querySelector('.cnrs-dm-projects-images-list[data-project="' + projectId + '"]');
+    let html = '';
+    for (let i = 0; i < info.length; i++) {
+        const img = info[i].thumbnail;
+        const id = info[i].id;
+        html += `<a href="${img}" target="_blank" class="cnrs-dm-projects-image-data">
+            <input type="hidden" name="cnrs-data-manager-project-images[${projectId}][]" value="${id}">
+            <div style="background-image: url(${img});"></div>
+        </a>`;
+    }
+    if (html.length === 0) {
+        const emptyMessage =
+        html = `<i>${container.dataset.empty}</i>`;
+    }
+    container.innerHTML = '';
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+function setTagsDynamicListeners() {
+
+    const tags = document.querySelectorAll('.cnrs-dm-collaborators-tags');
+    for (let i = 0; i < tags.length; i++) {
+        tags[i].querySelector('.cnrs-dm-collaborators-tags-delete').onclick = function () {
+            const value = this.nextElementSibling.textContent.trim();
+            const ul = this.closest('.cnrs-dm-collaborators-project-assign-generic-wrapper').querySelector('ul');
+            if (ul) {
+                for (let j = 0; j < ul.children.length; j++) {
+                    if (ul.children[j].querySelector('label span').textContent.trim().toLowerCase() === value.toLowerCase()) {
+                        const input = ul.children[j].querySelector('input[type="checkbox"]');
+                        const type = input.dataset.type;
+                        const counter = ul.closest('.cnrs-dm-collaborators-container')
+                            .querySelector('.cnrs-dm-collaborators-counter-' + type);
+                        counter.innerHTML = `(${parseInt(counter.innerHTML.replaceAll('(', '').replaceAll(')', '')) - 1})`;
+                        input.checked = false;
+                    }
+                }
+            }
+            this.parentElement.remove();
+        }
+    }
+}
+
+function setTagsLogicListeners(elmt) {
+    const ul = elmt.nextElementSibling;
+    const value = elmt.value.toLowerCase();
+    if (value.trim().length > 0) {
+        let cnt = ul.children.length;
+        for (let j = 0; j < ul.children.length; j++) {
+            const li = ul.children[j];
+            if (li.textContent.toLowerCase().includes(value)) {
+                li.classList.remove('hide');
+            } else {
+                li.classList.add('hide');
+            }
+        }
+        if (cnt === ul.querySelectorAll('.hide').length) {
+            ul.classList.remove('open');
+        } else {
+            ul.classList.add('open');
+        }
+    } else {
+        ul.classList.add('open');
+        for (let j = 0; j < ul.children.length; j++) {
+            ul.children[j].classList.remove('hide');
+        }
+    }
 }
 
 function getCollaboratorModal() {
@@ -832,7 +1057,7 @@ function setListListener(collaborators = false) {
     }
     for (let i = 0; i < paginators.length; i++) {
         paginators[i].onclick = function () {
-            if (searchInput && statusInput) {
+            if (searchInput) {
                 let search = searchInput.value;
                 let status = statusResult1.value;
                 let order = orderResult1.value;

@@ -28,7 +28,8 @@ class Ajax
         'get_form_toggles' => 'getFormToggles',
         'get_collaborators_list' => 'getCollaboratorsList',
         'get_collaborator_modal' => 'getCollaboratorModal',
-        'collaborator_action' => 'collaboratorAction'
+        'collaborator_action' => 'collaboratorAction',
+        'get_attachments' => 'getAttachments'
     ];
 
     private static array $publicActions = [];
@@ -724,6 +725,40 @@ class Ajax
                 $json['html'] = ob_get_clean();
             } else {
                 Collaborators::deleteCollaboratorById((int) $_POST['id']);
+            }
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Retrieves all image attachments and sends them as a JSON response.
+     *
+     * @return void
+     */
+    public static function getAttachments(): void
+    {
+        $json = ['error' => null, 'data' => null, 'html' => ''];
+        try {
+            if (isset($_POST['project_id'])) {
+                $args = array(
+                    'post_type' => 'attachment',
+                    'numberposts' => -1,
+                    'post_mime_type' => 'image',
+                    'post_status' => null,
+                    'post_parent' => null,
+                );
+                $projectId = (int) $_POST['project_id'];
+                $imagesFromProject = Projects::getImagesFromProject($projectId);
+                $images = get_posts($args);
+                ob_start();
+                include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/attachments-modal.php');
+                $json['html'] = ob_get_clean();
+                $json['data'] = $images;
+            } else {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
             }
         } catch (ErrorException $e) {
             $json['error'] = __('An error as occurred.', 'cnrs-data-manager');

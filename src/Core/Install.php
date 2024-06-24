@@ -161,13 +161,18 @@ class Install
             id bigint(20) UNSIGNED PRIMARY (id) NOT NULL AUTO_INCREMENT COMMENT 'The primary key',
             entity_type ENUM('FUNDER','PARTNER') NOT NULL DEFAULT 'FUNDER' COMMENT 'The entity type', 
             entity_name VARCHAR(255) NOT NULL COMMENT 'The entity name', 
-            entity_logo bigint(20) UNSIGNED DEFAULT NULL COMMENT 'The entity logo ID'
+            entity_logo bigint(20) UNSIGNED DEFAULT NULL COMMENT 'The attachment ID'
             ) ENGINE = InnoDB COMMENT = 'Entites related to a project like partners or funders'"
         );
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_project_entity_relation (
-            project_id BIGINT UNSIGNED NOT NULL COMMENT 'The project post ID',
-            entity_id BIGINT UNSIGNED NOT NULL COMMENT 'The entity ID'
+            project_id bigint(20) UNSIGNED NOT NULL COMMENT 'The project post ID',
+            entity_id bigint(20) UNSIGNED NOT NULL COMMENT 'The entity ID'
             ) ENGINE = InnoDB COMMENT = 'Entites and Projects relations'"
+        );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_project_attachment_relation (
+            project_id bigint(20) UNSIGNED NOT NULL COMMENT 'The project post ID',
+            attachment_id bigint(20) UNSIGNED NOT NULL COMMENT 'The attachment post ID'
+            ) ENGINE = InnoDB COMMENT = 'Relation between a projects and its attachments'"
         );
         // Populate tables
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_map_markers (title, lat, lng) VALUES

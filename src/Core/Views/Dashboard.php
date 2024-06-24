@@ -1,6 +1,9 @@
 <?php
 
+use CnrsDataManager\Core\Models\Projects;
+
 updateProjectsRelations();
+Projects::saveProjectsImages();
 
 $data = selectCNRSDataProvider();
 $rows = $data['provider']['data'];
@@ -270,6 +273,8 @@ if ($providerType === 'services') {
     <p>
         <?php echo __('This section allows you to assign projects to the different teams as well as their display priority orders on the pages of the different teams (from 1 to 16 in order of priority).', 'cnrs-data-manager') ?>
         <br/>
+        <?php echo __('You can also assign additional images for each project which will appear in a slider on the project page.', 'cnrs-data-manager') ?>
+        <br/>
         <?php echo __('These selections allow the filter on the projects page to refine the team search.', 'cnrs-data-manager') ?>
     </p>
     <div id="cnrs-dm-search-box-form-project">
@@ -289,16 +294,32 @@ if ($providerType === 'services') {
                         <input type="hidden" name="cnrs-data-manager-project-lang-<?php echo $project['id'] ?>" value="<?php echo $project['lang'] ?>">
                         <div class="cnrs-dm-project-item">
                         <span class="cnrs-dm-project-image-tag cnrs-dm-imported-item-image">
-                                <?php echo $project['image'] !== ''
-                                    ? $project['image']
-                                    : '<img src="/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg" alt="' . __('Default image', 'cnrs-data-manager') . '">'
-                                ?>
+                            <?php echo $project['image'] !== ''
+                                ? $project['image']
+                                : '<img src="/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg" alt="' . __('Default image', 'cnrs-data-manager') . '">'
+                            ?>
                         </span>
                             <a href="<?php echo $project['url'] ?>" target="_blank" class="cnrs-dm-imported-item-info">
-                                <span><?php echo $project['name'] . ' (' . $project['lang'] . ')' ?></span>
+                                <span><?php echo isset($project['flag']) ? $project['flag'] . '&nbsp;&nbsp;' : null ?><?php echo $project['name'] ?></span>
                                 <small><i>(<?php echo $project['uri'] ?>)</i></small>
                                 <i><?php echo $project['excerpt'] ?></i>
                             </a>
+                        </div>
+                        <div class="cnrs-dm-projects-images-wrapper">
+                            <button data-id="<?php echo $project['id'] ?>" type="button" class="cnrs-data-add-images-btn button button-primary"><?php echo __('Select images', 'cnrs-data-manager') ?></button>
+                            <div class="cnrs-dm-projects-images-list" data-project="<?php echo $project['id'] ?>" data-empty="<?php echo __('No image assigned.', 'cnrs-data-manager') ?>">
+                                <?php $projectImages = Projects::getImagesFromProject((int) $project['id']); ?>
+                                <?php if (empty($projectImages)): ?>
+                                    <i><?php echo __('No image assigned.', 'cnrs-data-manager') ?></i>
+                                <?php endif; ?>
+                                <?php foreach ($projectImages as $imageID): ?>
+                                    <?php $thumnail = image_get_intermediate_size($imageID)['url'] ?>
+                                    <a href="<?php echo $thumnail ?>" target="_blank" class="cnrs-dm-projects-image-data">
+                                        <input type="hidden" name="cnrs-data-manager-project-images[<?php echo $project['id'] ?>][]" value="<?php echo $imageID ?>">
+                                        <div style="background-image: url(<?php echo $thumnail ?>);"></div>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                         <div class="cnrs-dm-projects-expander">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
