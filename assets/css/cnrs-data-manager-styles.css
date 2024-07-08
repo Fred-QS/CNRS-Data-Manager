@@ -971,7 +971,7 @@ label[for="cnrs-data-manager-projects-team"] {
     margin-left: 10px;
 }
 
-.cnrs-dm-projects-row.even {
+.cnrs-dm-projects-row:not(.even) {
     background-color: rgba(215, 215, 215, 0.5);
 }
 

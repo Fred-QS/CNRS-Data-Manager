@@ -19,6 +19,7 @@ class Projects
             'team_id' => $teamID,
             'project_id' => $postID,
             'lang' => $lang,
+            'display_order' => 1
         ];
 
         $wpdb->insert($wpdb->prefix . 'cnrs_data_manager_team_project', $insert, ['%d', '%d', '%s']);

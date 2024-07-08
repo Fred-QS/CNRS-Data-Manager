@@ -38,6 +38,7 @@ class Ajax
 
     private static array $mapper = ["ACRONYME", "INTITULE", "RESPONSABLE_SCIENTIFIQUE", "EQUIPE", "FINANCEUR", "RESUME", "LIEN_SITE", "IMAGE"];
 
+    private static array $btnText = ['fr' => 'Voir le projet', 'en' => 'See project'];
     private static array $optionals = ["INTITULE", "FINANCEUR", "LIEN_SITE", "IMAGE"];
 
     private static array $formModules = ['input', 'checkbox', 'radio', 'textarea', 'title', 'comment', 'signs', 'number', 'date', 'time', 'datetime', 'toggle'];
@@ -333,12 +334,19 @@ class Ajax
 
             $wpProjectToDB = [
                 'post_author' => get_current_user_id(),
-                'post_content' => self::preparePostContent($row),
-                'post_title' => $row['ACRONYME'],
+                'post_content' => $row['RESUME'],
+                'post_title' => $row['INTITULE'],
                 'post_status' => 'publish',
                 'post_type' => 'project',
-                'comment_status' => 'open',
-                'ping_status' => 'closed'
+                'comment_status' => 'closed',
+                'post_excerpt' => cnrsCreateExcerpt($row['RESUME']),
+                'ping_status' => 'closed',
+                'meta_input'   => [
+                    'cnrs_project_acronym' => $row['ACRONYME'],
+                    'cnrs_project_leaders_and_team' => $row['RESPONSABLE_SCIENTIFIQUE'] . '; ' . $row['EQUIPE'],
+                    'cnrs_project_link' => $row['LIEN_SITE'] ?? '',
+                    'cnrs_project_link_text' => self::$btnText['fr']
+                ]
             ];
 
             if ($id !== null) {
@@ -359,7 +367,7 @@ class Ajax
                 'url' => $recorded['guid'],
                 'image' => $url,
                 'lang' => 'fr',
-                'excerpt' => $row['INTITULE'],
+                'excerpt' => $recorded['post_excerpt'],
                 'title' => $recorded['post_title']
             ];
 
@@ -369,12 +377,19 @@ class Ajax
 
                     $wpProjectToDB = [
                         'post_author' => get_current_user_id(),
-                        'post_content' => self::preparePostContent($row),
-                        'post_title' => $row['ACRONYME'],
+                        'post_content' => $row['RESUME'],
+                        'post_title' => $row['INTITULE'],
                         'post_status' => 'publish',
                         'post_type' => 'project',
-                        'comment_status' => 'open',
-                        'ping_status' => 'closed'
+                        'comment_status' => 'closed',
+                        'post_excerpt' => cnrsCreateExcerpt($row['RESUME']),
+                        'ping_status' => 'closed',
+                        'meta_input'   => [
+                            'cnrs_project_acronym' => $row['ACRONYME'],
+                            'cnrs_project_leaders_and_team' => $row['RESPONSABLE_SCIENTIFIQUE'] . '; ' . $row['EQUIPE'],
+                            'cnrs_project_link' => $row['LIEN_SITE'] ?? '',
+                            'cnrs_project_link_text' => self::$btnText[$lang] ?? self::$btnText['en']
+                        ]
                     ];
 
                     if ($id !== null) {
@@ -395,7 +410,7 @@ class Ajax
                         'url' => $recorded['guid'],
                         'image' => $url,
                         'lang' => $lang,
-                        'excerpt' => $row['INTITULE'],
+                        'excerpt' => $recorded['post_excerpt'],
                         'title' => $recorded['post_title']
                     ];
 
@@ -409,38 +424,6 @@ class Ajax
         ob_start();
         include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-list.php');
         return ob_get_clean();
-    }
-
-    /**
-     * Prepare the post content based on the given data.
-     *
-     * @param array $data The data used to generate the post content.
-     * @return string The prepared post content.
-     */
-    private static function preparePostContent(array $data): string
-    {
-        $content = '';
-        if ($data['INTITULE'] !== null) {
-            $content = "<h4>{$data['INTITULE']}</h4>" . "\n";
-        }
-        if ($data['RESUME'] !== null) {
-            $content .= $data['RESUME'] . "\n";
-            $content .= "&nbsp;" . "\n";
-        }
-        $content .= "<h6><em>{$data['RESPONSABLE_SCIENTIFIQUE']}";
-        if ($data['EQUIPE'] !== null) {
-            $content .= ", {$data['EQUIPE']}";
-        }
-        if ($data['FINANCEUR'] !== null) {
-            $finance = __('financier', 'cnrs-data-manager');
-            $content .= ", {$finance} {$data['FINANCEUR']}";
-        }
-        $content .= "</em></h6>";
-        if ($data['LIEN_SITE'] !== null) {
-            $content .= "&nbsp;" . "\n";
-            $content .= `<a href="{$data['LIEN_SITE']}" target="_blank">{$data['LIEN_SITE']}</a>`;
-        }
-        return str_replace('<br>', "\n", $content);
     }
 
     /**

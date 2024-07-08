@@ -2403,3 +2403,35 @@ if (!function_exists('getCollaboratorsThumbnails')) {
         return $html;
     }
 }
+
+if (!function_exists('cnrsCreateExcerpt')) {
+
+    /**
+     * Create an excerpt from a given content string.
+     *
+     * @param string $content The content to create an excerpt from.
+     * @param int $limit The maximum length of the excerpt (default: 100 characters).
+     *
+     * @return string The created excerpt.
+     */
+    function cnrsCreateExcerpt(string $content, int $limit = 100): string
+    {
+        $content = strip_tags($content);
+        $content = strip_shortcodes($content);
+        $content = trim(preg_replace('/\s+/', ' ', $content));
+        $ret = $content;
+        if (mb_strlen($content) >= $limit) {
+            $ret = mb_substr($content, 0, $limit);
+            if (mb_substr($ret, -1) !== ' ') {
+                $space_pos_in_substr = mb_strrpos($ret, ' ');
+                $space_pos_in_content = mb_strpos($content, ' ', $limit);
+                if ($space_pos_in_content !== false && $space_pos_in_content - $limit <= $limit - $space_pos_in_substr) {
+                    $ret = mb_substr($content, 0, $space_pos_in_content);
+                } else {
+                    $ret = mb_substr($content, 0, $space_pos_in_substr);
+                }
+            }
+        }
+        return $ret . '...';
+    }
+}
