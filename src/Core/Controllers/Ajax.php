@@ -29,7 +29,8 @@ class Ajax
         'get_collaborators_list' => 'getCollaboratorsList',
         'get_collaborator_modal' => 'getCollaboratorModal',
         'collaborator_action' => 'collaboratorAction',
-        'get_attachments' => 'getAttachments'
+        'get_attachments' => 'getAttachments',
+        'search_publications' => 'searchPublications'
     ];
 
     private static array $publicActions = [];
@@ -743,6 +744,30 @@ class Ajax
             } else {
                 $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
             }
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Return filtered publications.
+     *
+     * @return void
+     */
+    public static function searchPublications(): void
+    {
+        $json = ['error' => null, 'data' => null];
+        try {
+            $oskar = Manager::getPublications();
+            $formatted = cnrsFormatPublications($oskar);
+            $publications = cnrsApplyFilters($formatted['publications'], $_POST);
+            $totalCount = count($formatted['publications']);
+            $filteredCount = count($publications);
+            ob_start();
+            include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/publications.php');
+            $json['data'] = ob_get_clean();
         } catch (ErrorException $e) {
             $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
         }

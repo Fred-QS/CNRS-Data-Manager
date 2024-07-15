@@ -1165,9 +1165,15 @@ if (!function_exists('cnrsReadShortCode')) {
             $shortCodesCounter++;
 
             wp_enqueue_style('cnrs-data-manager-styling', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-style.css', [], null);
+            wp_enqueue_style('cnrs-data-manager-styling-filters', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-filters-style.css', [], null);
             wp_enqueue_script('cnrs-data-manager-script', get_site_url() . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-script.js', [], null);
 
-            $publications = Manager::getPublications();
+            $oskar = Manager::getPublications();
+            $formatted = cnrsFormatPublications($oskar);
+            $publications = cnrsApplyFilters($formatted['publications'], $_GET);
+            $filters = $formatted['filters'];
+            $totalCount = count($formatted['publications']);
+            $filteredCount = count($publications);
 
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Publications.php');
@@ -2433,5 +2439,206 @@ if (!function_exists('cnrsCreateExcerpt')) {
             }
         }
         return $ret . '...';
+    }
+}
+
+if (!function_exists('cnrsFormatPublication')) {
+
+    function cnrsFormatPublications(array $publications): array
+    {
+        $all = [
+            'publications' => []
+        ];
+
+        $authors = [];
+        $dates = [];
+        $types = [];
+        $guardianships = [];
+        $categories = [];
+
+        foreach ($publications as $publication) {
+
+            $formatted = [
+                'url' => null,
+                'title' => null,
+                'type' => null,
+                'authors' => [],
+                'licence' => null,
+                'reference' => [
+                    'journal' => null,
+                    'page' => null,
+                    'volume' => null,
+                    'number' => null,
+                    'date' => null
+                ],
+                'guardianships' => [],
+                'category' => null
+            ];
+
+            foreach ($publication as $item) {
+                if ($item['key'] === 'dc.identifier.uri') {
+                    $formatted['url'] = $item['value'];
+                } else if ($item['key'] === 'dc.title.en') {
+                    $formatted['title'] = $item['value'];
+                } else if ($item['key'] === 'dc.type') {
+                    $formatted['type'] = $item['value'];
+                } else if ($item['key'] === 'dc.contributor.author') {
+                    $formatted['authors'][] = str_replace(',', '', $item['value']);
+                } else if ($item['key'] === 'dc.rights') {
+                    $formatted['licence'] = $item['value'];
+                } else if ($item['key'] === 'bordeaux.journal') {
+                    $formatted['reference']['journal'] = $item['value'];
+                } else if ($item['key'] === 'bordeaux.page') {
+                    $formatted['reference']['page'] = $item['value'];
+                } else if ($item['key'] === 'bordeaux.volume') {
+                    $formatted['reference']['volume'] = $item['value'];
+                } else if ($item['key'] === 'bordeaux.issue') {
+                    $formatted['reference']['number'] = $item['value'];
+                } else if ($item['key'] === 'dc.date') {
+                    $formatted['reference']['date'] = $item['value'];
+                } else if ($item['key'] === 'dc.date.available' && !isset($formatted['reference']['date'])) {
+                    $formatted['reference']['date'] = explode('T', $item['value'])[0];
+                } else if ($item['key'] === 'bordeaux.institution') {
+                    $formatted['guardianships'][] = $item['value'];
+                } else if ($item['key'] === 'dc.subject.hal') {
+                    $formatted['category'] = $item['value'];
+                } else if ($item['key'] === 'bordeaux.thesis.discipline' && !isset($formatted['category'])) {
+                    $formatted['category'] = $item['value'];
+                }
+            }
+
+            if ($formatted['url'] !== null) {
+                $all['publications'][] = $formatted;
+            }
+
+            foreach ($all['publications'] as $row) {
+                $authors = array_merge($authors, $row['authors']);
+                if ($row['reference']['date'] !== null) {
+                    $d = date_create($row['reference']['date']);
+                    $dates[] = date_format($d,"Y");
+                }
+                $types[] = $row['type'];
+                $guardianships = array_merge($guardianships, $row['guardianships']);
+                $categories[] = $row['category'];
+            }
+        }
+
+        $all['filters'] = [
+            'authors' => cnrsArrayUnique(
+                array_values(array_unique($authors)),
+                $all['publications'],
+                'authors'
+            ),
+            'dates' => cnrsArrayUnique(
+                array_values(array_unique($dates)),
+                $all['publications'],
+                'date'
+            ),
+            'types' => cnrsArrayUnique(
+                array_values(array_unique($types)),
+                $all['publications'],
+                'type'
+            ),
+            'guardianships' => cnrsArrayUnique(
+                array_values(array_unique($guardianships)),
+                $all['publications'],
+                'guardianships'
+            ),
+            'categories' => cnrsArrayUnique(
+                array_values(array_unique($categories)),
+                $all['publications'],
+                'category'
+            )
+        ];
+
+        return $all;
+    }
+}
+
+if (!function_exists('cnrsArrayUnique')) {
+
+    function cnrsArrayUnique(array $references, array $publications, string $type): array
+    {
+        $final = [];
+        foreach ($references as $reference) {
+            $final[$reference] = 0;
+        }
+        foreach ($publications as $publication) {
+            $search = $type !== 'date' ? $publication[$type] : $publication['reference']['date'];
+            if ($type === 'date') {
+                $d = date_create($search);
+                $search = date_format($d, "Y");
+            }
+            if (in_array($type, ['authors', 'guardianships'])) {
+                foreach ($search as $entity) {
+                    $final[$entity]++;
+                }
+            } else {
+                $final[$search]++;
+            }
+        }
+
+        $result = [];
+        if ($type === 'date') {
+            krsort($final);
+        } else {
+            ksort($final, SORT_STRING);
+        }
+
+        foreach ($final as $title => $count) {
+            $result[] = ['title' => $title, 'count' => $count];
+        }
+        return $result;
+    }
+}
+
+if (!function_exists('cnrsBuildPublicationReference')) {
+
+    function cnrsBuildPublicationReference(array $reference): string
+    {
+        $array = [
+            $reference['journal'] . ($reference['volume'] !== null ? '. vol. ' . $reference['volume'] : ''),
+            $reference['number'] !== null ? 'n° ' . $reference['number'] : '',
+            $reference['page'] !== null ? 'pp. ' . $reference['page'] : '',
+            $reference['date'] !== null ? $reference['date'] : '',
+        ];
+        $toImplode = [];
+        foreach ($array as $item) {
+            if (strlen($item) > 0) {
+                $toImplode[] = $item;
+            }
+        }
+        return implode(', ', $toImplode);
+    }
+}
+
+if (!function_exists('cnrsApplyFilters')) {
+
+    function cnrsApplyFilters(array $publications, array $query): array
+    {
+        $byAuthor = isset($query['cdm-author']) && $query['cdm-author'] !== 'all' ? $query['cdm-author'] : null;
+        $byYear = isset($query['cdm-date']) && $query['cdm-date'] !== 'all' ? $query['cdm-date'] : null;
+        $byType = isset($query['cdm-type']) && $query['cdm-type'] !== 'all' ? $query['cdm-type'] : null;
+        $byGuardianship = isset($query['cdm-guardianship']) && $query['cdm-guardianship'] !== 'all' ? $query['cdm-guardianship'] : null;
+        $byDiscipline = isset($query['cdm-category']) && $query['cdm-category'] !== 'all' ? $query['cdm-category'] : null;
+        $search = isset($query['cdm-search']) && strlen($query['cdm-search']) > 0 ? $query['cdm-search'] : null;
+
+        foreach ($publications as $key => $publication) {
+            if ($byAuthor !== null && !in_array($byAuthor, $publication['authors'])) {
+                unset($publications[$key]);
+            } else if ($byYear !== null && !str_starts_with($publication['reference']['date'], $byYear)) {
+                unset($publications[$key]);
+            } else if ($byType !== null && $byType !== $publication['type']) {
+                unset($publications[$key]);
+            } else if ($byGuardianship !== null && !in_array($byGuardianship, $publication['guardianships'])) {
+                unset($publications[$key]);
+            } else if ($byDiscipline !== null && $byDiscipline !== ($publication['category'] !== null ? $publication['category'] : 'unclassified')) {
+                unset($publications[$key]);
+            } else if ($search !== null && !str_contains(strtolower($publication['title']), strtolower($search))) {
+                unset($publications[$key]);
+            }
+        }
+
+        return $publications;
     }
 }

@@ -39,6 +39,9 @@ const hiddenConventionInput = document.querySelector('#cnrs-dm-front-convention-
 const textConventionInput = document.querySelector('#cnrs-dm-front-convention-text');
 const conventionList = document.querySelector('#cnrs-dm-front-conventions-list');
 const conventionsLi = document.querySelectorAll('.cnrs-dm-front-convention');
+const publicationsForm = document.querySelector('#cnrs-dm-front-filters-publications-form');
+const publicationsLoader = document.querySelector('#cnrs-dm-front-publication-loader-wrapper');
+const publicationsList = document.querySelector('#cnrs-dm-front-publications-list');
 let agentEmails = [];
 
 window.addEventListener('load', function(){
@@ -47,6 +50,7 @@ window.addEventListener('load', function(){
     dispatchWrapperListener();
     prepareMissionForm();
     resizeTooltips();
+    setPublicationsListener();
 });
 
 window.addEventListener('resize', function () {
@@ -54,8 +58,8 @@ window.addEventListener('resize', function () {
 });
 
 window.addEventListener('click', function(e) {
-   const target = e.target;
-   closeMissionTooltips(target);
+    const target = e.target;
+    closeMissionTooltips(target);
 });
 
 function isJson(str) {
@@ -65,6 +69,59 @@ function isJson(str) {
     } catch (e) {
         return false;
     }
+}
+
+function setPublicationsListener() {
+
+    if (publicationsForm) {
+        publicationsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            publicationsLoader.classList.remove('hide');
+            const search = publicationsForm.querySelector('input[name="cdm-search"]').value;
+            const author = publicationsForm.querySelector('select[name="cdm-author"]').value;
+            const date = publicationsForm.querySelector('select[name="cdm-date"]').value;
+            const type = publicationsForm.querySelector('select[name="cdm-type"]').value;
+            const guardianship = publicationsForm.querySelector('select[name="cdm-guardianship"]').value;
+            const category = publicationsForm.querySelector('select[name="cdm-category"]').value;
+            const formData = new FormData();
+            const url = '/wp-admin/admin-ajax.php';
+            formData.append('action', 'search_publications');
+            formData.append('cdm-search', search);
+            formData.append('cdm-author', author);
+            formData.append('cdm-date', date);
+            formData.append('cdm-type', type);
+            formData.append('cdm-guardianship', guardianship);
+            formData.append('cdm-category', category);
+            let queryString = new URLSearchParams(formData)
+                .toString()
+                .replace('action=search_publications&', '?');
+            const nextURL = window.location.protocol + '//' + window.location.hostname + window.location.pathname + queryString;
+            const nextTitle = document.title;
+            const nextState = { additionalInformation: 'Updated the URL with JS' };
+            window.history.pushState(nextState, nextTitle, nextURL);
+            const options = {
+                method: 'POST',
+                body: formData,
+            };
+            fetch(url, options)
+                .then(
+                    response => response.json()
+                ).then(
+                success => handlePublicationsResult(success.data)
+            ).catch(
+                error => handlePublicationsResult({error: error, data: null})
+            );
+        })
+    }
+}
+
+function handlePublicationsResult(response) {
+    if (response.error === null) {
+        publicationsList.innerHTML = response.data;
+    } else {
+        console.warn(response.error);
+    }
+    publicationsLoader.classList.add('hide');
 }
 
 function prepareMissionForm() {
