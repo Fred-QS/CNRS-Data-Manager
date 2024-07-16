@@ -7,9 +7,7 @@
     <h2><?php echo sprintf(__('Find the %s', 'cnrs-data-manager'), strtolower($catName)) ?></h2>
 </div>
 
-<?php if ($isFilterHidden === false): ?>
-    <?php echo do_shortcode('[cnrs-data-manager type="filters"]') ?>
-<?php endif; ?>
+<?php echo do_shortcode('[cnrs-data-manager type="filters"]') ?>
 
 <?php if (have_posts()): ?>
     <div id="cnrs-data-manager-front-blog" class="cnrs-dm-front-silent-container cnrs-dm-front-silent-container-<?php echo strtolower($previewTemplate) ?>">
