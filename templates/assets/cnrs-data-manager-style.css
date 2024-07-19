@@ -62,7 +62,7 @@ html, body {
     font-size: 1.6em;
 }
 
-.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon):not(.cnrs-dm-front-btn-std)::after {
+.cnrs-dm-front-btn:not(.cnrs-dm-front-btn-save):not(.cnrs-dm-front-revision-observation):not(.cnrs-dm-front-btn-abandon):not(.cnrs-dm-front-btn-std):not(.cnrs-dm-front-btn-choose-dest)::after {
     margin-left: -1em;
 }
 
@@ -1499,8 +1499,16 @@ html, body {
     right: -36px;
 }
 
-.cnrs-dm-front-tooltip-container:not(.required) .cnrs-dm-front-tooltip-btn {
+.cnrs-dm-front-mission-form-element-label:not(.no-label) .cnrs-dm-front-tooltip-container:not(.required) .cnrs-dm-front-tooltip-btn {
     right: -26px;
+}
+
+.cnrs-dm-front-mission-form-element-label.no-label .cnrs-dm-front-tooltip-container:not(.required) .cnrs-dm-front-tooltip-btn {
+    right: -21px;
+}
+
+.cnrs-dm-front-mission-form-element-label.no-label .cnrs-dm-front-tooltip-container {
+    margin-top: 24px;
 }
 
 .cnrs-dm-front-tooltip-container {
@@ -1551,10 +1559,17 @@ html, body {
     display: none;
 }
 
+.cnrs-dm-front-mission-form-element-label:not(.no-label) .cnrs-dm-front-tooltip-text.show {
+    top: calc(100% + 6px);
+}
+
+.cnrs-dm-front-mission-form-element-label.no-label .cnrs-dm-front-tooltip-text.show {
+    top: calc(100% + 7px);
+}
+
 .cnrs-dm-front-tooltip-text.show {
     display: block;
     position: absolute;
-    top: calc(100% + 6px);
     z-index: 3;
     left: 0;
     background-color: #68c0b5;
@@ -1638,7 +1653,8 @@ h3.cnrs-dm-front-mission-form-element-label {
     top: 9px;
 }
 
-.cnrs-dm-front-mission-form-element-label.required.no-label + label {
+.cnrs-dm-front-mission-form-element-label.required.no-label + label,
+.cnrs-dm-front-radio-label.no-label-margin-left-required {
     margin-left: 14px;
 }
 
@@ -1683,6 +1699,13 @@ h3.cnrs-dm-front-mission-form-element-label {
     width: 100%;
     opacity: 0.7;
     padding: 0;
+}
+
+.cnrs-dm-front-mission-form-element[data-type="comment"] ul {
+    list-style: disc;
+    padding-left: 20px;
+    width: 100%;
+    opacity: 0.7;
 }
 
 .cnrs-dm-front-mission-form-element[data-type="signs"] {
@@ -2818,6 +2841,34 @@ li[class^="cnrs-dm-front-publication-"] {
 
 #cnrs-dm-front-publication-loader-wrapper #cnrs-dm-front-loader-icon {
     margin-top: 200px;
+}
+
+#cnrs-dm-front-mission-dest-disclaimer p {
+    margin: 0;
+    padding-bottom: 0;
+    color: #69C0B5;
+    font-weight: bold;
+}
+
+#cnrs-dm-front-mission-dest-disclaimer {
+    margin-top: 40px;
+}
+
+#cnrs-dm-front-mission-dest-disclaimer ul {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+#cnrs-dm-front-mission-dest-disclaimer ul li svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    position: relative;
+    top: 1px;
+}
+
+#cnrs-dm-front-mission-dest-disclaimer ul li svg path {
+    fill: #6AB7E6;
 }
 
 @media only screen and (min-width: 768px) {

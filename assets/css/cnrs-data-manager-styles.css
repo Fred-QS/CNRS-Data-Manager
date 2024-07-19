@@ -1423,6 +1423,9 @@ label[for="cnrs-dm-admin-email-0"] {
     align-items: flex-start;
     width: 100%;
     position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .cnrs-dm-tooltip-icon {

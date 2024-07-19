@@ -12,6 +12,7 @@ const dataWrapper = document.querySelectorAll('.cnrs-dm-front-agent-info-data-co
 const parentContainers = document.querySelectorAll('.cnrs-dm-front-container');
 const signPadButtons = document.querySelectorAll('.cnrs-dm-front-sign-pad-button');
 const optionalInputs = document.querySelectorAll('.cnrs-dm-front-checkbox-label[data-option="option"]');
+const optionalRadioInputs = document.querySelectorAll('.cnrs-dm-front-radio-label');
 const missionFormSubmit = document.querySelector('#cnrs-dm-front-mission-form-submit-button');
 const missionFormErrors = document.querySelector('#cnrs-dm-front-mission-form-errors');
 const missionFormLoginWrapper = document.querySelector('#cnrs-dm-front-mission-form-login-wrapper');
@@ -134,6 +135,19 @@ function prepareMissionForm() {
                         textarea.required = true;
                     } else {
                         textarea.required = false;
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < optionalRadioInputs.length; i++) {
+            optionalRadioInputs[i].querySelector('input').oninput = function () {
+                let textarea = this.parentElement.nextElementSibling;
+                if (textarea && textarea.classList.contains('cnrs-dm-front-mission-form-opt-comment') && this.checked === true) {
+                    textarea.required = true;
+                } else {
+                    let textarea2 = this.closest('.cnrs-dm-front-mission-form-element');
+                    if (textarea2 && textarea2.querySelector('textarea')) {
+                        textarea2.querySelector('textarea').required = false;
                     }
                 }
             }
@@ -538,6 +552,17 @@ function prepareMissionForm() {
             isInternational = action === 1;
             chooseDestWrapper.remove();
             missionHTMLForm.classList.remove('cnrs-dm-front-mission-form-wrapper-init');
+            displayToggledElementsLogic({
+                id: missionLocationToggleUuid,
+                option1: {
+                    value: foreignLabel,
+                    active: isInternational === false
+                },
+                option2: {
+                    value: franceLabel,
+                    active: isInternational === true
+                },
+            });
             resizeTooltips();
         }
     }
@@ -686,6 +711,7 @@ function displayToggledElementsHTML(elementsToDisplay, elementsToHide) {
             }
         }
     }
+    resizeTooltips();
 }
 
 function hasNoDisabledToggle(toggles, activeToggleUuid) {

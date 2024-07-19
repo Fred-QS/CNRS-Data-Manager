@@ -20,6 +20,7 @@ final class Manager
     const QUERY_STRING_MENU_KEY_L3     = 'subtab';
     const QUERY_STRING_MENU_KEY_ACTION = 'action';
     const FEES_UUID = '013589e2-9014-4d5a-adc5-6e4b1e63eb89';
+    const LOCATION_UUID = 'c5b86a29-a1a8-4415-8f30-1eb55300d3e4';
 
     private static string $xmlPath = '';
 
@@ -30,14 +31,26 @@ final class Manager
      */
     public static function getOriginalToggle(): array
     {
-        return [[
-            'id' => self::FEES_UUID,
-            'label' => __('Fees', 'cnrs-data-manager'),
-            'values' => [
-                __('With fees', 'cnrs-data-manager'),
-                __('No charge', 'cnrs-data-manager')
-            ]
-        ]];
+        return [
+            [
+                'id' => self::FEES_UUID,
+                'label' => __('Fees', 'cnrs-data-manager'),
+                'values' => [
+                    __('With fees', 'cnrs-data-manager'),
+                    __('No charge', 'cnrs-data-manager')
+                ],
+                'hidden' => false
+            ],
+            [
+                'id' => self::LOCATION_UUID,
+                'label' => __('Mission location', 'cnrs-data-manager'),
+                'values' => [
+                    __('France', 'cnrs-data-manager'),
+                    __('Abroad', 'cnrs-data-manager')
+                ],
+                'hidden' => true
+            ],
+        ];
     }
 
     /**

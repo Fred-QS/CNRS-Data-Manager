@@ -104,8 +104,8 @@
                                 <?php endif; ?>
                             </span>
                             <?php $checkboxIndex = 0; ?>
-                            <?php foreach ($data['choices'] as $choice): ?>
-                                <label class="cnrs-dm-front-checkbox-label" data-option="<?php echo stripos($choice, '-opt-comment') !== false ? 'option' : 'normal' ?>">
+                            <?php foreach ($data['choices'] as $key => $choice): ?>
+                                <label class="cnrs-dm-front-checkbox-label<?php echo strlen(trim($element['label'])) === 0 && $key > 0 ? ' no-label-margin-left-required' : '' ?>" data-option="<?php echo stripos($choice, '-opt-comment') !== false ? 'option' : 'normal' ?>">
                                     <input disabled class="checkbox__trigger visuallyHidden" value="<?php echo str_replace('-opt-comment', '', $choice) ?>" type="checkbox"<?php echo in_array(str_replace('-opt-comment', '', $choice), stripArrayValuesSlashes($data['values']), true) ? ' checked' : '' ?>>
                                     <span class="checkbox__symbol">
                                         <svg aria-hidden="true" class="icon-checkbox" width="28px" height="28px" viewBox="0 0 28 28" version="1" xmlns="http://www.w3.org/2000/svg">
@@ -116,7 +116,7 @@
                                 </label>
                                 <?php if (stripos($choice, '-opt-comment') !== false): ?>
                                     <?php $comment = extractOptionComment($checkboxIndex, $data['options']); ?>
-                                    <textarea readonly spellcheck="false" autocomplete="off" class="cnrs-dm-front-mission-form-opt-comment" data-type="opt-comment"<?php echo strlen($comment) > 0 ? ' required' : '' ?>><?php echo $comment ?></textarea>
+                                    <textarea readonly spellcheck="false" autocomplete="off" class="cnrs-dm-front-mission-form-opt-comment<?php echo strlen(trim($element['label'])) === 0 && $key > 0 ? ' no-label-margin-left-required' : '' ?>" data-type="opt-comment"<?php echo strlen($comment) > 0 ? ' required' : '' ?>><?php echo $comment ?></textarea>
                                 <?php endif; ?>
                                 <?php $checkboxIndex++; ?>
                             <?php endforeach; ?>
@@ -146,15 +146,15 @@
                                 <?php endif; ?>
                             </span>
                             <?php $radioIndex = 0; ?>
-                            <?php foreach ($data['choices'] as $choice): ?>
-                                <label>
+                            <?php foreach ($data['choices'] as $key => $choice): ?>
+                                <label class="cnrs-dm-front-radio-label<?php echo strlen(trim($element['label'])) === 0 && $key > 0 ? ' no-label-margin-left-required' : '' ?>" data-option="<?php echo stripos($choice, '-opt-comment') !== false ? 'option' : 'normal' ?>">
                                     <input disabled value="<?php echo str_replace('-opt-comment', '', $choice) ?>" type="radio"<?php echo in_array(str_replace('-opt-comment', '', $choice), stripArrayValuesSlashes($data['values']), true) ? ' checked' : '' ?> class="cnrs-dm-front-radio-revision-input">
                                     <span class="design"></span>
                                     <span class="text"><?php echo str_replace('-opt-comment', '', $choice) ?></span>
                                 </label>
                                 <?php if (stripos($choice, '-opt-comment') !== false): ?>
                                     <?php $comment = extractOptionComment($radioIndex, $data['options']); ?>
-                                    <textarea readonly spellcheck="false" autocomplete="off" class="cnrs-dm-front-mission-form-opt-comment" data-type="opt-comment"<?php echo strlen($comment) > 0 ? ' required' : '' ?>><?php echo $comment ?></textarea>
+                                    <textarea readonly spellcheck="false" autocomplete="off" class="cnrs-dm-front-mission-form-opt-comment<?php echo strlen(trim($element['label'])) === 0 && $key > 0 ? ' no-label-margin-left-required' : '' ?>" data-type="opt-comment"<?php echo strlen($comment) > 0 ? ' required' : '' ?>><?php echo $comment ?></textarea>
                                 <?php endif; ?>
                                 <?php $radioIndex++; ?>
                             <?php endforeach; ?>
@@ -415,8 +415,8 @@
                                 <?php endif; ?>
                             </span>
                             <?php $checkboxIndex = 0; ?>
-                            <?php foreach ($data['choices'] as $choice): ?>
-                                <label class="cnrs-dm-front-checkbox-label" data-option="<?php echo stripos($choice, '-opt-comment') !== false ? 'option' : 'normal' ?>">
+                            <?php foreach ($data['choices'] as $key => $choice): ?>
+                                <label class="cnrs-dm-front-checkbox-label<?php echo strlen(trim($element['label'])) === 0 && $key > 0 ? ' no-label-margin-left-required' : '' ?>" data-option="<?php echo stripos($choice, '-opt-comment') !== false ? 'option' : 'normal' ?>">
                                     <input<?php echo $obs === null ? ' disabled' : ' name="cnrs-dm-front-mission-form-element-' . $element['type'] . '-' . $index . '[]"' ?> class="checkbox__trigger visuallyHidden" value="<?php echo str_replace('-opt-comment', '', $choice) ?>" type="checkbox"<?php echo in_array(str_replace('-opt-comment', '', $choice), stripArrayValuesSlashes($data['values']), true) ? ' checked' : '' ?>>
                                     <span class="checkbox__symbol">
                                         <svg aria-hidden="true" class="icon-checkbox" width="28px" height="28px" viewBox="0 0 28 28" version="1" xmlns="http://www.w3.org/2000/svg">
@@ -427,7 +427,7 @@
                                 </label>
                                 <?php if (stripos($choice, '-opt-comment') !== false): ?>
                                     <?php $comment = extractOptionComment($checkboxIndex, $data['options']); ?>
-                                    <textarea<?php echo $obs === null ? ' readonly' : ' name="cnrs-dm-front-mission-form-element-' . $element['type'] . '-' . $index . '-opt-comment-' . $checkboxIndex . '"' ?> spellcheck="false" autocomplete="off" class="cnrs-dm-front-mission-form-opt-comment" data-type="opt-comment"<?php echo strlen($comment) > 0 ? ' required' : '' ?>><?php echo $comment ?></textarea>
+                                    <textarea<?php echo $obs === null ? ' readonly' : ' name="cnrs-dm-front-mission-form-element-' . $element['type'] . '-' . $index . '-opt-comment-' . $checkboxIndex . '"' ?> spellcheck="false" autocomplete="off" class="cnrs-dm-front-mission-form-opt-comment<?php echo strlen(trim($element['label'])) === 0 && $key > 0 ? ' no-label-margin-left-required' : '' ?>" data-type="opt-comment"<?php echo strlen($comment) > 0 ? ' required' : '' ?>><?php echo $comment ?></textarea>
                                 <?php endif; ?>
                                 <?php $checkboxIndex++; ?>
                             <?php endforeach; ?>
@@ -454,15 +454,15 @@
                                 <?php endif; ?>
                             </span>
                             <?php $radioIndex = 0; ?>
-                            <?php foreach ($data['choices'] as $choice): ?>
-                                <label>
+                            <?php foreach ($data['choices'] as $key => $choice): ?>
+                                <label class="cnrs-dm-front-radio-label<?php echo strlen(trim($element['label'])) === 0 && $key > 0 ? ' no-label-margin-left-required' : '' ?>" data-option="<?php echo stripos($choice, '-opt-comment') !== false ? 'option' : 'normal' ?>">
                                     <input<?php echo $obs === null ? ' disabled class="cnrs-dm-front-radio-revision-input"' : ' name="cnrs-dm-front-mission-form-element-' . $element['type'] . '-' . $index . '"' ?> value="<?php echo str_replace('-opt-comment', '', $choice) ?>" type="radio"<?php echo in_array(str_replace('-opt-comment', '', $choice), stripArrayValuesSlashes($data['values']), true) ? ' checked' : '' ?>>
                                     <span class="design"></span>
                                     <span class="text"><?php echo str_replace('-opt-comment', '', $choice) ?></span>
                                 </label>
                                 <?php if (stripos($choice, '-opt-comment') !== false): ?>
                                     <?php $comment = extractOptionComment($radioIndex, $data['options']); ?>
-                                    <textarea<?php echo $obs === null ? ' readonly' : ' name="cnrs-dm-front-mission-form-element-' . $element['type'] . '-' . $index . '-opt-comment-' . $radioIndex . '"' ?> spellcheck="false" autocomplete="off" class="cnrs-dm-front-mission-form-opt-comment" data-type="opt-comment"<?php echo strlen($comment) > 0 ? ' required' : '' ?>><?php echo $comment ?></textarea>
+                                    <textarea<?php echo $obs === null ? ' readonly' : ' name="cnrs-dm-front-mission-form-element-' . $element['type'] . '-' . $index . '-opt-comment-' . $radioIndex . '"' ?> spellcheck="false" autocomplete="off" class="cnrs-dm-front-mission-form-opt-comment<?php echo strlen(trim($element['label'])) === 0 && $key > 0 ? ' no-label-margin-left-required' : '' ?>" data-type="opt-comment"<?php echo strlen($comment) > 0 ? ' required' : '' ?>><?php echo $comment ?></textarea>
                                 <?php endif; ?>
                                 <?php $radioIndex++; ?>
                             <?php endforeach; ?>

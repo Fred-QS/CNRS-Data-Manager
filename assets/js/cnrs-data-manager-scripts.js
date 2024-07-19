@@ -1197,6 +1197,7 @@ function resizeTextAreaOnLoad() {
 
 function addFormTool(info) {
     if (info.error === null) {
+        console.log('test')
         missionFormStructure.insertAdjacentHTML('beforeend', info.data);
         setToolsListeners();
         let json = JSON.parse(info.json);
@@ -1264,6 +1265,13 @@ function addFormTool(info) {
                         }
                     }
                 }
+            }
+
+            if (document.querySelector('#cnrs-dm-tinymce')) {
+                let config = {...tinyMCEConfig};
+                config.selector = '#cnrs-dm-tinymce'
+                tinymce.remove();
+                tinymce.init(config);
             }
         }
         missionForm.elements.push(json);
@@ -1735,8 +1743,8 @@ function refreshFormPreview() {
             let t = {};
             t[originalToggles[i].id] = {label: originalToggles[i].label, option1: {value: originalToggles[i].values[0], active: true}, option2: {value: originalToggles[i].values[1], active: false}};
             let hidden = isHiddenByToggleAction(t);
-            hiddenMessage = hiddenMessage.replace('%s', hidden.toggleName);
-            html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + ' from-mandatory" data-hidden="' + hiddenMessage + '">';
+            const hiddenMess = hiddenMessage.replace('%s', hidden.toggleName);
+            html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + ' from-mandatory" data-hidden="' + hiddenMess + '">';
             html += `<label><span class="cnrs-dm-required">${funderLabel}</span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `</label>`;
@@ -1752,8 +1760,8 @@ function refreshFormPreview() {
             ? `<span class="cnrs-dm-tooltip-icon" title="${element.data.tooltip.replaceAll('<br/>', ' ')}">?</span>`
             : '';
         let hidden = isHiddenByToggleAction(element.data.toggles);
-        hiddenMessage = hiddenMessage.replace('%s', hidden.toggleName);
-        html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + '" data-hidden="' + hiddenMessage + '">';
+        const hiddenMess = hiddenMessage.replace('%s', hidden.toggleName);
+        html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + '" data-hidden="' + hiddenMess + '">';
         if (element.type === 'checkbox') {
             html += `<div class="cnrs-dm-form-preview-label">`;
             html += element.label.trim().length > 0 ? `<span${required}>${element.label} ${tooltip}</span>` : `<span${required} data-nolabel="true">${tooltip}</span>`;
