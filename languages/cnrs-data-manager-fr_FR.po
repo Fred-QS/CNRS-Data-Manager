@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-06-25 14:13+0200\n"
-"PO-Revision-Date: 2024-06-25 14:19+0200\n"
+"POT-Creation-Date: 2024-09-13 09:09+0200\n"
+"PO-Revision-Date: 2024-09-13 09:11+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.3\n"
+"X-Generator: Poedit 3.5\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: cnrs-data-manager.php\n"
@@ -66,7 +66,7 @@ msgid "Import"
 msgstr "Importation"
 
 #: src/Core/Bootstrap.php:307 src/Core/Bootstrap.php:308
-#: src/Core/Views/Form.php:35 src/Tools/helper.php:1890
+#: src/Core/Views/Form.php:35 src/Tools/helper.php:1896
 #: templates/includes/mission-form-download.php:26
 #: templates/includes/mission-form-download.php:36
 #: templates/includes/mission-form-list.php:191
@@ -80,11 +80,11 @@ msgstr "Formulaire de mission"
 msgid "Collaborators"
 msgstr "Collaborateurs"
 
-#: src/Core/Controllers/Ajax.php:73
+#: src/Core/Controllers/Ajax.php:74
 msgid "Bad file type. Only <b>.zip</b> file is allowed."
 msgstr "Type de fichier incorrect. Seul le format  <b>.zip</b>  est autorisé."
 
-#: src/Core/Controllers/Ajax.php:106
+#: src/Core/Controllers/Ajax.php:107
 msgid ""
 "There is more than one Excel file in the zip archive. The archive must "
 "contain a single Excel file."
@@ -92,41 +92,41 @@ msgstr ""
 "Il y a plus d’un fichier Excel dans l’archive zip. L’archive doit contenir "
 "un seul fichier Excel."
 
-#: src/Core/Controllers/Ajax.php:119
+#: src/Core/Controllers/Ajax.php:120
 msgid "The Excel file does not have the expected structure."
 msgstr "Le fichier Excel n’a pas la structure attendue."
 
-#: src/Core/Controllers/Ajax.php:126
+#: src/Core/Controllers/Ajax.php:127
 msgid "No Excel file found in the zip archive."
 msgstr "Aucun fichier Excel n’a été trouvé dans l’archive zip."
 
-#: src/Core/Controllers/Ajax.php:133
+#: src/Core/Controllers/Ajax.php:134
 msgid "There are photos missing from the zip file."
 msgstr "Il manque des photos dans le fichier zip."
 
-#: src/Core/Controllers/Ajax.php:252
+#: src/Core/Controllers/Ajax.php:253
 msgid "The images could not be processed."
 msgstr "Les images n’ont pas pu être traitées."
 
-#: src/Core/Controllers/Ajax.php:254 src/Core/Views/Import.php:26
+#: src/Core/Controllers/Ajax.php:255 src/Core/Views/Import.php:26
 msgid "The projects were imported successfully."
 msgstr "Les projets ont été importés avec succès."
 
-#: src/Core/Controllers/Ajax.php:257
+#: src/Core/Controllers/Ajax.php:258
 msgid "Importing projects into the database failed."
 msgstr "L’importation de projets dans la base de données a échoué."
 
-#: src/Core/Controllers/Ajax.php:441 src/Core/Controllers/Ajax.php:459
-#: src/Core/Controllers/Ajax.php:476 src/Core/Controllers/Ajax.php:488
-#: src/Core/Controllers/Ajax.php:500 src/Core/Controllers/Ajax.php:510
-#: src/Core/Controllers/Ajax.php:528 src/Core/Controllers/Ajax.php:543
-#: src/Core/Controllers/Ajax.php:573 src/Core/Controllers/Ajax.php:589
-#: src/Core/Controllers/Ajax.php:597 src/Core/Controllers/Ajax.php:614
-#: src/Core/Controllers/Ajax.php:626 src/Core/Controllers/Ajax.php:628
-#: src/Core/Controllers/Ajax.php:644 src/Core/Controllers/Ajax.php:673
-#: src/Core/Controllers/Ajax.php:694 src/Core/Controllers/Ajax.php:713
-#: src/Core/Controllers/Ajax.php:744 src/Core/Controllers/Ajax.php:747
-#: src/Core/Views/Form.php:92
+#: src/Core/Controllers/Ajax.php:442 src/Core/Controllers/Ajax.php:460
+#: src/Core/Controllers/Ajax.php:477 src/Core/Controllers/Ajax.php:489
+#: src/Core/Controllers/Ajax.php:501 src/Core/Controllers/Ajax.php:511
+#: src/Core/Controllers/Ajax.php:529 src/Core/Controllers/Ajax.php:544
+#: src/Core/Controllers/Ajax.php:574 src/Core/Controllers/Ajax.php:590
+#: src/Core/Controllers/Ajax.php:598 src/Core/Controllers/Ajax.php:615
+#: src/Core/Controllers/Ajax.php:627 src/Core/Controllers/Ajax.php:629
+#: src/Core/Controllers/Ajax.php:645 src/Core/Controllers/Ajax.php:674
+#: src/Core/Controllers/Ajax.php:695 src/Core/Controllers/Ajax.php:714
+#: src/Core/Controllers/Ajax.php:745 src/Core/Controllers/Ajax.php:748
+#: src/Core/Controllers/Ajax.php:772 src/Core/Views/Form.php:92
 msgid "An error as occurred."
 msgstr "Une erreur s'est produite."
 
@@ -163,82 +163,94 @@ msgstr "Formulaire à délai dépassé"
 msgid "Validated mission form"
 msgstr "Formulaire de mission validé"
 
-#: src/Core/Controllers/Manager.php:35 src/Core/Views/MissionForm.php:83
+#: src/Core/Controllers/Manager.php:37 src/Core/Views/MissionForm.php:105
 msgid "Fees"
 msgstr "Frais"
 
-#: src/Core/Controllers/Manager.php:37 src/Core/Views/RevisionForm.php:44
+#: src/Core/Controllers/Manager.php:39 src/Core/Views/RevisionForm.php:44
 #: templates/includes/pdf/html.php:41
 msgid "With fees"
 msgstr "Avec frais"
 
-#: src/Core/Controllers/Manager.php:38 src/Core/Views/RevisionForm.php:44
+#: src/Core/Controllers/Manager.php:40 src/Core/Views/RevisionForm.php:44
 #: templates/includes/pdf/html.php:41
 msgid "No charge"
 msgstr "Sans frais"
 
-#: src/Core/Controllers/Manager.php:499
+#: src/Core/Controllers/Manager.php:46
+msgid "Mission location"
+msgstr "Lieu de la mission"
+
+#: src/Core/Controllers/Manager.php:48 src/Core/Views/MissionForm.php:19
+msgid "France"
+msgstr "France"
+
+#: src/Core/Controllers/Manager.php:49 src/Core/Views/MissionForm.php:17
+msgid "Abroad"
+msgstr "Etranger"
+
+#: src/Core/Controllers/Manager.php:512
 msgid "New input field"
 msgstr "Nouveau champ de saisie"
 
-#: src/Core/Controllers/Manager.php:500
+#: src/Core/Controllers/Manager.php:513
 msgid "New numeric field"
 msgstr "Nouveau champ numérique"
 
-#: src/Core/Controllers/Manager.php:501
+#: src/Core/Controllers/Manager.php:514
 msgid "New date field"
 msgstr "Nouveau champ de date"
 
-#: src/Core/Controllers/Manager.php:502
+#: src/Core/Controllers/Manager.php:515
 msgid "New time field"
 msgstr "Nouveau champ d'heure"
 
-#: src/Core/Controllers/Manager.php:503
+#: src/Core/Controllers/Manager.php:516
 msgid "New date & time field"
 msgstr "Nouveau champ de date et d’heure"
 
-#: src/Core/Controllers/Manager.php:504
+#: src/Core/Controllers/Manager.php:517
 msgid "New multi choice field"
 msgstr "Nouveau champ à choix multiples"
 
-#: src/Core/Controllers/Manager.php:505
+#: src/Core/Controllers/Manager.php:518
 msgid "New comment field"
 msgstr "Nouveau champ de commentaire"
 
-#: src/Core/Controllers/Manager.php:506
+#: src/Core/Controllers/Manager.php:519
 msgid "New single choice field"
 msgstr "Nouveau champ à choix unique"
 
-#: src/Core/Controllers/Manager.php:507
+#: src/Core/Controllers/Manager.php:520
 msgid "New separator"
 msgstr "Nouveau séparateur"
 
-#: src/Core/Controllers/Manager.php:508
+#: src/Core/Controllers/Manager.php:521
 msgid "New text field"
 msgstr "Nouveau champ de texte"
 
-#: src/Core/Controllers/Manager.php:509
+#: src/Core/Controllers/Manager.php:522
 msgid "New title field"
 msgstr "Nouveau champ de titre"
 
-#: src/Core/Controllers/Manager.php:510 src/Core/Views/MissionForm.php:326
+#: src/Core/Controllers/Manager.php:523 src/Core/Views/MissionForm.php:349
 #: templates/includes/form-tools/tools/signs.php:7
 msgid "Signing pads"
 msgstr "Pads de signature"
 
-#: src/Core/Controllers/Manager.php:511
+#: src/Core/Controllers/Manager.php:524
 msgid "New toggle set"
 msgstr "Nouveau jeu de bascules"
 
-#: src/Core/Controllers/Manager.php:520
+#: src/Core/Controllers/Manager.php:533
 msgid "My comment"
 msgstr "Mon commentaire"
 
-#: src/Core/Controllers/Manager.php:524
+#: src/Core/Controllers/Manager.php:537
 msgid "My title"
 msgstr "Mon titre"
 
-#: src/Core/Controllers/Manager.php:525
+#: src/Core/Controllers/Manager.php:538
 msgid "My signing pads"
 msgstr "Mes pads de signature"
 
@@ -288,21 +300,21 @@ msgstr "Identité"
 msgid "Find the %s"
 msgstr "Retrouvez les %s"
 
-#: src/Core/Views/Categories.php:22
+#: src/Core/Views/Categories.php:20
 msgid "Sorry, no posts matched your criteria."
 msgstr "Aucun message ne correspond à vos critères de recherche."
 
-#: src/Core/Views/Categories.php:31
+#: src/Core/Views/Categories.php:29
 msgid "Spontaneous application"
 msgstr "Candidature spontanée"
 
-#: src/Core/Views/Categories.php:33
+#: src/Core/Views/Categories.php:31
 msgid "Send us your CV, profile and cover letter directly."
 msgstr ""
 "Envoyez-nous directement votre CV, votre profil et votre lettre de "
 "motivation."
 
-#: src/Core/Views/Categories.php:37
+#: src/Core/Views/Categories.php:35
 msgid "I postulate"
 msgstr "Je postule"
 
@@ -331,7 +343,7 @@ msgid "Collaborators list"
 msgstr "Liste des collaborateurs"
 
 #: src/Core/Views/Collaborators.php:29 src/Core/Views/Dashboard.php:66
-#: src/Core/Views/Form.php:193
+#: src/Core/Views/Form.php:193 templates/includes/publications.php:4
 msgid "Total"
 msgstr "Total"
 
@@ -342,8 +354,8 @@ msgstr "Créer"
 #: src/Core/Views/Collaborators.php:36 src/Core/Views/Collaborators.php:38
 #: src/Core/Views/Dashboard.php:70 src/Core/Views/Dashboard.php:75
 #: src/Core/Views/Dashboard.php:282 src/Core/Views/Dashboard.php:284
-#: src/Core/Views/Filters.php:81 src/Core/Views/Form.php:197
-#: src/Core/Views/Form.php:199
+#: src/Core/Views/Filters.php:83 src/Core/Views/Form.php:197
+#: src/Core/Views/Form.php:199 src/Core/Views/Publications.php:51
 msgid "Search"
 msgstr "Rechercher"
 
@@ -377,7 +389,7 @@ msgstr "partenaires"
 #: src/Core/Views/Collaborators.php:110 src/Core/Views/Dashboard.php:351
 #: src/Core/Views/Form.php:59 src/Core/Views/Form.php:160
 #: src/Core/Views/Form.php:344 src/Core/Views/MapSettings.php:263
-#: src/Core/Views/MissionForm.php:332 src/Core/Views/MissionForm.php:348
+#: src/Core/Views/MissionForm.php:355 src/Core/Views/MissionForm.php:371
 #: src/Core/Views/RevisionForm.php:41 src/Core/Views/RevisionForm.php:364
 #: src/Core/Views/RevisionForm.php:368 src/Core/Views/RevisionForm.php:649
 #: templates/includes/attachments-modal.php:15
@@ -440,7 +452,7 @@ msgstr "Nom"
 msgid "Description"
 msgstr "Description"
 
-#: src/Core/Views/Dashboard.php:22
+#: src/Core/Views/Dashboard.php:22 src/Core/Views/Publications.php:33
 msgid "Guardianship"
 msgstr "Tutelle"
 
@@ -714,36 +726,37 @@ msgstr "Caché"
 msgid "Copy link"
 msgstr "Copier le lien"
 
-#: src/Core/Views/Filters.php:28 templates/includes/filters.php:6
+#: src/Core/Views/Filters.php:30 templates/includes/filters.php:6
 msgid "Number of elements per page"
 msgstr "Nombre d’éléments par page"
 
-#: src/Core/Views/Filters.php:42
+#: src/Core/Views/Filters.php:44
 msgid "Select a category"
 msgstr "Sélectionner une catégorie"
 
-#: src/Core/Views/Filters.php:44
+#: src/Core/Views/Filters.php:46
 msgid "All categories"
 msgstr "Toutes les catégories"
 
-#: src/Core/Views/Filters.php:55 src/Core/Views/Import.php:31
+#: src/Core/Views/Filters.php:57 src/Core/Views/Import.php:31
 #: src/Core/Views/Tools.php:107 src/Core/Views/Tools.php:115
 msgid "Select a team"
 msgstr "Sélectionnez une équipe"
 
-#: src/Core/Views/Filters.php:57
+#: src/Core/Views/Filters.php:59
 msgid "All teams"
 msgstr "Toutes les équipes"
 
-#: src/Core/Views/Filters.php:68
+#: src/Core/Views/Filters.php:70
 msgid "Select a date"
 msgstr "Sélectionnez une date"
 
-#: src/Core/Views/Filters.php:70
+#: src/Core/Views/Filters.php:72 src/Core/Views/Publications.php:17
 msgid "All years"
 msgstr "Toutes les années"
 
-#: src/Core/Views/Filters.php:89 templates/includes/filters.php:35
+#: src/Core/Views/Filters.php:91 src/Core/Views/Publications.php:57
+#: templates/includes/filters.php:35
 msgid "Apply filters"
 msgstr "Appliquer les filtres"
 
@@ -929,7 +942,7 @@ msgstr "Signer<br/>ici"
 msgid "Add toggles."
 msgstr "Ajouter des bascules."
 
-#: src/Core/Views/Form.php:182 src/Core/Views/MissionForm.php:86
+#: src/Core/Views/Form.php:182 src/Core/Views/MissionForm.php:108
 msgid "Credit manager email"
 msgstr "Courriel du responsable des crédits"
 
@@ -1333,44 +1346,68 @@ msgstr ""
 "quelques %d jours</b>. Votre demande sera rejetée si elle n’est pas jugée "
 "urgente."
 
-#: src/Core/Views/MissionForm.php:16 src/Core/Views/MissionForm.php:36
-#: src/Core/Views/RevisionForm.php:44 templates/includes/pdf/html.php:41
-msgid "Foreign mission"
-msgstr "Mission à l'étranger"
+#: src/Core/Views/MissionForm.php:16
+msgid "Abroad mission"
+msgstr "Mission à l’étranger"
 
-#: src/Core/Views/MissionForm.php:17 src/Core/Views/MissionForm.php:35
+#: src/Core/Views/MissionForm.php:18 src/Core/Views/MissionForm.php:56
 #: src/Core/Views/RevisionForm.php:44 templates/includes/pdf/html.php:41
 msgid "Mission in France"
 msgstr "Mission en France"
 
-#: src/Core/Views/MissionForm.php:21
+#: src/Core/Views/MissionForm.php:24
 msgid "Please fill out the form"
 msgstr "Veuillez remplir le formulaire"
 
-#: src/Core/Views/MissionForm.php:46
+#: src/Core/Views/MissionForm.php:38
+msgid ""
+"This form is to be completed by the missionary and sent to the unit managers "
+"for editing of the mission order."
+msgstr ""
+"Ce formulaire doit être rempli par le missionnaire et envoyé aux "
+"responsables d’unité pour la révision de l’ordre de mission."
+
+#: src/Core/Views/MissionForm.php:39
+msgid "Mission requests must be sent to the management department"
+msgstr "Les demandes de mission doivent être adressées au service de gestion"
+
+#: src/Core/Views/MissionForm.php:45
+msgid "In France: 1 week minimum before departure (5 working days)"
+msgstr "En France : 1 semaine minimum avant le départ (5 jours ouvrés)"
+
+#: src/Core/Views/MissionForm.php:51
+msgid "Abroad: 1 month minimum before departure"
+msgstr "A l’étranger : 1 mois minimum avant le départ"
+
+#: src/Core/Views/MissionForm.php:57 src/Core/Views/RevisionForm.php:44
+#: templates/includes/pdf/html.php:41
+msgid "Foreign mission"
+msgstr "Mission à l'étranger"
+
+#: src/Core/Views/MissionForm.php:67
 msgid "Choose a convention"
 msgstr "Choisissez une convention"
 
-#: src/Core/Views/MissionForm.php:93
+#: src/Core/Views/MissionForm.php:115
 msgid ""
 "If your request involves fees, please enter the email of the credit manager"
 msgstr ""
 "Si votre demande implique des frais, veuillez saisir l’adresse e-mail du "
 "responsable des crédits"
 
-#: src/Core/Views/MissionForm.php:326
+#: src/Core/Views/MissionForm.php:349
 msgid "Signing pad"
 msgstr "Pad de signature"
 
-#: src/Core/Views/MissionForm.php:332
+#: src/Core/Views/MissionForm.php:355
 msgid "Signature"
 msgstr "Signature"
 
-#: src/Core/Views/MissionForm.php:332
+#: src/Core/Views/MissionForm.php:355
 msgid "Clear"
 msgstr "Effacer"
 
-#: src/Core/Views/MissionForm.php:332
+#: src/Core/Views/MissionForm.php:355
 #: templates/includes/attachments-modal.php:14
 #: templates/includes/collaborator-modal.php:39
 #: templates/includes/form-tools/modals/checkbox.php:37
@@ -1389,15 +1426,15 @@ msgstr "Effacer"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/Core/Views/MissionForm.php:332
+#: src/Core/Views/MissionForm.php:355
 msgid "Get signing pad"
 msgstr "Afficher le pad de signature"
 
-#: src/Core/Views/MissionForm.php:357 src/Core/Views/RevisionForm.php:658
+#: src/Core/Views/MissionForm.php:380 src/Core/Views/RevisionForm.php:658
 msgid "The form has been saved successfully"
 msgstr "Le formulaire a été enregistré avec succès"
 
-#: src/Core/Views/MissionForm.php:359 src/Core/Views/RevisionForm.php:670
+#: src/Core/Views/MissionForm.php:382 src/Core/Views/RevisionForm.php:670
 msgid "Back to home"
 msgstr "Retour à l'accueil"
 
@@ -1412,6 +1449,42 @@ msgstr ""
 #: src/Core/Views/Projects.php:3
 msgid "No projects referenced for this team."
 msgstr "Aucun projet référencé pour cette équipe."
+
+#: src/Core/Views/Publications.php:6
+msgid "Author"
+msgstr "Auteur"
+
+#: src/Core/Views/Publications.php:8
+msgid "All authors"
+msgstr "Tous les auteurs"
+
+#: src/Core/Views/Publications.php:15
+msgid "Year"
+msgstr "Année"
+
+#: src/Core/Views/Publications.php:24
+msgid "Document type"
+msgstr "Type de document"
+
+#: src/Core/Views/Publications.php:26
+msgid "All types"
+msgstr "Tous les types"
+
+#: src/Core/Views/Publications.php:35
+msgid "All guardianships"
+msgstr "Toutes les tutelles"
+
+#: src/Core/Views/Publications.php:42
+msgid "Discipline"
+msgstr "Discipline"
+
+#: src/Core/Views/Publications.php:44
+msgid "All disciplines"
+msgstr "Toutes les disciplines"
+
+#: src/Core/Views/Publications.php:46 templates/includes/publications.php:14
+msgid "Unclassified"
+msgstr "Non classé"
 
 #: src/Core/Views/RevisionForm.php:14
 msgid "Credit manager approval"
@@ -2217,47 +2290,47 @@ msgstr "Monsieur"
 msgid "Misses"
 msgstr "Madame"
 
-#: src/Tools/helper.php:1585
+#: src/Tools/helper.php:1591
 msgid "not assigned"
 msgstr "non assigné"
 
-#: src/Tools/helper.php:1808
+#: src/Tools/helper.php:1814
 msgid "Your identifiers are not recognized."
 msgstr "Vos identifiants ne sont pas reconnus."
 
-#: src/Tools/helper.php:1821
+#: src/Tools/helper.php:1827
 msgid "An error has occurred while sending the email."
 msgstr "Une erreur s’est produite lors de l’envoi de l’e-mail."
 
-#: src/Tools/helper.php:1824
+#: src/Tools/helper.php:1830
 msgid "The email is not valid."
 msgstr "L’adresse e-mail n’est pas valide."
 
-#: src/Tools/helper.php:1895
+#: src/Tools/helper.php:1901
 msgid "Mission form print"
 msgstr "Impression du formulaire de mission"
 
-#: src/Tools/helper.php:1900
+#: src/Tools/helper.php:1906
 msgid "Mission form download"
 msgstr "Téléchargement du formulaire de mission"
 
-#: src/Tools/helper.php:1905
+#: src/Tools/helper.php:1911
 msgid "Mission form revision by manager"
 msgstr "Révision du formulaire de mission par le gestionnaire"
 
-#: src/Tools/helper.php:1910
+#: src/Tools/helper.php:1916
 msgid "Mission form revision by agent"
 msgstr "Révision du formulaire de mission par l’agent"
 
-#: src/Tools/helper.php:1915
+#: src/Tools/helper.php:1921
 msgid "Mission form revision by funder"
 msgstr "Révision du formulaire de mission par le responsable des crédits"
 
-#: src/Tools/helper.php:1986
+#: src/Tools/helper.php:1992
 msgid "at"
 msgstr "à"
 
-#: src/Tools/helper.php:2274
+#: src/Tools/helper.php:2280
 msgid ""
 "The <b>Polylang</b> extension is installed! <b>CNRS Data Manager</b> is "
 "compatible with Polylang"
@@ -2802,6 +2875,14 @@ msgstr "Formulaire validé le %s"
 #: templates/includes/pdf/html.php:24
 msgid "Manager who validated the form"
 msgstr "Gestionnaire qui a validé le formulaire"
+
+#: templates/includes/publications.php:4
+msgid "filtered on"
+msgstr "Filtré sur"
+
+#: templates/includes/publications.php:27
+msgid "No publication available yet."
+msgstr "Aucune publication n’est encore disponible."
 
 #: templates/partials/cnrs-data-manager-info.php:56
 msgid "Team"

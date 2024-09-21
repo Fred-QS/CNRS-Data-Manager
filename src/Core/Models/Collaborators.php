@@ -145,7 +145,7 @@ class Collaborators
         global $wpdb;
         $row = $wpdb->get_row("SELECT entity_logo FROM {$wpdb->prefix}cnrs_data_manager_project_entities WHERE id = {$id}");
         if ($row !== null && $row->entity_logo !== null) {
-            $wpdb->query("DELETE FROM {$wpdb->prefix}posts WHERE ID = {$row->entity_logo}");
+            wp_delete_attachment($row->entity_logo);
         }
         $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_project_entities WHERE id = {$id}");
     }
@@ -203,32 +203,70 @@ class Collaborators
      */
     public static function saveRelations(): void
     {
-        if (isset($_POST['cnrs-dm-collaborators'])) {
-            global $wpdb;
-            $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_project_entity_relation");
-            foreach ($_POST['cnrs-dm-collaborators'] as $projectId => $collabs) {
-                if (isset($collabs['funders'])) {
-                    foreach ($collabs['funders'] as $funderID) {
-                        $wpdb->insert(
-                            "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
-                            array(
-                                'project_id' => (int) $projectId,
-                                'entity_id' => (int) $funderID
-                            )
-                        );
-                    }
+        global $wpdb;
+        $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_project_entity_relation");
+        foreach ($_POST['cnrs-dm-collaborators'] as $projectId => $collabs) {
+            if (isset($collabs['funders'])) {
+                foreach ($collabs['funders'] as $funderID) {
+                    $wpdb->insert(
+                        "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
+                        array(
+                            'project_id' => (int) $projectId,
+                            'entity_id' => (int) $funderID
+                        )
+                    );
                 }
-                if (isset($collabs['partners'])) {
-                    foreach ($collabs['partners'] as $partnerID) {
-                        $wpdb->insert(
-                            "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
-                            array(
-                                'project_id' => (int) $projectId,
-                                'entity_id' => (int) $partnerID
-                            )
-                        );
-                    }
+            }
+            if (isset($collabs['partners'])) {
+                foreach ($collabs['partners'] as $partnerID) {
+                    $wpdb->insert(
+                        "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
+                        array(
+                            'project_id' => (int) $projectId,
+                            'entity_id' => (int) $partnerID
+                        )
+                    );
                 }
+            }
+        }
+    }
+
+    public static function importCollabs(): void
+    {
+        $logos = CNRS_DATA_MANAGER_PATH . '/financeurs/logos/';
+        $list = CNRS_DATA_MANAGER_PATH . '/financeurs/list.php';
+
+        if (file_exists($list) && file_exists($logos)) {
+            $list = include_once($list);
+            foreach ($list as $index => $collab) {
+                $row = [
+                    'entity_type' => 'FUNDER',
+                    'entity_name' => $collab['name'],
+                    'entity_logo' => $collab['logo'] !== null && file_exists($logos . $collab['logo']) ? $logos . $collab['logo'] : null
+                ];
+                if ($row['entity_logo'] !== null) {
+                    $url = wp_upload_dir()['url'] . DIRECTORY_SEPARATOR . $collab['logo'];
+                    $path = wp_upload_dir()['path'] . DIRECTORY_SEPARATOR . $collab['logo'];
+                    copy($row['entity_logo'], $path);
+                    $fileName = str_replace(['.jpg', '.jpeg', '.png', '.gif'], '', $collab['logo']);
+                    $wpImageToDB = [
+                        'guid' => $url,
+                        'post_mime_type' => mime_content_type($row['entity_logo']),
+                        'post_title' => $fileName,
+                        'post_name' => $fileName,
+                        'post_status' => 'inherit',
+                    ];
+                    $id = wp_insert_attachment($wpImageToDB, $path, 0);
+                    $attach_data = wp_generate_attachment_metadata($id, $path);
+                    wp_update_attachment_metadata($id, $attach_data);
+                    $row['entity_logo'] = $id;
+                }
+                global $wpdb;
+                $wpdb->insert(
+                    "{$wpdb->prefix}cnrs_data_manager_project_entities",
+                    $row,
+                    array('%s', '%s', '%d')
+                );
             }
         }
     }

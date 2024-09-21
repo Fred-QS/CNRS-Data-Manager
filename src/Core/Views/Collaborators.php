@@ -2,6 +2,7 @@
 
 use CnrsDataManager\Core\Models\Collaborators;
 
+//Collaborators::importCollabs();
 Collaborators::updateOrCreate();
 Collaborators::saveRelations();
 $allCollaborators = Collaborators::getCollaborators();

@@ -100,7 +100,7 @@ $translations = [
                 <td class="name column-name has-row-actions column-primary" data-colname="<?php echo $head[0] ?>">
                     <div class="cnrs-dm-split-column">
                         <?php if (isset($item['entity_logo'])): ?>
-                            <span class="cnrs-dm-collaborator-avatar" style="background-image: url(<?php echo $item['entity_logo'] ?>)"></span>
+                            <span class="cnrs-dm-collaborator-avatar" style="background-image: url('<?php echo $item['entity_logo'] ?>')"></span>
                         <?php else: ?>
                             <span class="cnrs-dm-collaborator-avatar" style="background-image: url(/wp-content/plugins/cnrs-data-manager/assets/media/default_avatar.png)"></span>
                         <?php endif; ?>
@@ -191,7 +191,7 @@ $translations = [
                         <span class="screen-reader-text"><?php echo __('Next page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">›</span>
                     </span>
-                    <span class="last-page button cnrs-dm-mission-form-pagination-btn" data-age="<?php echo $pages ?>">
+                    <span class="last-page button cnrs-dm-mission-form-pagination-btn" data-page="<?php echo $pages ?>">
                         <span class="screen-reader-text"><?php echo __('Last page', 'cnrs-data-manager') ?></span>
                         <span aria-hidden="true">»</span>
                     </span>
