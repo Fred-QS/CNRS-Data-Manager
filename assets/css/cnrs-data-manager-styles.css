@@ -1406,6 +1406,8 @@ label[for="cnrs-dm-admin-email-0"] {
     width: 100%;
     height: 100%;
     z-index: 10;
+    text-align: center;
+    padding: 0 10px;
     background-color: #fff;
     border-radius: 4px;
     color: #2271b1;
@@ -1626,7 +1628,6 @@ input[name="cnrs-dm-other-option"] {
     margin: 0;
     font-family: inherit;
     line-height: 1em;
-    display: ruby-text;
     text-align: left;
 }
 

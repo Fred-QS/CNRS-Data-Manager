@@ -641,7 +641,7 @@ function toggleInputCheckedAction(input, allInputs) {
             displayToggledElementsHTML([{html: null, toggles: {}, uuid: null}], [{html: sibling, toggles: {}, uuid: null}]);
         }
     }
-    displayToggledElementsLogic({
+    let toggleLogic = {
         id: uuid,
         option1: {
             value: allInputs[0].parentElement.querySelector('span.text').innerHTML,
@@ -651,7 +651,14 @@ function toggleInputCheckedAction(input, allInputs) {
             value: allInputs[1].parentElement.querySelector('span.text').innerHTML,
             active: allInputs[1].checked
         },
-    });
+    };
+    if (allInputs[2]) {
+        toggleLogic.option3 = {
+            value: allInputs[2].parentElement.querySelector('span.text').innerHTML,
+            active: allInputs[2].checked
+        };
+    }
+    displayToggledElementsLogic(toggleLogic);
 }
 
 function displayToggledElementsLogic(triggerToggle) {
@@ -666,6 +673,7 @@ function displayToggledElementsLogic(triggerToggle) {
                 for (const toggleUuid in toggles) {
                     const option1 = toggles[toggleUuid].option1;
                     const option2 = toggles[toggleUuid].option2;
+                    const option3 = toggles[toggleUuid].option3;
                     if (triggerToggle.id === toggleUuid) {
                         const els = document.querySelectorAll('#cnrs-dm-front-dynamic-elements-wrapper .cnrs-dm-front-mission-form-element');
                         if (option1.active === false && triggerToggle.option1.active === true) {
@@ -679,6 +687,14 @@ function displayToggledElementsLogic(triggerToggle) {
                         }
                         if (option2.active === true && triggerToggle.option2.active === true) {
                             elementsToDisplay.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                        }
+                        if (option3) {
+                            if (option3.active === false && triggerToggle.option3.active === true) {
+                                elementsToHide.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                            }
+                            if (option3.active === true && triggerToggle.option3.active === true) {
+                                elementsToDisplay.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                            }
                         }
                     }
                 }

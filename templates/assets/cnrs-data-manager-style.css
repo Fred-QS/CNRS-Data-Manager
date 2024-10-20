@@ -1491,9 +1491,9 @@ html, body {
     width: 100%;
 }
 
-.cnrs-dm-front-mission-form-element[data-type="comment"] {
+/*.cnrs-dm-front-mission-form-element[data-type="comment"] {
     display: ruby-text;
-}
+}*/
 
 .cnrs-dm-front-tooltip-container.required .cnrs-dm-front-tooltip-btn {
     right: -36px;

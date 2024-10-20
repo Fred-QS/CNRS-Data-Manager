@@ -101,6 +101,13 @@ if ($validated === false): ?>
                             <span class="design"></span>
                             <span class="text"><?php echo $originalToggle['values'][1] ?></span>
                         </label>
+                        <?php if (isset($originalToggle['values'][2])): ?>
+                            <label>
+                                <input value="0" type="radio" name="cnrs-dm-front-toggle-<?php echo $originalToggle['id'] ?>" data-uuid="<?php echo $originalToggle['id'] ?>">
+                                <span class="design"></span>
+                                <span class="text"><?php echo $originalToggle['values'][2] ?></span>
+                            </label>
+                        <?php endif; ?>
                     </div>
                     <?php if ($originalToggle['label'] === __('Fees', 'cnrs-data-manager')): ?>
                         <div class="cnrs-dm-front-mission-form-element" data-type="input" data-state="light">

@@ -26,6 +26,7 @@ $managersList = Forms::getConventions();
 $decodedForm = json_decode($form, true);
 $formLink = get_site_url() . '/cnrs-umr/mission-form';
 
+
 ?>
 
 <div class="wrap cnrs-data-manager-page" id="cnrs-data-manager-mission-form-page">

@@ -2109,11 +2109,12 @@ if (!function_exists('stripArrayValuesSlashes')) {
     /**
      * Strip slashes from each value in the provided array.
      *
-     * @param array $array The array to strip slashes from.
+     * @param array|null $array The array to strip slashes from.
      * @return array Returns a new array with the slashes stripped from each value.
      */
-    function stripArrayValuesSlashes(array $array): array
+    function stripArrayValuesSlashes(?array $array): array
     {
+        $array = is_null($array) ? [] : $array;
         $striped = [];
         foreach ($array as $item) {
             $striped[] = html_entity_decode(stripslashes($item));

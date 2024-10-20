@@ -37,7 +37,8 @@ final class Manager
                 'label' => __('Fees', 'cnrs-data-manager'),
                 'values' => [
                     __('With fees', 'cnrs-data-manager'),
-                    __('No charge', 'cnrs-data-manager')
+                    __('No charge', 'cnrs-data-manager'),
+                    __('Permanent', 'cnrs-data-manager')
                 ],
                 'hidden' => false
             ],

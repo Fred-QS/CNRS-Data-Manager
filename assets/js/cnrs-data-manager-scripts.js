@@ -890,6 +890,9 @@ function setTogglesStates(toggle = null) {
                         option1: {value: originalToggles[i].values[0], active: true},
                         option2: {value: originalToggles[i].values[1], active: false},
                     }
+                    if (originalToggles[i].values[2]) {
+                        togglesState[originalToggles[i].id].option3 = {value: originalToggles[i].values[2], active: false};
+                    }
                 }
             }
 
@@ -901,6 +904,9 @@ function setTogglesStates(toggle = null) {
                         option1: {value: missionForm.elements[i].data.values[0], active: true},
                         option2: {value: missionForm.elements[i].data.values[1], active: false},
                     };
+                    if (missionForm.elements[i].data.values[2]) {
+                        togglesState[originalToggles[i].id].option3 ={value: missionForm.elements[i].data.values[2], active: false};
+                    }
                 }
             }
 
@@ -911,9 +917,19 @@ function setTogglesStates(toggle = null) {
                 if (togglesState[toggle.uuid].option1.value === toggle.value) {
                     togglesState[toggle.uuid].option1.active = true;
                     togglesState[toggle.uuid].option2.active = false;
+                    if (togglesState[toggle.uuid].option3) {
+                        togglesState[toggle.uuid].option3.active = false;
+                    }
                 } else if (togglesState[toggle.uuid].option2.value === toggle.value) {
                     togglesState[toggle.uuid].option1.active = false;
                     togglesState[toggle.uuid].option2.active = true;
+                    if (togglesState[toggle.uuid].option3) {
+                        togglesState[toggle.uuid].option3.active = false;
+                    }
+                } else if (togglesState[toggle.uuid].option3 && togglesState[toggle.uuid].option3.value === toggle.value) {
+                    togglesState[toggle.uuid].option1.active = false;
+                    togglesState[toggle.uuid].option2.active = false;
+                    togglesState[toggle.uuid].option3.active = true;
                 }
             }
         }
@@ -1197,7 +1213,6 @@ function resizeTextAreaOnLoad() {
 
 function addFormTool(info) {
     if (info.error === null) {
-        console.log('test')
         missionFormStructure.insertAdjacentHTML('beforeend', info.data);
         setToolsListeners();
         let json = JSON.parse(info.json);
@@ -1407,6 +1422,10 @@ function saveTogglesSettings() {
         const option2Value = togglesSettings[i].querySelector('input[id="cnrs-dm-toggle-option2-' + uuid + '"]').checked;
         missionForm.elements[iteration].data.toggles[uuid].option1.active = option1Value;
         missionForm.elements[iteration].data.toggles[uuid].option2.active = option2Value;
+        if (togglesSettings[i].querySelector('input[id="cnrs-dm-toggle-option3-' + uuid + '"]')) {
+            const option3Value = togglesSettings[i].querySelector('input[id="cnrs-dm-toggle-option3-' + uuid + '"]').checked;
+            missionForm.elements[iteration].data.toggles[uuid].option3.active = option3Value;
+        }
         setTogglesStates();
         refreshFormPreview();
         closeModalWrapper();
@@ -1486,6 +1505,7 @@ function setNewToggles() {
         } else {
             toAssignToggles = existingToggles;
         }
+
         // delete abandoned toggles
         let existingUuid = [];
         for (let j = 0; j < toAssignToggles.length; j++) {
@@ -1504,11 +1524,19 @@ function setNewToggles() {
                     option1: {value: toAssignToggles[j].values[0], active: true},
                     option2: {value: toAssignToggles[j].values[1], active: true}
                 }
+                if (toAssignToggles[j].values[2]) {
+                    element.data.toggles[toAssignToggles[j].id].option3 = {value: toAssignToggles[j].values[2], active: true};
+                }
             }
         }
         elements.push(element);
     }
     missionForm.elements = elements;
+    for (let i = 0; i < missionForm.elements.length; i++) {
+        missionForm.elements[i].data.toggles['013589e2-9014-4d5a-adc5-6e4b1e63eb89'].option3.active === missionForm.elements[i].data.toggles['013589e2-9014-4d5a-adc5-6e4b1e63eb89'].option2.active;
+        if (missionForm.elements[i].data.toggles['013589e2-9014-4d5a-adc5-6e4b1e63eb89'].option2.active === false) {
+        }
+    }
 }
 
 function getToggles() {
@@ -1705,12 +1733,17 @@ function isHiddenByToggleAction(toggles) {
             const label = toggles[toggleUuid].label;
             const option1 = toggles[toggleUuid].option1;
             const option2 = toggles[toggleUuid].option2;
+            const option3 = toggles[toggleUuid].option3;
+
             if (typeof togglesState[toggleUuid] !== "undefined") {
                 if (option1.active === false && togglesState[toggleUuid].option1.active === true) {
                     return {hide: togglesState[toggleUuid].option1.active, toggleName: label};
                 }
                 if (option2.active === false && togglesState[toggleUuid].option2.active === true) {
                     return {hide: togglesState[toggleUuid].option2.active, toggleName: label};
+                }
+                if (option3 && togglesState[toggleUuid].option3 && option3.active === false && togglesState[toggleUuid].option3.active === true) {
+                    return {hide: togglesState[toggleUuid].option3.active, toggleName: label};
                 }
             }
         }
@@ -1742,6 +1775,9 @@ function refreshFormPreview() {
         if (i === 0) {
             let t = {};
             t[originalToggles[i].id] = {label: originalToggles[i].label, option1: {value: originalToggles[i].values[0], active: true}, option2: {value: originalToggles[i].values[1], active: false}};
+            if (originalToggles[i].values[2]) {
+                t[originalToggles[i].id].option3 = {value: originalToggles[i].values[2], active: false};
+            }
             let hidden = isHiddenByToggleAction(t);
             const hiddenMess = hiddenMessage.replace('%s', hidden.toggleName);
             html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + ' from-mandatory" data-hidden="' + hiddenMess + '">';
