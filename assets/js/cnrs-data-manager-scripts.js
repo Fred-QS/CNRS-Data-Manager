@@ -310,7 +310,9 @@ function prepareListeners() {
         fileImportInput.addEventListener('input', function(e){
             if (e.target.files.length === 1 && e.target.files[0].type === 'application/zip') {
                 xlsFile = null;
-                fileImportSubmitBtn.click();
+                fileImportSubmitBtn.disabled = false;
+            } else {
+                fileImportSubmitBtn.disabled = true;
             }
         });
     }

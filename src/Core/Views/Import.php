@@ -61,7 +61,7 @@
                 <span><?php echo __('Import <b>.zip</b> file', 'cnrs-data-manager') ?></span>
             </button>
         </p>
-        <input type="submit" id="cnrs-dm-file-import-form-submit">
+        <button class="button button-primary" disabled type="submit" id="cnrs-dm-file-import-form-submit"><?php echo __('Import', 'cnrs-data-manager') ?></button>
     </form>
     <p class="cnrs-dm-label-like"><?php echo __('Import steps', 'cnrs-data-manager') ?></p>
     <div id="cnrs-dm-import-initial-state-container" class="cnrs-dm-import-state-container">

@@ -690,8 +690,7 @@ label[for="cnrs-dm-filename"] {
     }
 }
 
-#cnrs-dm-import-file,
-#cnrs-dm-file-import-form-submit {
+#cnrs-dm-import-file {
     display: none;
 }
 

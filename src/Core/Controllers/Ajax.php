@@ -187,7 +187,7 @@ class Ajax
                         }
                     }
                     $value = strlen($richText) < 1 ? $value : $richText;
-                    $rowArray[self::$mapper[$cellsCnt]] = $value;
+                    $rowArray[self::$mapper[$cellsCnt]] = self::$mapper[$cellsCnt] === 'FINANCEUR' ? self::getFunders($value) : htmlentities($value);
                     $cellsCnt++;
                 }
                 if ($deadCellsCnt <= 2) {
@@ -244,8 +244,7 @@ class Ajax
             if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip' && isset($_POST['data']) && isset($_POST['teams'])) {
                 $teams = json_decode(stripslashes($_POST['teams']), true);
                 $strip = str_replace('\\n', '<br>', $_POST['data']);
-                $strip = str_replace('\\', '', $strip);
-                $data = json_decode($strip, true, 512, JSON_THROW_ON_ERROR);
+                $data = json_decode(stripslashes($strip), true, 512, JSON_THROW_ON_ERROR);
                 $path = wp_upload_dir()['path'];
                 $dir = $path . '/';
                 $moved = self::importImagesInTmpDir($dir);
@@ -356,6 +355,7 @@ class Ajax
 
             $postId = wp_insert_post($wpProjectToDB);
             Projects::setTeamProjectRelation($postId, $projectFrId, 'fr');
+            Collaborators::setFundersProjectRelation($postId, $row['FINANCEUR']);
 
             if (function_exists('pll_set_post_language')) {
                 pll_set_post_language($postId, 'fr');
@@ -399,6 +399,7 @@ class Ajax
 
                     $postId = wp_insert_post($wpProjectToDB);
                     Projects::setTeamProjectRelation($postId, $teamId, $lang);
+                    Collaborators::setFundersProjectRelation($postId, $row['FINANCEUR']);
 
                     if (function_exists('pll_set_post_language')) {
                         pll_set_post_language($postId, $lang);
@@ -773,5 +774,29 @@ class Ajax
         }
         wp_send_json_success($json);
         exit;
+    }
+    
+    private static function getFunders(string $funders): string
+    {
+        $array = [];
+        if (strlen($funders) > 0) {
+            $fundersFromDb = Collaborators::getCollaborators()['funders'];
+            $array = array_map(function ($funder) use($fundersFromDb) {
+                $funder = trim($funder);
+                foreach ($fundersFromDb as $f) {
+                    if (strtolower($f['entity_name']) === strtolower($funder)) {
+                        return (int) $f['id'];
+                    }
+                }
+                return null;
+            }, explode(',', $funders));
+
+            $array = array_filter($array, function($f) {
+                return $f !== null;
+            });
+
+            $array = array_values($array);
+        }
+        return json_encode($array);
     }
 }

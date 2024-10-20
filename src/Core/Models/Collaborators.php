@@ -147,6 +147,7 @@ class Collaborators
         if ($row !== null && $row->entity_logo !== null) {
             wp_delete_attachment($row->entity_logo);
         }
+        $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_project_entity_relation WHERE project_id = {$id}");
         $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_project_entities WHERE id = {$id}");
     }
 
@@ -268,6 +269,22 @@ class Collaborators
                     array('%s', '%s', '%d')
                 );
             }
+        }
+    }
+
+    public static function setFundersProjectRelation(int $postId, string $funders): void
+    {
+        global $wpdb;
+        $funders = json_decode($funders, true);
+        foreach ($funders as $funder) {
+            $wpdb->insert(
+                "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
+                array(
+                    'project_id' => $postId,
+                    'entity_id' => (int) $funder
+                ),
+                array('%d', '%d')
+            );
         }
     }
 }
