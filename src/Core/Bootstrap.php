@@ -38,7 +38,7 @@ class Bootstrap
         Settings::deployCategoryTemplate();
 
         if (is_admin()) {
-            if (isset($_GET['page']) 
+            if (isset($_GET['page'])
                 && in_array($_GET['page'], ['data-manager', 'data-manager-tools', 'data-manager-import'])
                 && !defined('CNRS_DATA_MANAGER_XML_DATA')
             ) {

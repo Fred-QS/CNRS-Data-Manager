@@ -17,17 +17,6 @@ use CnrsDataManager\Core\Controllers\TemplateLoader;
 use CnrsDataManager\Core\Controllers\Page;
 use CnrsDataManager\Libs\MarkDown\ParseDown;
 
-$errors = [
-    'simple' => __('must not be empty', 'cnrs-data-manager'),
-    'checkbox' => __('must at least have one selection', 'cnrs-data-manager'),
-    'radio' => __('must have one selection', 'cnrs-data-manager'),
-    'signs' => __('must have been correctly filled out', 'cnrs-data-manager'),
-    'option' => __('comment must not be empty', 'cnrs-data-manager'),
-    'number' => __('must be numeric', 'cnrs-data-manager'),
-    'unsigned' => __('must be equal or greater than 0', 'cnrs-data-manager'),
-    'noLabel' => __('You forgot a required field', 'cnrs-data-manager')
-];
-
 $shortCodesCounter = 0;
 
 $dumpStyle = '<style>
@@ -962,8 +951,7 @@ if (!function_exists('cnrsReadShortCode')) {
             $agents = json_encode($xml);
             $validated = false;
 
-            global $errors;
-
+            $errors = include __DIR__ . '/errors.php';
             $days_limit = Settings::getDaysLimit();
             $month_limit = Settings::getMonthLimit();
 
@@ -1075,7 +1063,7 @@ if (!function_exists('cnrsReadShortCode')) {
             $observations = $data->observations !== null ? json_decode($data->observations, true) : [];
             $validated = false;
 
-            global $errors;
+            $errors = include __DIR__ . '/errors.php';
             $days_limit = Settings::getDaysLimit();
             $month_limit = Settings::getMonthLimit();
 
