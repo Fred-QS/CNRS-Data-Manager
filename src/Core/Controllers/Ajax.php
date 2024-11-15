@@ -71,13 +71,17 @@ class Ajax
      */
     public static function inspectXLSFile(): void
     {
-        $error = __('Bad file type. Only <b>.zip</b> file is allowed.', 'cnrs-data-manager');
-        ob_start();
-        include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
-        $html = ob_get_clean();
-        $response = ['error' => $error, 'data' => null, 'html' => $html];
-        if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip') {
-            $response = self::analyseFiles($_FILES['file']['tmp_name']);
+        try {
+            $error = __('Bad file type. Only <b>.zip</b> file is allowed.', 'cnrs-data-manager');
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
+            $html = ob_get_clean();
+            $response = ['error' => $error, 'data' => null, 'html' => $html];
+            if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip') {
+                $response = self::analyseFiles($_FILES['file']['tmp_name']);
+            }
+        } catch (Error|ErrorException $e) {
+            $response = ['error' => $e->getMessage(), 'data' => null, 'html' => null];
         }
         wp_send_json_success($response);
         exit;
@@ -172,11 +176,11 @@ class Ajax
             if ($cnt > 0) {
                 $rowArray = [];
                 $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(TRUE);
+                $cellIterator->setIterateOnlyExistingCells(true);
                 $deadCellsCnt = 0;
                 $cellsCnt = 0;
                 foreach ($cellIterator as $cell) {
-                    if ($cell->getValue() === null && !in_array(self::$mapper[$cellsCnt], self::$optionals, true)) {
+                    if (($cell->getValue() === null || strlen($cell->getValue()) === 0) && self::$mapper[$cellsCnt] !== null && !in_array(self::$mapper[$cellsCnt], self::$optionals, true)) {
                         $deadCellsCnt++;
                     }
                     $value = $cell->getValue();
@@ -187,15 +191,17 @@ class Ajax
                         }
                     }
                     $value = strlen($richText) < 1 ? $value : $richText;
-                    $rowArray[self::$mapper[$cellsCnt]] = self::$mapper[$cellsCnt] === 'FINANCEUR' ? self::getFunders($value) : htmlentities($value);
-                    $cellsCnt++;
+                    if (strlen(self::$mapper[$cellsCnt]) > 0) {
+                        $rowArray[self::$mapper[$cellsCnt]] = self::$mapper[$cellsCnt] === 'FINANCEUR' ? self::getFunders($value) : htmlentities($value);
+                        $cellsCnt++;
+                    }
                 }
-                if ($deadCellsCnt <= 2) {
+                if ($deadCellsCnt === 0) {
                     $array[] = $rowArray;
                 }
             } else {
                 $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(TRUE);
+                $cellIterator->setIterateOnlyExistingCells(true);
                 foreach ($cellIterator as $cell) {
                     if (!in_array($cell->getValue(), self::$mapper, true)) {
                         return false;
@@ -219,7 +225,7 @@ class Ajax
     {
         $xlsImages = [];
         foreach ($excel as $row) {
-            if ($row['IMAGE'] !== null) {
+            if ($row['IMAGE'] !== null && strlen($row['IMAGE']) > 0) {
                 $xlsImages[] = $row['IMAGE'];
             }
         }
@@ -776,10 +782,10 @@ class Ajax
         exit;
     }
     
-    private static function getFunders(string $funders): string
+    private static function getFunders(?string $funders): string
     {
         $array = [];
-        if (strlen($funders) > 0) {
+        if ($funders !== null && strlen($funders) > 0) {
             $fundersFromDb = Collaborators::getCollaborators()['funders'];
             $array = array_map(function ($funder) use($fundersFromDb) {
                 $funder = trim($funder);
