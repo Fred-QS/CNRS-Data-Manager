@@ -88,6 +88,10 @@ const collaboratorProjectExpander = document.querySelectorAll('.cnrs-dm-collabor
 const collaboratorSearchInputs = document.querySelectorAll('.cnrs-dm-collaborators-search-input');
 const collaboratorLis = document.querySelectorAll('.cnrs-dm-collaborator-li');
 const addImagesToProjectBtn = document.querySelectorAll('.cnrs-data-add-images-btn');
+const emailTemplateChevrons = document.querySelectorAll('.cnrs-dm-email-type-header-chevron');
+const emailTemplateCopyShortcode = document.querySelectorAll('.cnrs-dm-email-type-copy-shortcode');
+const emailTemplateContentTextarea = document.querySelectorAll('.cnrs-dm-email-type-content');
+const emailTemplatePreviewButtons = document.querySelectorAll('.cnrs-dm-email-link');
 
 const tinyMCEConfig = {
     width: "100%",
@@ -95,6 +99,19 @@ const tinyMCEConfig = {
     resize: false,
     plugins: ['anchor', 'lists'],
     toolbar: 'undo redo | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist | link image',
+    content_style: 'body { font-family:inherit,sans-serif; font-size:14px }',
+    statusbar: false,
+    forced_root_block: 'p',
+    newline_behavior: '',
+    newline_behavior: 'block'
+}
+
+const tinyMCEConfigLight = {
+    width: "100%",
+    height: 250,
+    resize: false,
+    plugins: ['lists'],
+    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist',
     content_style: 'body { font-family:inherit,sans-serif; font-size:14px }',
     statusbar: false,
     forced_root_block: 'p',
@@ -126,6 +143,48 @@ if (typeof originalToggles !== "undefined") {
 prepareListeners();
 setToolsListeners(true);
 deleteManagerButtonsAction();
+setEmailTemplateListeners();
+
+function setEmailTemplateListeners() {
+
+    for (let i = 0; i < emailTemplateChevrons.length; i++) {
+        emailTemplateChevrons[i].onclick = function (){
+            const container = this.closest('.cnrs-dm-email-type-container').querySelector('.cnrs-dm-email-type-body');
+            const containers = document.querySelectorAll('.cnrs-dm-email-type-container');
+            if (container.classList.contains('hidden')) {
+                for (let j = 0; j < containers.length; j++) {
+                    containers[j].querySelector('.cnrs-dm-email-type-header-chevron').classList.remove('open');
+                    containers[j].querySelector('.cnrs-dm-email-type-body').classList.add('hidden');
+                }
+                this.classList.add('open');
+                container.classList.remove('hidden');
+            } else {
+                this.classList.remove('open');
+                container.classList.add('hidden');
+            }
+        }
+    }
+
+    for (let i = 0; i < emailTemplateCopyShortcode.length; i++) {
+        emailTemplateCopyShortcode[i].onclick = function (){
+            navigator.clipboard.writeText(this.dataset.shortcode);
+        }
+    }
+
+    for (let i = 0; i < emailTemplateContentTextarea.length; i++) {
+        let config = {...tinyMCEConfigLight};
+        config.selector = '#' + emailTemplateContentTextarea[i].id
+        tinymce.remove();
+        tinymce.init(config);
+    }
+
+    for (let i = 0; i < emailTemplatePreviewButtons.length; i++) {
+        emailTemplatePreviewButtons[i].onclick = function (e){
+            e.preventDefault();
+            window.open(this.href, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=0,right=,width=800,height=700");
+        }
+    }
+}
 
 function prepareListeners() {
     if (wpContainer) {
@@ -308,7 +367,7 @@ function prepareListeners() {
         });
 
         fileImportInput.addEventListener('input', function(e){
-            if (e.target.files.length === 1 && e.target.files[0].type === 'application/zip') {
+            if (e.target.files.length === 1 && ['application/zip', 'application/x-zip-compressed'].includes(e.target.files[0].type)) {
                 xlsFile = null;
                 fileImportSubmitBtn.disabled = false;
             } else {

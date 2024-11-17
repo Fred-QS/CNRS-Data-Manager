@@ -1851,9 +1851,9 @@ if (!function_exists('setUserConnexion')) {
     }
 }
 
-if (!function_exists('setMissionFormURL')) {
+if (!function_exists('setVirtualPages')) {
 
-    function setMissionFormURL()
+    function setVirtualPages(): void
     {
 
         $controller = new Controller(new TemplateLoader);
@@ -1908,6 +1908,11 @@ if (!function_exists('setMissionFormURL')) {
                     'uri' => 'cnrs-umr/mission-form-revision/funder',
                     'title' => __('Mission form revision by funder', 'cnrs-data-manager'),
                     'template' => 'mission-form'
+                ],
+                [
+                    'uri' => 'cnrs-umr/email-preview',
+                    'title' => __('Email preview', 'cnrs-data-manager'),
+                    'template' => 'email-preview'
                 ]
             ];
 
@@ -2629,5 +2634,24 @@ if (!function_exists('cnrsApplyFilters')) {
         }
 
         return $publications;
+    }
+}
+
+if (!function_exists('getAllTemplateModel')) {
+
+    function getAllTemplateModel(): array
+    {
+        return [
+            'canceled-by-funder' => [],
+            'canceled' => [],
+            'confirmation' => [],
+            'edit' => ['{{uuid}}'],
+            'exceed' => [],
+            'funder' => ['{{uuid}}'],
+            'reset-password' => ['{{pwd}}'],
+            'revision' => ['{{uuid}}'],
+            'validate-for-all' => ['{{pdf}}'],
+            'validate' => ['{{pdf}}']
+        ];
     }
 }

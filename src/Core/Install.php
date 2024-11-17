@@ -46,6 +46,13 @@ class Install
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_mission_form_settings");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_conventions");
         $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_revisions");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_hidden_filters");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_candidating");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_articles_preview_design");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_project_entities");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_project_entity_relation");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_project_attachment_relation");
+        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cnrs_data_manager_emails");
         // Create tables
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_map_markers (
               id bigint(20) UNSIGNED PRIMARY (id) NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
@@ -173,6 +180,17 @@ class Install
             project_id bigint(20) UNSIGNED NOT NULL COMMENT 'The project post ID',
             attachment_id bigint(20) UNSIGNED NOT NULL COMMENT 'The attachment post ID'
             ) ENGINE = InnoDB COMMENT = 'Relation between a projects and its attachments'"
+        );
+        $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_emails (
+            id bigint(20) UNSIGNED NOT NULL COMMENT 'The email ID',
+            subject VARCHAR(255) NOT NULL COMMENT 'The email subject',
+            title VARCHAR(255) NOT NULL COMMENT 'The email title',
+            file VARCHAR(255) NOT NULL COMMENT 'The email template file',
+            content LONGTEXT NOT NULL COMMENT 'The email content',
+            title_logo VARCHAR(255) DEFAULT NULL COMMENT 'The email title sub logo',
+            lang VARCHAR(2) NOT NULL COMMENT 'The email template locale',
+            shortcodes LONGTEXT DEFAULT NULL COMMENT 'The email shortcodes'
+            ) ENGINE = InnoDB COMMENT = 'Emails templates'"
         );
         // Populate tables
         $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_map_markers (title, lat, lng) VALUES

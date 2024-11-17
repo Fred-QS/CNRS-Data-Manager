@@ -3078,6 +3078,187 @@ input:checked + .cnrs-dm-slider:before {
     font-size: 12px;
 }
 
+#cnrs-dm-emails-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.cnrs-dm-email-link-li, .cnrs-dm-email-link {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.cnrs-dm-email-link-li-svg {
+    width: 16px;
+    height: 16px;
+    color: inherit;
+    margin-right: 3px;
+}
+
+.cnrs-dm-email-type-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.cnrs-dm-email-type-container {
+    width: 100%;
+    background-color: #e1e1e1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 3px;
+}
+
+.cnrs-dm-email-type-header {
+    display: flex;
+    padding: 10px 20px;
+    justify-content: space-between;
+    align-items: center;
+    width: calc(100% - 40px);
+}
+
+.cnrs-dm-email-type-header > h4 {
+    margin: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.cnrs-dm-email-type-header > h4 > span {
+    width: max-content;
+    max-width: calc(100% - 60px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0 5px
+}
+
+.cnrs-dm-email-type-header > h4 > a {
+    outline: none;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cnrs-dm-email-type-header-chevron {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform-origin: 50% 50%;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    transform: rotate(0);
+    transition: transform linear 0.15s;
+}
+
+.cnrs-dm-email-type-header-chevron.open {
+    transform: rotate(180deg);
+}
+
+.cnrs-dm-email-type-header-chevron svg {
+    width: 100%;
+    height: 100%;
+    color: #3c3c3c;
+}
+
+.cnrs-dm-email-type-body.hidden {
+    display: none;
+}
+
+.cnrs-dm-email-type-body:not(.hidden) {
+    display: flex;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.cnrs-dm-email-type-side {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.cnrs-dm-email-type-side label {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    width: 100%;
+}
+
+.cnrs-dm-email-type-side label span {
+    font-weight: bold;
+}
+
+.cnrs-dm-email-type-side input[type="text"], .cnrs-dm-email-type-side textarea {
+    width: 100%;
+}
+
+.cnrs-dm-email-type-shortcodes-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.cnrs-dm-email-type-shortcode {
+    font-size: 12px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 3px 6px;
+    border-radius: 4px;
+    background-color: #e1e1e1;
+}
+
+.cnrs-dm-email-type-shortcode:not(:first-child) {
+    margin-top: 5px;
+}
+
+.cnrs-dm-email-type-copy-shortcode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.cnrs-dm-email-type-copy-shortcode:active {
+    color: dodgerblue;
+}
+
+.cnrs-dm-email-type-copy-shortcode svg {
+    width: 100%;
+    height: 100%;
+}
+
+.cnrs-dm-email-type-template {
+    font-size: 12px;
+    background-color: #d1d1d1;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    padding: 3px 10px;
+}
+
 @media only screen and (min-width: 961px) {
 
     #cnrs-dm-collaborator-modal-wrapper,
@@ -3097,6 +3278,10 @@ input:checked + .cnrs-dm-slider:before {
 }
 
 @media only screen and (min-width: 783px) {
+
+    .cnrs-dm-email-type-side {
+        width: calc(50% - 20px);
+    }
 
     .cnrs-dm-filters-allowed-wrapper {
         grid-template-columns: repeat(3, 1fr);
@@ -3323,6 +3508,10 @@ input:checked + .cnrs-dm-slider:before {
 }
 
 @media only screen and (max-width: 782px) {
+
+    .cnrs-dm-email-type-side {
+        width: calc(100% - 20px);
+    }
 
     #cnrs-dm-collaborator-modal-wrapper,
     #cnrs-dm-attachments-modal-wrapper {

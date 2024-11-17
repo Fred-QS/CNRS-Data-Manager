@@ -321,6 +321,16 @@ class Bootstrap
                     'callback'               => function () {
                         include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Collaborators.php');
                     }
+                ],
+                [
+                    'parent_slug'            => 'cnrs-data-manager',
+                    'page_title'             => __('Emails', 'cnrs-data-manager'),
+                    'menu_title'             => __('Emails', 'cnrs-data-manager'),
+                    'capability'             => 'manage_options',
+                    'menu_slug'              => 'data-manager-emails',
+                    'callback'               => function () {
+                        include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Emails.php');
+                    }
                 ]
             ];
 
