@@ -272,10 +272,9 @@ class Collaborators
         }
     }
 
-    public static function setFundersProjectRelation(int $postId, string $funders): void
+    public static function setFundersProjectRelation(int $postId, array $funders): void
     {
         global $wpdb;
-        $funders = json_decode($funders, true);
         foreach ($funders as $funder) {
             $wpdb->insert(
                 "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",

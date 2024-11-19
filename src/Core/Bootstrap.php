@@ -181,7 +181,12 @@ class Bootstrap
 
         wp_enqueue_script('cnrs-data-manager-resize-sensor', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-resize-sensor.js', [], CNRS_DATA_MANAGER_VERSION, true);
 
-        wp_enqueue_script('cnrs-data-manager-tinymce-script', 'https://cdn.tiny.cloud/1/ciqultt5itu3hkw8txl3vvslk5g0bvse8f066vbwdhqnbn5w/tinymce/7/tinymce.min.js', false);
+        wp_enqueue_script(
+            'cnrs-data-manager-tinymce-script',
+            CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-tinymce.js',
+            [],
+            '1.0'
+        );
 
         wp_enqueue_script('cnrs-data-manager-scripts', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-scripts.js', ['cnrs-data-manager-map-script', 'cnrs-data-manager-resize-sensor', 'cnrs-data-manager-tinymce-script'], CNRS_DATA_MANAGER_VERSION, true);
     }

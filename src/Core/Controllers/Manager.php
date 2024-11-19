@@ -110,6 +110,7 @@ final class Manager
     private static function parseXML(string $xmlFile): array
     {
         $final = ['teams' => [], 'services' => [], 'platforms' => [], 'agents' => []];
+        $jsonPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/data.json';
         try {
             $new = simplexml_load_string($xmlFile);
             $con = json_encode($new, JSON_THROW_ON_ERROR);
@@ -288,8 +289,18 @@ final class Manager
             usort($final['teams'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
             usort($final['services'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
             usort($final['platforms'], function ($a, $b) { return strnatcmp($a['nom'], $b['nom']);});
+
+            $file = fopen($jsonPath, 'w+');
+            fwrite($file, json_encode($final, JSON_PRETTY_PRINT));
+            fclose($file);
+
             return $final;
         } catch (Exception|Error|JsonException $e) {
+
+            $file = fopen($jsonPath, 'w+');
+            fwrite($file, json_encode($final, JSON_PRETTY_PRINT));
+            fclose($file);
+
             return $final;
         }
     }

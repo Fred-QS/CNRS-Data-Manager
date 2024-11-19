@@ -367,9 +367,14 @@ function prepareListeners() {
         });
 
         fileImportInput.addEventListener('input', function(e){
-            if (e.target.files.length === 1 && ['application/zip', 'application/x-zip-compressed'].includes(e.target.files[0].type)) {
+            const fileNameElement = document.querySelector('#cnrs-dm-file-import-filename');
+            if (fileNameElement) {
+                fileNameElement.remove();
+            }
+            if (e.target.files.length === 1 && e.target.files[0].type.startsWith('application/') && e.target.files[0].type.includes('zip')) {
                 xlsFile = null;
                 fileImportSubmitBtn.disabled = false;
+                fileImportSubmitBtn.parentElement.insertAdjacentHTML('beforeend', '<p style="font-size: 12px; font-style: italic; opacity: 0.7;margin: 0;" id="cnrs-dm-file-import-filename">' + e.target.files[0].name + '</p>');
             } else {
                 fileImportSubmitBtn.disabled = true;
             }
@@ -2123,35 +2128,29 @@ function checkURLValidity(value) {
     filenameStateRefresh.classList.add('cnrs-dm-display-state');
     clearTimeout(filenameTimeout);
     filenameTimeout = setTimeout(async function(){
-        fetch(value)
-            .then(response => response.text())
-            .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-            .then(data => getDataFromXML(data))
+        const formData = new FormData();
+        const url = '/wp-admin/admin-ajax.php';
+        formData.append('url', value);
+        formData.append('action', 'check_xml_remote_address');
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+        fetch(url, options)
+            .then(response => response.json())
+            .then(json => checkIfXMLFileIsCorrect(json.data.data))
             .catch((error) => {
-                getDataFromXML();
+                checkIfXMLFileIsCorrect();
             });
     }, 1000);
 }
 
-function getDataFromXML(data = null) {
-    let error = true;
-    if (data !== null
-        && data.querySelector('reference')
-        && data.querySelector('reference > equipes')
-        && data.querySelector('reference > services')
-        && data.querySelector('reference > plateformes')
-        && data.querySelector('reference > agents')
-        && data.querySelectorAll('reference > equipes > equipe').length > 0
-        && data.querySelectorAll('reference > services > service').length > 0
-        && data.querySelectorAll('reference > plateformes > plateforme').length > 0
-        && data.querySelectorAll('reference > agents > agent').length > 0
-    ) {
-        error = false;
-    }
+function checkIfXMLFileIsCorrect(check = false) {
+
     for (let i = 0; i < filnameStates.length; i++) {
         filnameStates[i].classList.remove('cnrs-dm-display-state');
     }
-    if (error === true) {
+    if (check === false) {
         filenameStateKo.classList.add('cnrs-dm-display-state');
         filenameSubmit.disabled = true;
     } else {

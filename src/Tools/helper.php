@@ -810,7 +810,7 @@ if (!function_exists('cnrsReadShortCode')) {
         $id = get_the_ID();
         $displayMode = !in_array($type, ['navigate', 'filters', 'map'], true) ? Settings::getDisplayMode() : null;
 
-        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder', 'publications', 'categories', 'collabs', 'if-collabs', 'project-slider'], true)) {
+        if ($displayMode === 'page' && !in_array($type, ['all', 'map', null, 'navigate', 'filters', 'page-title', 'pagination', 'projects', 'form', 'revision-manager', 'revision-agent', 'revision-funder', 'publications', 'categories', 'collabs', 'if-collabs', 'project-slider', 'project-default-image-url'], true)) {
 
             if (isset($_GET['cnrs-dm-ref']) && ctype_digit($_GET['cnrs-dm-ref']) !== false) {
                 $id = $_GET['cnrs-dm-ref'];
@@ -1234,6 +1234,10 @@ if (!function_exists('cnrsReadShortCode')) {
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Slider.php');
             return ob_get_clean();
+
+        } else if ($type === 'project-default-image-url') {
+
+            return '<div id="cnrs-dm-front-project-default-image-url" data-url="' . getDefaultProjectImageUrl() . '"></div>';
         }
 
         return '';
@@ -1485,9 +1489,9 @@ if (!function_exists('inlineInfo')) {
         if ($agent['tutelle'] !== null) {
             $line[] = '<span>' . $agent['tutelle'] . '</span>';
         }
-        if ($agent['responsabilite'] !== null) {
+        /*if ($agent['responsabilite'] !== null) {
             $line[] = '<span>' . $agent['responsabilite'] . '</span>';
-        }
+        }*/
         if (empty($line)) {
             return '';
         }
@@ -2414,9 +2418,13 @@ if (!function_exists('cnrsCreateExcerpt')) {
      *
      * @return string The created excerpt.
      */
-    function cnrsCreateExcerpt(string $content, int $limit = 100): string
+    function cnrsCreateExcerpt(?string $content, string $default, int $limit = 100): string
     {
-        $content = strip_tags($content);
+        if (null === $content || '' === $content) {
+            $content = $default;
+        }
+        $original = html_entity_decode($content);
+        $content = strip_tags(html_entity_decode($content));
         $content = strip_shortcodes($content);
         $content = trim(preg_replace('/\s+/', ' ', $content));
         $ret = $content;
@@ -2432,7 +2440,19 @@ if (!function_exists('cnrsCreateExcerpt')) {
                 }
             }
         }
-        return $ret . '...';
+        return strlen($ret) < strlen($original) ? trim($ret) . '...' : trim($ret);
+    }
+}
+
+if (!function_exists('cnrsCreateContent')) {
+
+    function cnrsCreateContent(?string $content, string $default): string
+    {
+        if (null === $content || '' === $content) {
+            return html_entity_decode($default);
+        }
+
+        return html_entity_decode($content);
     }
 }
 
@@ -2653,5 +2673,14 @@ if (!function_exists('getAllTemplateModel')) {
             'validate-for-all' => ['{{pdf}}'],
             'validate' => ['{{pdf}}']
         ];
+    }
+}
+
+if (!function_exists('getDefaultProjectImageUrl')) {
+
+    function getDefaultProjectImageUrl(bool $thumbnail = false): ?string
+    {
+        $imgFromDb = Settings::getDefaultProjectImageUrl($thumbnail);
+        return $imgFromDb ?? '/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg';
     }
 }

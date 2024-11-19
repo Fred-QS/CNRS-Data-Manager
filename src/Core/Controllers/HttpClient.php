@@ -91,6 +91,11 @@ class HttpClient
             $result[] = json_decode($jsonItem, true);
         }
 
+        $jsonPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/publications.json';
+        $file = fopen($jsonPath, 'w+');
+        fwrite($file, json_encode($result, JSON_PRETTY_PRINT));
+        fclose($file);
+
         return $result;
     }
 

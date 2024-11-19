@@ -90,6 +90,8 @@ class Install
               silent_pagination tinyint(4) NOT NULL DEFAULT 0 COMMENT 'Define if posts silent pagination is activate',
               filter_modules varchar(255) NOT NULL DEFAULT 'per-page,sub-categories-list,by-year,search-field' COMMENT 'Module selection for post filters',
               candidating_email varchar(255) DEFAULT NULL COMMENT 'Email to send candidating info',
+              project_default_image_url varchar(255) DEFAULT '/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg' COMMENT 'Default project image'
+              project_default_thumbnail_url varchar(255) DEFAULT '/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg' COMMENT 'Default project thumbnail'
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='CNRS Data Manager extension settings'"
         );
         $wpdb->query("CREATE TABLE IF NOT EXISTS {$wpdb->prefix}cnrs_data_manager_team_project (
