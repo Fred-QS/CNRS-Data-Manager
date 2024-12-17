@@ -11,4 +11,4 @@ In fact, you just need to go to the installed extensions, deactivate the CNRS Da
 
 ---
 
-- [< Mission form](/documentation/EN/08%20-%20Mission%20form.md)
+- [< Collaborators](/documentation/EN/09%20-%20Collaborators.md)

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title><?php echo $subject; ?></title>
+    <title><?php echo $data->subject; ?></title>
     <style type="text/css">
         <?php include(ABSPATH . '/wp-includes/cnrs-data-manager/assets/cnrs-data-manager-email.css'); ?>
     </style>
@@ -61,7 +61,7 @@
                                 <tr>
                                     <td style="vertical-align:top;width:650px;" >
                         <![endif]-->
-                                        <?php include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/' . $template . '.php'); ?>
+                                        <?php include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/body.php'); ?>
                         <!--[if mso | IE]>
                                     </td>
                                 </tr>

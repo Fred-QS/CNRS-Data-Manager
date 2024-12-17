@@ -61,7 +61,7 @@ $unchecked = CNRS_DATA_MANAGER_PATH . '/assets/media/square_empty.png';
 $checked = CNRS_DATA_MANAGER_PATH . '/assets/media/square_full.png';
 $radioUnchecked = CNRS_DATA_MANAGER_PATH . '/assets/media/check_empty.png';
 $radioChecked = CNRS_DATA_MANAGER_PATH . '/assets/media/check_full.png';
-//dd($form);
+
 ob_start();
 include CNRS_DATA_MANAGER_PATH . '/templates/includes/pdf/html.php';
 $html = ob_get_clean();

@@ -12,6 +12,7 @@ const dataWrapper = document.querySelectorAll('.cnrs-dm-front-agent-info-data-co
 const parentContainers = document.querySelectorAll('.cnrs-dm-front-container');
 const signPadButtons = document.querySelectorAll('.cnrs-dm-front-sign-pad-button');
 const optionalInputs = document.querySelectorAll('.cnrs-dm-front-checkbox-label[data-option="option"]');
+const optionalRadioInputs = document.querySelectorAll('.cnrs-dm-front-radio-label');
 const missionFormSubmit = document.querySelector('#cnrs-dm-front-mission-form-submit-button');
 const missionFormErrors = document.querySelector('#cnrs-dm-front-mission-form-errors');
 const missionFormLoginWrapper = document.querySelector('#cnrs-dm-front-mission-form-login-wrapper');
@@ -39,6 +40,9 @@ const hiddenConventionInput = document.querySelector('#cnrs-dm-front-convention-
 const textConventionInput = document.querySelector('#cnrs-dm-front-convention-text');
 const conventionList = document.querySelector('#cnrs-dm-front-conventions-list');
 const conventionsLi = document.querySelectorAll('.cnrs-dm-front-convention');
+const publicationsForm = document.querySelector('#cnrs-dm-front-filters-publications-form');
+const publicationsLoader = document.querySelector('#cnrs-dm-front-publication-loader-wrapper');
+const publicationsList = document.querySelector('#cnrs-dm-front-publications-list');
 let agentEmails = [];
 
 window.addEventListener('load', function(){
@@ -47,6 +51,7 @@ window.addEventListener('load', function(){
     dispatchWrapperListener();
     prepareMissionForm();
     resizeTooltips();
+    setPublicationsListener();
 });
 
 window.addEventListener('resize', function () {
@@ -54,8 +59,8 @@ window.addEventListener('resize', function () {
 });
 
 window.addEventListener('click', function(e) {
-   const target = e.target;
-   closeMissionTooltips(target);
+    const target = e.target;
+    closeMissionTooltips(target);
 });
 
 function isJson(str) {
@@ -65,6 +70,59 @@ function isJson(str) {
     } catch (e) {
         return false;
     }
+}
+
+function setPublicationsListener() {
+
+    if (publicationsForm) {
+        publicationsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            publicationsLoader.classList.remove('hide');
+            const search = publicationsForm.querySelector('input[name="cdm-search"]').value;
+            const author = publicationsForm.querySelector('select[name="cdm-author"]').value;
+            const date = publicationsForm.querySelector('select[name="cdm-date"]').value;
+            const type = publicationsForm.querySelector('select[name="cdm-type"]').value;
+            const guardianship = publicationsForm.querySelector('select[name="cdm-guardianship"]').value;
+            const category = publicationsForm.querySelector('select[name="cdm-category"]').value;
+            const formData = new FormData();
+            const url = '/wp-admin/admin-ajax.php';
+            formData.append('action', 'search_publications');
+            formData.append('cdm-search', search);
+            formData.append('cdm-author', author);
+            formData.append('cdm-date', date);
+            formData.append('cdm-type', type);
+            formData.append('cdm-guardianship', guardianship);
+            formData.append('cdm-category', category);
+            let queryString = new URLSearchParams(formData)
+                .toString()
+                .replace('action=search_publications&', '?');
+            const nextURL = window.location.protocol + '//' + window.location.hostname + window.location.pathname + queryString;
+            const nextTitle = document.title;
+            const nextState = { additionalInformation: 'Updated the URL with JS' };
+            window.history.pushState(nextState, nextTitle, nextURL);
+            const options = {
+                method: 'POST',
+                body: formData,
+            };
+            fetch(url, options)
+                .then(
+                    response => response.json()
+                ).then(
+                success => handlePublicationsResult(success.data)
+            ).catch(
+                error => handlePublicationsResult({error: error, data: null})
+            );
+        })
+    }
+}
+
+function handlePublicationsResult(response) {
+    if (response.error === null) {
+        publicationsList.innerHTML = response.data;
+    } else {
+        console.warn(response.error);
+    }
+    publicationsLoader.classList.add('hide');
 }
 
 function prepareMissionForm() {
@@ -77,6 +135,19 @@ function prepareMissionForm() {
                         textarea.required = true;
                     } else {
                         textarea.required = false;
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < optionalRadioInputs.length; i++) {
+            optionalRadioInputs[i].querySelector('input').oninput = function () {
+                let textarea = this.parentElement.nextElementSibling;
+                if (textarea && textarea.classList.contains('cnrs-dm-front-mission-form-opt-comment') && this.checked === true) {
+                    textarea.required = true;
+                } else {
+                    let textarea2 = this.closest('.cnrs-dm-front-mission-form-element');
+                    if (textarea2 && textarea2.querySelector('textarea')) {
+                        textarea2.querySelector('textarea').required = false;
                     }
                 }
             }
@@ -481,6 +552,17 @@ function prepareMissionForm() {
             isInternational = action === 1;
             chooseDestWrapper.remove();
             missionHTMLForm.classList.remove('cnrs-dm-front-mission-form-wrapper-init');
+            displayToggledElementsLogic({
+                id: missionLocationToggleUuid,
+                option1: {
+                    value: foreignLabel,
+                    active: isInternational === false
+                },
+                option2: {
+                    value: franceLabel,
+                    active: isInternational === true
+                },
+            });
             resizeTooltips();
         }
     }
@@ -559,7 +641,7 @@ function toggleInputCheckedAction(input, allInputs) {
             displayToggledElementsHTML([{html: null, toggles: {}, uuid: null}], [{html: sibling, toggles: {}, uuid: null}]);
         }
     }
-    displayToggledElementsLogic({
+    let toggleLogic = {
         id: uuid,
         option1: {
             value: allInputs[0].parentElement.querySelector('span.text').innerHTML,
@@ -569,7 +651,14 @@ function toggleInputCheckedAction(input, allInputs) {
             value: allInputs[1].parentElement.querySelector('span.text').innerHTML,
             active: allInputs[1].checked
         },
-    });
+    };
+    if (allInputs[2]) {
+        toggleLogic.option3 = {
+            value: allInputs[2].parentElement.querySelector('span.text').innerHTML,
+            active: allInputs[2].checked
+        };
+    }
+    displayToggledElementsLogic(toggleLogic);
 }
 
 function displayToggledElementsLogic(triggerToggle) {
@@ -584,6 +673,7 @@ function displayToggledElementsLogic(triggerToggle) {
                 for (const toggleUuid in toggles) {
                     const option1 = toggles[toggleUuid].option1;
                     const option2 = toggles[toggleUuid].option2;
+                    const option3 = toggles[toggleUuid].option3;
                     if (triggerToggle.id === toggleUuid) {
                         const els = document.querySelectorAll('#cnrs-dm-front-dynamic-elements-wrapper .cnrs-dm-front-mission-form-element');
                         if (option1.active === false && triggerToggle.option1.active === true) {
@@ -597,6 +687,14 @@ function displayToggledElementsLogic(triggerToggle) {
                         }
                         if (option2.active === true && triggerToggle.option2.active === true) {
                             elementsToDisplay.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                        }
+                        if (option3) {
+                            if (option3.active === false && triggerToggle.option3.active === true) {
+                                elementsToHide.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                            }
+                            if (option3.active === true && triggerToggle.option3.active === true) {
+                                elementsToDisplay.push({html: els[i], toggles: element.data.toggles, uuid: toggleUuid});
+                            }
                         }
                     }
                 }
@@ -629,6 +727,7 @@ function displayToggledElementsHTML(elementsToDisplay, elementsToHide) {
             }
         }
     }
+    resizeTooltips();
 }
 
 function hasNoDisabledToggle(toggles, activeToggleUuid) {

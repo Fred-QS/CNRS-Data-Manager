@@ -26,6 +26,7 @@ $managersList = Forms::getConventions();
 $decodedForm = json_decode($form, true);
 $formLink = get_site_url() . '/cnrs-umr/mission-form';
 
+
 ?>
 
 <div class="wrap cnrs-data-manager-page" id="cnrs-data-manager-mission-form-page">
@@ -156,7 +157,7 @@ $formLink = get_site_url() . '/cnrs-umr/mission-form';
                             <span class="cnrs-dm-add-tool" data-tool="signs">+</span>
                         </div>
                         <form method="post" id="cnrs-dm-mission-form-final">
-                            <input type="hidden" name="cnrs-dm-mission-form" value='<?php echo $form ?>'>
+                            <input type="hidden" name="cnrs-dm-mission-form" value='<?php echo htmlspecialchars($form) ?>'>
                             <input type="button" id="cnrs-dm-mission-form-submit" class="button button-primary" value="<?php echo __('Save', 'cnrs-data-manager') ?>">
                         </form>
                     </div>

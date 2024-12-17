@@ -1,6 +1,9 @@
 <?php
 
 use CnrsDataManager\Core\Models\Settings;
+//use CnrsDataManager\Core\Models\Projects;
+
+//Projects::importRelations();
 
 $settings = Settings::getSettings();
 $hiddenFiltersByCatId = Settings::getHiddenTermsIds();
@@ -9,6 +12,12 @@ $teamsConfig = getCategoriesConfig('teams', $settings['teams_category']);
 $servicesConfig = getCategoriesConfig('services', $settings['services_category']);
 $platformsConfig = getCategoriesConfig('platforms', $settings['platforms_category']);
 $categories = cnrs_get_translated_categories();
+$designs = Settings::getDesigns();
+$designsTypes = [
+    'POSTER' => __('Poster', 'cnrs-data-manager'),
+    'CARD' => __('Card', 'cnrs-data-manager'),
+    'THUMBNAIL' => __('Thumbnail', 'cnrs-data-manager')
+];
 
 ?>
 
@@ -70,6 +79,26 @@ $categories = cnrs_get_translated_categories();
                     </tr>
                     <tr>
                         <th scope="row">
+                            <label for="cnrs-dm-mode"><?php echo __('Default image URL', 'cnrs-data-manager') ?></label>
+                        </th>
+                        <td>
+                            <label>
+                                <input required spellcheck="false" type="text" name="cnrs-dm-project-default-image-url" value="<?php echo $settings['project_default_image_url'] ?>">
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
+                            <label for="cnrs-dm-mode"><?php echo __('Default thumbnail URL', 'cnrs-data-manager') ?></label>
+                        </th>
+                        <td>
+                            <label>
+                                <input required spellcheck="false" type="text" name="cnrs-dm-project-default-thumbnail-url" value="<?php echo $settings['project_default_thumbnail_url'] ?>">
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">
                             <label for="cnrs-dm-mode"><?php echo __('List display mode', 'cnrs-data-manager') ?></label>
                         </th>
                         <td>
@@ -125,6 +154,15 @@ $categories = cnrs_get_translated_categories();
                         <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
                     </svg>
                 </span>
+                <br/>
+                <b><?php echo __('Project default image URL', 'cnrs-data-manager') ?></b>
+                <span class="cnrs-data-manager-copy-shortcode cnrs-data-manager-copy-shortcode-page-mode">
+                    <span class="cnrs-dm-copied-to-clipboard"><?php echo __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                    <code>[cnrs-data-manager type="project-default-image-url"]</code>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                        <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                    </svg>
+                </span>
             </p>
             <hr/>
             <table class="form-table" role="presentation">
@@ -163,6 +201,22 @@ $categories = cnrs_get_translated_categories();
                 </tr>
                 <tr>
                     <th scope="row">
+                        <label><?php echo __('Publications', 'cnrs-data-manager') ?></label>
+                    </th>
+                    <td>
+                        <p class="cnrs-dm-shortcode-p">
+                            <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="publications"]'>
+                                <span class="cnrs-dm-copied-to-clipboard"><?php echo __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                                <code>[cnrs-data-manager type="publications"]</code>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                                    <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                                </svg>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
                         <label><?php echo __('Team projects', 'cnrs-data-manager') ?></label>
                     </th>
                     <td>
@@ -170,6 +224,38 @@ $categories = cnrs_get_translated_categories();
                             <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="projects"]'>
                                 <span class="cnrs-dm-copied-to-clipboard"><?php echo __('Copied to clipboard', 'cnrs-data-manager') ?></span>
                                 <code>[cnrs-data-manager type="projects"]</code>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                                    <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                                </svg>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label><?php echo __('Project collaborators', 'cnrs-data-manager') ?></label>
+                    </th>
+                    <td>
+                        <p class="cnrs-dm-shortcode-p">
+                            <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="collabs"]'>
+                                <span class="cnrs-dm-copied-to-clipboard"><?php echo __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                                <code>[cnrs-data-manager type="collabs"]</code>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
+                                    <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
+                                </svg>
+                            </span>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label><?php echo __('Project images slider', 'cnrs-data-manager') ?></label>
+                    </th>
+                    <td>
+                        <p class="cnrs-dm-shortcode-p">
+                            <span class="cnrs-data-manager-copy-shortcode" data-code='[cnrs-data-manager type="project-slider"]'>
+                                <span class="cnrs-dm-copied-to-clipboard"><?php echo __('Copied to clipboard', 'cnrs-data-manager') ?></span>
+                                <code>[cnrs-data-manager type="project-slider"]</code>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 448 512">
                                     <path d="M384 336H192c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16l140.1 0L400 115.9V320c0 8.8-7.2 16-16 16zM192 384H384c35.3 0 64-28.7 64-64V115.9c0-12.7-5.1-24.9-14.1-33.9L366.1 14.1c-9-9-21.2-14.1-33.9-14.1H192c-35.3 0-64 28.7-64 64V320c0 35.3 28.7 64 64 64zM64 128c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H256c35.3 0 64-28.7 64-64V416H272v32c0 8.8-7.2 16-16 16H64c-8.8 0-16-7.2-16-16V192c0-8.8 7.2-16 16-16H96V128H64z"/>
                                 </svg>
@@ -459,6 +545,38 @@ $categories = cnrs_get_translated_categories();
                         </p>
                     </td>
                 </tr>
+                </tbody>
+            </table>
+            <hr>
+            <p><?php echo __('In order to manage the <b>design</b> of the article previews on the main pages of the different categories, please select the <b>display template</b> for each category.', 'cnrs-data-manager') ?></p>
+            <p><?php echo __('Project previews are by default displayed with the <b>Card</b> template.', 'cnrs-data-manager') ?></p>
+            <?php cnrs_polylang_installed() ?>
+            <table class="form-table" role="presentation">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="cnrs-dm-filters-allowed-wrapper">
+                                <?php foreach ($categories as $row): ?>
+                                    <div class="cnrs-dm-filters-allowed-container cnrs-dm-design-container">
+                                        <?php foreach ($row as $lang => $category): ?>
+                                        <p>
+                                            <?php echo $category['flag'] !== null ? $category['flag'] : '' ?>
+                                            <i><?php echo $category['name'] ?></i>
+                                        </p>
+                                        <div class="cnrs-dm-design-wrapper">
+                                            <?php foreach ($designsTypes as $designsType => $designTranslation): ?>
+                                                <label>
+                                                    <input<?php echo cnrs_isDesignSelected($category['term_id'], $designsType, $designs) === true ? ' checked' : '' ?> type="radio" name="cnrs-dm-design[<?php echo $category['term_id'] ?>]" value="<?php echo $designsType ?>">
+                                                    <span><?php echo $designTranslation ?></span>
+                                                </label>
+                                            <?php endforeach; ?>
+                                        </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         <?php endif; ?>

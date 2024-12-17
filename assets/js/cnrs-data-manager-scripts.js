@@ -79,6 +79,19 @@ const docLinks = document.querySelectorAll('.cnrs-dm-documentation-container a')
 const docImages = document.querySelectorAll('.cnrs-dm-documentation-container-not-summary img');
 const docTitles = document.querySelectorAll('.cnrs-dm-documentation-container-not-summary h1');
 const backToTopDoc = document.querySelector('#cnrs-dm-doc-back-to-top');
+const collaboratorsPage = document.querySelector('#cnrs-data-manager-collaborators-wrapper');
+const collaboratorsListLoader = document.querySelector('#cnrs-dm-collaborators-loader-container');
+const collaboratorsListContainer = document.querySelector('#cnrs-dm-collaborators-list-container');
+const collaboratorsTotal = document.querySelector('#cnrs-dm-collaborators-total span');
+const createCollaborator = document.querySelector('#cnrs-dm-add-new-collaborator');
+const collaboratorProjectExpander = document.querySelectorAll('.cnrs-dm-collaborators-chevron');
+const collaboratorSearchInputs = document.querySelectorAll('.cnrs-dm-collaborators-search-input');
+const collaboratorLis = document.querySelectorAll('.cnrs-dm-collaborator-li');
+const addImagesToProjectBtn = document.querySelectorAll('.cnrs-data-add-images-btn');
+const emailTemplateChevrons = document.querySelectorAll('.cnrs-dm-email-type-header-chevron');
+const emailTemplateCopyShortcode = document.querySelectorAll('.cnrs-dm-email-type-copy-shortcode');
+const emailTemplateContentTextarea = document.querySelectorAll('.cnrs-dm-email-type-content');
+const emailTemplatePreviewButtons = document.querySelectorAll('.cnrs-dm-email-link');
 
 const tinyMCEConfig = {
     width: "100%",
@@ -92,11 +105,37 @@ const tinyMCEConfig = {
     newline_behavior: '',
     newline_behavior: 'block'
 }
+
+const tinyMCEConfigLight = {
+    width: "100%",
+    height: 250,
+    resize: false,
+    plugins: ['lists'],
+    toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist',
+    content_style: 'body { font-family:inherit,sans-serif; font-size:14px }',
+    statusbar: false,
+    forced_root_block: 'p',
+    newline_behavior: '',
+    newline_behavior: 'block'
+}
 let filenameTimeout;
 let xlsFile = null;
 let wpContainerWidth = 0;
 let agentsList = [];
 let togglesState = null;
+
+
+window.onclick = function (e) {
+    const uls = document.querySelectorAll('.cnrs-dm-collaborators-lister');
+    if (!e.target.classList.contains('cnrs-dm-collaborators-lister')
+        && !e.target.closest('.cnrs-dm-collaborators-lister')
+        && !e.target.classList.contains('cnrs-dm-collaborators-search-input')
+    ) {
+        for (let i = 0; i < uls.length; i++) {
+            uls[i].classList.remove('open');
+        }
+    }
+}
 
 if (typeof originalToggles !== "undefined") {
     setNewToggles();
@@ -104,6 +143,48 @@ if (typeof originalToggles !== "undefined") {
 prepareListeners();
 setToolsListeners(true);
 deleteManagerButtonsAction();
+setEmailTemplateListeners();
+
+function setEmailTemplateListeners() {
+
+    for (let i = 0; i < emailTemplateChevrons.length; i++) {
+        emailTemplateChevrons[i].onclick = function (){
+            const container = this.closest('.cnrs-dm-email-type-container').querySelector('.cnrs-dm-email-type-body');
+            const containers = document.querySelectorAll('.cnrs-dm-email-type-container');
+            if (container.classList.contains('hidden')) {
+                for (let j = 0; j < containers.length; j++) {
+                    containers[j].querySelector('.cnrs-dm-email-type-header-chevron').classList.remove('open');
+                    containers[j].querySelector('.cnrs-dm-email-type-body').classList.add('hidden');
+                }
+                this.classList.add('open');
+                container.classList.remove('hidden');
+            } else {
+                this.classList.remove('open');
+                container.classList.add('hidden');
+            }
+        }
+    }
+
+    for (let i = 0; i < emailTemplateCopyShortcode.length; i++) {
+        emailTemplateCopyShortcode[i].onclick = function (){
+            navigator.clipboard.writeText(this.dataset.shortcode);
+        }
+    }
+
+    for (let i = 0; i < emailTemplateContentTextarea.length; i++) {
+        let config = {...tinyMCEConfigLight};
+        config.selector = '#' + emailTemplateContentTextarea[i].id
+        tinymce.remove();
+        tinymce.init(config);
+    }
+
+    for (let i = 0; i < emailTemplatePreviewButtons.length; i++) {
+        emailTemplatePreviewButtons[i].onclick = function (e){
+            e.preventDefault();
+            window.open(this.href, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=0,right=,width=800,height=700");
+        }
+    }
+}
 
 function prepareListeners() {
     if (wpContainer) {
@@ -286,9 +367,16 @@ function prepareListeners() {
         });
 
         fileImportInput.addEventListener('input', function(e){
-            if (e.target.files.length === 1 && e.target.files[0].type === 'application/zip') {
+            const fileNameElement = document.querySelector('#cnrs-dm-file-import-filename');
+            if (fileNameElement) {
+                fileNameElement.remove();
+            }
+            if (e.target.files.length === 1 && e.target.files[0].type.startsWith('application/') && e.target.files[0].type.includes('zip')) {
                 xlsFile = null;
-                fileImportSubmitBtn.click();
+                fileImportSubmitBtn.disabled = false;
+                fileImportSubmitBtn.parentElement.insertAdjacentHTML('beforeend', '<p style="font-size: 12px; font-style: italic; opacity: 0.7;margin: 0;" id="cnrs-dm-file-import-filename">' + e.target.files[0].name + '</p>');
+            } else {
+                fileImportSubmitBtn.disabled = true;
             }
         });
     }
@@ -299,12 +387,14 @@ function prepareListeners() {
             const rows = document.querySelectorAll('.cnrs-dm-projects-row');
             for (let i = 0; i < rows.length; i++) {
                 rows[i].classList.remove('hide');
+                rows[i].closest('form').classList.remove('hide');
                 rows[i].classList.remove('even');
             }
             if (input.length > 0) {
                 for (let i = 0; i < rows.length; i++) {
                     if (!rows[i].querySelector('.cnrs-dm-project-item a span').innerHTML.toLowerCase().includes(input.toLowerCase())) {
                         rows[i].classList.add('hide');
+                        rows[i].closest('form').classList.add('hide');
                     }
                 }
             }
@@ -539,8 +629,320 @@ function prepareListeners() {
         }
     }
 
+    if (collaboratorsPage) {
+        createCollaborator.onclick = function() {
+            getCollaboratorModal();
+        }
+        buildCollaboratorsList();
+    }
+
+    for (let i = 0; i < collaboratorProjectExpander.length; i++) {
+        collaboratorProjectExpander[i].onclick = function () {
+            const container = this.closest('.cnrs-dm-filters-allowed-container')
+                .querySelector('.cnrs-dm-collaborators-project-assign-wrapper');
+            const header = this.closest('.cnrs-dm-filters-allowed-container')
+                .querySelector('.cnrs-dm-filters-allowed-header');
+            if (this.classList.contains('open')) {
+                this.classList.remove('open');
+                container.classList.remove('open');
+                header.classList.remove('open');
+            } else {
+                this.classList.add('open');
+                container.classList.add('open');
+                header.classList.add('open');
+            }
+        }
+    }
+
+    for (let i = 0; i < collaboratorSearchInputs.length; i++) {
+        collaboratorSearchInputs[i].onfocus = function () {
+            const ul = this.nextElementSibling;
+            if (ul) {
+                ul.classList.add('open');
+                setTagsLogicListeners(this);
+            }
+        }
+        collaboratorSearchInputs[i].onkeyup = function (e) {
+            const ul = this.nextElementSibling;
+            if (e.key === 'Escape' && ul) {
+                this.blur();
+                ul.classList.remove('open');
+            } else if (e.key === 'Enter') {
+                // ...
+            }
+        }
+        collaboratorSearchInputs[i].oninput = function () {
+            setTagsLogicListeners(this);
+        }
+    }
+
+    for (let i = 0; i < collaboratorLis.length; i++) {
+        collaboratorLis[i].querySelector('input[type="checkbox"]').oninput = function () {
+            const allInputs = this.closest('ul').querySelectorAll('input[type="checkbox"]');
+            const container = this.closest('.cnrs-dm-collaborators-project-assign-generic-wrapper')
+                .querySelector('.cnrs-dm-collaborators-project-assign-generic');
+            const type = this.dataset.type;
+            const counter = this.closest('.cnrs-dm-collaborators-container')
+                .querySelector('.cnrs-dm-collaborators-counter-' + type);
+            let html = '';
+            let cnt = 0;
+            for (let j = 0; j < allInputs.length; j++) {
+                const input = allInputs[j];
+                if (input.checked === true) {
+                    html += `<div class="cnrs-dm-collaborators-tags">
+                        <span class="cnrs-dm-collaborators-tags-delete" data-collab-id="${input.dataset.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="12" height="12">
+                                <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/>
+                            </svg>
+                        </span>
+                        <span class="cnrs-dm-collaborators-tags-text">${input.dataset.name}</span>
+                    </div>`;
+                    cnt++;
+                }
+            }
+            counter.innerHTML = `(${cnt})`;
+            container.innerHTML = '';
+            container.insertAdjacentHTML('beforeend', html);
+            setTagsDynamicListeners();
+        }
+    }
+
+    for (let i = 0; i < addImagesToProjectBtn.length; i++) {
+        addImagesToProjectBtn[i].onclick = function () {
+            const projectId = parseInt(this.dataset.id);
+            const formData = new FormData();
+            const url = '/wp-admin/admin-ajax.php';
+            formData.append('action', 'get_attachments');
+            formData.append('project_id', projectId);
+            const options = {
+                method: 'POST',
+                body: formData,
+            };
+            fetch(url, options)
+                .then(
+                    response => response.json()
+                ).then(
+                success => getMediaModalInHTML(success.data)
+            ).catch(
+                error => getMediaModalInHTML({error: error, data: null, html: ''})
+            );
+        }
+    }
+
+    setTagsDynamicListeners();
     removeAdminEmailListeners();
     setTogglesStates();
+}
+
+function getMediaModalInHTML(response) {
+    if (response.error === null) {
+        adminWrapper.insertAdjacentHTML('beforeend', response.html);
+        const closeModal = document.querySelector('#cnrs-dm-attachments-modal-wrapper');
+        const closeModalBtn = document.querySelector('#cnrs-dm-attachments-modal-close');
+        const saveModalBtn = document.querySelector('#cnrs-dm-attachments-modal-save');
+        const images = document.querySelectorAll('.cnrs-dm-attachments-image');
+        const projectId = parseInt(document.querySelector('#cnrs-dm-attachments-modal-wrapper').dataset.project);
+        if (closeModalBtn) {
+            closeModalBtn.onclick = function () {
+                closeModal.remove();
+            }
+        }
+        if (saveModalBtn) {
+            saveModalBtn.onclick = function () {
+                let info = [];
+                for (let i = 0; i < images.length; i++) {
+                    const input = images[i].querySelector('input[type="checkbox"]');
+                    if (input.checked === true) {
+                        const thumbnail = images[i].style.backgroundImage
+                            .replace('url("', '')
+                            .replace('")', '');
+                        const id = parseInt(images[i].dataset.id);
+                        info.push({thumbnail, id});
+                    }
+                }
+                setImagesForProject(projectId, info);
+                closeModal.remove();
+            }
+        }
+        for (let i = 0; i < images.length; i++) {
+            images[i].onclick = function () {
+                if (this.querySelector('input[type="checkbox"]').checked === true) {
+                    this.classList.add('selected');
+                } else {
+                    this.classList.remove('selected');
+                }
+            }
+        }
+    } else {
+        console.warn(response.error);
+    }
+}
+
+function setImagesForProject(projectId, info)
+{
+    const container = document.querySelector('.cnrs-dm-projects-images-list[data-project="' + projectId + '"]');
+    let html = '';
+    for (let i = 0; i < info.length; i++) {
+        const img = info[i].thumbnail;
+        const id = info[i].id;
+        html += `<a href="${img}" target="_blank" class="cnrs-dm-projects-image-data">
+            <input type="hidden" name="cnrs-data-manager-project-images[${projectId}][]" value="${id}">
+            <div style="background-image: url(${img});"></div>
+        </a>`;
+    }
+    if (html.length === 0) {
+        const emptyMessage =
+        html = `<i>${container.dataset.empty}</i>`;
+    }
+    container.innerHTML = '';
+    container.insertAdjacentHTML('beforeend', html);
+}
+
+function setTagsDynamicListeners() {
+
+    const tags = document.querySelectorAll('.cnrs-dm-collaborators-tags');
+    for (let i = 0; i < tags.length; i++) {
+        tags[i].querySelector('.cnrs-dm-collaborators-tags-delete').onclick = function () {
+            const value = this.nextElementSibling.textContent.trim();
+            const ul = this.closest('.cnrs-dm-collaborators-project-assign-generic-wrapper').querySelector('ul');
+            if (ul) {
+                for (let j = 0; j < ul.children.length; j++) {
+                    if (ul.children[j].querySelector('label span').textContent.trim().toLowerCase() === value.toLowerCase()) {
+                        const input = ul.children[j].querySelector('input[type="checkbox"]');
+                        const type = input.dataset.type;
+                        const counter = ul.closest('.cnrs-dm-collaborators-container')
+                            .querySelector('.cnrs-dm-collaborators-counter-' + type);
+                        counter.innerHTML = `(${parseInt(counter.innerHTML.replaceAll('(', '').replaceAll(')', '')) - 1})`;
+                        input.checked = false;
+                    }
+                }
+            }
+            this.parentElement.remove();
+        }
+    }
+}
+
+function setTagsLogicListeners(elmt) {
+    const ul = elmt.nextElementSibling;
+    const value = elmt.value.toLowerCase();
+    if (value.trim().length > 0) {
+        let cnt = ul.children.length;
+        for (let j = 0; j < ul.children.length; j++) {
+            const li = ul.children[j];
+            if (li.textContent.toLowerCase().includes(value)) {
+                li.classList.remove('hide');
+            } else {
+                li.classList.add('hide');
+            }
+        }
+        if (cnt === ul.querySelectorAll('.hide').length) {
+            ul.classList.remove('open');
+        } else {
+            ul.classList.add('open');
+        }
+    } else {
+        ul.classList.add('open');
+        for (let j = 0; j < ul.children.length; j++) {
+            ul.children[j].classList.remove('hide');
+        }
+    }
+}
+
+function getCollaboratorModal() {
+    collaboratorsListLoader.classList.add('show');
+    const formData = new FormData();
+    const url = '/wp-admin/admin-ajax.php';
+    formData.append('action', 'get_collaborator_modal');
+    formData.append('data', null);
+    const options = {
+        method: 'POST',
+        body: formData,
+    };
+    fetch(url, options)
+        .then(
+            response => response.json()
+        ).then(
+        success => insertCollaboratorModalInHTML(success.data)
+    ).catch(
+        error => insertCollaboratorModalInHTML({error: error, data: null, html: ''})
+    );
+}
+
+function insertCollaboratorModalInHTML(info) {
+    if (info.error === null) {
+        collaboratorsPage.insertAdjacentHTML('beforeend', info.html);
+        const closeModal = document.querySelector('#cnrs-dm-collaborator-modal-wrapper');
+        const closeModalBtn = document.querySelector('#cnrs-dm-collaborator-modal-close');
+        const loadImage = document.querySelector('[name="cnrs-data-manager-collaborator-logo"]');
+        const deleteImage = document.querySelector('#cnrs-data-manager-collaborator-logo-delete');
+        const imagePreview = document.querySelector('#cnrs-dm-collaborator-modal-image');
+        const imageHidden = document.querySelector('[name="cnrs-data-manager-collaborator-logo-hidden"]');
+        if (closeModalBtn) {
+            closeModalBtn.onclick = function () {
+                closeModal.remove();
+            }
+        }
+        if (loadImage && imageHidden) {
+            loadImage.onchange = function () {
+                if (this.files && this.files[0]) {
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.style.backgroundImage = `url(${e.target.result})`;
+                        imageHidden.value = 'loaded';
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            }
+        }
+        if (deleteImage && loadImage && imageHidden) {
+            deleteImage.onclick = function () {
+                loadImage.value = null;
+                imagePreview.style.backgroundImage = 'url(/wp-content/plugins/cnrs-data-manager/assets/media/default_avatar.png)'
+                imageHidden.value = 'none';
+            }
+        }
+    } else {
+        console.log(info.error);
+    }
+    collaboratorsListLoader.classList.remove('show');
+}
+
+function buildCollaboratorsList(page = 1, search = '', results = 10, type = 'ALL', orderBy = 'DESC') {
+    if (collaboratorsListLoader) {
+        collaboratorsListLoader.classList.add('show');
+        const formData = new FormData();
+        const url = '/wp-admin/admin-ajax.php';
+        formData.append('action', 'get_collaborators_list');
+        formData.append('page', page);
+        formData.append('search', search);
+        formData.append('results_per_page', results);
+        formData.append('date_order_by', orderBy);
+        formData.append('type_filter', type);
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+        fetch(url, options)
+            .then(
+                response => response.json()
+            ).then(
+            success => insertCollaboratorsListInHTML(success.data)
+        ).catch(
+            error => insertCollaboratorsListInHTML({error: error, data: null, html: ''})
+        );
+    }
+}
+
+function insertCollaboratorsListInHTML(info) {
+    if (info.error === null) {
+        collaboratorsListContainer.innerHTML = '';
+        collaboratorsListContainer.insertAdjacentHTML('beforeend', info.html);
+        setListListener(true);
+        collaboratorsTotal.innerHTML = '(' + info.data.total + ')';
+    } else {
+        console.log(info.error);
+    }
+    collaboratorsListLoader.classList.remove('show');
 }
 
 function setTogglesStates(toggle = null) {
@@ -556,6 +958,9 @@ function setTogglesStates(toggle = null) {
                         option1: {value: originalToggles[i].values[0], active: true},
                         option2: {value: originalToggles[i].values[1], active: false},
                     }
+                    if (originalToggles[i].values[2]) {
+                        togglesState[originalToggles[i].id].option3 = {value: originalToggles[i].values[2], active: false};
+                    }
                 }
             }
 
@@ -567,6 +972,9 @@ function setTogglesStates(toggle = null) {
                         option1: {value: missionForm.elements[i].data.values[0], active: true},
                         option2: {value: missionForm.elements[i].data.values[1], active: false},
                     };
+                    if (missionForm.elements[i].data.values[2]) {
+                        togglesState[originalToggles[i].id].option3 ={value: missionForm.elements[i].data.values[2], active: false};
+                    }
                 }
             }
 
@@ -577,9 +985,19 @@ function setTogglesStates(toggle = null) {
                 if (togglesState[toggle.uuid].option1.value === toggle.value) {
                     togglesState[toggle.uuid].option1.active = true;
                     togglesState[toggle.uuid].option2.active = false;
+                    if (togglesState[toggle.uuid].option3) {
+                        togglesState[toggle.uuid].option3.active = false;
+                    }
                 } else if (togglesState[toggle.uuid].option2.value === toggle.value) {
                     togglesState[toggle.uuid].option1.active = false;
                     togglesState[toggle.uuid].option2.active = true;
+                    if (togglesState[toggle.uuid].option3) {
+                        togglesState[toggle.uuid].option3.active = false;
+                    }
+                } else if (togglesState[toggle.uuid].option3 && togglesState[toggle.uuid].option3.value === toggle.value) {
+                    togglesState[toggle.uuid].option1.active = false;
+                    togglesState[toggle.uuid].option2.active = false;
+                    togglesState[toggle.uuid].option3.active = true;
                 }
             }
         }
@@ -655,14 +1073,14 @@ function insertListInHTML(info) {
         missionFormListContainer.innerHTML = '';
         missionFormListContainer.insertAdjacentHTML('beforeend', info.html);
         setListListener();
-        missionListLoader.classList.remove('show');
         missionFormTotal.innerHTML = '(' + info.data.total + ')';
     } else {
         console.log(info.error);
     }
+    missionListLoader.classList.remove('show');
 }
 
-function setListListener() {
+function setListListener(collaborators = false) {
     const searchInput = document.querySelector('#cnrs-data-manager-mission-search');
     const searchBtn = document.querySelector('#cnrs-data-manager-search-submit');
     const nbOfResult1 = document.querySelector('#cnrs-data-manager-limit-1');
@@ -699,7 +1117,11 @@ function setListListener() {
                 let order = orderResult1.value;
                 let limit = nbOfResult1.value;
                 let current = currentPage ? currentPage.value : 1;
-                buildFormList(current, search, limit, status, order);
+                if (collaborators === false) {
+                    buildFormList(current, search, limit, status, order);
+                } else {
+                    buildCollaboratorsList(current, search, limit, status, order);
+                }
             }
         }
     }
@@ -710,18 +1132,26 @@ function setListListener() {
             let status = statusResult1 ? statusResult1.value : 'ALL';
             let order = orderResult1 ? orderResult1.value : 'DESC';
             let current = currentPage ? currentPage.value : 1;
-            buildFormList(current, search, limit, status, order);
+            if (collaborators === false) {
+                buildFormList(current, search, limit, status, order);
+            } else {
+                buildCollaboratorsList(current, search, limit, status, order);
+            }
         }
     }
     for (let i = 0; i < paginators.length; i++) {
         paginators[i].onclick = function () {
-            if (searchInput && statusInput) {
+            if (searchInput) {
                 let search = searchInput.value;
                 let status = statusResult1.value;
                 let order = orderResult1.value;
                 let limit = nbOfResult1.value;
                 let current = this.dataset.page;
-                buildFormList(current, search, limit, status, order);
+                if (collaborators === false) {
+                    buildFormList(current, search, limit, status, order);
+                } else {
+                    buildCollaboratorsList(current, search, limit, status, order);
+                }
             }
         }
     }
@@ -737,27 +1167,75 @@ function setListListener() {
         }
     }
 
-    for (let i = 0; i < actions.length; i++) {
-        if (!actions[i].classList.contains('disabled')) {
-            actions[i].onclick = function () {
-                missionListLoader.classList.add('show');
-                const formData = new FormData();
-                const url = '/wp-admin/admin-ajax.php';
-                formData.append('action', 'form_list_action');
-                formData.append('trigger', this.dataset.action);
-                formData.append('form_id', this.dataset.form);
-                const options = {
-                    method: 'POST',
-                    body: formData,
-                };
-                fetch(url, options)
-                    .then(
-                        response => response.json()
-                    ).then(
-                    success => refreshListTab(success.data)
-                ).catch(
-                    error => refreshListTab({error: error, data: null})
-                );
+    if (collaborators === false) {
+        for (let i = 0; i < actions.length; i++) {
+            if (!actions[i].classList.contains('disabled')) {
+                actions[i].onclick = function () {
+                    missionListLoader.classList.add('show');
+                    const formData = new FormData();
+                    const url = '/wp-admin/admin-ajax.php';
+                    formData.append('action', 'form_list_action');
+                    formData.append('trigger', this.dataset.action);
+                    formData.append('form_id', this.dataset.form);
+                    const options = {
+                        method: 'POST',
+                        body: formData,
+                    };
+                    fetch(url, options)
+                        .then(
+                            response => response.json()
+                        ).then(
+                        success => refreshListTab(success.data)
+                    ).catch(
+                        error => refreshListTab({error: error, data: null})
+                    );
+                }
+            }
+        }
+    } else {
+        for (let i = 0; i < actions.length; i++) {
+            if (actions[i].dataset.action === 'edit') {
+                actions[i].onclick = function () {
+                    collaboratorsListLoader.classList.add('show');
+                    const formData = new FormData();
+                    const url = '/wp-admin/admin-ajax.php';
+                    formData.append('action', 'collaborator_action');
+                    formData.append('trigger', 'edit');
+                    formData.append('id', parseInt(this.dataset.collaborator));
+                    const options = {
+                        method: 'POST',
+                        body: formData,
+                    };
+                    fetch(url, options)
+                        .then(
+                            response => response.json()
+                        ).then(
+                        success => insertCollaboratorModalInHTML(success.data)
+                    ).catch(
+                        error => refreshListTab({error: error, data: null})
+                    );
+                }
+            } else if (actions[i].dataset.action === 'delete') {
+                actions[i].onclick = function () {
+                    collaboratorsListLoader.classList.add('show');
+                    const formData = new FormData();
+                    const url = '/wp-admin/admin-ajax.php';
+                    formData.append('action', 'collaborator_action');
+                    formData.append('trigger', 'delete');
+                    formData.append('id', parseInt(this.dataset.collaborator));
+                    const options = {
+                        method: 'POST',
+                        body: formData,
+                    };
+                    fetch(url, options)
+                        .then(
+                            response => response.json()
+                        ).then(
+                        success => refreshListTab(success.data)
+                    ).catch(
+                        error => refreshListTab({error: error, data: null})
+                    );
+                }
             }
         }
     }
@@ -870,6 +1348,13 @@ function addFormTool(info) {
                         }
                     }
                 }
+            }
+
+            if (document.querySelector('#cnrs-dm-tinymce')) {
+                let config = {...tinyMCEConfig};
+                config.selector = '#cnrs-dm-tinymce'
+                tinymce.remove();
+                tinymce.init(config);
             }
         }
         missionForm.elements.push(json);
@@ -1005,6 +1490,10 @@ function saveTogglesSettings() {
         const option2Value = togglesSettings[i].querySelector('input[id="cnrs-dm-toggle-option2-' + uuid + '"]').checked;
         missionForm.elements[iteration].data.toggles[uuid].option1.active = option1Value;
         missionForm.elements[iteration].data.toggles[uuid].option2.active = option2Value;
+        if (togglesSettings[i].querySelector('input[id="cnrs-dm-toggle-option3-' + uuid + '"]')) {
+            const option3Value = togglesSettings[i].querySelector('input[id="cnrs-dm-toggle-option3-' + uuid + '"]').checked;
+            missionForm.elements[iteration].data.toggles[uuid].option3.active = option3Value;
+        }
         setTogglesStates();
         refreshFormPreview();
         closeModalWrapper();
@@ -1084,6 +1573,7 @@ function setNewToggles() {
         } else {
             toAssignToggles = existingToggles;
         }
+
         // delete abandoned toggles
         let existingUuid = [];
         for (let j = 0; j < toAssignToggles.length; j++) {
@@ -1102,11 +1592,19 @@ function setNewToggles() {
                     option1: {value: toAssignToggles[j].values[0], active: true},
                     option2: {value: toAssignToggles[j].values[1], active: true}
                 }
+                if (toAssignToggles[j].values[2]) {
+                    element.data.toggles[toAssignToggles[j].id].option3 = {value: toAssignToggles[j].values[2], active: true};
+                }
             }
         }
         elements.push(element);
     }
     missionForm.elements = elements;
+    for (let i = 0; i < missionForm.elements.length; i++) {
+        missionForm.elements[i].data.toggles['013589e2-9014-4d5a-adc5-6e4b1e63eb89'].option3.active === missionForm.elements[i].data.toggles['013589e2-9014-4d5a-adc5-6e4b1e63eb89'].option2.active;
+        if (missionForm.elements[i].data.toggles['013589e2-9014-4d5a-adc5-6e4b1e63eb89'].option2.active === false) {
+        }
+    }
 }
 
 function getToggles() {
@@ -1303,12 +1801,17 @@ function isHiddenByToggleAction(toggles) {
             const label = toggles[toggleUuid].label;
             const option1 = toggles[toggleUuid].option1;
             const option2 = toggles[toggleUuid].option2;
+            const option3 = toggles[toggleUuid].option3;
+
             if (typeof togglesState[toggleUuid] !== "undefined") {
                 if (option1.active === false && togglesState[toggleUuid].option1.active === true) {
                     return {hide: togglesState[toggleUuid].option1.active, toggleName: label};
                 }
                 if (option2.active === false && togglesState[toggleUuid].option2.active === true) {
                     return {hide: togglesState[toggleUuid].option2.active, toggleName: label};
+                }
+                if (option3 && togglesState[toggleUuid].option3 && option3.active === false && togglesState[toggleUuid].option3.active === true) {
+                    return {hide: togglesState[toggleUuid].option3.active, toggleName: label};
                 }
             }
         }
@@ -1340,9 +1843,12 @@ function refreshFormPreview() {
         if (i === 0) {
             let t = {};
             t[originalToggles[i].id] = {label: originalToggles[i].label, option1: {value: originalToggles[i].values[0], active: true}, option2: {value: originalToggles[i].values[1], active: false}};
+            if (originalToggles[i].values[2]) {
+                t[originalToggles[i].id].option3 = {value: originalToggles[i].values[2], active: false};
+            }
             let hidden = isHiddenByToggleAction(t);
-            hiddenMessage = hiddenMessage.replace('%s', hidden.toggleName);
-            html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + ' from-mandatory" data-hidden="' + hiddenMessage + '">';
+            const hiddenMess = hiddenMessage.replace('%s', hidden.toggleName);
+            html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + ' from-mandatory" data-hidden="' + hiddenMess + '">';
             html += `<label><span class="cnrs-dm-required">${funderLabel}</span>`;
             html += `<span class="cnrs-dm-suspensions"></span>`;
             html += `</label>`;
@@ -1358,8 +1864,8 @@ function refreshFormPreview() {
             ? `<span class="cnrs-dm-tooltip-icon" title="${element.data.tooltip.replaceAll('<br/>', ' ')}">?</span>`
             : '';
         let hidden = isHiddenByToggleAction(element.data.toggles);
-        hiddenMessage = hiddenMessage.replace('%s', hidden.toggleName);
-        html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + '" data-hidden="' + hiddenMessage + '">';
+        const hiddenMess = hiddenMessage.replace('%s', hidden.toggleName);
+        html += '<div class="cnrs-dm-preview-elements' + (hidden.hide === true ? ' hidden' : '') + '" data-hidden="' + hiddenMess + '">';
         if (element.type === 'checkbox') {
             html += `<div class="cnrs-dm-form-preview-label">`;
             html += element.label.trim().length > 0 ? `<span${required}>${element.label} ${tooltip}</span>` : `<span${required} data-nolabel="true">${tooltip}</span>`;
@@ -1624,35 +2130,29 @@ function checkURLValidity(value) {
     filenameStateRefresh.classList.add('cnrs-dm-display-state');
     clearTimeout(filenameTimeout);
     filenameTimeout = setTimeout(async function(){
-        fetch(value)
-            .then(response => response.text())
-            .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-            .then(data => getDataFromXML(data))
+        const formData = new FormData();
+        const url = '/wp-admin/admin-ajax.php';
+        formData.append('url', value);
+        formData.append('action', 'check_xml_remote_address');
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+        fetch(url, options)
+            .then(response => response.json())
+            .then(json => checkIfXMLFileIsCorrect(json.data.data))
             .catch((error) => {
-                getDataFromXML();
+                checkIfXMLFileIsCorrect();
             });
     }, 1000);
 }
 
-function getDataFromXML(data = null) {
-    let error = true;
-    if (data !== null
-        && data.querySelector('reference')
-        && data.querySelector('reference > equipes')
-        && data.querySelector('reference > services')
-        && data.querySelector('reference > plateformes')
-        && data.querySelector('reference > agents')
-        && data.querySelectorAll('reference > equipes > equipe').length > 0
-        && data.querySelectorAll('reference > services > service').length > 0
-        && data.querySelectorAll('reference > plateformes > plateforme').length > 0
-        && data.querySelectorAll('reference > agents > agent').length > 0
-    ) {
-        error = false;
-    }
+function checkIfXMLFileIsCorrect(check = false) {
+
     for (let i = 0; i < filnameStates.length; i++) {
         filnameStates[i].classList.remove('cnrs-dm-display-state');
     }
-    if (error === true) {
+    if (check === false) {
         filenameStateKo.classList.add('cnrs-dm-display-state');
         filenameSubmit.disabled = true;
     } else {

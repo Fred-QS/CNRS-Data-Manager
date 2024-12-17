@@ -3,6 +3,7 @@
 namespace CnrsDataManager\Core\Controllers;
 
 use CnrsDataManager\Core\Models\Forms;
+use CnrsDataManager\Core\Models\Emails as EmailsModel;
 
 class Emails
 {
@@ -20,14 +21,18 @@ class Emails
             $options = ['cost' => 12];
             $encodedPwd = password_hash($pwd, PASSWORD_BCRYPT, $options);
             Forms::updatePassword($to, $encodedPwd);
-            $subject = __('Your new password', 'cnrs-data-manager');
             $template = 'reset-password';
+            $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
+
+            if ($data === null) {
+                return false;
+            }
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            return sendCNRSEmail($to, $subject, $body);
+            return sendCNRSEmail($to, $data->subject, $body);
 
         } catch (\ErrorException $e) {
             return false;
@@ -63,14 +68,18 @@ class Emails
     public static function sendConfirmationEmail(string $email): bool
     {
         try {
-            $subject = __('Confirmation', 'cnrs-data-manager');
             $template = 'confirmation';
+            $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
+
+            if ($data === null) {
+                return false;
+            }
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            sendCNRSEmail($email, $subject, $body);
+            sendCNRSEmail($email, $data->subject, $body);
 
             return true;
 
@@ -83,21 +92,25 @@ class Emails
      * Sends a mission form revision email to the specified email address.
      *
      * @param string $email The email address to send the mission form revision email to.
-     * @param string $uuid The unique identifier of the mission form.
+     * @param string $revisionUuid The unique identifier of the mission form.
      *
      * @return bool Returns true if the email was sent successfully, false otherwise.
      */
-    public static function sendToManager(string $email, string $uuid): bool
+    public static function sendToManager(string $email, string $revisionUuid): bool
     {
         try {
-            $subject = __('Mission form revision', 'cnrs-data-manager');
             $template = 'revision';
+            $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
+
+            if ($data === null) {
+                return false;
+            }
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            sendCNRSEmail($email, $subject, $body);
+            sendCNRSEmail($email, $data->subject, $body);
 
             return true;
 
@@ -117,18 +130,20 @@ class Emails
     public static function sendAbandonForm(string $email, bool $byFunder = false): bool
     {
         try {
-            $subject = $byFunder === false 
-                ? __('Abandoned form', 'cnrs-data-manager')
-                : __('Abandoned form by credit manager', 'cnrs-data-manager');
             $template = $byFunder === false
                 ? 'canceled'
                 : 'canceled-by-funder';
+            $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
+
+            if ($data === null) {
+                return false;
+            }
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            sendCNRSEmail($email, $subject, $body);
+            sendCNRSEmail($email, $data->subject, $body);
 
             return true;
 
@@ -141,21 +156,25 @@ class Emails
      * Sends a funder approval notification email.
      *
      * @param string $email The email address to send the notification to.
-     * @param string $uuid A unique identifier for the funder.
+     * @param string $funderUuid A unique identifier for the funder.
      *
      * @return bool Returns true if the email was sent successfully, false otherwise.
      */
-    public static function sendToFunder(string $email, string $uuid): bool
+    public static function sendToFunder(string $email, string $funderUuid): bool
     {
         try {
-            $subject = __('Needs approval form', 'cnrs-data-manager');
             $template = 'funder';
+            $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
+
+            if ($data === null) {
+                return false;
+            }
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            sendCNRSEmail($email, $subject, $body);
+            sendCNRSEmail($email, $data->subject, $body);
 
             return true;
 
@@ -173,16 +192,21 @@ class Emails
     public static function sendToAdmins(array $emails): bool
     {
         try {
-            $subject = __('Deadline exceeded form', 'cnrs-data-manager');
             $template = 'exceed';
-            $email = $emails[0];
-            array_shift($emails);
+            $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
 
-            ob_start();
-            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
-            $body = ob_get_clean();
+            if ($data === null) {
+                return false;
+            }
 
-            sendCNRSEmail($email, $subject, $body, $emails);
+            foreach ($emails as $email) {
+
+                ob_start();
+                include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+                $body = ob_get_clean();
+
+                sendCNRSEmail($email, $data->subject, $body);
+            }
 
             return true;
 
@@ -195,21 +219,25 @@ class Emails
      * Sends a mission form revision notification email to the agent.
      *
      * @param string $email The email address to send the notification to.
-     * @param string $uuid The UUID of the mission form revision.
+     * @param string $agentUuid The UUID of the mission form revision.
      *
      * @return bool Returns true if the email was sent successfully, false otherwise.
      */
-    public static function sendRevisionToAgent(string $email, string $uuid): bool
+    public static function sendRevisionToAgent(string $email, string $agentUuid): bool
     {
         try {
-            $subject = __('Mission form revision', 'cnrs-data-manager');
             $template = 'edit';
+            $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
+
+            if ($data === null) {
+                return false;
+            }
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            sendCNRSEmail($email, $subject, $body);
+            sendCNRSEmail($email, $data->subject, $body);
 
             return true;
 
@@ -225,22 +253,83 @@ class Emails
      *
      * @return bool Returns true if the email was sent successfully, false otherwise.
      */
-    public static function sendValidatedForm(string $email, string $uuid, bool $forAll = false): bool
+    public static function sendValidatedForm(string $email, string $validateUuid, bool $forAll = false): bool
     {
         try {
-            $subject = __('Validated mission form', 'cnrs-data-manager');
             $template = $forAll === false ? 'validate' : 'validate-for-all';
+            $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
+
+            if ($data === null) {
+                return false;
+            }
 
             ob_start();
             include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
             $body = ob_get_clean();
 
-            sendCNRSEmail($email, $subject, $body);
+            sendCNRSEmail($email, $data->subject, $body);
 
             return true;
 
         } catch (\ErrorException $e) {
             return false;
+        }
+    }
+
+    public static function initEmailsTemplates(): void
+    {
+        $languages = function_exists('pll_the_languages') ? pll_languages_list() : ['fr'];
+        $emails = getAllTemplateModel();
+
+        $allEmails = EmailsModel::getAllEmails();
+        $emailsToDelete = array_filter($allEmails, function ($email) use($languages) {
+            return !in_array($email->lang, $languages, true);
+        });
+
+        EmailsModel::deleteEmails($emailsToDelete);
+
+        foreach ($languages as $language) {
+            foreach ($emails as $emailType => $shortcodes) {
+                $exist = EmailsModel::getEmailFromFileAndLang($emailType, $language);
+                if (null === $exist) {
+                    EmailsModel::createEmailFromFileAndLang($emailType, $language, $shortcodes);
+                }
+            }
+        }
+    }
+
+    public static function getEmailsList(): array
+    {
+        $emails = EmailsModel::getAllEmails();
+        $filtered = [];
+        foreach ($emails as $email) {
+            if (!isset($filtered[$email->file])) {
+                $filtered[$email->file] = [];
+            }
+            $email->url = '/cnrs-umr/email-preview?template=' . $email->file . '&lang=' . $email->lang;
+            $email->flag = cnrs_get_languages_from_pll([], false)[$email->lang];
+            $filtered[$email->file][$email->lang] = $email;
+        }
+        return $filtered;
+    }
+
+    public static function saveEmailsTemplates(): void
+    {
+        if (isset(
+            $_POST['cnrs_dm_email_id'],
+            $_POST['cnrs_dm_email_subject'],
+            $_POST['cnrs_dm_email_title'],
+            $_POST['cnrs_dm_email_content']
+        )) {
+            EmailsModel::saveEmail(
+                [
+                    'subject' => stripslashes($_POST['cnrs_dm_email_subject']),
+                    'title' => stripslashes($_POST['cnrs_dm_email_title']),
+                    'content' => stripslashes($_POST['cnrs_dm_email_content']),
+                    'title_logo' => strlen(trim($_POST['cnrs_dm_email_icon'])) > 0 ? $_POST['cnrs_dm_email_icon'] : null,
+                ],
+                (int) $_POST['cnrs_dm_email_id']
+            );
         }
     }
 }

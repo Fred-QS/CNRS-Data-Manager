@@ -56,6 +56,8 @@ class Settings
             && isset($_POST['cnrs-data-manager-categories-list-teams'])
             && isset($_POST['cnrs-data-manager-categories-list-services'])
             && isset($_POST['cnrs-data-manager-categories-list-platforms'])
+            && isset($_POST['cnrs-dm-project-default-image-url'])
+            && isset($_POST['cnrs-dm-project-default-thumbnail-url'])
             && isset($_POST['cnrs-dm-filter-module']))
         {
             $post = [
@@ -69,8 +71,11 @@ class Settings
                 'category_template' => stripslashes($_POST['cnrs-dm-category-template']) === 'on' ? 1 : 0,
                 'silent_pagination' => (isset($_POST['cnrs-dm-pagination-ajax-checkbox']) && stripslashes($_POST['cnrs-dm-pagination-ajax-checkbox']) === 'on') ? 1 : 0,
                 'filter_modules' => !empty($_POST['cnrs-dm-filter-module']) ? stripslashes(implode(',', $_POST['cnrs-dm-filter-module'])) : 'none',
-                'candidating_email' => strlen(stripslashes($_POST['cnrs-dm-candidating-email'])) > 0 ? stripslashes($_POST['cnrs-dm-candidating-email']) : null
+                'candidating_email' => strlen(stripslashes($_POST['cnrs-dm-candidating-email'])) > 0 ? stripslashes($_POST['cnrs-dm-candidating-email']) : null,
+                'project_default_image_url' => stripslashes($_POST['cnrs-dm-project-default-image-url']),
+                'project_default_thumbnail_url' => stripslashes($_POST['cnrs-dm-project-default-thumbnail-url']),
             ];
+
             global $wpdb;
             $currents = $wpdb->get_row( "SELECT teams_category, services_category, platforms_category FROM {$wpdb->prefix}cnrs_data_manager_settings ", ARRAY_A );
             $currentTeams = json_decode($currents['teams_category'], true);
@@ -91,9 +96,9 @@ class Settings
             }
 
             if ($post['candidating_email'] === null) {
-                $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category='{$post['teams_category']}',teams_view_selector={$post['teams_view_selector']},services_category='{$post['services_category']}',services_view_selector={$post['services_view_selector']},platforms_category='{$post['platforms_category']}',platforms_view_selector={$post['platforms_view_selector']},mode='{$post['mode']}',category_template={$post['category_template']},silent_pagination={$post['silent_pagination']},filter_modules='{$post['filter_modules']}',candidating_email=NULL");
+                $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category='{$post['teams_category']}',teams_view_selector={$post['teams_view_selector']},services_category='{$post['services_category']}',services_view_selector={$post['services_view_selector']},platforms_category='{$post['platforms_category']}',platforms_view_selector={$post['platforms_view_selector']},mode='{$post['mode']}',category_template={$post['category_template']},silent_pagination={$post['silent_pagination']},filter_modules='{$post['filter_modules']}',project_default_image_url='{$post['project_default_image_url']}',project_default_thumbnail_url='{$post['project_default_thumbnail_url']}',candidating_email=NULL");
             } else {
-                $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category='{$post['teams_category']}',teams_view_selector={$post['teams_view_selector']},services_category='{$post['services_category']}',services_view_selector={$post['services_view_selector']},platforms_category='{$post['platforms_category']}',platforms_view_selector={$post['platforms_view_selector']},mode='{$post['mode']}',category_template={$post['category_template']},silent_pagination={$post['silent_pagination']},filter_modules='{$post['filter_modules']}',candidating_email='{$post['candidating_email']}'");
+                $wpdb->query("UPDATE {$wpdb->prefix}cnrs_data_manager_settings SET teams_category='{$post['teams_category']}',teams_view_selector={$post['teams_view_selector']},services_category='{$post['services_category']}',services_view_selector={$post['services_view_selector']},platforms_category='{$post['platforms_category']}',platforms_view_selector={$post['platforms_view_selector']},mode='{$post['mode']}',category_template={$post['category_template']},silent_pagination={$post['silent_pagination']},filter_modules='{$post['filter_modules']}',project_default_image_url='{$post['project_default_image_url']}',project_default_thumbnail_url='{$post['project_default_thumbnail_url']}',candidating_email='{$post['candidating_email']}'");
             }
 
             $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_hidden_filters");
@@ -117,6 +122,19 @@ class Settings
                     );
                 }
             }
+
+            $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_articles_preview_design");
+            if (isset($_POST['cnrs-dm-design'])) {
+                foreach ($_POST['cnrs-dm-design'] as $term_id => $template) {
+                    $wpdb->insert(
+                        "{$wpdb->prefix}cnrs_data_manager_articles_preview_design",
+                        ['term_id' => $term_id, 'design' => $template],
+                        ['%d', '%s']
+                    );
+                }
+            }
+
+            self::updateFilename();
         }
     }
 
@@ -433,10 +451,60 @@ class Settings
         return array_map(function (array $row) {return (int) $row['term_id'];}, $ids);
     }
 
+    /**
+     * Retrieves the candidating email from the database.
+     *
+     * This method fetches the candidating email from the "cnrs_data_manager_settings" table in the database.
+     *
+     * @return string|null The candidating email retrieved from the database, or null if not found.
+     * @global wpdb $wpdb The global WordPress database access object.
+     */
     public static function getCandidatingEmail(): string|null
     {
         global $wpdb;
         $settings = $wpdb->get_row("SELECT candidating_email FROM {$wpdb->prefix}cnrs_data_manager_settings");
         return $settings->candidating_email;
+    }
+
+    /**
+     * Retrieves an array of designs from the database.
+     *
+     * @return array An array of designs in the database.
+     * @global wpdb $wpdb The WordPress database object.
+     *
+     */
+    public static function getDesigns(): array
+    {
+        global $wpdb;
+        return $wpdb->get_results("SELECT * FROM {$wpdb->prefix}cnrs_data_manager_articles_preview_design", ARRAY_A);
+    }
+
+    /**
+     * Retrieves the design from the database associated with the given term ID.
+     *
+     * @param int $term_id The ID of the term.
+     * @return string The design associated with the term ID.
+     * @global wpdb $wpdb The WordPress database object.
+     *
+     */
+    public static function getDesignFromTermId(int $term_id): string
+    {
+        global $wpdb;
+        $result = $wpdb->get_row("SELECT design FROM {$wpdb->prefix}cnrs_data_manager_articles_preview_design WHERE term_id = {$term_id}");
+        return $result->design;
+    }
+
+    public static function getDefaultImageUrl(bool $thumbnail): ?string
+    {
+        global $wpdb;
+        $type = $thumbnail === true ? 'project_default_thumbnail_url' : 'project_default_image_url';
+        $result = $wpdb->get_row("SELECT {$type} FROM {$wpdb->prefix}cnrs_data_manager_settings");
+        return $thumbnail === false ? $result->project_default_image_url : $result->project_default_thumbnail_url;
+    }
+
+    public static function setDefaultProjectImageUrl(string $url): void
+    {
+        global $wpdb;
+        $wpdb->update("{$wpdb->prefix}cnrs_data_manager_settings", ['project_default_image_url' => $url]);
     }
 }

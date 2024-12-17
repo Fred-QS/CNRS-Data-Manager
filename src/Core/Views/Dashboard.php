@@ -1,6 +1,9 @@
 <?php
 
+use CnrsDataManager\Core\Models\Projects;
+
 updateProjectsRelations();
+Projects::saveProjectsImages();
 
 $data = selectCNRSDataProvider();
 $rows = $data['provider']['data'];
@@ -270,6 +273,8 @@ if ($providerType === 'services') {
     <p>
         <?php echo __('This section allows you to assign projects to the different teams as well as their display priority orders on the pages of the different teams (from 1 to 16 in order of priority).', 'cnrs-data-manager') ?>
         <br/>
+        <?php echo __('You can also assign additional images for each project which will appear in a slider on the project page.', 'cnrs-data-manager') ?>
+        <br/>
         <?php echo __('These selections allow the filter on the projects page to refine the team search.', 'cnrs-data-manager') ?>
     </p>
     <div id="cnrs-dm-search-box-form-project">
@@ -279,26 +284,44 @@ if ($providerType === 'services') {
             <input type="button" id="cnrs-data-manager-search-submit-projects" class="button" value="<?php echo __('Search') ?>">
         </div>
     </div>
-    <form method="post">
-        <table class="form-table" role="presentation">
-            <tbody>
-            <?php foreach (getProjects() as $key => $project): ?>
+    <?php foreach (getProjects() as $key => $project): ?>
+        <form method="post" class="cnrs-dm-projects-form">
+            <table class="form-table" role="presentation">
+                <tbody>
                 <tr class="cnrs-dm-projects-row<?php echo ($key + 1) % 2 === 0 ? ' even' : '' ?>">
                     <th scope="row" class="cnrs-dm-data-selector-th cnrs-dm-data-selector-th-top">
-                        <input type="hidden" name="cnrs-data-manager-project[]" value="<?php echo $project['id'] ?>">
+                        <input type="hidden" name="cnrs-data-manager-project" value="<?php echo $project['id'] ?>">
                         <input type="hidden" name="cnrs-data-manager-project-lang-<?php echo $project['id'] ?>" value="<?php echo $project['lang'] ?>">
                         <div class="cnrs-dm-project-item">
-                        <span class="cnrs-dm-project-image-tag cnrs-dm-imported-item-image">
+                            <span class="cnrs-dm-project-image-tag cnrs-dm-imported-item-image">
                                 <?php echo $project['image'] !== ''
                                     ? $project['image']
                                     : '<img src="/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg" alt="' . __('Default image', 'cnrs-data-manager') . '">'
                                 ?>
-                        </span>
+                            </span>
                             <a href="<?php echo $project['url'] ?>" target="_blank" class="cnrs-dm-imported-item-info">
-                                <span><?php echo $project['name'] . ' (' . $project['lang'] . ')' ?></span>
-                                <small><i>(<?php echo $project['uri'] ?>)</i></small>
+                                <span><?php echo isset($project['flag']) ? $project['flag'] . '&nbsp;&nbsp;' : null ?><?php echo $project['name'] ?></span>
                                 <i><?php echo $project['excerpt'] ?></i>
                             </a>
+                        </div>
+                        <div class="cnrs-dm-projects-images-wrapper">
+                            <button data-id="<?php echo $project['id'] ?>" type="button" class="cnrs-data-add-images-btn button button-primary"><?php echo __('Select images', 'cnrs-data-manager') ?></button>
+                            <div class="cnrs-dm-projects-images-list" data-project="<?php echo $project['id'] ?>" data-empty="<?php echo __('No image assigned.', 'cnrs-data-manager') ?>">
+                                <?php $projectImages = Projects::getImagesFromProject((int) $project['id']); ?>
+                                <?php if (empty($projectImages)): ?>
+                                    <i><?php echo __('No image assigned.', 'cnrs-data-manager') ?></i>
+                                <?php endif; ?>
+                                <?php foreach ($projectImages as $imageID): ?>
+                                    <?php $thumnail = image_get_intermediate_size($imageID)['url'] ?>
+                                    <a href="<?php echo $thumnail ?>" target="_blank" class="cnrs-dm-projects-image-data">
+                                        <input type="hidden" name="cnrs-data-manager-project-images[<?php echo $project['id'] ?>][]" value="<?php echo $imageID ?>">
+                                        <div style="background-image: url(<?php echo $thumnail ?>);"></div>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                            <p class="submit">
+                                <input type="submit" name="submit" id="submit-markers" class="button button-primary" value="<?php echo __('Save') ?>">
+                            </p>
                         </div>
                         <div class="cnrs-dm-projects-expander">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -323,12 +346,9 @@ if ($providerType === 'services') {
                         </div>
                     </td>
                 </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-        <p class="submit">
-            <input type="submit" name="submit" id="submit-markers" class="button button-primary" value="<?php echo __('Save') ?>">
-        </p>
-    </form>
+                </tbody>
+            </table>
+        </form>
+    <?php endforeach; ?>
 </div>
 <?php include_once CNRS_DATA_MANAGER_PATH . '/assets/icons/cnrs.svg';
