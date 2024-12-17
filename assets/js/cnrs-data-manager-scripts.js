@@ -387,12 +387,14 @@ function prepareListeners() {
             const rows = document.querySelectorAll('.cnrs-dm-projects-row');
             for (let i = 0; i < rows.length; i++) {
                 rows[i].classList.remove('hide');
+                rows[i].closest('form').classList.remove('hide');
                 rows[i].classList.remove('even');
             }
             if (input.length > 0) {
                 for (let i = 0; i < rows.length; i++) {
                     if (!rows[i].querySelector('.cnrs-dm-project-item a span').innerHTML.toLowerCase().includes(input.toLowerCase())) {
                         rows[i].classList.add('hide');
+                        rows[i].closest('form').classList.add('hide');
                     }
                 }
             }

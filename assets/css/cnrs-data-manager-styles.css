@@ -332,6 +332,10 @@ body[class*="data-manager-tools"] .form-table tr > * {
     font-size: 13px;
 }
 
+.cnrs-dm-projects-form.hide {
+    display: none;
+}
+
 #cnrs-dm-no-marker.hide, .cnrs-dm-projects-row.hide {
     display: none;
 }
@@ -3410,6 +3414,10 @@ input:checked + .cnrs-dm-slider:before {
         max-width: 400px;
     }
 
+    .cnrs-data-manager-project-teams {
+        margin-top: 44px;
+    }
+
     .cnrs-data-manager-project-teams > label select {
         margin: 5px 10px;
     }
@@ -3724,7 +3732,7 @@ input:checked + .cnrs-dm-slider:before {
     }
 
     .cnrs-dm-imported-item-info i, .cnrs-dm-imported-item-info span {
-        width: calc(100% - 40px);
+        width: calc(100vw - 174px);
     }
 
     .cnrs-data-manager-project-teams > label {

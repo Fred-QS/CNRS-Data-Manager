@@ -494,12 +494,12 @@ class Settings
         return $result->design;
     }
 
-    public static function getDefaultProjectImageUrl(bool $thumbnail): ?string
+    public static function getDefaultImageUrl(bool $thumbnail): ?string
     {
         global $wpdb;
         $type = $thumbnail === true ? 'project_default_thumbnail_url' : 'project_default_image_url';
         $result = $wpdb->get_row("SELECT {$type} FROM {$wpdb->prefix}cnrs_data_manager_settings");
-        return $result->project_default_image_url;
+        return $thumbnail === false ? $result->project_default_image_url : $result->project_default_thumbnail_url;
     }
 
     public static function setDefaultProjectImageUrl(string $url): void

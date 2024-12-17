@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CNRS Data Manager\n"
-"POT-Creation-Date: 2024-11-17 21:03+0100\n"
-"PO-Revision-Date: 2024-11-17 21:04+0100\n"
+"POT-Creation-Date: 2024-12-10 10:50+0100\n"
+"PO-Revision-Date: 2024-12-10 10:52+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -67,7 +67,7 @@ msgid "Import"
 msgstr "Importation"
 
 #: src/Core/Bootstrap.php:312 src/Core/Bootstrap.php:313
-#: src/Core/Views/Form.php:36 src/Tools/helper.php:1888
+#: src/Core/Views/Form.php:36 src/Tools/helper.php:1889
 #: templates/includes/mission-form-download.php:26
 #: templates/includes/mission-form-download.php:36
 #: templates/includes/mission-form-list.php:191
@@ -86,11 +86,11 @@ msgstr "Collaborateurs"
 msgid "Emails"
 msgstr "Emails"
 
-#: src/Core/Controllers/Ajax.php:75
+#: src/Core/Controllers/Ajax.php:77
 msgid "Bad file type. Only <b>.zip</b> file is allowed."
 msgstr "Type de fichier incorrect. Seul le format  <b>.zip</b>  est autorisé."
 
-#: src/Core/Controllers/Ajax.php:111
+#: src/Core/Controllers/Ajax.php:122
 msgid ""
 "There is more than one Excel file in the zip archive. The archive must "
 "contain a single Excel file."
@@ -98,41 +98,42 @@ msgstr ""
 "Il y a plus d’un fichier Excel dans l’archive zip. L’archive doit contenir "
 "un seul fichier Excel."
 
-#: src/Core/Controllers/Ajax.php:124
+#: src/Core/Controllers/Ajax.php:135
 msgid "The Excel file does not have the expected structure."
 msgstr "Le fichier Excel n’a pas la structure attendue."
 
-#: src/Core/Controllers/Ajax.php:131
+#: src/Core/Controllers/Ajax.php:142
 msgid "No Excel file found in the zip archive."
 msgstr "Aucun fichier Excel n’a été trouvé dans l’archive zip."
 
-#: src/Core/Controllers/Ajax.php:138
+#: src/Core/Controllers/Ajax.php:149
 msgid "There are photos missing from the zip file."
 msgstr "Il manque des photos dans le fichier zip."
 
-#: src/Core/Controllers/Ajax.php:258
+#: src/Core/Controllers/Ajax.php:270
 msgid "The images could not be processed."
 msgstr "Les images n’ont pas pu être traitées."
 
-#: src/Core/Controllers/Ajax.php:260 src/Core/Views/Import.php:26
+#: src/Core/Controllers/Ajax.php:272 src/Core/Views/Import.php:26
 msgid "The projects were imported successfully."
 msgstr "Les projets ont été importés avec succès."
 
-#: src/Core/Controllers/Ajax.php:263
+#: src/Core/Controllers/Ajax.php:276
 msgid "Importing projects into the database failed."
 msgstr "L’importation de projets dans la base de données a échoué."
 
-#: src/Core/Controllers/Ajax.php:449 src/Core/Controllers/Ajax.php:467
-#: src/Core/Controllers/Ajax.php:484 src/Core/Controllers/Ajax.php:496
-#: src/Core/Controllers/Ajax.php:508 src/Core/Controllers/Ajax.php:518
-#: src/Core/Controllers/Ajax.php:536 src/Core/Controllers/Ajax.php:551
-#: src/Core/Controllers/Ajax.php:581 src/Core/Controllers/Ajax.php:597
-#: src/Core/Controllers/Ajax.php:605 src/Core/Controllers/Ajax.php:622
-#: src/Core/Controllers/Ajax.php:634 src/Core/Controllers/Ajax.php:636
-#: src/Core/Controllers/Ajax.php:652 src/Core/Controllers/Ajax.php:681
-#: src/Core/Controllers/Ajax.php:702 src/Core/Controllers/Ajax.php:721
-#: src/Core/Controllers/Ajax.php:752 src/Core/Controllers/Ajax.php:755
-#: src/Core/Controllers/Ajax.php:779 src/Core/Views/Form.php:93
+#: src/Core/Controllers/Ajax.php:470 src/Core/Controllers/Ajax.php:488
+#: src/Core/Controllers/Ajax.php:505 src/Core/Controllers/Ajax.php:517
+#: src/Core/Controllers/Ajax.php:529 src/Core/Controllers/Ajax.php:539
+#: src/Core/Controllers/Ajax.php:557 src/Core/Controllers/Ajax.php:572
+#: src/Core/Controllers/Ajax.php:602 src/Core/Controllers/Ajax.php:618
+#: src/Core/Controllers/Ajax.php:626 src/Core/Controllers/Ajax.php:643
+#: src/Core/Controllers/Ajax.php:655 src/Core/Controllers/Ajax.php:657
+#: src/Core/Controllers/Ajax.php:673 src/Core/Controllers/Ajax.php:702
+#: src/Core/Controllers/Ajax.php:723 src/Core/Controllers/Ajax.php:742
+#: src/Core/Controllers/Ajax.php:773 src/Core/Controllers/Ajax.php:776
+#: src/Core/Controllers/Ajax.php:800 src/Core/Controllers/Ajax.php:837
+#: src/Core/Controllers/Ajax.php:840 src/Core/Views/Form.php:93
 msgid "An error as occurred."
 msgstr "Une erreur s'est produite."
 
@@ -166,68 +167,68 @@ msgstr "France"
 msgid "Abroad"
 msgstr "Etranger"
 
-#: src/Core/Controllers/Manager.php:513
+#: src/Core/Controllers/Manager.php:524
 msgid "New input field"
 msgstr "Nouveau champ de saisie"
 
-#: src/Core/Controllers/Manager.php:514
+#: src/Core/Controllers/Manager.php:525
 msgid "New numeric field"
 msgstr "Nouveau champ numérique"
 
-#: src/Core/Controllers/Manager.php:515
+#: src/Core/Controllers/Manager.php:526
 msgid "New date field"
 msgstr "Nouveau champ de date"
 
-#: src/Core/Controllers/Manager.php:516
+#: src/Core/Controllers/Manager.php:527
 msgid "New time field"
 msgstr "Nouveau champ d'heure"
 
-#: src/Core/Controllers/Manager.php:517
+#: src/Core/Controllers/Manager.php:528
 msgid "New date & time field"
 msgstr "Nouveau champ de date et d’heure"
 
-#: src/Core/Controllers/Manager.php:518
+#: src/Core/Controllers/Manager.php:529
 msgid "New multi choice field"
 msgstr "Nouveau champ à choix multiples"
 
-#: src/Core/Controllers/Manager.php:519
+#: src/Core/Controllers/Manager.php:530
 msgid "New comment field"
 msgstr "Nouveau champ de commentaire"
 
-#: src/Core/Controllers/Manager.php:520
+#: src/Core/Controllers/Manager.php:531
 msgid "New single choice field"
 msgstr "Nouveau champ à choix unique"
 
-#: src/Core/Controllers/Manager.php:521
+#: src/Core/Controllers/Manager.php:532
 msgid "New separator"
 msgstr "Nouveau séparateur"
 
-#: src/Core/Controllers/Manager.php:522
+#: src/Core/Controllers/Manager.php:533
 msgid "New text field"
 msgstr "Nouveau champ de texte"
 
-#: src/Core/Controllers/Manager.php:523
+#: src/Core/Controllers/Manager.php:534
 msgid "New title field"
 msgstr "Nouveau champ de titre"
 
-#: src/Core/Controllers/Manager.php:524 src/Core/Views/MissionForm.php:356
+#: src/Core/Controllers/Manager.php:535 src/Core/Views/MissionForm.php:356
 #: templates/includes/form-tools/tools/signs.php:7
 msgid "Signing pads"
 msgstr "Pads de signature"
 
-#: src/Core/Controllers/Manager.php:525
+#: src/Core/Controllers/Manager.php:536
 msgid "New toggle set"
 msgstr "Nouveau jeu de bascules"
 
-#: src/Core/Controllers/Manager.php:534
+#: src/Core/Controllers/Manager.php:545
 msgid "My comment"
 msgstr "Mon commentaire"
 
-#: src/Core/Controllers/Manager.php:538
+#: src/Core/Controllers/Manager.php:549
 msgid "My title"
 msgstr "Mon titre"
 
-#: src/Core/Controllers/Manager.php:539
+#: src/Core/Controllers/Manager.php:550
 msgid "My signing pads"
 msgstr "Mes pads de signature"
 
@@ -341,12 +342,12 @@ msgid "Projects & Collaborators"
 msgstr "Projets & collaborateurs"
 
 #: src/Core/Views/Collaborators.php:61 src/Core/Views/Collaborators.php:69
-#: src/Core/Views/CollaboratorsFront.php:3
+#: src/Core/Views/CollaboratorsFront.php:4
 msgid "Funders"
 msgstr "Financeurs"
 
 #: src/Core/Views/Collaborators.php:63 src/Core/Views/Collaborators.php:88
-#: src/Core/Views/CollaboratorsFront.php:16
+#: src/Core/Views/CollaboratorsFront.php:19
 msgid "Partners"
 msgstr "Partenaires"
 
@@ -363,7 +364,7 @@ msgstr "financeurs"
 msgid "partners"
 msgstr "partenaires"
 
-#: src/Core/Views/Collaborators.php:111 src/Core/Views/Dashboard.php:351
+#: src/Core/Views/Collaborators.php:111 src/Core/Views/Dashboard.php:350
 #: src/Core/Views/Form.php:60 src/Core/Views/Form.php:161
 #: src/Core/Views/Form.php:345 src/Core/Views/MapSettings.php:263
 #: src/Core/Views/MissionForm.php:362 src/Core/Views/MissionForm.php:378
@@ -374,8 +375,8 @@ msgstr "partenaires"
 msgid "Save"
 msgstr "Sauvegarder"
 
-#: src/Core/Views/CollaboratorsFront.php:3
-#: src/Core/Views/CollaboratorsFront.php:9
+#: src/Core/Views/CollaboratorsFront.php:4
+#: src/Core/Views/CollaboratorsFront.php:10
 #: templates/includes/collaborator-modal.php:14
 #: templates/includes/collaborators-list.php:9
 #: templates/includes/collaborators-list.php:33
@@ -383,8 +384,8 @@ msgstr "Sauvegarder"
 msgid "Funder"
 msgstr "Financeur"
 
-#: src/Core/Views/CollaboratorsFront.php:16
-#: src/Core/Views/CollaboratorsFront.php:22
+#: src/Core/Views/CollaboratorsFront.php:19
+#: src/Core/Views/CollaboratorsFront.php:25
 #: templates/includes/collaborator-modal.php:15
 #: templates/includes/collaborators-list.php:10
 #: templates/includes/collaborators-list.php:34
@@ -687,15 +688,15 @@ msgstr ""
 msgid "Default image"
 msgstr "Image par défaut"
 
-#: src/Core/Views/Dashboard.php:309
+#: src/Core/Views/Dashboard.php:308
 msgid "Select images"
 msgstr "Sélectionner des images"
 
-#: src/Core/Views/Dashboard.php:310 src/Core/Views/Dashboard.php:313
+#: src/Core/Views/Dashboard.php:309 src/Core/Views/Dashboard.php:312
 msgid "No image assigned."
 msgstr "Aucune image attribuée."
 
-#: src/Core/Views/Dashboard.php:339
+#: src/Core/Views/Dashboard.php:338
 msgid "Hided"
 msgstr "Caché"
 
@@ -1648,13 +1649,13 @@ msgstr ""
 msgid "Candidating email"
 msgstr "Email de candidature"
 
-#: src/Core/Views/Settings.php:79 src/Core/Views/Settings.php:155
-msgid "Project default image URL"
-msgstr "URL de l’image par défaut du projet"
+#: src/Core/Views/Settings.php:79
+msgid "Default image URL"
+msgstr "Image par défaut"
 
 #: src/Core/Views/Settings.php:89
-msgid "Project default thumbnail URL"
-msgstr "URL de vignette par défaut du projet"
+msgid "Default thumbnail URL"
+msgstr "URL de vignette par défaut"
 
 #: src/Core/Views/Settings.php:99
 msgid "List display mode"
@@ -1717,6 +1718,10 @@ msgstr "Titre de la page de service"
 #: src/Core/Views/Settings.php:146
 msgid "Platform page title"
 msgstr "Titre de la page de la plateforme"
+
+#: src/Core/Views/Settings.php:155
+msgid "Project default image URL"
+msgstr "URL de l’image par défaut du projet"
 
 #: src/Core/Views/Settings.php:169
 msgid "Agents directory"
@@ -2319,51 +2324,51 @@ msgstr "Monsieur"
 msgid "Misses"
 msgstr "Madame"
 
-#: src/Tools/helper.php:1583
+#: src/Tools/helper.php:1582
 msgid "not assigned"
 msgstr "non assigné"
 
-#: src/Tools/helper.php:1806
+#: src/Tools/helper.php:1807
 msgid "Your identifiers are not recognized."
 msgstr "Vos identifiants ne sont pas reconnus."
 
-#: src/Tools/helper.php:1819
+#: src/Tools/helper.php:1820
 msgid "An error has occurred while sending the email."
 msgstr "Une erreur s’est produite lors de l’envoi de l’e-mail."
 
-#: src/Tools/helper.php:1822
+#: src/Tools/helper.php:1823
 msgid "The email is not valid."
 msgstr "L’adresse e-mail n’est pas valide."
 
-#: src/Tools/helper.php:1893
+#: src/Tools/helper.php:1894
 msgid "Mission form print"
 msgstr "Impression du formulaire de mission"
 
-#: src/Tools/helper.php:1898
+#: src/Tools/helper.php:1899
 msgid "Mission form download"
 msgstr "Téléchargement du formulaire de mission"
 
-#: src/Tools/helper.php:1903
+#: src/Tools/helper.php:1904
 msgid "Mission form revision by manager"
 msgstr "Révision du formulaire de mission par le gestionnaire"
 
-#: src/Tools/helper.php:1908
+#: src/Tools/helper.php:1909
 msgid "Mission form revision by agent"
 msgstr "Révision du formulaire de mission par l’agent"
 
-#: src/Tools/helper.php:1913
+#: src/Tools/helper.php:1914
 msgid "Mission form revision by funder"
 msgstr "Révision du formulaire de mission par le responsable des crédits"
 
-#: src/Tools/helper.php:1918
+#: src/Tools/helper.php:1919
 msgid "Email preview"
 msgstr "Aperçu email"
 
-#: src/Tools/helper.php:1989
+#: src/Tools/helper.php:1990
 msgid "at"
 msgstr "à"
 
-#: src/Tools/helper.php:2278
+#: src/Tools/helper.php:2279
 msgid ""
 "The <b>Polylang</b> extension is installed! <b>CNRS Data Manager</b> is "
 "compatible with Polylang"
@@ -2793,7 +2798,7 @@ msgstr "Gestionnaire qui a validé le formulaire"
 
 #: templates/includes/publications.php:4
 msgid "filtered on"
-msgstr "Filtré sur"
+msgstr "filtré sur"
 
 #: templates/includes/publications.php:27
 msgid "No publication available yet."
@@ -2816,10 +2821,14 @@ msgid "Expertise"
 msgstr "Expertise"
 
 #: templates/partials/cnrs-data-manager-info.php:87
+msgid "Activity"
+msgstr "Activité"
+
+#: templates/partials/cnrs-data-manager-info.php:91
 msgid "Links"
 msgstr "Liens"
 
-#: templates/partials/cnrs-data-manager-info.php:87
+#: templates/partials/cnrs-data-manager-info.php:91
 msgid "Link"
 msgstr "Lien"
 

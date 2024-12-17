@@ -204,29 +204,31 @@ class Collaborators
      */
     public static function saveRelations(): void
     {
-        global $wpdb;
-        $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_project_entity_relation");
-        foreach ($_POST['cnrs-dm-collaborators'] as $projectId => $collabs) {
-            if (isset($collabs['funders'])) {
-                foreach ($collabs['funders'] as $funderID) {
-                    $wpdb->insert(
-                        "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
-                        array(
-                            'project_id' => (int) $projectId,
-                            'entity_id' => (int) $funderID
-                        )
-                    );
+        if (isset($_POST['cnrs-dm-collaborators'])) {
+            global $wpdb;
+            $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_project_entity_relation");
+            foreach ($_POST['cnrs-dm-collaborators'] as $projectId => $collabs) {
+                if (isset($collabs['funders'])) {
+                    foreach ($collabs['funders'] as $funderID) {
+                        $wpdb->insert(
+                            "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
+                            array(
+                                'project_id' => (int)$projectId,
+                                'entity_id' => (int)$funderID
+                            )
+                        );
+                    }
                 }
-            }
-            if (isset($collabs['partners'])) {
-                foreach ($collabs['partners'] as $partnerID) {
-                    $wpdb->insert(
-                        "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
-                        array(
-                            'project_id' => (int) $projectId,
-                            'entity_id' => (int) $partnerID
-                        )
-                    );
+                if (isset($collabs['partners'])) {
+                    foreach ($collabs['partners'] as $partnerID) {
+                        $wpdb->insert(
+                            "{$wpdb->prefix}cnrs_data_manager_project_entity_relation",
+                            array(
+                                'project_id' => (int)$projectId,
+                                'entity_id' => (int)$partnerID
+                            )
+                        );
+                    }
                 }
             }
         }
@@ -284,6 +286,35 @@ class Collaborators
                 ),
                 array('%d', '%d')
             );
+        }
+    }
+
+    public static function importFunders(): void
+    {
+        global $wpdb;
+        $array = require __DIR__ . DIRECTORY_SEPARATOR . 'funders.php';
+        $cleanFunders = [];
+        foreach ($array as $index => $row) {
+            $row['INTITULE'] = str_replace("'", "\\'", $row['INTITULE']);
+            $row['FINANCEUR'] = strlen($row['FINANCEUR']) > 0
+                ? array_filter(
+                    array_map(function ($item) use ($wpdb) {
+                        $item = trim(str_replace("'", "\\'", $item));
+                        $funder = $wpdb->get_row("SELECT id FROM {$wpdb->prefix}cnrs_data_manager_project_entities WHERE entity_name = '{$item}'");
+                        return $funder !== null ? (int) $funder->id : null;
+                    }, explode(',', $row['FINANCEUR'])),
+                    function($item) {
+                        return $item !== null;
+                    }
+                )
+                : [];
+            $cleanFunders[] = $row;
+        }
+        foreach ($cleanFunders as $project) {
+            $posts = $wpdb->get_results("SELECT id FROM {$wpdb->prefix}posts WHERE post_type = 'project' AND post_title = '{$project['INTITULE']}'", ARRAY_A);
+            foreach ($posts as $post) {
+                self::setFundersProjectRelation($post['id'], $project['FINANCEUR']);
+            }
         }
     }
 }

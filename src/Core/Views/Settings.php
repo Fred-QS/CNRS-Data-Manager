@@ -1,6 +1,9 @@
 <?php
 
 use CnrsDataManager\Core\Models\Settings;
+//use CnrsDataManager\Core\Models\Projects;
+
+//Projects::importRelations();
 
 $settings = Settings::getSettings();
 $hiddenFiltersByCatId = Settings::getHiddenTermsIds();
@@ -76,7 +79,7 @@ $designsTypes = [
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="cnrs-dm-mode"><?php echo __('Project default image URL', 'cnrs-data-manager') ?></label>
+                            <label for="cnrs-dm-mode"><?php echo __('Default image URL', 'cnrs-data-manager') ?></label>
                         </th>
                         <td>
                             <label>
@@ -86,7 +89,7 @@ $designsTypes = [
                     </tr>
                     <tr>
                         <th scope="row">
-                            <label for="cnrs-dm-mode"><?php echo __('Project default thumbnail URL', 'cnrs-data-manager') ?></label>
+                            <label for="cnrs-dm-mode"><?php echo __('Default thumbnail URL', 'cnrs-data-manager') ?></label>
                         </th>
                         <td>
                             <label>

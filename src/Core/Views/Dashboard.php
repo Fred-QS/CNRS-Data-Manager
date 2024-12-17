@@ -284,24 +284,23 @@ if ($providerType === 'services') {
             <input type="button" id="cnrs-data-manager-search-submit-projects" class="button" value="<?php echo __('Search') ?>">
         </div>
     </div>
-    <form method="post">
-        <table class="form-table" role="presentation">
-            <tbody>
-            <?php foreach (getProjects() as $key => $project): ?>
+    <?php foreach (getProjects() as $key => $project): ?>
+        <form method="post" class="cnrs-dm-projects-form">
+            <table class="form-table" role="presentation">
+                <tbody>
                 <tr class="cnrs-dm-projects-row<?php echo ($key + 1) % 2 === 0 ? ' even' : '' ?>">
                     <th scope="row" class="cnrs-dm-data-selector-th cnrs-dm-data-selector-th-top">
-                        <input type="hidden" name="cnrs-data-manager-project[]" value="<?php echo $project['id'] ?>">
+                        <input type="hidden" name="cnrs-data-manager-project" value="<?php echo $project['id'] ?>">
                         <input type="hidden" name="cnrs-data-manager-project-lang-<?php echo $project['id'] ?>" value="<?php echo $project['lang'] ?>">
                         <div class="cnrs-dm-project-item">
-                        <span class="cnrs-dm-project-image-tag cnrs-dm-imported-item-image">
-                            <?php echo $project['image'] !== ''
-                                ? $project['image']
-                                : '<img src="/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg" alt="' . __('Default image', 'cnrs-data-manager') . '">'
-                            ?>
-                        </span>
+                            <span class="cnrs-dm-project-image-tag cnrs-dm-imported-item-image">
+                                <?php echo $project['image'] !== ''
+                                    ? $project['image']
+                                    : '<img src="/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg" alt="' . __('Default image', 'cnrs-data-manager') . '">'
+                                ?>
+                            </span>
                             <a href="<?php echo $project['url'] ?>" target="_blank" class="cnrs-dm-imported-item-info">
                                 <span><?php echo isset($project['flag']) ? $project['flag'] . '&nbsp;&nbsp;' : null ?><?php echo $project['name'] ?></span>
-                                <small><i>(<?php echo $project['uri'] ?>)</i></small>
                                 <i><?php echo $project['excerpt'] ?></i>
                             </a>
                         </div>
@@ -320,6 +319,9 @@ if ($providerType === 'services') {
                                     </a>
                                 <?php endforeach; ?>
                             </div>
+                            <p class="submit">
+                                <input type="submit" name="submit" id="submit-markers" class="button button-primary" value="<?php echo __('Save') ?>">
+                            </p>
                         </div>
                         <div class="cnrs-dm-projects-expander">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -344,12 +346,9 @@ if ($providerType === 'services') {
                         </div>
                     </td>
                 </tr>
-            <?php endforeach; ?>
-            </tbody>
-        </table>
-        <p class="submit">
-            <input type="submit" name="submit" id="submit-markers" class="button button-primary" value="<?php echo __('Save') ?>">
-        </p>
-    </form>
+                </tbody>
+            </table>
+        </form>
+    <?php endforeach; ?>
 </div>
 <?php include_once CNRS_DATA_MANAGER_PATH . '/assets/icons/cnrs.svg';

@@ -1040,7 +1040,6 @@ if (!function_exists('cnrsReadShortCode')) {
             $id = $post->ID;
             $projects = Projects::getProjectsForTeam($id);
 
-
             ob_start();
             include_once(dirname(__DIR__) . '/Core/Views/Projects.php');
             return ob_get_clean();
@@ -1237,7 +1236,7 @@ if (!function_exists('cnrsReadShortCode')) {
 
         } else if ($type === 'project-default-image-url') {
 
-            return '<div id="cnrs-dm-front-project-default-image-url" data-url="' . getDefaultProjectImageUrl() . '"></div>';
+            return '<div id="cnrs-dm-front-project-default-image-url" data-url="' . getDefaultImageUrl() . '"></div>';
         }
 
         return '';
@@ -1707,33 +1706,32 @@ if (!function_exists('updateProjectsRelations')) {
     {
         if (isset($_POST['cnrs-data-manager-project'])) {
 
-            $projects = $_POST['cnrs-data-manager-project'];
+            $projectID = $_POST['cnrs-data-manager-project'];
             $inserts = [];
 
-            foreach ($projects as $projectID) {
-                if (isset($_POST['cnrs-data-manager-project-teams-' . $projectID])) {
+            if (isset($_POST['cnrs-data-manager-project-teams-' . $projectID])) {
 
-                    $teams = $_POST['cnrs-data-manager-project-teams-' . $projectID];
-                    $orders = $_POST['cnrs-data-manager-project-order-' . $projectID];
-                    $lang = $_POST['cnrs-data-manager-project-lang-' . $projectID];
-                    $reorders = [];
-                    foreach ($orders as $order) {
-                        if ($order !== '0') {
-                            $reorders[] = $order;
-                        }
-                    }
-
-                    for ($i = 0; $i < count($teams); $i++) {
-                        $inserts[] = [
-                            'team_id' => (int) $teams[$i],
-                            'project_id' => (int) $projectID,
-                            'display_order' => (int) $reorders[$i],
-                            'lang' => $lang
-                        ];
+                $teams = $_POST['cnrs-data-manager-project-teams-' . $projectID];
+                $orders = $_POST['cnrs-data-manager-project-order-' . $projectID];
+                $lang = $_POST['cnrs-data-manager-project-lang-' . $projectID];
+                $reorders = [];
+                foreach ($orders as $order) {
+                    if ($order !== '0') {
+                        $reorders[] = $order;
                     }
                 }
+
+                for ($i = 0; $i < count($teams); $i++) {
+                    $inserts[] = [
+                        'team_id' => (int) $teams[$i],
+                        'project_id' => (int) $projectID,
+                        'display_order' => (int) $reorders[$i],
+                        'lang' => $lang
+                    ];
+                }
             }
-            Projects::updateProjectsRelations($inserts);
+
+            Projects::updateProjectsRelations($inserts, (int) $projectID);
         }
     }
 }
@@ -1760,7 +1758,9 @@ if (!function_exists('sendCNRSEmail')) {
         $debugEmail = Settings::getDebugMode();
         $headers = ['Content-Type: text/html; charset=UTF-8'];
         foreach ($cc as $email) {
-            $headers[] = 'Cc: ' . $debugEmail === null ? $email : $debugEmail;
+            if (strlen(trim($email)) > 0) {
+                $headers[] = 'Cc: ' . $debugEmail === null ? $email : $debugEmail;
+            }
         }
         $sender = $debugEmail === null ? $to : $debugEmail;
         return wp_mail($sender, $subject, $body, $headers, $attachments);
@@ -2676,11 +2676,11 @@ if (!function_exists('getAllTemplateModel')) {
     }
 }
 
-if (!function_exists('getDefaultProjectImageUrl')) {
+if (!function_exists('getDefaultImageUrl')) {
 
-    function getDefaultProjectImageUrl(bool $thumbnail = false): ?string
+    function getDefaultImageUrl(bool $thumbnail = false): ?string
     {
-        $imgFromDb = Settings::getDefaultProjectImageUrl($thumbnail);
+        $imgFromDb = Settings::getDefaultImageUrl($thumbnail);
         return $imgFromDb ?? '/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg';
     }
 }

@@ -332,7 +332,7 @@ class Ajax
             foreach ($data as $row) {
                 $id = null;
                 $translated = [];
-                $url = getDefaultProjectImageUrl();
+                $url = getDefaultImageUrl();
                 if ($row['IMAGE'] !== null && strlen($row['IMAGE']) > 0) {
                     $imagePath = $uploadPath . '-' . $row['IMAGE'];
                     if (!file_exists($imagePath)) {

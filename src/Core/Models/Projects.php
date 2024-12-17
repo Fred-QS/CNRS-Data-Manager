@@ -71,12 +71,13 @@ class Projects
      * @param array $inserts The array containing the data for inserting the relationships.
      *                      Each element should be an associative array with the keys 'team_id',
      *                      'project_id', and optionally 'display_order'.
+     * @param int $projectID
      * @return void
      */
-    public static function updateProjectsRelations(array $inserts): void
+    public static function updateProjectsRelations(array $inserts, int $projectID): void
     {
         global $wpdb;
-        $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_team_project");
+        $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_team_project WHERE project_id = {$projectID}");
         foreach ($inserts as $insert) {
             if ($insert['display_order'] === null) {
                 $wpdb->query("INSERT INTO {$wpdb->prefix}cnrs_data_manager_team_project (team_id, project_id, lang) VALUES ({$insert['team_id']}, {$insert['project_id']}, '{$insert['lang']}')");
@@ -95,7 +96,8 @@ class Projects
     public static function getProjectsForTeam(int $teamID): array
     {
         global $wpdb;
-        return $wpdb->get_results("SELECT ID as id, post_title as title, guid as url FROM {$wpdb->prefix}cnrs_data_manager_team_project INNER JOIN {$wpdb->prefix}cnrs_data_manager_relations ON team_id = xml_entity_id INNER JOIN {$wpdb->prefix}posts ON ID = project_id WHERE type = 'teams' AND term_id = {$teamID} ORDER BY display_order ASC", ARRAY_A);
+        $locale = substr(get_locale(), 0, 2);
+        return $wpdb->get_results("SELECT ID as id, post_title as title, guid as url FROM {$wpdb->prefix}cnrs_data_manager_team_project INNER JOIN {$wpdb->prefix}cnrs_data_manager_relations ON team_id = xml_entity_id INNER JOIN {$wpdb->prefix}posts ON ID = project_id WHERE type = 'teams' AND term_id = {$teamID} AND lang = '{$locale}' ORDER BY display_order ASC LIMIT 16 OFFSET 0", ARRAY_A);
     }
 
     /**
@@ -147,6 +149,33 @@ class Projects
                         'attachment_id' => $imageID,
                     ];
                     $wpdb->insert($wpdb->prefix . 'cnrs_data_manager_project_attachment_relation', $insert, ['%d', '%d']);
+                }
+            }
+        }
+    }
+
+    public static function importRelations(): void
+    {
+        global $wpdb;
+        $wpdb->query("DELETE FROM {$wpdb->prefix}cnrs_data_manager_team_project");
+        $array = require __DIR__ . DIRECTORY_SEPARATOR . 'relations.php';
+        foreach ($array as $relation) {
+            $teamId = $relation['teamId'];
+            $projectIds = array_map(function ($title) use($wpdb) {
+                $t = str_replace("'", "\\'", $title);
+                return $wpdb->get_col("SELECT id FROM {$wpdb->prefix}posts WHERE post_type = 'project' AND post_title = '{$t}'");
+            }, $relation['titles']);
+            foreach ($projectIds as $projectIdArray) {
+                foreach ($projectIdArray as $projectId) {
+                    $projectId = (int) $projectId;
+                    $lang = function_exists('pll_get_post_language') ? pll_get_post_language($projectId) : 'fr';
+                    $insert = [
+                        'project_id' => $projectId,
+                        'team_id' => $teamId,
+                        'display_order' => 1,
+                        'lang' => $lang,
+                    ];
+                    $wpdb->insert($wpdb->prefix . 'cnrs_data_manager_team_project', $insert, ['%d', '%d', '%d', '%s']);
                 }
             }
         }

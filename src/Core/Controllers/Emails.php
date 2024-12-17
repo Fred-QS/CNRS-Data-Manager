@@ -193,19 +193,20 @@ class Emails
     {
         try {
             $template = 'exceed';
-            $email = $emails[0];
-            array_shift($emails);
             $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
 
             if ($data === null) {
                 return false;
             }
 
-            ob_start();
-            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
-            $body = ob_get_clean();
+            foreach ($emails as $email) {
 
-            sendCNRSEmail($email, $data->subject, $body, $emails);
+                ob_start();
+                include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+                $body = ob_get_clean();
+
+                sendCNRSEmail($email, $data->subject, $body);
+            }
 
             return true;
 

@@ -4,7 +4,7 @@
         <article id="cnrs-data-manager-post-<?php echo get_the_ID() ?>" class="cnrs-data-manager-front-article-wrapper category-<?php echo $slug ?>">
             <div class="cnrs-data-manager-front-article-image">
                 <?php $image_url = wp_get_attachment_image_src(get_post_thumbnail_id(get_the_ID()), 'full'); ?>
-                <?php $image = strlen($image_url[0]) > 0 ? $image_url[0] : getDefaultProjectImageUrl(true); ?>
+                <?php $image = strlen($image_url[0]) > 0 ? $image_url[0] : getDefaultImageUrl(true); ?>
                 <a href="<?php echo the_permalink() ?>" class="entry-featured-image-url" style="background-image: url(<?php echo esc_url( $image ) ?>);">
                     <span class="cnrs-data-manager-front-article-image-overlay" data-icon=""></span>
                 </a>
