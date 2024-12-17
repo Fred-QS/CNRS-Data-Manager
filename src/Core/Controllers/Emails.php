@@ -275,6 +275,7 @@ class Emails
         }
     }
 
+
     /**
      * Sends a validated mission form notification email to manager.
      *
