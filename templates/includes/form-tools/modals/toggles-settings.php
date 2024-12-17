@@ -21,6 +21,14 @@
                                 <span><?php echo $toggle['option2']['value'] ?></span>
                             </label>
                         </li>
+                        <?php if (isset($toggle['option3'])): ?>
+                            <li>
+                                <label>
+                                    <input type="checkbox" id="cnrs-dm-toggle-option3-<?php echo $id ?>" value="1"<?php echo $toggle['option3']['active'] === true ? ' checked' : '' ?>>
+                                    <span><?php echo $toggle['option3']['value'] ?></span>
+                                </label>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             <?php endforeach; ?>

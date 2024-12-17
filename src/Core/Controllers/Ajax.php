@@ -5,13 +5,16 @@ namespace CnrsDataManager\Core\Controllers;
 use Error;
 use ErrorException;
 use JsonException;
+use PDOException;
 use ZipArchive;
 use CnrsDataManager\Excel\IOFactory;
 use CnrsDataManager\Excel\RichText\RichText;
 use CnrsDataManager\Core\Models\Projects;
 use CnrsDataManager\Core\Models\Forms;
+use CnrsDataManager\Core\Models\Collaborators;
 use CnrsDataManager\Core\Controllers\Emails;
 use CnrsDataManager\Core\Controllers\Manager;
+use CnrsDataManager\Core\Controllers\HttpClient;
 
 class Ajax
 {
@@ -24,16 +27,21 @@ class Ajax
         'get_forms_list' => 'getFormsList',
         'get_new_manager' => 'getNewManager',
         'form_list_action' => 'formListAction',
-        'get_form_toggles' => 'getFormToggles'
+        'get_form_toggles' => 'getFormToggles',
+        'get_collaborators_list' => 'getCollaboratorsList',
+        'get_collaborator_modal' => 'getCollaboratorModal',
+        'collaborator_action' => 'collaboratorAction',
+        'get_attachments' => 'getAttachments',
+        'search_publications' => 'searchPublications',
+        'check_xml_remote_address' => 'checkXmlRemoteAddress'
     ];
 
     private static array $publicActions = [];
 
-    private static string $timestamp = '';
-
     private static array $mapper = ["ACRONYME", "INTITULE", "RESPONSABLE_SCIENTIFIQUE", "EQUIPE", "FINANCEUR", "RESUME", "LIEN_SITE", "IMAGE"];
 
-    private static array $optionals = ["INTITULE", "FINANCEUR", "LIEN_SITE", "IMAGE"];
+    private static array $btnText = ['fr' => 'Voir le projet', 'en' => 'See project'];
+    private static array $optionals = ["FINANCEUR", "RESUME", "LIEN_SITE", "IMAGE"];
 
     private static array $formModules = ['input', 'checkbox', 'radio', 'textarea', 'title', 'comment', 'signs', 'number', 'date', 'time', 'datetime', 'toggle'];
 
@@ -64,16 +72,30 @@ class Ajax
      */
     public static function inspectXLSFile(): void
     {
-        $error = __('Bad file type. Only <b>.zip</b> file is allowed.', 'cnrs-data-manager');
-        ob_start();
-        include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
-        $html = ob_get_clean();
-        $response = ['error' => $error, 'data' => null, 'html' => $html];
-        if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip') {
-            $response = self::analyseFiles($_FILES['file']['tmp_name']);
+        ini_set('memory_limit', '-1');
+        try {
+            $error = __('Bad file type. Only <b>.zip</b> file is allowed.', 'cnrs-data-manager');
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-result.php');
+            $html = ob_get_clean();
+            $response = ['error' => $error, 'data' => null, 'html' => $html];
+            if (isset($_FILES['file']) && self::isZipMIMEType($_FILES['file']['type'])) {
+                $response = self::analyseFiles($_FILES['file']['tmp_name']);
+            }
+        } catch (Error|ErrorException $e) {
+            $response = ['error' => $e->getMessage(), 'data' => null, 'html' => null];
         }
         wp_send_json_success($response);
         exit;
+    }
+
+    /**
+     * @param string $mimeType
+     * @return bool
+     */
+    private static function isZipMIMEType(string $mimeType): bool
+    {
+        return str_starts_with($mimeType, 'application/') && str_contains($mimeType, 'zip');
     }
 
     /**
@@ -165,11 +187,11 @@ class Ajax
             if ($cnt > 0) {
                 $rowArray = [];
                 $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(TRUE);
+                $cellIterator->setIterateOnlyExistingCells(true);
                 $deadCellsCnt = 0;
                 $cellsCnt = 0;
                 foreach ($cellIterator as $cell) {
-                    if ($cell->getValue() === null && !in_array(self::$mapper[$cellsCnt], self::$optionals, true)) {
+                    if (($cell->getValue() === null || strlen($cell->getValue()) === 0) && self::$mapper[$cellsCnt] !== null && !in_array(self::$mapper[$cellsCnt], self::$optionals, true)) {
                         $deadCellsCnt++;
                     }
                     $value = $cell->getValue();
@@ -180,15 +202,17 @@ class Ajax
                         }
                     }
                     $value = strlen($richText) < 1 ? $value : $richText;
-                    $rowArray[self::$mapper[$cellsCnt]] = $value;
-                    $cellsCnt++;
+                    if (strlen(self::$mapper[$cellsCnt]) > 0) {
+                        $rowArray[self::$mapper[$cellsCnt]] = self::$mapper[$cellsCnt] === 'FINANCEUR' ? self::getFunders($value) : htmlentities($value);
+                        $cellsCnt++;
+                    }
                 }
-                if ($deadCellsCnt <= 2) {
+                if ($deadCellsCnt === 0) {
                     $array[] = $rowArray;
                 }
             } else {
                 $cellIterator = $row->getCellIterator();
-                $cellIterator->setIterateOnlyExistingCells(TRUE);
+                $cellIterator->setIterateOnlyExistingCells(true);
                 foreach ($cellIterator as $cell) {
                     if (!in_array($cell->getValue(), self::$mapper, true)) {
                         return false;
@@ -212,7 +236,7 @@ class Ajax
     {
         $xlsImages = [];
         foreach ($excel as $row) {
-            if ($row['IMAGE'] !== null) {
+            if ($row['IMAGE'] !== null && strlen($row['IMAGE']) > 0) {
                 $xlsImages[] = $row['IMAGE'];
             }
         }
@@ -232,23 +256,27 @@ class Ajax
      */
     public static function importXLSFile(): void
     {
+        ini_set('memory_limit', '-1');
         $json = ['error' => null, 'data' => null];
         try {
-            if (isset($_FILES['file']) && $_FILES['file']['type'] === 'application/zip' && isset($_POST['data']) && isset($_POST['teams'])) {
+            if (isset($_FILES['file']) && self::isZipMIMEType($_FILES['file']['type']) && isset($_POST['data']) && isset($_POST['teams'])) {
                 $teams = json_decode(stripslashes($_POST['teams']), true);
                 $strip = str_replace('\\n', '<br>', $_POST['data']);
-                $strip = str_replace('\\', '', $strip);
-                $data = json_decode($strip, true, 512, JSON_THROW_ON_ERROR);
-                $path = wp_upload_dir()['path'];
-                $dir = $path . '/';
-                $moved = self::importImagesInTmpDir($dir);
+                $data = json_decode(stripslashes($strip), true, 512, JSON_THROW_ON_ERROR);
+                $timestamp = date("YmdHis");
+                $path = wp_upload_dir()['path'] . '/' . $timestamp;
+                $moved = self::importImagesInTmpDir($path);
                 if ($moved === false) {
                     $json['error'] = __('The images could not be processed.', 'cnrs-data-manager');
                 } else {
                     $json['data'] = __('The projects were imported successfully.', 'cnrs-data-manager');
-                    $import = self::importProjectsToDB($data, $dir, $teams);
+                    $data = array_filter($data, function ($item) {return $item['INTITULE'] !== null;});
+                    $import = self::importProjectsToDB($data, $path, $teams, $timestamp);
                     if ($import === false) {
                         $json = ['error' => __('Importing projects into the database failed.', 'cnrs-data-manager'), 'data' => null];
+                    }
+                    if (is_array($import)) {
+                        $json = ['error' => $import['error'], 'data' => null];
                     }
                     $json['data'] = $import;
                 }
@@ -273,7 +301,6 @@ class Ajax
         $zip = new ZipArchive;
         $path = $_FILES['file']['tmp_name'];
         $test = $zip->open($path);
-        self::$timestamp = date("YmdHis");
         if ($test === true) {
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $filename = $zip->getNameIndex($i);
@@ -281,7 +308,7 @@ class Ajax
                 $ext = $fileinfo['extension'] ?? null;
                 if (in_array($ext, ['jpg', 'jpeg', 'png'], true)) {
                     $fileToExtract = $zip->getFromName($filename);
-                    file_put_contents($dir . self::$timestamp . '-' . $fileinfo['basename'], $fileToExtract);
+                    file_put_contents($dir . '-' . $fileinfo['basename'], $fileToExtract);
                 }
             }
             $zip->close();
@@ -295,147 +322,137 @@ class Ajax
      * @param array $data The data of the projects to be imported.
      * @param string $uploadPath The path where the images are uploaded.
      * @param array $teams Array of teams Ids.
-     * @return bool|string Returns false if any image is missing or a string of the HTML list.
+     * @return bool|string|array Returns false if any image is missing or a string of the HTML list or array if PHP error.
      */
-    private static function importProjectsToDB(array $data, string $uploadPath, array $teams): bool|string
+    private static function importProjectsToDB(array $data, string $uploadPath, array $teams, string $timestamp): bool|string|array
     {
-        $posts = [];
-        foreach ($data as $row) {
-            $id = null;
-            $translated = [];
-            $url = site_url() . '/wp-content/plugins/cnrs-data-manager/assets/media/default-project-image.jpg';
-            if ($row['IMAGE'] !== null) {
-                $imagePath = $uploadPath . self::$timestamp . '-' . $row['IMAGE'];
-                if (!file_exists($imagePath)) {
-                    return false;
+        try {
+
+            $posts = [];
+            foreach ($data as $row) {
+                $id = null;
+                $translated = [];
+                $url = getDefaultImageUrl();
+                if ($row['IMAGE'] !== null && strlen($row['IMAGE']) > 0) {
+                    $imagePath = $uploadPath . '-' . $row['IMAGE'];
+                    if (!file_exists($imagePath)) {
+                        return false;
+                    }
+                    $imageData = pathinfo($imagePath);
+                    $url = site_url() . '/wp-content' . explode('wp-content', $imagePath)[1];
+                    $fileName = str_replace(['.jpg', '.jpeg', '.png', $timestamp . '-'], '', $imageData['basename']);
+                    $mimetype = $imageData['extension'] === 'png' ? 'image/png' : 'image/jpeg';
+                    $wpImageToDB = [
+                        'guid' => $url,
+                        'post_mime_type' => $mimetype,
+                        'post_title' => $fileName,
+                        'post_name' => $fileName,
+                        'post_status' => 'inherit',
+                    ];
+                    $id = wp_insert_attachment($wpImageToDB, $imagePath, 0);
+                    $attach_data = wp_generate_attachment_metadata($id, $imagePath);
+                    wp_update_attachment_metadata($id, $attach_data);
                 }
-                $imageData = exif_read_data($imagePath);
-                $url = site_url() . '/wp-content' . explode('wp-content', $imagePath)[1];
-                $fileName = str_replace(['.jpg', '.jpeg', '.png'], '', $imageData['FileName']);
-                $wpImageToDB = [
-                    'guid' => $url,
-                    'post_mime_type' => $imageData['MimeType'],
-                    'post_title' => $fileName,
-                    'post_name' => $fileName,
-                    'post_status' => 'inherit',
+
+                $wpProjectToDB = [
+                    'post_author' => get_current_user_id(),
+                    'post_content' => cnrsCreateContent($row['RESUME'], $row['INTITULE']),
+                    'post_title' => html_entity_decode($row['INTITULE']),
+                    'post_status' => 'publish',
+                    'post_type' => 'project',
+                    'comment_status' => 'closed',
+                    'post_excerpt' => cnrsCreateExcerpt($row['RESUME'], $row['INTITULE']),
+                    'ping_status' => 'closed',
+                    'meta_input'   => [
+                        'cnrs_project_acronym' => $row['ACRONYME'],
+                        'cnrs_project_leaders_and_team' => $row['RESPONSABLE_SCIENTIFIQUE'] . '; ' . $row['EQUIPE'],
+                        'cnrs_project_link' => $row['LIEN_SITE'] ?? '',
+                        'cnrs_project_link_text' => self::$btnText['fr']
+                    ]
                 ];
-                $id = wp_insert_attachment($wpImageToDB, $imagePath, 0);
-                $attach_data = wp_generate_attachment_metadata($id, $imagePath);
-                wp_update_attachment_metadata($id, $attach_data);
-            }
 
-            $projectFrId = $teams['fr'];
+                $postId = wp_insert_post($wpProjectToDB);
+                Projects::setTeamProjectRelation($postId, $teams['fr'], 'fr');
+                Collaborators::setFundersProjectRelation($postId, $row['FINANCEUR']);
 
-            $wpProjectToDB = [
-                'post_author' => get_current_user_id(),
-                'post_content' => self::preparePostContent($row),
-                'post_title' => $row['ACRONYME'],
-                'post_status' => 'publish',
-                'post_type' => 'project',
-                'comment_status' => 'open',
-                'ping_status' => 'closed'
-            ];
+                if ($id !== null) {
+                    set_post_thumbnail($postId, $id);
+                }
 
-            if ($id !== null) {
-                $wpProjectToDB['_thumbnail_id'] = $id;
-            }
+                if (function_exists('pll_set_post_language')) {
+                    pll_set_post_language($postId, 'fr');
+                }
 
-            $postId = wp_insert_post($wpProjectToDB);
-            Projects::setTeamProjectRelation($postId, $projectFrId, 'fr');
+                $recorded = get_post($postId, ARRAY_A);
+                $translated['fr'] = $postId;
 
-            if (function_exists('pll_set_post_language')) {
-                pll_set_post_language($postId, 'fr');
-            }
+                $posts[] = [
+                    'url' => $recorded['guid'],
+                    'image' => $url,
+                    'lang' => 'fr',
+                    'excerpt' => $recorded['post_excerpt'],
+                    'title' => $recorded['post_title']
+                ];
 
-            $recorded = get_post($postId, ARRAY_A);
-            $translated['fr'] = $postId;
+                foreach ($teams as $lang => $teamId) {
 
-            $posts[] = [
-                'url' => $recorded['guid'],
-                'image' => $url,
-                'lang' => 'fr',
-                'excerpt' => $row['INTITULE'],
-                'title' => $recorded['post_title']
-            ];
+                    if ($lang !== 'fr') {
 
-            foreach ($teams as $lang => $teamId) {
+                        $wpProjectToDB = [
+                            'post_author' => get_current_user_id(),
+                            'post_content' => cnrsCreateContent($row['RESUME'], $row['INTITULE']),
+                            'post_title' => html_entity_decode($row['INTITULE']),
+                            'post_status' => 'publish',
+                            'post_type' => 'project',
+                            'comment_status' => 'closed',
+                            'post_excerpt' => cnrsCreateExcerpt($row['RESUME'], $row['INTITULE']),
+                            'ping_status' => 'closed',
+                            'meta_input'   => [
+                                'cnrs_project_acronym' => $row['ACRONYME'],
+                                'cnrs_project_leaders_and_team' => $row['RESPONSABLE_SCIENTIFIQUE'] . '; ' . $row['EQUIPE'],
+                                'cnrs_project_link' => $row['LIEN_SITE'] ?? '',
+                                'cnrs_project_link_text' => self::$btnText[$lang] ?? self::$btnText['en']
+                            ]
+                        ];
 
-                if ($lang !== 'fr') {
 
-                    $wpProjectToDB = [
-                        'post_author' => get_current_user_id(),
-                        'post_content' => self::preparePostContent($row),
-                        'post_title' => $row['ACRONYME'],
-                        'post_status' => 'publish',
-                        'post_type' => 'project',
-                        'comment_status' => 'open',
-                        'ping_status' => 'closed'
-                    ];
+                        $postId = wp_insert_post($wpProjectToDB);
+                        Projects::setTeamProjectRelation($postId, $teamId, $lang);
+                        Collaborators::setFundersProjectRelation($postId, $row['FINANCEUR']);
 
-                    if ($id !== null) {
-                        $wpProjectToDB['_thumbnail_id'] = $id;
-                    }
+                        if ($id !== null) {
+                            set_post_thumbnail($postId, $id);
+                        }
 
-                    $postId = wp_insert_post($wpProjectToDB);
-                    Projects::setTeamProjectRelation($postId, $teamId, $lang);
+                        if (function_exists('pll_set_post_language')) {
+                            pll_set_post_language($postId, $lang);
+                        }
 
-                    if (function_exists('pll_set_post_language')) {
-                        pll_set_post_language($postId, $lang);
-                    }
+                        $translated[$lang] = $postId;
+                        $recorded = get_post($postId, ARRAY_A);
 
-                    $translated[$lang] = $postId;
-                    $recorded = get_post($postId, ARRAY_A);
+                        $posts[] = [
+                            'url' => $recorded['guid'],
+                            'image' => $url,
+                            'lang' => $lang,
+                            'excerpt' => $recorded['post_excerpt'],
+                            'title' => $recorded['post_title']
+                        ];
 
-                    $posts[] = [
-                        'url' => $recorded['guid'],
-                        'image' => $url,
-                        'lang' => $lang,
-                        'excerpt' => $row['INTITULE'],
-                        'title' => $recorded['post_title']
-                    ];
-
-                    if (count($translated) > 1 && function_exists('pll_save_post_translations')) {
-                        pll_save_post_translations($translated);
+                        if (count($translated) > 1 && function_exists('pll_save_post_translations')) {
+                            pll_save_post_translations($translated);
+                        }
                     }
                 }
             }
-        }
 
-        ob_start();
-        include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-list.php');
-        return ob_get_clean();
-    }
-
-    /**
-     * Prepare the post content based on the given data.
-     *
-     * @param array $data The data used to generate the post content.
-     * @return string The prepared post content.
-     */
-    private static function preparePostContent(array $data): string
-    {
-        $content = '';
-        if ($data['INTITULE'] !== null) {
-            $content = "<h4>{$data['INTITULE']}</h4>" . "\n";
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/import-list.php');
+            return ob_get_clean();
+            
+        } catch (Error|ErrorException|PDOException $e) {
+            return ['error' => $e->getMessage()];
         }
-        if ($data['RESUME'] !== null) {
-            $content .= $data['RESUME'] . "\n";
-            $content .= "&nbsp;" . "\n";
-        }
-        $content .= "<h6><em>{$data['RESPONSABLE_SCIENTIFIQUE']}";
-        if ($data['EQUIPE'] !== null) {
-            $content .= ", {$data['EQUIPE']}";
-        }
-        if ($data['FINANCEUR'] !== null) {
-            $finance = __('financier', 'cnrs-data-manager');
-            $content .= ", {$finance} {$data['FINANCEUR']}";
-        }
-        $content .= "</em></h6>";
-        if ($data['LIEN_SITE'] !== null) {
-            $content .= "&nbsp;" . "\n";
-            $content .= `<a href="{$data['LIEN_SITE']}" target="_blank">{$data['LIEN_SITE']}</a>`;
-        }
-        return str_replace('<br>', "\n", $content);
     }
 
     /**
@@ -639,6 +656,188 @@ class Ajax
             } catch (ErrorException $e) {
                 $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
             }
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Retrieves the list of collaborators and sends it as a JSON response.
+     *
+     * @return void
+     */
+    public static function getCollaboratorsList(): void
+    {
+        $json = ['error' => null, 'data' => ['total' => 0], 'html' => ''];
+        if (!isset($_POST['page']) || !isset($_POST['search']) || !isset($_POST['results_per_page'])) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        } else {
+            try {
+                $current = ctype_digit((string) $_POST['page']) ? (int) $_POST['page'] : 1;
+                $search = trim(html_entity_decode($_POST['search']));
+                $limit = (int) $_POST['results_per_page'];
+                $entityType = $_POST['type_filter'];
+                $orderBy = $_POST['date_order_by'];
+                $count = Collaborators::getCollaboratorsCount($search, $limit, $current, $entityType);
+                $pages = 0;
+                $rows = [];
+                $previous = null;
+                $next = null;
+                if ($count > 0 && $limit > 0) {
+                    $pages = $count / $limit < 1 ? 1 : ceil($count / $limit);
+                    if ($current < 1) {
+                        $current = 1;
+                    } else if ($current > $pages) {
+                        $current = $pages;
+                    }
+                    $rows = Collaborators::getPaginatedCollaboratorsList($search, $limit, $current, $entityType, $orderBy);
+                    $previous = $current > 1 ? $current - 1 : null;
+                    $next = $current < $pages ? $current + 1 : null;
+                }
+                ob_start();
+                include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/collaborators-list.php');
+                $json['html'] = ob_get_clean();
+                $json['data'] = ['total' => $count];
+            } catch (ErrorException $e) {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Retrieves the collaborator modal HTML and sends it as a JSON response.
+     *
+     * @return void
+     */
+    public static function getCollaboratorModal(): void
+    {
+        $json = ['error' => null, 'data' => null];
+        try {
+            $data = null;
+            ob_start();
+            include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/collaborator-modal.php');
+            $json['html'] = ob_get_clean();
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    public static function collaboratorAction(): void
+    {
+        $json = ['error' => null, 'data' => null];
+        try {
+            if ($_POST['trigger'] === 'edit') {
+                $data = Collaborators::getCollaboratorById((int) $_POST['id']);
+                ob_start();
+                include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/collaborator-modal.php');
+                $json['html'] = ob_get_clean();
+            } else {
+                Collaborators::deleteCollaboratorById((int) $_POST['id']);
+            }
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Retrieves all image attachments and sends them as a JSON response.
+     *
+     * @return void
+     */
+    public static function getAttachments(): void
+    {
+        $json = ['error' => null, 'data' => null, 'html' => ''];
+        try {
+            if (isset($_POST['project_id'])) {
+                $args = array(
+                    'post_type' => 'attachment',
+                    'numberposts' => -1,
+                    'post_mime_type' => 'image',
+                    'post_status' => null,
+                    'post_parent' => null,
+                );
+                $projectId = (int) $_POST['project_id'];
+                $imagesFromProject = Projects::getImagesFromProject($projectId);
+                $images = get_posts($args);
+                ob_start();
+                include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/attachments-modal.php');
+                $json['html'] = ob_get_clean();
+                $json['data'] = $images;
+            } else {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+
+    /**
+     * Return filtered publications.
+     *
+     * @return void
+     */
+    public static function searchPublications(): void
+    {
+        $json = ['error' => null, 'data' => null];
+        try {
+            $oskar = Manager::getPublications();
+            $formatted = cnrsFormatPublications($oskar);
+            $publications = cnrsApplyFilters($formatted['publications'], $_POST);
+            $totalCount = count($formatted['publications']);
+            $filteredCount = count($publications);
+            ob_start();
+            include_once(CNRS_DATA_MANAGER_PATH . '/templates/includes/publications.php');
+            $json['data'] = ob_get_clean();
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+        }
+        wp_send_json_success($json);
+        exit;
+    }
+    
+    private static function getFunders(?string $funders): array
+    {
+        $array = [];
+        if ($funders !== null && strlen($funders) > 0) {
+            $fundersFromDb = Collaborators::getCollaborators()['funders'];
+            $array = array_map(function ($funder) use($fundersFromDb) {
+                $funder = trim($funder);
+                foreach ($fundersFromDb as $f) {
+                    if (strtolower($f['entity_name']) === strtolower($funder)) {
+                        return (int) $f['id'];
+                    }
+                }
+                return null;
+            }, explode(',', $funders));
+
+            $array = array_filter($array, function($f) {
+                return $f !== null;
+            });
+
+            $array = array_values($array);
+        }
+        return $array;
+    }
+
+    public static function checkXmlRemoteAddress(): string
+    {
+        $json = ['error' => null, 'data' => null];
+        try {
+            if (isset($_POST['url'])) {
+                $json['data'] = HttpClient::call($_POST['url'], true);
+            } else {
+                $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
+            }
+        } catch (ErrorException $e) {
+            $json['error'] = __('An error as occurred.', 'cnrs-data-manager');
         }
         wp_send_json_success($json);
         exit;

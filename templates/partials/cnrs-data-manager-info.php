@@ -76,12 +76,16 @@
                             <?php endforeach; ?>
                         </ul>
                     <?php endif;  ?>
-                    <?php if ($agent['responsabilite'] !== null): ?>
-                        <span><?php echo $agent['responsabilite'] ?></span>
-                    <?php endif; ?>
+                    <?php /*if ($agent['responsabilite'] !== null): */?><!--
+                        <span><?php /*echo $agent['responsabilite'] */?></span>
+                    --><?php /*endif; */?>
                     <?php if ($agent['expertise'] !== null): ?>
                         <h5><?php echo __('Expertise', 'cnrs-data-manager') ?></h5>
                         <span><?php echo $agent['expertise'] ?></span>
+                    <?php endif; ?>
+                    <?php if ($agent['activites'] !== null): ?>
+                        <h5><?php echo __('Activity', 'cnrs-data-manager') ?></h5>
+                        <span><?php echo $agent['activites'] ?></span>
                     <?php endif; ?>
                     <?php if (count($agent['liens_externes']) > 0): ?>
                         <p><?php echo count($agent['liens_externes']) > 1 ? __('Links', 'cnrs-data-manager') : __('Link', 'cnrs-data-manager') ?></p>

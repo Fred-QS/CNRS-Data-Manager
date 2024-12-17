@@ -7,19 +7,11 @@
     <h2><?php echo sprintf(__('Find the %s', 'cnrs-data-manager'), strtolower($catName)) ?></h2>
 </div>
 
-<?php if ($isFilterHidden === false): ?>
-    <?php echo do_shortcode('[cnrs-data-manager type="filters"]') ?>
-<?php endif; ?>
+<?php echo do_shortcode('[cnrs-data-manager type="filters"]') ?>
 
-<?php $previewTemplate = null ?>
 <?php if (have_posts()): ?>
-    <div id="cnrs-data-manager-front-blog" class="cnrs-dm-front-silent-container<?php if ($isCandidating === false): ?> cnrs-dm-front-silent-container-poster<?php else: ?> cnrs-dm-front-silent-container-card<?php endif; ?>">
+    <div id="cnrs-data-manager-front-blog" class="cnrs-dm-front-silent-container cnrs-dm-front-silent-container-<?php echo strtolower($previewTemplate) ?>">
     <?php while (have_posts()) : the_post(); ?>
-        <?php if ($isCandidating === false): ?>
-            <?php $previewTemplate = 'poster' ?>
-        <?php else: ?>
-            <?php $previewTemplate = 'card' ?>
-        <?php endif; ?>
         <?php include(CNRS_DATA_MANAGER_DEPORTED_TEMPLATES_PATH . '/cnrs-data-manager-post-preview.php') ?>
     <?php endwhile; ?>
     </div>

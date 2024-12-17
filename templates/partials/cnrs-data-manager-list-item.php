@@ -34,10 +34,22 @@
             <p><?php echo $agent['nom'] ?> <?php echo $agent['prenom'] ?></p>
             <i><?php echo $agent['statut'] ?></i>
         </div>
-        <div class="cnrs-dm-front-list-item cnrs-dm-front-list-item-membership">
+        <ul class="cnrs-dm-front-list-item cnrs-dm-front-list-item-membership" style="padding: 0;">
             <?php foreach ($agent['equipes'] as $team): ?>
-                <a class="cnrs-dm-front-membership-item" href="<?php echo $team['extra']['url'] ?>"><?php echo $team['extra']['title'] ?></a>
+                <li>
+                    <a class="cnrs-dm-front-membership-item" href="<?php echo $team['extra']['url'] ?>"><?php echo __('Team', 'cnrs-data-manager') . ' ' . $team['extra']['title'] ?></a>
+                </li>
             <?php endforeach; ?>
-        </div>
+            <?php foreach ($agent['services'] as $service): ?>
+                <li>
+                    <a class="cnrs-dm-front-membership-item" href="<?php echo $service['extra']['url'] ?>"><?php echo __('Service', 'cnrs-data-manager') . ' ' . $service['extra']['title'] ?></a>
+                </li>
+            <?php endforeach; ?>
+            <?php foreach ($agent['plateformes'] as $platform): ?>
+                <li>
+                    <a class="cnrs-dm-front-membership-item" href="<?php echo $platform['extra']['url'] ?>"><?php echo __('Platform', 'cnrs-data-manager') . ' ' . $platform['extra']['title'] ?></a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
     </div>
 </div>

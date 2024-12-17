@@ -135,7 +135,10 @@ class Agents
         if (strlen($search) > 0) {
             $filteredAgents = array_filter($agents, function ($agent) use ($search, $filter) {
                 if ($filter === 'all') {
-                    return stripos($agent['nom'], $search) !== false || stripos($agent['prenom'], $search) !== false || stripos($agent['statut'], $search) !== false || self::searchInCats($agent['equipes'], $search) !== false;
+                    return stripos($agent['nom'], $search) !== false 
+                        || stripos($agent['prenom'], $search) !== false 
+                        || stripos($agent['statut'], $search) !== false 
+                        || self::searchInCats($agent, $search) !== false;
                 } else if ($filter === 'lastname') {
                     return stripos($agent['nom'], $search) !== false;
                 } else if ($filter === 'firstname') {
@@ -143,7 +146,7 @@ class Agents
                 } else if ($filter === 'status') {
                     return stripos($agent['statut'], $search) !== false;
                 } else if ($filter === 'membership') {
-                    return self::searchInCats($agent['equipes'], $search) !== false;
+                    return self::searchInCats($agent, $search) !== false;
                 }
                 return false;
             });
@@ -159,10 +162,22 @@ class Agents
      *
      * @return bool Returns true if the string is found in any of the team titles, otherwise false.
      */
-    private static function searchInCats(array $teams, string $search): bool
+    private static function searchInCats(array $agent, string $search): bool
     {
-        foreach ($teams as $team) {
+        foreach ($agent['teams'] as $team) {
             $extra = $team['extra'];
+            if (stripos($extra['title'], $search) !== false) {
+                return true;
+            }
+        }
+        foreach ($agent['services'] as $service) {
+            $extra = $service['extra'];
+            if (stripos($extra['title'], $search) !== false) {
+                return true;
+            }
+        }
+        foreach ($agent['plateformes'] as $platform) {
+            $extra = $platform['extra'];
             if (stripos($extra['title'], $search) !== false) {
                 return true;
             }

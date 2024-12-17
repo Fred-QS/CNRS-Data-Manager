@@ -31,6 +31,9 @@ class CnrsDataManagerUninstall // phpcs:ignore
         try {
             cnrs_remove_folders(true);
             self::removeTables();
+            if (wp_next_scheduled('cnrs_data_manager_cron_hook')) {
+                wp_clear_scheduled_hook('cnrs_data_manager_cron_hook');
+            }
         } catch (Exception|Error $e) {
             // Prevent error on uninstall
         }
@@ -52,10 +55,26 @@ class CnrsDataManagerUninstall // phpcs:ignore
             $wpdb->prefix . 'cnrs_data_manager_revisions',
             $wpdb->prefix . 'cnrs_data_manager_hidden_filters',
             $wpdb->prefix . 'cnrs_data_manager_candidating',
+            $wpdb->prefix . 'cnrs_data_manager_articles_preview_design',
+            $wpdb->prefix . 'cnrs_data_manager_project_entities',
+            $wpdb->prefix . 'cnrs_data_manager_project_entity_relation',
+            $wpdb->prefix . 'cnrs_data_manager_project_attachment_relation',
+            $wpdb->prefix . 'cnrs_data_manager_emails',
         ];
 
         foreach ($tables as $table) {
             $wpdb->query("DROP TABLE IF EXISTS {$table}");
+        }
+
+        $metas = [
+            'cnrs_project_acronym',
+            'cnrs_project_leaders_and_team',
+            'cnrs_project_link',
+            'cnrs_project_link_text'
+        ];
+
+        foreach ($metas as $meta) {
+            $wpdb->query("DELETE FROM {$wpdb->prefix}postmeta WHERE meta_key = '{$meta}'");
         }
     }
 }

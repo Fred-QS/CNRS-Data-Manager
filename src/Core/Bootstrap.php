@@ -15,6 +15,7 @@ use CnrsDataManager\Core\Controllers\Ajax;
 use CnrsDataManager\Core\Models\Settings;
 use CnrsDataManager\Core\Models\Projects;
 use CnrsDataManager\Core\Models\Forms;
+use CnrsDataManager\Core\Models\Tools;
 
 class Bootstrap
 {
@@ -28,13 +29,16 @@ class Bootstrap
     public static function init(): void
     {
         add_action('init', array(__CLASS__, 'hookWpInit'));
-        add_action( 'cnrs_data_manager_cron_hook', array(__CLASS__, 'cnrs_data_manager_cron_hook') );
+        add_action('cnrs_data_manager_cron_hook', array(__CLASS__, 'cnrs_data_manager_cron_hook'));
+        if (!defined('DISABLE_WP_CRON') || DISABLE_WP_CRON === false) {
+            add_action( 'admin_notices', array(__CLASS__, 'cnrs_cron_message'));
+        }
         Projects::cleanGhostProjects();
         Settings::update();
         Settings::deployCategoryTemplate();
 
         if (is_admin()) {
-            if (isset($_GET['page']) 
+            if (isset($_GET['page'])
                 && in_array($_GET['page'], ['data-manager', 'data-manager-tools', 'data-manager-import'])
                 && !defined('CNRS_DATA_MANAGER_XML_DATA')
             ) {
@@ -45,10 +49,16 @@ class Bootstrap
             add_action('plugins_loaded', array(__CLASS__, 'loadTextDomain'));
         }
 
-        add_shortcode( 'cnrs-data-manager', 'cnrsReadShortCode' );
+        add_shortcode('cnrs-data-manager', 'cnrsReadShortCode');
         if (!wp_next_scheduled('cnrs_data_manager_cron_hook')) {
             wp_schedule_event(strtotime(date("Y-m-d ") . "23:59:59"), 'daily', 'cnrs_data_manager_cron_hook');
         }
+    }
+
+    public static function cnrs_cron_message(): void
+    {
+        $cron = '<code style="color: #53AC64;">0 0 * * * wget -q -O - ' . get_site_url() . '/wp-cron.php?doing_wp_cron >/dev/null 2>&1</code>';
+        printf('<div class="notice notice-warning"><p>%s %s</p></div>', __('<b>Warning:</b> For performance reasons, you should add <code style="color: #2271b1;">define (\'DISABLE_WP_CRON\', true);</code> to your <b style="color: #2271b1;">wp-config.php</b> file, then create the cron job task: ', 'cnrs-data-manager'), $cron);
     }
     
     public static function cnrs_data_manager_cron_hook(): void
@@ -99,6 +109,13 @@ class Bootstrap
             define('CNRS_DATA_MANAGER_CURRENT_THEME_FOLDER', $currentThemeFolder);
             setUserConnexion();
         }
+        
+        Tools::setPostsMeta([
+            'cnrs_project_acronym',
+            'cnrs_project_leaders_and_team',
+            'cnrs_project_link',
+            'cnrs_project_link_text'
+        ]);
         cnrs_install_folders();
         addQueryVars();
     }
@@ -164,7 +181,12 @@ class Bootstrap
 
         wp_enqueue_script('cnrs-data-manager-resize-sensor', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-resize-sensor.js', [], CNRS_DATA_MANAGER_VERSION, true);
 
-        wp_enqueue_script('cnrs-data-manager-tinymce-script', 'https://cdn.tiny.cloud/1/ciqultt5itu3hkw8txl3vvslk5g0bvse8f066vbwdhqnbn5w/tinymce/7/tinymce.min.js', false);
+        wp_enqueue_script(
+            'cnrs-data-manager-tinymce-script',
+            CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-tinymce.js',
+            [],
+            '1.0'
+        );
 
         wp_enqueue_script('cnrs-data-manager-scripts', CNRS_DATA_MANAGER_PLUGIN_URL . '/assets/js/cnrs-data-manager-scripts.js', ['cnrs-data-manager-map-script', 'cnrs-data-manager-resize-sensor', 'cnrs-data-manager-tinymce-script'], CNRS_DATA_MANAGER_VERSION, true);
     }
@@ -293,6 +315,26 @@ class Bootstrap
                     'menu_slug'              => 'data-manager-mission-form',
                     'callback'               => function () {
                         include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Form.php');
+                    }
+                ],
+                [
+                    'parent_slug'            => 'cnrs-data-manager',
+                    'page_title'             => __('Collaborators', 'cnrs-data-manager'),
+                    'menu_title'             => __('Collaborators', 'cnrs-data-manager'),
+                    'capability'             => 'manage_options',
+                    'menu_slug'              => 'data-manager-collaborators',
+                    'callback'               => function () {
+                        include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Collaborators.php');
+                    }
+                ],
+                [
+                    'parent_slug'            => 'cnrs-data-manager',
+                    'page_title'             => __('Emails', 'cnrs-data-manager'),
+                    'menu_title'             => __('Emails', 'cnrs-data-manager'),
+                    'capability'             => 'manage_options',
+                    'menu_slug'              => 'data-manager-emails',
+                    'callback'               => function () {
+                        include(CNRS_DATA_MANAGER_PATH . '/src/Core/Views/Emails.php');
                     }
                 ]
             ];

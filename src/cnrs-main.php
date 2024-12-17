@@ -22,4 +22,4 @@ require_once("Tools/helper.php");
 require_once("Tools/define.php");
 
 Bootstrap::init();
-setMissionFormURL();
+setVirtualPages();

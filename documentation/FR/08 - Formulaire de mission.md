@@ -85,4 +85,4 @@ Une fois le formulaire rempli par l'agent, un gestionnaire recevra un email si l
 
 - [< Importation](/documentation/FR/07%20-%20Importation.md)
 
-- [> Désinstallation](/documentation/FR/09%20-%20Désinstallation.md)
+- [> Collaborateurs](/documentation/FR/09%20-%20Collaborateurs.md)
