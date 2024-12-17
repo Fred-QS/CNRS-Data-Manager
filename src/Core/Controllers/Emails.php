@@ -276,6 +276,36 @@ class Emails
         }
     }
 
+    /**
+     * Sends a validated mission form notification email to manager.
+     *
+     * @param string $email The email address to send the notification to.
+     *
+     * @return bool Returns true if the email was sent successfully, false otherwise.
+     */
+    public static function sendValidatedFormToManager(string $email, string $validateUuid): bool
+    {
+        try {
+            $template = 'validate-for-manager';
+            $data = EmailsModel::getEmailFromFileAndLang($template, substr(get_locale(), 0, 2));
+
+            if ($data === null) {
+                return false;
+            }
+
+            ob_start();
+            include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
+            $body = ob_get_clean();
+
+            sendCNRSEmail($email, $data->subject, $body);
+
+            return true;
+
+        } catch (\ErrorException $e) {
+            return false;
+        }
+    }
+
     public static function initEmailsTemplates(): void
     {
         $languages = function_exists('pll_the_languages') ? pll_languages_list() : ['fr'];
