@@ -200,7 +200,6 @@ class Emails
             }
 
             foreach ($emails as $email) {
-
                 ob_start();
                 include(CNRS_DATA_MANAGER_PATH . '/templates/includes/emails/template.php');
                 $body = ob_get_clean();
