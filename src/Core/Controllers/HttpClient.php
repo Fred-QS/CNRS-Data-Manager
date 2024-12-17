@@ -63,17 +63,40 @@ class HttpClient
         return $ip['origin'];
     }
 
-    public static function getPublications()
+    public static function getPublications(): array
     {
         $curl = curl_init();
         curl_setopt_array($curl, [
-            CURLOPT_URL => 'https://oskar-bordeaux.fr/rest/collections',
+            CURLOPT_URL => 'https://oskar-bordeaux.fr/rest/collections/69167023-87f3-4d50-a467-b47ba31c6411/items',
             CURLOPT_FAILONERROR => true
         ]);
         ob_start();
         curl_exec($curl);
         $json = ob_get_clean();
-        return json_decode($json, true);
+        $itemsUuids = array_map(function($row) {
+            return $row['uuid'];
+        },json_decode($json, true));
+
+        $result = [];
+
+        foreach ($itemsUuids as $itemsUuid) {
+            $curlItem = curl_init();
+            curl_setopt_array($curlItem, [
+                CURLOPT_URL => 'https://oskar-bordeaux.fr/rest/items/' . $itemsUuid . '/metadata',
+                CURLOPT_FAILONERROR => true
+            ]);
+            ob_start();
+            curl_exec($curlItem);
+            $jsonItem = ob_get_clean();
+            $result[] = json_decode($jsonItem, true);
+        }
+
+        $jsonPath = CNRS_DATA_MANAGER_PATH . '/api-tmp/publications.json';
+        $file = fopen($jsonPath, 'w+');
+        fwrite($file, json_encode($result, JSON_PRETTY_PRINT));
+        fclose($file);
+
+        return $result;
     }
 
     /**

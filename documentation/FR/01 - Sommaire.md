@@ -25,6 +25,9 @@
 ### VII. [Formulaire de mission](/documentation/FR/08%20-%20Formulaire%20de%20mission.md)
  - L'onglet **Formulaire de mission** pour la création et le suivi du formulaire.
 
-### VIII. [Désinstallation](/documentation/FR/09%20-%20Désinstallation.md)
+### VIII. [Collaborateurs](/documentation/FR/09%20-%20Collaborateurs.md)
+ - L'onglet **Collaborateurs** pour la création de financiers et de partenaires.
+
+### IX. [Désinstallation](/documentation/FR/10%20-%20Désinstallation.md)
  - Tout ce qu'implique la désinstallation de l'extension.
 

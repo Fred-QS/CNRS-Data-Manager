@@ -25,5 +25,8 @@
 ### VII. [Mission form](/documentation/EN/08%20-%20Mission%20form.md)
  - The **Mission form** tab for creating and tracking the form.
 
-### VIII. [Uninstallation](/documentation/EN/09%20-%20Uninstallation.md)
+### VIII. [Collaborators](/documentation/EN/09%20-%20Collaborators.md)
+ - The **Collaborators** tab for creating funders and partners.
+
+### IX. [Uninstallation](/documentation/EN/10%20-%20Uninstallation.md)
  - Everything that uninstalling the extension entails.

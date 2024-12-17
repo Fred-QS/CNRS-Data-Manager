@@ -22,7 +22,7 @@
             <small><?php echo $agent['tutelle'] ?></small>
         <?php endif; ?>
     </span>
-    <?php if ($agent['responsabilite'] !== null): ?>
-        <small><?php echo $agent['responsabilite'] ?></small>
-    <?php endif; ?>
+    <?php /*if ($agent['responsabilite'] !== null): */?><!--
+        <small><?php /*echo $agent['responsabilite'] */?></small>
+    --><?php /*endif; */?>
 </div>
