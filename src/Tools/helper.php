@@ -1112,6 +1112,7 @@ if (!function_exists('cnrsReadShortCode')) {
 
                     Forms::recordObservation($data, true);
                     Emails::sendValidatedForm($data->agent_email, $data->form_uuid);
+                    Emails::sendValidatedFormToManager($data->manager_email, $data->form_uuid);
                     $genericEmail = Settings::getGenericEmail();
                     if ($genericEmail !== null) {
                         Emails::sendValidatedForm($genericEmail, $data->form_uuid, true);
